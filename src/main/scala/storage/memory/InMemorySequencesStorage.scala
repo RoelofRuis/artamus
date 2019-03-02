@@ -13,6 +13,8 @@ class InMemorySequencesStorage[K, V] @Inject() (logger: Logger) extends Sequence
     buffer.put(key, buffer.getOrElse(key, Vector[V]()) :+ value)
   }
 
+  def has(key: K): Boolean = buffer.isDefinedAt(key)
+
   def get(key: K): Vector[V] = buffer.getOrElse(key, Vector[V]())
 
 }

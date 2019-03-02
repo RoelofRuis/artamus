@@ -12,9 +12,10 @@ class TerminalModule extends ScalaModule {
     bind[Prompt].to[TerminalPrompt]
 
     val commands = ScalaMultibinder.newSetBinder[Command](binder)
-    commands.addBinding.to[IdeaCommand]
-    commands.addBinding.to[QuitCommand]
+    commands.addBinding.to[CreateIdeaCommand]
     commands.addBinding.to[ListIdeasCommand]
+    commands.addBinding.to[LoadIdeaCommand]
+    commands.addBinding.to[QuitCommand]
 
     bind[MusicDataStream].to[TerminalMusicDataStream]
   }

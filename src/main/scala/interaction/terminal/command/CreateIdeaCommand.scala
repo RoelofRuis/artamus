@@ -5,7 +5,7 @@ import core.idea.IdeaRepository
 import core.musicdata.MusicDataStreamer
 import javax.inject.Inject
 
-class IdeaCommand @Inject() (
+class CreateIdeaCommand @Inject() (
   prompt: Prompt,
   ideaRepository: IdeaRepository,
   musicDataStreamer: MusicDataStreamer
