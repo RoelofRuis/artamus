@@ -12,9 +12,9 @@ class IdeaCommand @Inject() (prompt: Prompt, ideaRepository: IdeaRepository) ext
   def run(): CommandResponse = {
     val title = prompt.read("Idea title")
 
-    ideaRepository.add(title)
+    val id = ideaRepository.add(title)
 
-    display(s"Created idea [$title]")
+    display(s"Created idea [$title] with id [$id]")
   }
 
 }
