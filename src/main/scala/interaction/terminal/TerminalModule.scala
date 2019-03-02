@@ -1,14 +1,14 @@
-package io.cmd
+package interaction.terminal
 
 import core.components.AppRunner
-import io.cmd.command._
+import interaction.terminal.command._
 import net.codingwell.scalaguice.{ScalaModule, ScalaMultibinder}
 
-class CmdModule extends ScalaModule {
+class TerminalModule extends ScalaModule {
 
   override def configure(): Unit = {
-    bind[AppRunner].to[CommandRunner]
-    bind[Prompt].to[CommandLinePrompt]
+    bind[AppRunner].to[TerminalRunner]
+    bind[Prompt].to[TerminalPrompt]
 
     val commands = ScalaMultibinder.newSetBinder[Command](binder)
     commands.addBinding.to[IdeaCommand]

@@ -1,4 +1,4 @@
-package io.cmd.command
+package interaction.terminal.command
 
 sealed trait ResponseAction
 case object Continue extends ResponseAction

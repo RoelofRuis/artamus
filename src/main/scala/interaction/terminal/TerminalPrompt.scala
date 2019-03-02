@@ -1,8 +1,8 @@
-package io.cmd
+package interaction.terminal
 
 import scala.io.StdIn
 
-class CommandLinePrompt extends Prompt {
+class TerminalPrompt extends Prompt {
 
   def read(text: String): String = {
     StdIn.readLine(text + " > ")

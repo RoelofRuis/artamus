@@ -1,4 +1,4 @@
-package io.cmd.command
+package interaction.terminal.command
 
 trait Command extends ResponseWriter {
 

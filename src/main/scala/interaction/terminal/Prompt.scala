@@ -1,4 +1,4 @@
-package io.cmd
+package interaction.terminal
 
 trait Prompt {
 

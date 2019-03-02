@@ -1,1 +1,11 @@
-Not yet
+Storing small musical ideas and playing around with modularization using Guice.
+
+Modules:
+CORE        (what is the system about?)
+Contains the core logic of models, and "business" (music) rules. Should depend on no other module.
+
+INTERACTION (how should the user interact with the system?)
+Should depend only on CORE.
+
+STORAGE     (how should the system store its data?)
+Should depend only on CORE.

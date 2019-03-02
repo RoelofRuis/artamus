@@ -1,6 +1,6 @@
-package io.cmd.command
+package interaction.terminal.command
 
-import io.cmd.Prompt
+import interaction.terminal.Prompt
 import core.IdeaRepository
 import javax.inject.Inject
 
