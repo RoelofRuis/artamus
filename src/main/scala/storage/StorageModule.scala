@@ -3,14 +3,16 @@ package storage
 import core.Idea
 import core.components.Storage
 import net.codingwell.scalaguice.ScalaModule
-import storage.file.SimpleFileStorage
+import storage.memory.InMemoryStorage
 
 class StorageModule extends ScalaModule {
 
-  import storage.file.Serializers._
 
   override def configure(): Unit = {
-    bind[Storage[Idea]].toInstance(new SimpleFileStorage[Idea]("idea"))
+//    import storage.file.Serializers._
+//    bind[Storage[Idea]].toInstance(new SimpleFileStorage[Idea]("idea"))
+
+    bind[Storage[Idea]].toInstance(new InMemoryStorage[Idea])
   }
 
 }
