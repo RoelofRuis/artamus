@@ -1,0 +1,6 @@
+.idea/
+
+target/
+
+# for local experiments in worksheets
+worksheets/
