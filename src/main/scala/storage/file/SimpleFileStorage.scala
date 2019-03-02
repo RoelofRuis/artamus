@@ -26,7 +26,7 @@ class SimpleFileStorage[A](name: String)(implicit serializer: Serializer[A]) ext
   }
 
   override def getNextId: Long = {
-    if (Files.exists(path)) Files.lines(path, StandardCharsets.UTF_8).count()
-    else 0
+    if (Files.exists(path)) Files.lines(path, StandardCharsets.UTF_8).count() + 1
+    else 1
   }
 }
