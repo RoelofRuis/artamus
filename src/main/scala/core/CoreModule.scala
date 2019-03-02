@@ -3,7 +3,7 @@ package core
 import com.google.inject.Key
 import core.components._
 import core.idea.{Idea, IdeaRepository}
-import core.musicdata.{MusicData, MusicDataRepository}
+import core.musicdata.{MusicData, MusicDataRepository, MusicDataStreamer}
 import net.codingwell.scalaguice.ScalaModule
 
 class CoreModule extends ScalaModule {
@@ -17,6 +17,8 @@ class CoreModule extends ScalaModule {
 
     bind[IdeaRepository].asEagerSingleton()
     bind[MusicDataRepository].asEagerSingleton()
+
+    bind[MusicDataStreamer]
   }
 
 }
