@@ -1,7 +1,8 @@
 package storage
 
-import core.Idea
 import core.components.Storage
+import core.idea.Idea
+import core.musicdata.MusicData
 import net.codingwell.scalaguice.ScalaModule
 import storage.memory.InMemoryStorage
 
@@ -12,7 +13,8 @@ class StorageModule extends ScalaModule {
 //    import storage.file.Serializers._
 //    bind[Storage[Idea]].toInstance(new SimpleFileStorage[Idea]("idea"))
 
-    bind[Storage[Idea]].toInstance(new InMemoryStorage[Idea])
+    bind[Storage[Idea]].to[InMemoryStorage[Idea]].asEagerSingleton()
+    bind[Storage[MusicData]].to[InMemoryStorage[MusicData]].asEagerSingleton()
   }
 
 }

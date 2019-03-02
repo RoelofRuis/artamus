@@ -1,6 +1,6 @@
 package interaction.terminal.command
 
-import core.IdeaRepository
+import core.idea.IdeaRepository
 import javax.inject.Inject
 
 class ListIdeasCommand @Inject() (ideaRepository: IdeaRepository) extends Command {

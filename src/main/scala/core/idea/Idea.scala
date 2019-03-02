@@ -1,4 +1,4 @@
-package core
+package core.idea
 
 import com.google.inject.Inject
 import core.components.Storage
