@@ -2,6 +2,7 @@ package interaction.terminal.command
 
 import core.ID
 import core.idea.IdeaRepository
+import core.musicdata.MusicData
 import interaction.terminal.Prompt
 import javax.inject.Inject
 
@@ -18,8 +19,10 @@ class LoadIdeaCommand @Inject() (
 
     ideaRepository.loadMusicData(ID(id.toLong)) match {
       case None => display(s"No data for idea with ID [$id]")
-      case Some(value) => display(s"Music data: [$value]")
+      case Some(value) => display(s"Music data: [${printSeq(value)}]")
     }
   }
+
+  private def printSeq(data: Vector[MusicData]): String = data.map(_.value).mkString(",")
 
 }
