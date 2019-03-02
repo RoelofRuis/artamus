@@ -1,13 +1,15 @@
 package core.musicdata
 
-import core.components.Storage
+import core.ID
+import core.components.SequencesStorage
+import core.idea.Idea
 import javax.inject.Inject
 
 case class MusicData(value: String)
 
 
-class MusicDataRepository @Inject() (storage: Storage[MusicData]) {
+class MusicDataRepository @Inject() (storage: SequencesStorage[ID, MusicData]) {
 
-  def put(data: MusicData): Unit = storage.put(data)
+  def put(idea: Idea, data: MusicData): Unit = storage.add(idea.id, data)
 
 }

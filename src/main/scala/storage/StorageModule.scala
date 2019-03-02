@@ -1,10 +1,11 @@
 package storage
 
-import core.components.Storage
+import core.ID
+import core.components.{SequencesStorage, Storage}
 import core.idea.Idea
 import core.musicdata.MusicData
 import net.codingwell.scalaguice.ScalaModule
-import storage.memory.InMemoryStorage
+import storage.memory.{InMemorySequencesStorage, InMemoryStorage}
 
 class StorageModule extends ScalaModule {
 
@@ -14,7 +15,7 @@ class StorageModule extends ScalaModule {
 //    bind[Storage[Idea]].toInstance(new SimpleFileStorage[Idea]("idea"))
 
     bind[Storage[Idea]].to[InMemoryStorage[Idea]].asEagerSingleton()
-    bind[Storage[MusicData]].to[InMemoryStorage[MusicData]].asEagerSingleton()
+    bind[SequencesStorage[ID, MusicData]].to[InMemorySequencesStorage[ID, MusicData]].asEagerSingleton()
   }
 
 }

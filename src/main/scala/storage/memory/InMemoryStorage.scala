@@ -1,5 +1,6 @@
 package storage.memory
 
+import core.ID
 import core.components.{Logger, Storage}
 import javax.inject.Inject
 
@@ -19,6 +20,6 @@ class InMemoryStorage[A] @Inject() (logger: Logger) extends Storage[A] {
     buffer.toVector
   }
 
-  override def getNextId: Long = buffer.size + 1
+  override def getNextID: ID = ID(buffer.size + 1)
 
 }

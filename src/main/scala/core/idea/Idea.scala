@@ -1,17 +1,18 @@
 package core.idea
 
 import com.google.inject.Inject
+import core.ID
 import core.components.Storage
 
-case class Idea(id: Long, title: String)
+case class Idea(id: ID, title: String)
 
 class IdeaRepository @Inject() (storage: Storage[Idea]) {
 
-  def add(title: String): Long = {
-    val id = storage.getNextId
-    storage.put(Idea(id, title))
+  def add(title: String): Idea = {
+    val idea = Idea(storage.getNextID, title)
+    storage.put(idea)
 
-    id
+    idea
   }
 
   def getAll: Vector[Idea] = storage.getAll

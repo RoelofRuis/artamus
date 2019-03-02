@@ -17,11 +17,11 @@ class IdeaCommand @Inject() (
   def run(): CommandResponse = {
     val title = prompt.read("Idea title")
 
-    val id = ideaRepository.add(title)
+    val idea = ideaRepository.add(title)
 
-    musicDataStreamer.run()
+    musicDataStreamer.run(idea)
 
-    display(s"Created idea [$title] with id [$id]")
+    display(s"Created idea [$title] with id [${idea.id}]")
   }
 
 }
