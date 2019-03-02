@@ -2,7 +2,7 @@ package io.cmd.command
 
 import io.cmd.Prompt
 import com.google.inject.Inject
-import core.app.AppRunner
+import core.components.AppRunner
 
 import scala.collection.immutable
 

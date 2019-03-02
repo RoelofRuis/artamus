@@ -1,13 +1,15 @@
-import io.cmd.CmdModule
 import com.google.inject.Guice
 import core.CoreModule
-import core.app.AppRunner
+import core.components.AppRunner
+import io.cmd.CmdModule
+import storage.StorageModule
 
 object Main extends App {
 
   val injector = Guice.createInjector(
     new CoreModule,
-    new CmdModule
+    new CmdModule,
+    new StorageModule
   )
 
   import net.codingwell.scalaguice.InjectorExtensions._

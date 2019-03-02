@@ -1,4 +1,4 @@
-package core.app
+package core.components
 
 trait AppRunner {
 

@@ -1,14 +1,14 @@
 package io.cmd
 
+import core.components.AppRunner
 import io.cmd.command._
-import core.app.AppRunner
 import net.codingwell.scalaguice.{ScalaModule, ScalaMultibinder}
 
 class CmdModule extends ScalaModule {
 
   override def configure(): Unit = {
-    bind[Prompt].to[CommandLinePrompt]
     bind[AppRunner].to[CommandRunner]
+    bind[Prompt].to[CommandLinePrompt]
 
     val commands = ScalaMultibinder.newSetBinder[Command](binder)
     commands.addBinding.to[IdeaCommand]
