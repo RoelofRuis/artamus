@@ -12,7 +12,8 @@ class CoreModule extends ScalaModule {
     requireBinding(new Key[AppRunner]() {})
     requireBinding(new Key[Storage[Idea]]() {})
     requireBinding(new Key[SequencesStorage[ID, MusicData]]() {})
-    requireBinding(new Key[MusicDataStream]() {})
+    requireBinding(new Key[InputDevice]() {})
+    requireBinding(new Key[PlaybackDevice]() {})
     requireBinding(new Key[Logger]() {})
 
     bind[IdeaRepository].asEagerSingleton()

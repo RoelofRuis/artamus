@@ -2,7 +2,7 @@ package core.components
 
 import core.musicdata.MusicData
 
-trait MusicDataStream {
+trait InputDevice {
 
   def open: Stream[MusicData]
 
