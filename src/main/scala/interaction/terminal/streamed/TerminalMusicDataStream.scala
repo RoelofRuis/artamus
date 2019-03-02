@@ -8,9 +8,10 @@ import interaction.terminal.Prompt
 class TerminalMusicDataStream @Inject() (prompt: Prompt) extends MusicDataStream {
 
   override def open: Stream[MusicData] = {
-    val data = prompt.read("Input music data")
-
-    data.split(",").map(s => MusicData(s)).toStream
+      prompt.read("Input music data")
+        .split(",")
+        .map(_.trim)
+        .map(s => MusicData(s)).toStream
   }
 
 }
