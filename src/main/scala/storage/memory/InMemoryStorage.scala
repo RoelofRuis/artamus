@@ -11,4 +11,7 @@ class InMemoryStorage[A] extends Storage[A] {
   override def put(thing: A): Unit = buffer :+ thing
 
   override def getAll: Vector[A] = buffer.toVector
+
+  override def getNextId: Long = buffer.size + 1
+
 }

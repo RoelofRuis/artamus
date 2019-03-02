@@ -24,4 +24,9 @@ class SimpleFileStorage[A](name: String)(implicit serializer: Serializer[A]) ext
     if (Files.exists(path)) Files.readAllLines(path, StandardCharsets.UTF_8).asScala.map(serializer.deserialize).toVector
     else Vector[A]()
   }
+
+  override def getNextId: Long = {
+    if (Files.exists(path)) Files.lines(path, StandardCharsets.UTF_8).count()
+    else 0
+  }
 }

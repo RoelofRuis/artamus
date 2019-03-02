@@ -11,8 +11,7 @@ class ListIdeasCommand @Inject() (ideaRepository: IdeaRepository) extends Comman
   def run(): CommandResponse = {
     val response = ideaRepository
       .getAll
-      .zipWithIndex
-      .map { case (idea, index) => s"$index. : ${idea.title}"}
+      .map(idea => s"${idea.id}. : ${idea.title}")
       .mkString("\n")
 
     display(response)
