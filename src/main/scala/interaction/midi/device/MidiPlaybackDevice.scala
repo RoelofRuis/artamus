@@ -15,6 +15,7 @@ class MidiPlaybackDevice @Inject() (sequencer: Sequencer) extends PlaybackDevice
 
     data.zipWithIndex.foreach { case (note, i) =>
       track.add(new MidiEvent(new ShortMessage(ShortMessage.NOTE_ON, 0, note.value, 32), i * 24))
+      track.add(new MidiEvent(new ShortMessage(ShortMessage.NOTE_OFF, 0, note.value, 32), (i + 1) * 24))
     }
 
     sequencer.setSequence(sequence)
