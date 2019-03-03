@@ -1,5 +1,6 @@
 import com.google.inject.Guice
-import core.{Application, CoreModule}
+import core.CoreModule
+import core.application.Application
 import interaction.midi.MidiModule
 import interaction.terminal.TerminalModule
 import logging.LoggingModule

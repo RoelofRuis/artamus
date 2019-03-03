@@ -1,13 +1,16 @@
-package core
+package core.application
 
 import com.google.inject.Inject
 import core.components.ApplicationRunner
 
-class Application @Inject() private (resourceCloser: ResourceManager, runner: ApplicationRunner) {
+class Application @Inject() private (
+  resourceManager: ResourceManager,
+  runner: ApplicationRunner
+) {
 
   def run(): Unit = {
     runner.run()
-    resourceCloser.closeAll()
+    resourceManager.closeAll()
   }
 
 }

@@ -1,4 +1,4 @@
-package core
+package core.application
 
 import com.google.inject.Inject
 import core.components.Logger
@@ -9,17 +9,18 @@ class ResourceManager @Inject() (logger: Logger) {
 
   private val hooks = ListBuffer[(String, () => Unit)]()
 
-  def registerOnShutdown(name: String, closeHook: () => Unit): Unit = {
-    logger.debug(s"Registering close hook [$name]")
-    hooks.append((name, closeHook))
+  def register(name: String, shutdownHook: () => Unit): Unit = {
+    logger.debug(s"Registering [$name]")
+    hooks.append((name, shutdownHook))
   }
 
   def closeAll(): Unit = {
-    logger.debug(s"Closing [${hooks.size}] resources")
-    hooks.foreach{ case (name, hook) =>
+    hooks.foreach{ case (name, shutdownHook) =>
       logger.debug(s"Closing $name")
-      hook()
+      shutdownHook()
     }
   }
+
+  def getRegisteredResources: Vector[String] = hooks.map(_._1).toVector
 
 }

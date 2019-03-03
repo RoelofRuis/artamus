@@ -1,6 +1,7 @@
 package core
 
 import com.google.inject.Key
+import core.application.{Application, ResourceManager}
 import core.components._
 import core.idea.{Idea, IdeaRepository}
 import core.musicdata.{MusicData, MusicDataRepository, MusicDataStreamer}
