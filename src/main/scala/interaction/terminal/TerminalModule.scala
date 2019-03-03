@@ -16,7 +16,6 @@ class TerminalModule extends ScalaModule {
     commands.addBinding.to[ListIdeasCommand]
     commands.addBinding.to[PlaybackIdeaCommand]
     commands.addBinding.to[QuitCommand]
-    commands.addBinding.to[MidiCommand]
 
     bind[InputDevice].to[TerminalInputDevice]
   }

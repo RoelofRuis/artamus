@@ -5,7 +5,7 @@ import core.components.SequencesStorage
 import core.idea.Idea
 import javax.inject.Inject
 
-case class MusicData(value: String)
+case class MusicData(value: Int)
 
 
 class MusicDataRepository @Inject() (storage: SequencesStorage[ID, MusicData]) {

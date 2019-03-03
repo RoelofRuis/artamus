@@ -11,7 +11,7 @@ class TerminalInputDevice @Inject() (prompt: Prompt) extends InputDevice {
       prompt.read("Input music data")
         .split(",")
         .map(_.trim)
-        .map(s => MusicData(s)).toStream
+        .map(s => MusicData(s.toInt)).toStream
   }
 
 }
