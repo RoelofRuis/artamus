@@ -9,7 +9,7 @@ import javax.sound.midi._
 class MidiPlaybackDevice @Inject() (sequencer: Sequencer) extends PlaybackDevice {
 
   override def play(data: Vector[MusicData]): Unit = {
-    val sequence = new Sequence(Sequence.SMPTE_24, 1)
+    val sequence = new Sequence(Sequence.PPQ, 24)
 
     val track = sequence.createTrack()
 
@@ -19,6 +19,7 @@ class MidiPlaybackDevice @Inject() (sequencer: Sequencer) extends PlaybackDevice
     }
 
     sequencer.setSequence(sequence)
+    sequencer.setTempoInBPM(120)
 
     sequencer.start()
   }
