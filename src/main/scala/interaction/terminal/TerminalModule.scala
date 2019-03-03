@@ -1,8 +1,8 @@
 package interaction.terminal
 
-import core.components.{AppRunner, InputDevice, PlaybackDevice}
+import core.components.{AppRunner, InputDevice}
 import interaction.terminal.command._
-import interaction.terminal.device.{TerminalInputDevice, TerminalPlaybackDevice}
+import interaction.terminal.device.TerminalInputDevice
 import net.codingwell.scalaguice.{ScalaModule, ScalaMultibinder}
 
 class TerminalModule extends ScalaModule {
@@ -19,7 +19,6 @@ class TerminalModule extends ScalaModule {
     commands.addBinding.to[MidiCommand]
 
     bind[InputDevice].to[TerminalInputDevice]
-    bind[PlaybackDevice].to[TerminalPlaybackDevice]
   }
 
 }
