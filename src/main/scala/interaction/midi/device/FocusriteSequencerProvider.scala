@@ -4,6 +4,7 @@ import com.google.inject.{Inject, Provider}
 import core.ResourceManager
 import javax.sound.midi.{MidiDevice, MidiSystem, Sequencer}
 
+// TODO: clean up, create in better way
 class FocusriteSequencerProvider @Inject() (resourceManager: ResourceManager) extends Provider[Sequencer] {
 
   override lazy val get: Sequencer = {

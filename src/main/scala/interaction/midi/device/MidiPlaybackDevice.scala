@@ -5,6 +5,7 @@ import core.musicdata.MusicData
 import javax.inject.Inject
 import javax.sound.midi._
 
+// TODO: better playback device!
 class MidiPlaybackDevice @Inject() (sequencer: Sequencer) extends PlaybackDevice {
 
   override def play(data: Vector[MusicData]): Unit = {
