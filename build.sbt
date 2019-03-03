@@ -15,3 +15,8 @@ scalacOptions ++= Seq(
   "-feature",
   "-language:implicitConversions"
 )
+
+// Make sure (midi) libraries can get loaded in the correct way
+fork in run := true
+connectInput in run := true
+outputStrategy in run := Some(StdoutOutput)
