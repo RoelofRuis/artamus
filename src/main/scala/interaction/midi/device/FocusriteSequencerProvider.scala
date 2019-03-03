@@ -6,7 +6,7 @@ import javax.sound.midi.{MidiDevice, MidiSystem, Sequencer}
 
 class FocusriteSequencerProvider @Inject() (resourceManager: ResourceManager) extends Provider[Sequencer] {
 
-  override val get: Sequencer = {
+  override lazy val get: Sequencer = {
     val device: MidiDevice = MidiSystem.getMidiDeviceInfo.find { device =>
     device.getName.contains("Focusrite USB MIDI") && device.getDescription.contains("External MIDI Port")
   }.map(MidiSystem.getMidiDevice).get
