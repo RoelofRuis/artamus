@@ -1,11 +1,12 @@
 package interaction.midi.device
 
-import com.google.inject.Provider
+import com.google.inject.{Inject, Provider}
+import core.ResourceManager
 import javax.sound.midi.{MidiDevice, MidiSystem, Sequencer}
 
-class FocusriteSequencerProvider extends Provider[Sequencer] {
+class FocusriteSequencerProvider @Inject() (resourceManager: ResourceManager) extends Provider[Sequencer] {
 
-  override def get(): Sequencer = {
+  override val get: Sequencer = {
     val device: MidiDevice = MidiSystem.getMidiDeviceInfo.find { device =>
     device.getName.contains("Focusrite USB MIDI") && device.getDescription.contains("External MIDI Port")
   }.map(MidiSystem.getMidiDevice).get
@@ -15,6 +16,8 @@ class FocusriteSequencerProvider extends Provider[Sequencer] {
     device.open()
     sequencer.open()
     sequencer.getTransmitter.setReceiver(device.getReceiver)
+
+    resourceManager.registerOnShutdown("Focusrite MIDI", () => sequencer.close())
 
     sequencer
   }

@@ -1,6 +1,6 @@
 package core.components
 
-trait AppRunner {
+trait ApplicationRunner {
 
   def run(): Unit
 
