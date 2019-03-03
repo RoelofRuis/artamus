@@ -6,7 +6,7 @@ case object Halt extends ResponseAction
 
 case class CommandResponse(response: Option[String], action: ResponseAction)
 
-trait ResponseWriter {
+trait ResponseFactory {
 
   def continue = CommandResponse(None, Continue)
   def halt = CommandResponse(None, Halt)

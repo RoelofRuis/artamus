@@ -2,11 +2,11 @@ package interaction.terminal
 
 import com.google.inject.Inject
 import core.components.AppRunner
-import interaction.terminal.command.{Command, Continue, ResponseWriter}
+import interaction.terminal.command.{Command, Continue, ResponseFactory}
 
 import scala.collection.immutable
 
-class TerminalRunner @Inject() (prompt: Prompt, commands: immutable.Set[Command]) extends AppRunner with ResponseWriter {
+class TerminalRunner @Inject() (prompt: Prompt, commands: immutable.Set[Command]) extends AppRunner with ResponseFactory {
 
   def run(): Unit = {
     val input = prompt.read("Enter command")
