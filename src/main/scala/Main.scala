@@ -3,7 +3,6 @@ import core.CoreModule
 import core.application.Application
 import interaction.midi.MidiModule
 import interaction.terminal.TerminalModule
-import logging.LoggingModule
 import storage.StorageModule
 
 object Main extends App {
@@ -12,8 +11,7 @@ object Main extends App {
     new CoreModule,
     new TerminalModule,
     new MidiModule,
-    new StorageModule,
-    new LoggingModule,
+    new StorageModule
   )
 
   import net.codingwell.scalaguice.InjectorExtensions._
