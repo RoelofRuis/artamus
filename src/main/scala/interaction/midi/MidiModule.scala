@@ -4,7 +4,7 @@ import com.google.inject.internal.SingletonScope
 import core.components.{InputDevice, PlaybackDevice}
 import interaction.midi.device._
 import javax.sound.midi.Sequencer
-import net.codingwell.scalaguice.ScalaModule
+import net.codingwell.scalaguice.{ScalaMapBinder, ScalaModule}
 
 class MidiModule extends ScalaModule {
 
@@ -12,8 +12,12 @@ class MidiModule extends ScalaModule {
     bind[MidiInterface].to[FocusriteMidiInterface].asEagerSingleton()
 
     bind[Sequencer].toProvider[SequencerProvider].in(new SingletonScope())
-    bind[PlaybackDevice].to[MidiPlaybackDevice]
-    bind[InputDevice].to[MidiInputDevice]
+
+    ScalaMapBinder.newMapBinder[String, PlaybackDevice](binder)
+      .addBinding("midi-playbackDevice").to[MidiPlaybackDevice]
+
+    ScalaMapBinder.newMapBinder[String, InputDevice](binder)
+      .addBinding("midi-inputDevice").to[MidiInputDevice]
   }
 
 }

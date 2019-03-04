@@ -1,12 +1,11 @@
 package interaction.midi.device
 
 import com.google.inject.Inject
-import core.application.{ResourceManager, ServiceRegistry}
-import core.components.Logger
+import core.application.ResourceManager
 import javax.sound.midi.{MidiDevice, MidiSystem}
 
 // TODO: improve by catching Exceptions and using Options
-class FocusriteMidiInterface @Inject() (resourceManager: ResourceManager, logger: ServiceRegistry[Logger]) extends MidiInterface {
+class FocusriteMidiInterface @Inject() (resourceManager: ResourceManager) extends MidiInterface {
 
   private var midiInDevice: Option[MidiDevice] = None
   private var midiOutDevice: Option[MidiDevice] = None
@@ -20,7 +19,6 @@ class FocusriteMidiInterface @Inject() (resourceManager: ResourceManager, logger
       device.open()
 
       val name = "Focusrite USB MIDI IN"
-      logger.getActive.debug(s"Opening [$name] [max recv ${device.getMaxReceivers}] [max tran ${device.getMaxTransmitters}]")
       resourceManager.register(name, () => device.close())
 
       midiInDevice = Some(device)
@@ -38,7 +36,6 @@ class FocusriteMidiInterface @Inject() (resourceManager: ResourceManager, logger
       device.open()
 
       val name = "Focusrite USB MIDI OUT"
-      logger.getActive.debug(s"Opening [$name] [max recv ${device.getMaxReceivers}] [max tran ${device.getMaxTransmitters}]")
       resourceManager.register(name, () => device.close())
 
       midiOutDevice = Some(device)

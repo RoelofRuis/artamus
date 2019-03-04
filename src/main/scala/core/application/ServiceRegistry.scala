@@ -4,9 +4,10 @@ import com.google.inject.Inject
 
 import scala.collection.immutable
 
-case class DefaultService[A](name: String)
+case class DefaultServiceName[A](name: String)
 
-class ServiceRegistry[A] @Inject() (defaultService: DefaultService[A], implementations: immutable.Map[String, A]) {
+// TODO: Remove dependence on default service!
+class ServiceRegistry[A] @Inject() (defaultService: DefaultServiceName[A], implementations: immutable.Map[String, A]) {
 
   private var services: Map[String, A] = implementations
   private var activeService: String = implementations.find(_._1 == defaultService.name).getOrElse {

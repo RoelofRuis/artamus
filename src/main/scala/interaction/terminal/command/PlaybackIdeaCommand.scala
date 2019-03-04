@@ -1,6 +1,7 @@
 package interaction.terminal.command
 
 import core.ID
+import core.application.ServiceRegistry
 import core.components.PlaybackDevice
 import core.idea.IdeaRepository
 import core.musicdata.MusicData
@@ -10,7 +11,7 @@ import javax.inject.Inject
 class PlaybackIdeaCommand @Inject() (
   prompt: Prompt,
   ideaRepository: IdeaRepository,
-  playbackDevice: PlaybackDevice
+  playbackRegistry: ServiceRegistry[PlaybackDevice]
 ) extends Command {
 
   val name = "playback"
@@ -22,7 +23,7 @@ class PlaybackIdeaCommand @Inject() (
     ideaRepository.loadMusicData(ID(id.toLong)) match {
       case None => display(s"No data for idea with ID [$id]")
       case Some(data) =>
-        playbackDevice.play(data)
+        playbackRegistry.getActive.play(data)
         display(s"Music data: [${printSeq(data)}]")
     }
   }
