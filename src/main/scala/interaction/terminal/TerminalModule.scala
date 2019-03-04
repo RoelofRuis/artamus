@@ -1,8 +1,8 @@
 package interaction.terminal
 
-import core.components.{ApplicationRunner, InputDevice}
+import core.components.{ApplicationRunner, InputDevice, Logger}
 import interaction.terminal.command._
-import interaction.terminal.device.TerminalInputDevice
+import interaction.terminal.device.{TerminalInputDevice, TerminalLogger}
 import net.codingwell.scalaguice.{ScalaMapBinder, ScalaModule, ScalaMultibinder}
 
 class TerminalModule extends ScalaModule {
@@ -23,7 +23,10 @@ class TerminalModule extends ScalaModule {
     commands.addBinding.to[QuitCommand]
 
     ScalaMapBinder.newMapBinder[String, InputDevice](binder)
-      .addBinding("terminal-inputDevice").to[TerminalInputDevice]
+      .addBinding("terminal").to[TerminalInputDevice]
+
+    ScalaMapBinder.newMapBinder[String, Logger](binder)
+      .addBinding("terminal").to[TerminalLogger]
   }
 
 }

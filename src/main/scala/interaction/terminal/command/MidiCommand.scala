@@ -9,7 +9,10 @@ class MidiCommand extends Command {
 
   def run(): CommandResponse = {
     val info = MidiSystem.getMidiDeviceInfo
-      .map(device => s"[${device.getName}][${device.getDescription}][${device.getVendor}][${device.getVersion}]")
+      .zipWithIndex
+      .map { case (device, pos) =>
+        s"$pos.\t${device.getName} (${device.getClass.getSimpleName})\n\t${device.getDescription} [${device.getVendor} - ${device.getVersion}]"
+      }
       .mkString("\n")
 
     display(info)

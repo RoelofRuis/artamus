@@ -11,6 +11,3 @@ Should depend only on CORE.
 
 STORAGE     (how should the system store its data?)
 Should depend only on CORE.
-
-LOGGING     (how should things be logged?)
-Should depend only on CORE.

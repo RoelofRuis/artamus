@@ -14,10 +14,10 @@ class MidiModule extends ScalaModule {
     bind[Sequencer].toProvider[SequencerProvider].in(new SingletonScope())
 
     ScalaMapBinder.newMapBinder[String, PlaybackDevice](binder)
-      .addBinding("midi-playbackDevice").to[MidiPlaybackDevice]
+      .addBinding("midi").to[MidiPlaybackDevice]
 
     ScalaMapBinder.newMapBinder[String, InputDevice](binder)
-      .addBinding("midi-inputDevice").to[MidiInputDevice]
+      .addBinding("midi").to[MidiInputDevice]
   }
 
 }
