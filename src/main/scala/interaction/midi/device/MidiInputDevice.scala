@@ -13,8 +13,7 @@ class MidiInputDevice @Inject() (sequencer: Sequencer) extends InputDevice {
     val track = recordingSequence.getTracks()(0)
     sequencer.setTickPosition(0)
     sequencer.setTempoInBPM(120)
-    sequencer.recordEnable(track, 1)
-    println(s"Recording...")
+    sequencer.recordEnable(track, -1)
     sequencer.startRecording()
 
     // TODO: Replace with waiting for specific key or command
