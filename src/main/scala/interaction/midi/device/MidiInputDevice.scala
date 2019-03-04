@@ -3,7 +3,7 @@ package interaction.midi.device
 import com.google.inject.Inject
 import core.components.InputDevice
 import core.musicdata.MusicData
-import javax.sound.midi.{Sequence, Sequencer}
+import javax.sound.midi._
 
 class MidiInputDevice @Inject() (sequencer: Sequencer) extends InputDevice {
 
@@ -23,11 +23,14 @@ class MidiInputDevice @Inject() (sequencer: Sequencer) extends InputDevice {
 
     sequencer.stopRecording()
 
-    Range(0, track.size).foreach { i =>
-      println(track.get(i).getMessage)
+    Range(0, track.size).flatMap { i =>
+      track.get(i).getMessage match {
+        case msg: ShortMessage if msg.getCommand == ShortMessage.NOTE_ON && msg.getData2 != 0 => Some(msg.getData1)
+        case _ => None
+      }
     }
-
-    Stream[MusicData]()
+      .map(i => MusicData(i))
+      .toStream
   }
 
 }
