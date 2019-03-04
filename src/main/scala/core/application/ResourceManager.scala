@@ -10,13 +10,13 @@ class ResourceManager @Inject() (logger: ServiceRegistry[Logger]) {
   private val hooks = ListBuffer[(String, () => Unit)]()
 
   def register(name: String, shutdownHook: () => Unit): Unit = {
-    logger.getActive.debug(s"Registering [$name]")
+    logger.map(_.debug(s"Registering [$name]"))
     hooks.append((name, shutdownHook))
   }
 
   def closeAll(): Unit = {
     hooks.foreach{ case (name, shutdownHook) =>
-      logger.getActive.debug(s"Closing $name")
+      logger.map(_.debug(s"Closing $name"))
       shutdownHook()
     }
   }

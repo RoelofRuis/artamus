@@ -6,7 +6,7 @@ import interaction.terminal.Prompt
 import javax.inject.Inject
 
 class SetInputDeviceCommand @Inject() (
-  inputDeviceRegistry: ServiceRegistry[InputDevice],
+  registry: ServiceRegistry[InputDevice],
   prompt: Prompt
 ) extends Command {
 
@@ -14,16 +14,16 @@ class SetInputDeviceCommand @Inject() (
   override val helpText = "Set the used input device"
 
   def run(): CommandResponse = {
-    val info = inputDeviceRegistry.getAvailableServices.map { inputDevice =>
-      if (inputDevice._1 == inputDeviceRegistry.getActiveName) s" > ${inputDevice._1}"
-      else s" - ${inputDevice._1}"
+    val info = registry.getRegistered.map { service =>
+      if (registry.getActive.contains(service._1)) s" > ${service._1}"
+      else s" - ${service._1}"
     }.mkString("\n")
 
     prompt.write(info)
 
     val selectedLogger = prompt.read("Which input device to use?")
 
-    if (inputDeviceRegistry.makeActive(selectedLogger)) display(s"input device [$selectedLogger] active")
+    if (registry.setActive(selectedLogger)) display(s"input device [$selectedLogger] active")
     else display(s"unknown input device [$selectedLogger]")
   }
 

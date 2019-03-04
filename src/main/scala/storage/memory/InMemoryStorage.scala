@@ -12,12 +12,12 @@ class InMemoryStorage[A] @Inject() (logger: ServiceRegistry[Logger]) extends Sto
   private val buffer = ListBuffer[A]()
 
   override def put(thing: A): Unit = {
-    logger.getActive.debug(s"[$this] inserting $thing")
+    logger.map(_.debug(s"[$this] inserting $thing"))
     buffer.append(thing)
   }
 
   override def getAll: Vector[A] = {
-    logger.getActive.debug(s"[$this] getting all")
+    logger.map(_.debug(s"[$this] getting all"))
     buffer.toVector
   }
 

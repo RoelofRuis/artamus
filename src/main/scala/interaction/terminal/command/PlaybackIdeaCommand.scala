@@ -23,7 +23,7 @@ class PlaybackIdeaCommand @Inject() (
     ideaRepository.loadMusicData(ID(id.toLong)) match {
       case None => display(s"No data for idea with ID [$id]")
       case Some(data) =>
-        playbackRegistry.getActive.play(data)
+        playbackRegistry.map(_.play(data))
         display(s"Music data: [${printSeq(data)}]")
     }
   }
