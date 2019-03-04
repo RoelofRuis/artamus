@@ -1,11 +1,10 @@
 package storage.memory
 
-import core.components.{Logger, SequencesStorage}
-import javax.inject.Inject
+import core.components.SequencesStorage
 
 import scala.collection.mutable
 
-class InMemorySequencesStorage[K, V] @Inject() (logger: Logger) extends SequencesStorage[K, V] {
+class InMemorySequencesStorage[K, V] extends SequencesStorage[K, V] {
 
   private val buffer = mutable.HashMap[K, Vector[V]]()
 

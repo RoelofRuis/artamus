@@ -1,11 +1,11 @@
 package core
 
 import com.google.inject.Key
-import core.application.{Application, ResourceManager}
+import core.application._
 import core.components._
 import core.idea.{Idea, IdeaRepository}
 import core.musicdata.{MusicData, MusicDataRepository, MusicDataStreamer}
-import net.codingwell.scalaguice.ScalaModule
+import net.codingwell.scalaguice.{ScalaModule, ScalaMultibinder}
 
 class CoreModule extends ScalaModule {
 
@@ -15,11 +15,14 @@ class CoreModule extends ScalaModule {
     // TODO: these should not be required
     requireBinding(new Key[InputDevice]() {})
     requireBinding(new Key[PlaybackDevice]() {})
-    requireBinding(new Key[Logger]() {})
 
     // TODO: these should be moved over time
     requireBinding(new Key[Storage[Idea]]() {})
     requireBinding(new Key[SequencesStorage[ID, MusicData]]() {})
+
+    val loggers = ScalaMultibinder.newSetBinder[Logger with Registerable](binder)
+    loggers.addBinding.to[VoidLogger]
+    bind[ServiceRegistry[Logger]].asEagerSingleton()
 
     bind[Application].asEagerSingleton()
     bind[ResourceManager].asEagerSingleton()

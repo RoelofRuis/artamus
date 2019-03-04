@@ -5,18 +5,18 @@ import core.components.Logger
 
 import scala.collection.mutable.ListBuffer
 
-class ResourceManager @Inject() (logger: Logger) {
+class ResourceManager @Inject() (logger: ServiceRegistry[Logger]) {
 
   private val hooks = ListBuffer[(String, () => Unit)]()
 
   def register(name: String, shutdownHook: () => Unit): Unit = {
-    logger.debug(s"Registering [$name]")
+    logger.getActive.debug(s"Registering [$name]")
     hooks.append((name, shutdownHook))
   }
 
   def closeAll(): Unit = {
     hooks.foreach{ case (name, shutdownHook) =>
-      logger.debug(s"Closing $name")
+      logger.getActive.debug(s"Closing $name")
       shutdownHook()
     }
   }
