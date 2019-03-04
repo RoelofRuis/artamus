@@ -2,7 +2,7 @@ package interaction.midi.device
 
 import com.google.inject.{Inject, Provider}
 import core.application.ResourceManager
-import javax.sound.midi.{MidiSystem, Sequencer}
+import javax.sound.midi.{MidiDevice, MidiSystem, Sequencer}
 
 class SequencerProvider @Inject() (
   resourceManager: ResourceManager,
@@ -13,7 +13,10 @@ class SequencerProvider @Inject() (
     val sequencer: Sequencer = MidiSystem.getSequencer(false)
     sequencer.open()
 
-    val synth = MidiSystem.getSynthesizer
+    val synth: MidiDevice = MidiSystem.getMidiDeviceInfo
+      .find { device => device.getName.contains("Microsoft GS Wavetable Synth") }
+      .map(MidiSystem.getMidiDevice).get
+
     println("Synth: " + synth.getDeviceInfo.getName)
     synth.open()
 
@@ -21,8 +24,6 @@ class SequencerProvider @Inject() (
     sequencer.getTransmitter.setReceiver(interface.out.getReceiver)
     interface.in.getTransmitter.setReceiver(sequencer.getReceiver)
     interface.in.getTransmitter.setReceiver(synth.getReceiver)
-
-
 
     resourceManager.register("System Sequencer", () => {
       synth.close()
