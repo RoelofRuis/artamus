@@ -5,7 +5,7 @@ import core.application._
 import core.components._
 import core.idea.{Idea, IdeaRepository}
 import core.musicdata.{MusicData, MusicDataRepository, MusicDataStreamer}
-import net.codingwell.scalaguice.{ScalaModule, ScalaMultibinder}
+import net.codingwell.scalaguice.{ScalaMapBinder, ScalaModule}
 
 class CoreModule extends ScalaModule {
 
@@ -20,8 +20,9 @@ class CoreModule extends ScalaModule {
     requireBinding(new Key[Storage[Idea]]() {})
     requireBinding(new Key[SequencesStorage[ID, MusicData]]() {})
 
-    val loggers = ScalaMultibinder.newSetBinder[Logger with Registerable](binder)
-    loggers.addBinding.to[VoidLogger]
+    val loggers = ScalaMapBinder.newMapBinder[String, Logger](binder)
+    loggers.addBinding("void-logger").to[VoidLogger]
+    bind[DefaultService[Logger]].toInstance(DefaultService("void-logger"))
     bind[ServiceRegistry[Logger]].asEagerSingleton()
 
     bind[Application].asEagerSingleton()

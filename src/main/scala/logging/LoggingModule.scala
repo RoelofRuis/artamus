@@ -1,14 +1,13 @@
 package logging
 
-import core.application.Registerable
 import core.components.Logger
-import net.codingwell.scalaguice.{ScalaModule, ScalaMultibinder}
+import net.codingwell.scalaguice.{ScalaMapBinder, ScalaModule}
 
 class LoggingModule extends ScalaModule {
 
   override def configure(): Unit = {
-    val loggers = ScalaMultibinder.newSetBinder[Logger with Registerable](binder)
-    loggers.addBinding.to[PrintingLogger]
+    val loggers = ScalaMapBinder.newMapBinder[String, Logger](binder)
+    loggers.addBinding("printing-logger").to[PrintingLogger]
   }
 
 }

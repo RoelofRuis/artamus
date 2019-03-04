@@ -4,17 +4,14 @@ import com.google.inject.Inject
 
 import scala.collection.immutable
 
-trait Registerable {
-  def id: String
-  def default: Boolean
-}
+case class DefaultService[A](name: String)
 
-class ServiceRegistry[A] @Inject() (implementations: immutable.Set[A with Registerable]) {
+class ServiceRegistry[A] @Inject() (defaultService: DefaultService[A], implementations: immutable.Map[String, A]) {
 
-  private var services: Map[String, A] = implementations.map(service => (service.id, service)).toMap
-  private var activeService: String = implementations.find(_.default).getOrElse {
+  private var services: Map[String, A] = implementations
+  private var activeService: String = implementations.find(_._1 == defaultService.name).getOrElse {
     throw new IllegalStateException(s"ServiceRegistry has no default implementation bound")
-  }.id
+  }._1
 
   def register(name: String, implementation: A): Unit = services += (name -> implementation)
 
