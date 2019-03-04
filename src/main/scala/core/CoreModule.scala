@@ -11,11 +11,15 @@ class CoreModule extends ScalaModule {
 
   override def configure(): Unit = {
     requireBinding(new Key[ApplicationRunner]() {})
-    requireBinding(new Key[Storage[Idea]]() {})
-    requireBinding(new Key[SequencesStorage[ID, MusicData]]() {})
+
+    // TODO: these should not be required
     requireBinding(new Key[InputDevice]() {})
     requireBinding(new Key[PlaybackDevice]() {})
     requireBinding(new Key[Logger]() {})
+
+    // TODO: these should be moved over time
+    requireBinding(new Key[Storage[Idea]]() {})
+    requireBinding(new Key[SequencesStorage[ID, MusicData]]() {})
 
     bind[Application].asEagerSingleton()
     bind[ResourceManager].asEagerSingleton()
