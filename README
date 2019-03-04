@@ -2,7 +2,9 @@ Storing small musical ideas and playing around with modularization using Guice.
 
 Modules:
 CORE        (what is the system about?)
-Contains the core logic of models, and "business" (music) rules. Should depend on no other module.
+  |-> APPLICATION (application classes for service related actions)
+  |-> COMPONENTS  (interface components that other modules can build on)
+Contains the application engine and logic of models, and "business" (music) rules. Should depend on no other module.
 
 INTERACTION (how should the user interact with the system?)
   |-> MIDI     (how should midi systems interact?)
