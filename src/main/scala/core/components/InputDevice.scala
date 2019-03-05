@@ -1,9 +1,9 @@
 package core.components
 
-import core.musicdata.MusicData
+import core.musicdata.MusicGrid
 
 trait InputDevice {
 
-  def open: Stream[MusicData]
+  def open: MusicGrid
 
 }

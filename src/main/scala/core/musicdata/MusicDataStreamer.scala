@@ -7,6 +7,6 @@ import javax.inject.Inject
 
 class MusicDataStreamer @Inject() (input: ServiceRegistry[InputDevice], repository: MusicDataRepository) {
 
-  def run(idea: Idea): Unit = input.map(_.open.foreach(repository.put(idea, _)))
+  def run(idea: Idea): Unit = input.map(_.open.elements.foreach(repository.put(idea, _)))
 
 }
