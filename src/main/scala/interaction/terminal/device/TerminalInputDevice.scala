@@ -9,9 +9,9 @@ class TerminalInputDevice @Inject() (prompt: Prompt) extends InputDevice {
 
   override def open: Stream[MusicData] = {
       prompt.read("Input music data")
-        .split(",")
-        .map(_.trim)
-        .map(s => MusicData(s.toInt)).toStream
+        .trim
+        .split(" ")
+        .flatMap(MusicData.parseFromString).toStream
   }
 
 }

@@ -13,9 +13,11 @@ class MidiPlaybackDevice @Inject() (sequencer: Sequencer) extends PlaybackDevice
 
     val track = sequence.createTrack()
 
-    data.zipWithIndex.foreach { case (note, i) =>
-      track.add(new MidiEvent(new ShortMessage(ShortMessage.NOTE_ON, 0, note.value, 32), i * 24))
-      track.add(new MidiEvent(new ShortMessage(ShortMessage.NOTE_OFF, 0, note.value, 32), (i + 1) * 24))
+    data.zipWithIndex.foreach { case (musicData, i) =>
+      musicData.midiNote.foreach { midiNote =>
+        track.add(new MidiEvent(new ShortMessage(ShortMessage.NOTE_ON, 0, midiNote, 32), i * 24))
+        track.add(new MidiEvent(new ShortMessage(ShortMessage.NOTE_OFF, 0, midiNote, 32), (i + 1) * 24))
+      }
     }
 
     sequencer.setSequence(sequence)

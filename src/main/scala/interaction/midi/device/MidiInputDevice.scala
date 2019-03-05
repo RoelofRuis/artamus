@@ -29,7 +29,7 @@ class MidiInputDevice @Inject() (sequencer: Sequencer) extends InputDevice {
         case _ => None
       }
     }
-      .map(i => MusicData(i))
+      .map(i => MusicData(Some(i)))
       .toStream
   }
 

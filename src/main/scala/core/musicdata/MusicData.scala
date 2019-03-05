@@ -1,20 +1,27 @@
 package core.musicdata
 
-import core.ID
-import core.components.SequencesStorage
-import core.idea.Idea
-import javax.inject.Inject
+import scala.util.Try
 
-case class MusicData(value: Int)
+case class MusicData private(midiNote: Option[Int])
 
+object MusicData {
 
-class MusicDataRepository @Inject() (storage: SequencesStorage[ID, MusicData]) {
-
-  def put(idea: Idea, data: MusicData): Unit = storage.add(idea.id, data)
-
-  def load(idea: Idea): Option[Vector[MusicData]] = {
-    if (storage.has(idea.id)) Some(storage.get(idea.id))
-    else None
+  /*
+   * How a music data string will be parsed will determine a lot about the eventual structure of MusicData.
+   * Incrementally note down the assumptions (trying to widen the range of possible encodings):
+   *
+   * - Each MusicData element encodes a single quarter note.
+   * - A midiNote `None` value means a rest.
+   *
+   * Handles: 60 s 62 63 64 s 70
+   */
+  def parseFromString(string: String): Option[MusicData] = {
+    if (string == "s") Some(MusicData(None))
+    else {
+      Try(string.toInt)
+        .toOption
+        .map(i => MusicData(Some(i)))
+    }
   }
 
 }

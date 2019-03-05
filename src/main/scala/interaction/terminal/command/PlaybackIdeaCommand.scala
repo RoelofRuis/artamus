@@ -4,7 +4,6 @@ import core.ID
 import core.application.ServiceRegistry
 import core.components.PlaybackDevice
 import core.idea.IdeaRepository
-import core.musicdata.MusicData
 import interaction.terminal.Prompt
 import javax.inject.Inject
 
@@ -24,10 +23,7 @@ class PlaybackIdeaCommand @Inject() (
       case None => display(s"No data for idea with ID [$id]")
       case Some(data) =>
         playbackRegistry.map(_.play(data))
-        display(s"Music data: [${printSeq(data)}]")
+        continue
     }
   }
-
-  private def printSeq(data: Vector[MusicData]): String = data.map(_.value).mkString(",")
-
 }
