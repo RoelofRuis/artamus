@@ -2,12 +2,14 @@ package interaction.midi.device
 
 import com.google.inject.Inject
 import core.components.InputDevice
-import core.musicdata.{MusicData, MusicGrid}
+import core.musicdata.MusicGrid
 import javax.sound.midi._
 
 class MidiInputDevice @Inject() (sequencer: Sequencer) extends InputDevice {
 
   override def open: MusicGrid = {
+    // TODO: This needs serious work after the music modelling is properly done.
+    /*
     val recordingSequence = new Sequence(Sequence.PPQ, 24, 1)
     sequencer.setSequence(recordingSequence)
     val track = recordingSequence.getTracks()(0)
@@ -16,7 +18,6 @@ class MidiInputDevice @Inject() (sequencer: Sequencer) extends InputDevice {
     sequencer.recordEnable(track, -1)
     sequencer.startRecording()
 
-    // TODO: Replace with waiting for specific key or command
     val t: Thread = new Thread(() => Thread.sleep(5000))
     t.start()
     t.join()
@@ -30,7 +31,10 @@ class MidiInputDevice @Inject() (sequencer: Sequencer) extends InputDevice {
       }
     }
       .map(i => MusicData(Some(i)))
-    MusicGrid(elements)
+    MusicGrid(4, elements)
+    */
+
+    MusicGrid.empty
   }
 
 }

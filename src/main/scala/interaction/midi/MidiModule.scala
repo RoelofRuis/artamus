@@ -1,7 +1,7 @@
 package interaction.midi
 
 import com.google.inject.internal.SingletonScope
-import core.components.{InputDevice, PlaybackDevice}
+import core.components.PlaybackDevice
 import interaction.midi.device._
 import javax.sound.midi.Sequencer
 import net.codingwell.scalaguice.{ScalaMapBinder, ScalaModule}
@@ -16,8 +16,9 @@ class MidiModule extends ScalaModule {
     ScalaMapBinder.newMapBinder[String, PlaybackDevice](binder)
       .addBinding("midi").to[MidiPlaybackDevice]
 
-    ScalaMapBinder.newMapBinder[String, InputDevice](binder)
-      .addBinding("midi").to[MidiInputDevice]
+    // TODO: use this once the implementation is improved
+    //ScalaMapBinder.newMapBinder[String, InputDevice](binder)
+    //  .addBinding("midi").to[MidiInputDevice]
   }
 
 }
