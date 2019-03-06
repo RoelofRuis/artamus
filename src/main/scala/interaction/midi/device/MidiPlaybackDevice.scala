@@ -1,7 +1,7 @@
 package interaction.midi.device
 
 import core.components.PlaybackDevice
-import core.musicdata.Part
+import core.musicdata.{MusicData, Part}
 import javax.inject.Inject
 import javax.sound.midi._
 
@@ -18,12 +18,7 @@ class MidiPlaybackDevice @Inject() (sequencer: Sequencer) extends PlaybackDevice
 
     val noteDuration = ticksPerQuarter / (grid.lengthDenominator / 4)
 
-    grid.elements.zipWithIndex.foreach { case (musicData, i) =>
-      musicData.midiNote.foreach { midiNote =>
-        track.add(new MidiEvent(new ShortMessage(ShortMessage.NOTE_ON, 0, midiNote, 32), i * noteDuration))
-        track.add(new MidiEvent(new ShortMessage(ShortMessage.NOTE_OFF, 0, midiNote, 32), (i + 1) * noteDuration))
-      }
-    }
+    buildTrack(grid.elements.toList, noteDuration).foreach(track.add)
 
     sequencer.setSequence(sequence)
     sequencer.setTempoInBPM(120)
@@ -31,4 +26,18 @@ class MidiPlaybackDevice @Inject() (sequencer: Sequencer) extends PlaybackDevice
     sequencer.start()
   }
 
+  private def buildTrack(elements: List[MusicData], noteDuration: Int, pos: Int = 0, acc: Seq[MidiEvent] = Seq()): Seq[MidiEvent] = {
+    elements match {
+      case MusicData(note, dur) :: tail =>
+        val notes = note match {
+          case Some(midiNote) => Seq(
+            new MidiEvent(new ShortMessage(ShortMessage.NOTE_ON, 0, midiNote, 32), pos * noteDuration),
+            new MidiEvent(new ShortMessage(ShortMessage.NOTE_OFF, 0, midiNote, 32), (pos + dur) * noteDuration)
+          )
+          case None => Seq()
+        }
+        buildTrack(tail, noteDuration, pos + dur, acc ++ notes)
+      case Nil => acc
+    }
+  }
 }
