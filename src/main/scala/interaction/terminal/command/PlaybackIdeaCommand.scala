@@ -1,15 +1,15 @@
 package interaction.terminal.command
 
-import core.ID
 import core.application.ServiceRegistry
 import core.components.PlaybackDevice
-import core.idea.IdeaRepository
+import core.idea.Idea
+import core.musicdata.PartRepository
 import interaction.terminal.Prompt
 import javax.inject.Inject
 
 class PlaybackIdeaCommand @Inject() (
   prompt: Prompt,
-  ideaRepository: IdeaRepository,
+  partRepository: PartRepository,
   playbackRegistry: ServiceRegistry[PlaybackDevice]
 ) extends Command {
 
@@ -19,8 +19,8 @@ class PlaybackIdeaCommand @Inject() (
   def run(): CommandResponse = {
     val id = prompt.read("Input the idea ID")
 
-    ideaRepository.loadMusicData(ID(id.toLong)) match {
-      case None => display(s"No data for idea with ID [$id]")
+    partRepository.retrieve(Idea.ID(id.toLong)) match {
+      case None => display(s"No Part stored for idea with ID [$id]")
       case Some(data) =>
         playbackRegistry.map(_.play(data))
         continue

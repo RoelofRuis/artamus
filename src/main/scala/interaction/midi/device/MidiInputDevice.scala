@@ -2,12 +2,12 @@ package interaction.midi.device
 
 import com.google.inject.Inject
 import core.components.InputDevice
-import core.musicdata.MusicGrid
+import core.musicdata.{MusicGrid, Part}
 import javax.sound.midi._
 
 class MidiInputDevice @Inject() (sequencer: Sequencer) extends InputDevice {
 
-  override def open: MusicGrid = {
+  override def open: Part = {
     // TODO: This needs serious work after the music modelling is properly done.
     /*
     val recordingSequence = new Sequence(Sequence.PPQ, 24, 1)
@@ -34,7 +34,7 @@ class MidiInputDevice @Inject() (sequencer: Sequencer) extends InputDevice {
     MusicGrid(4, elements)
     */
 
-    MusicGrid.empty
+    Part(MusicGrid.empty)
   }
 
 }

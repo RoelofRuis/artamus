@@ -1,8 +1,8 @@
 package storage.memory
 
-import core.ID
 import core.application.ServiceRegistry
 import core.components.{Logger, Storage}
+import core.idea.Idea
 import javax.inject.Inject
 
 import scala.collection.mutable.ListBuffer
@@ -21,6 +21,6 @@ class InMemoryStorage[A] @Inject() (logger: ServiceRegistry[Logger]) extends Sto
     buffer.toVector
   }
 
-  override def getNextID: ID = ID(buffer.size + 1)
+  override def getNextID: Idea.ID = Idea.ID(buffer.size + 1)
 
 }

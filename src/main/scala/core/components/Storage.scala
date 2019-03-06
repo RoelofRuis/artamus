@@ -1,10 +1,10 @@
 package core.components
 
-import core.ID
+import core.idea.Idea
 
 trait Storage[A] {
 
-  def getNextID: ID
+  def getNextID: Idea.ID
 
   def put(thing: A): Unit
 

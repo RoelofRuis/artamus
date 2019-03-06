@@ -4,8 +4,8 @@ import java.io.File
 import java.nio.charset.StandardCharsets
 import java.nio.file.{Files, Path, Paths, StandardOpenOption}
 
-import core.ID
 import core.components.Storage
+import core.idea.Idea
 
 import scala.collection.JavaConverters._
 
@@ -26,8 +26,8 @@ class SimpleFileStorage[A](name: String)(implicit serializer: Serializer[A]) ext
     else Vector[A]()
   }
 
-  override def getNextID: ID = {
-    if (Files.exists(path)) ID(Files.lines(path, StandardCharsets.UTF_8).count() + 1)
-    else ID(1L)
+  override def getNextID: Idea.ID = {
+    if (Files.exists(path)) Idea.ID(Files.lines(path, StandardCharsets.UTF_8).count() + 1)
+    else Idea.ID(1L)
   }
 }

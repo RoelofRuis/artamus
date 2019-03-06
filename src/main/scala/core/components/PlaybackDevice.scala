@@ -1,9 +1,9 @@
 package core.components
 
-import core.musicdata.MusicData
+import core.musicdata.Part
 
 trait PlaybackDevice {
 
-  def play(data: Vector[MusicData])
+  def play(part: Part)
 
 }
