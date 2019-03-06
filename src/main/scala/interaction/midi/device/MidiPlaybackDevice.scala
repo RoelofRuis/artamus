@@ -8,7 +8,7 @@ import javax.sound.midi._
 class MidiPlaybackDevice @Inject() (sequencer: Sequencer) extends PlaybackDevice {
 
   override def play(part: Part): Unit = {
-    val ticksPerQuarter = 24
+    val ticksPerQuarter = 96
 
     val sequence = new Sequence(Sequence.PPQ, ticksPerQuarter)
 
