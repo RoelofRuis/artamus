@@ -2,7 +2,7 @@ package application.model.repository
 
 import application.model.Idea
 import application.ports.Storage
-import com.google.inject.Inject
+import javax.inject.Inject
 
 class IdeaRepository @Inject() (ideaStorage: Storage[Idea]) {
 

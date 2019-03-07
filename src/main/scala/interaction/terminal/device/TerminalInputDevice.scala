@@ -1,9 +1,9 @@
 package interaction.terminal.device
 
 import application.ports.InputDevice
-import com.google.inject.Inject
 import application.model.Music._
 import interaction.terminal.Prompt
+import javax.inject.Inject
 
 import scala.util.Try
 

@@ -1,8 +1,8 @@
 package interaction.terminal.device
 
 import application.ports.Logger
-import com.google.inject.Inject
 import interaction.terminal.Prompt
+import javax.inject.Inject
 
 class TerminalLogger @Inject() (prompt: Prompt) extends Logger {
 

@@ -5,7 +5,7 @@ import application.model.Idea
 import application.model.Idea.ID
 import application.model.repository.{GridRepository, IdeaRepository}
 import application.ports.{InputDevice, PlaybackDevice}
-import com.google.inject.Inject
+import javax.inject.Inject
 
 class IdeaController @Inject() (
   ideaRepository: IdeaRepository,

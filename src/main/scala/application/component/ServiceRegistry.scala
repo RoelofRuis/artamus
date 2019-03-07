@@ -1,6 +1,6 @@
 package application.component
 
-import com.google.inject.Inject
+import javax.inject.Inject
 
 import scala.collection.immutable
 

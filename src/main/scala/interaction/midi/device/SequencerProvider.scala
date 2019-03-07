@@ -1,7 +1,7 @@
 package interaction.midi.device
 
-import com.google.inject.{Inject, Provider}
 import interaction.midi.ResourceContainer
+import javax.inject.{Inject, Provider}
 import javax.sound.midi._
 
 class SequencerProvider @Inject() (

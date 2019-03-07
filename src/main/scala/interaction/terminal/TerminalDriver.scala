@@ -1,8 +1,8 @@
 package interaction.terminal
 
 import application.ports.Driver
-import com.google.inject.Inject
 import interaction.terminal.command.{Command, Continue, ResponseFactory}
+import javax.inject.Inject
 
 import scala.collection.immutable
 

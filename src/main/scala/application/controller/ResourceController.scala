@@ -1,7 +1,7 @@
 package application.controller
 
 import application.component.ResourceManager
-import com.google.inject.Inject
+import javax.inject.Inject
 
 class ResourceController @Inject() (resourceManager: ResourceManager) {
 

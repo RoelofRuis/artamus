@@ -1,9 +1,8 @@
 package interaction.midi.device
 
 import application.ports.PlaybackDevice
-import com.google.inject.Provider
 import application.model.Music.{Event, Grid, GridElement}
-import javax.inject.Inject
+import javax.inject.{Inject, Provider}
 import javax.sound.midi._
 
 class MidiPlaybackDevice @Inject() (sequencerProvider: Provider[Sequencer]) extends PlaybackDevice {

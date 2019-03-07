@@ -1,8 +1,8 @@
 package interaction.midi.device
 
 import application.ports.InputDevice
-import com.google.inject.Inject
 import application.model.Music.Grid
+import javax.inject.Inject
 import javax.sound.midi._
 
 import scala.util.{Failure, Try}

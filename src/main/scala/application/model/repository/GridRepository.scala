@@ -3,7 +3,7 @@ package application.model.repository
 import application.model.Idea
 import application.ports.KeyValueStorage
 import application.model.Music.Grid
-import com.google.inject.Inject
+import javax.inject.Inject
 
 class GridRepository @Inject() (storage: KeyValueStorage[Idea.ID, Grid]) {
 

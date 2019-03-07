@@ -1,8 +1,8 @@
 package application.component
 
 import application.ApplicationEntryPoint
-import com.google.inject.Inject
 import application.ports.{Driver, InputDevice, Logger, PlaybackDevice}
+import javax.inject.Inject
 
 private[application] class Application @Inject() private (
   loggerRegistry: ServiceRegistry[Logger],
