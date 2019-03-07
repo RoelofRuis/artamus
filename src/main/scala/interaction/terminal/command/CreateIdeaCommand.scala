@@ -1,8 +1,8 @@
 package interaction.terminal.command
 
 import interaction.terminal.Prompt
-import core.idea.IdeaRepository
-import core.musicdata.MusicDataStreamer
+import application.idea.IdeaRepository
+import application.musicdata.MusicDataStreamer
 import javax.inject.Inject
 
 class CreateIdeaCommand @Inject() (

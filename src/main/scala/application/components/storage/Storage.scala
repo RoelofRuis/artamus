@@ -1,6 +1,6 @@
-package core.components
+package application.components.storage
 
-import core.idea.Idea
+import application.idea.Idea
 
 trait Storage[A] {
 

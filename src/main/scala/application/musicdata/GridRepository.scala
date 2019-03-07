@@ -1,9 +1,9 @@
-package core.musicdata
+package application.musicdata
 
+import application.components.storage.KeyValueStorage
 import com.google.inject.Inject
-import core.components.KeyValueStorage
-import core.idea.Idea
-import core.symbolic.Music.Grid
+import application.idea.Idea
+import application.symbolic.Music.Grid
 
 class GridRepository @Inject() (storage: KeyValueStorage[Idea.ID, Grid]) {
 

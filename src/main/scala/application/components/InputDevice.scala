@@ -1,6 +1,6 @@
-package core.components
+package application.components
 
-import core.symbolic.Music.Grid
+import application.symbolic.Music.Grid
 
 import scala.util.Try
 

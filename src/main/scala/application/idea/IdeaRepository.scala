@@ -1,7 +1,7 @@
-package core.idea
+package application.idea
 
+import application.components.storage.Storage
 import com.google.inject.Inject
-import core.components.Storage
 
 class IdeaRepository @Inject() (ideaStorage: Storage[Idea]) {
 

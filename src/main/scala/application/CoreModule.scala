@@ -1,11 +1,12 @@
-package core
+package application
 
+import application.components._
+import application.components.storage.{KeyValueStorage, Storage}
+import application.core.{Bootstrapper, ResourceManager, ServiceRegistry}
+import application.idea.{Idea, IdeaRepository}
+import application.musicdata.{GridRepository, MusicDataStreamer}
+import application.symbolic.Music.Grid
 import com.google.inject.Key
-import core.application._
-import core.components._
-import core.idea.{Idea, IdeaRepository}
-import core.musicdata.{GridRepository, MusicDataStreamer}
-import core.symbolic.Music.Grid
 import net.codingwell.scalaguice.ScalaModule
 
 class CoreModule extends ScalaModule {

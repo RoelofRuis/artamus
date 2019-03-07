@@ -1,9 +1,10 @@
-package core.application
+package application.core
 
+import application.BootstrapperInterface
 import com.google.inject.Inject
-import core.components._
+import application.components._
 
-private[core] class Bootstrapper @Inject() private (
+private[application] class Bootstrapper @Inject() private (
   loggerRegistry: ServiceRegistry[Logger],
   inputRegistry: ServiceRegistry[InputDevice],
   playbackRegistry: ServiceRegistry[PlaybackDevice],

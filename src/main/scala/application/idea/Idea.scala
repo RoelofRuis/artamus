@@ -1,6 +1,6 @@
-package core.idea
+package application.idea
 
-import core.idea.Idea.ID
+import application.idea.Idea.ID
 
 case class Idea(id: ID, title: String)
 

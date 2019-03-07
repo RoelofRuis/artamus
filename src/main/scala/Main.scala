@@ -1,6 +1,5 @@
 import com.google.inject.Guice
-import core.CoreModule
-import core.components.BootstrapperInterface
+import application.{BootstrapperInterface, CoreModule}
 import interaction.midi.MidiModule
 import interaction.terminal.TerminalModule
 import storage.StorageModule

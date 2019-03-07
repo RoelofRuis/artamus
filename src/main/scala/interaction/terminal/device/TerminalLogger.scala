@@ -1,7 +1,7 @@
 package interaction.terminal.device
 
 import com.google.inject.Inject
-import core.components.Logger
+import application.components.Logger
 import interaction.terminal.Prompt
 
 class TerminalLogger @Inject() (prompt: Prompt) extends Logger {

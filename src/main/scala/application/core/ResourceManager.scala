@@ -1,7 +1,7 @@
-package core.application
+package application.core
 
 import com.google.inject.Inject
-import core.components.Logger
+import application.components.Logger
 
 import scala.collection.mutable.ListBuffer
 

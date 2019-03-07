@@ -1,8 +1,8 @@
 package interaction.midi.device
 
 import com.google.inject.Provider
-import core.components.PlaybackDevice
-import core.symbolic.Music.{Event, Grid, GridElement}
+import application.components.PlaybackDevice
+import application.symbolic.Music.{Event, Grid, GridElement}
 import javax.inject.Inject
 import javax.sound.midi._
 

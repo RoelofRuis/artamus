@@ -1,8 +1,8 @@
 package interaction.terminal.device
 
 import com.google.inject.Inject
-import core.components.InputDevice
-import core.symbolic.Music._
+import application.components.InputDevice
+import application.symbolic.Music._
 import interaction.terminal.Prompt
 
 import scala.util.Try

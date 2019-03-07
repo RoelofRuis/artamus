@@ -1,4 +1,4 @@
-package core.symbolic
+package application.symbolic
 
 object Music {
 

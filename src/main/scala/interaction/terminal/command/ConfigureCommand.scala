@@ -1,6 +1,6 @@
 package interaction.terminal.command
 
-import core.application.ServiceRegistry
+import application.core.ServiceRegistry
 import interaction.terminal.Prompt
 import interaction.terminal.command.ConfigureCommand.ConfigDescription
 import javax.inject.Inject
