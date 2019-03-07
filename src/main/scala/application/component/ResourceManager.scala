@@ -1,4 +1,4 @@
-package application.components
+package application.component
 
 import application.ports.Logger
 import com.google.inject.Inject

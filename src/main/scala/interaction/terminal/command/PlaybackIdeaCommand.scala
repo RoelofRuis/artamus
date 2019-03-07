@@ -2,9 +2,9 @@ package interaction.terminal.command
 
 import java.util.IllegalFormatConversionException
 
-import application.components.ServiceRegistry
-import application.idea.Idea
-import application.musicdata.GridRepository
+import application.component.ServiceRegistry
+import application.model.Idea
+import application.model.repository.GridRepository
 import application.ports.PlaybackDevice
 import interaction.terminal.Prompt
 import javax.inject.Inject

@@ -1,4 +1,4 @@
-package application.symbolic
+package application.model
 
 object Music {
 

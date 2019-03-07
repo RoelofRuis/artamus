@@ -1,9 +1,8 @@
 package storage.memory
 
-import application.components.ServiceRegistry
-import application.ports.storage.Storage
-import application.idea.Idea
-import application.ports.Logger
+import application.component.ServiceRegistry
+import application.model.Idea
+import application.ports.{Logger, Storage}
 import javax.inject.Inject
 
 import scala.collection.mutable.ListBuffer

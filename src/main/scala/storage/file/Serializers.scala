@@ -1,6 +1,6 @@
 package storage.file
 
-import application.idea.Idea
+import application.model.Idea
 
 object Serializers {
 

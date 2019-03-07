@@ -1,6 +1,6 @@
-package application.ports.storage
+package application.ports
 
-import application.idea.Idea
+import application.model.Idea
 
 trait Storage[A] {
 

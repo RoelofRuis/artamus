@@ -1,6 +1,6 @@
-package application.idea
+package application.model
 
-import application.idea.Idea.ID
+import application.model.Idea.ID
 
 case class Idea(id: ID, title: String)
 

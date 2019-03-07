@@ -1,11 +1,11 @@
 package application
 
-import application.ports.storage.{KeyValueStorage, Storage}
-import application.components.{Bootstrapper, ResourceManager, ServiceRegistry}
-import application.idea.{Idea, IdeaRepository}
-import application.musicdata.{GridRepository, MusicDataStreamer}
-import application.ports.{ApplicationRunner, InputDevice, Logger, PlaybackDevice}
-import application.symbolic.Music.Grid
+import application.component.{Bootstrapper, ResourceManager, ServiceRegistry}
+import application.controller.IdeaController
+import application.model.Idea
+import application.model.repository.{GridRepository, IdeaRepository}
+import application.ports._
+import application.model.Music.Grid
 import com.google.inject.Key
 import net.codingwell.scalaguice.ScalaModule
 
@@ -35,7 +35,7 @@ class CoreModule extends ScalaModule {
     bind[GridRepository].asEagerSingleton()
 
     // Public Services
-    bind[MusicDataStreamer]
+    bind[IdeaController]
   }
 
 }

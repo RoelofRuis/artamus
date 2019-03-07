@@ -1,6 +1,6 @@
 package application.ports
 
-import application.symbolic.Music.Grid
+import application.model.Music.Grid
 
 trait PlaybackDevice {
 

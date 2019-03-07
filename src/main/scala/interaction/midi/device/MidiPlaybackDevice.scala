@@ -2,7 +2,7 @@ package interaction.midi.device
 
 import application.ports.PlaybackDevice
 import com.google.inject.Provider
-import application.symbolic.Music.{Event, Grid, GridElement}
+import application.model.Music.{Event, Grid, GridElement}
 import javax.inject.Inject
 import javax.sound.midi._
 

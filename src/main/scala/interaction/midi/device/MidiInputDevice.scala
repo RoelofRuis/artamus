@@ -2,7 +2,7 @@ package interaction.midi.device
 
 import application.ports.InputDevice
 import com.google.inject.Inject
-import application.symbolic.Music.Grid
+import application.model.Music.Grid
 import javax.sound.midi._
 
 import scala.util.{Failure, Try}

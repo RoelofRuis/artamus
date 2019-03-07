@@ -1,7 +1,7 @@
 package interaction.midi.device
 
 import com.google.inject.{Inject, Provider}
-import application.components.ResourceManager
+import application.component.ResourceManager
 import javax.sound.midi.{MidiDevice, MidiSystem}
 
 class FocusriteMidiInterfaceProvider @Inject() (resourceManager: ResourceManager) extends Provider[MidiInterface] {

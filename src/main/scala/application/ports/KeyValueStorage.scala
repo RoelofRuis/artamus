@@ -1,4 +1,4 @@
-package application.ports.storage
+package application.ports
 
 trait KeyValueStorage[K, V] {
 

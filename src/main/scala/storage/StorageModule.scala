@@ -1,8 +1,8 @@
 package storage
 
-import application.ports.storage.{KeyValueStorage, Storage}
-import application.idea.Idea
-import application.symbolic.Music.Grid
+import application.model.Idea
+import application.ports.{KeyValueStorage, Storage}
+import application.model.Music.Grid
 import net.codingwell.scalaguice.ScalaModule
 import storage.memory.{InMemoryKeyValueStorage, InMemoryStorage}
 

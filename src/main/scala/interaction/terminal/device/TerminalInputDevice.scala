@@ -2,7 +2,7 @@ package interaction.terminal.device
 
 import application.ports.InputDevice
 import com.google.inject.Inject
-import application.symbolic.Music._
+import application.model.Music._
 import interaction.terminal.Prompt
 
 import scala.util.Try
