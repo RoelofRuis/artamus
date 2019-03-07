@@ -9,7 +9,7 @@ private[application] class Application @Inject() private (
   inputRegistry: ServiceRegistry[InputDevice],
   playbackRegistry: ServiceRegistry[PlaybackDevice],
   resourceManager: ResourceManager,
-  runner: Driver
+  driver: Driver
 ) extends ApplicationEntryPoint {
 
   def run(): Unit = {
@@ -17,7 +17,7 @@ private[application] class Application @Inject() private (
     inputRegistry.setActive("terminal")
     playbackRegistry.setActive("midi")
 
-    runner.run()
+    driver.run()
     resourceManager.closeAll()
   }
 
