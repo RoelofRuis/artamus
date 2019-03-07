@@ -11,7 +11,7 @@ class CoreModule extends ScalaModule {
 
   override def configure(): Unit = {
     // Application
-    bind[Application].asEagerSingleton()
+    bind[BootstrapperInterface].to[Bootstrapper].asEagerSingleton()
     bind[ResourceManager].asEagerSingleton()
     requireBinding(new Key[ApplicationRunner]() {})
 

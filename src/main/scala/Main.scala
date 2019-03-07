@@ -1,6 +1,6 @@
 import com.google.inject.Guice
 import core.CoreModule
-import core.application.Application
+import core.components.BootstrapperInterface
 import interaction.midi.MidiModule
 import interaction.terminal.TerminalModule
 import storage.StorageModule
@@ -15,8 +15,7 @@ object Main extends App {
   )
 
   import net.codingwell.scalaguice.InjectorExtensions._
-  val runner = injector.instance[Application]
+  val runner = injector.instance[BootstrapperInterface]
 
   runner.run()
-
 }

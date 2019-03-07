@@ -12,8 +12,13 @@ libraryDependencies += "net.codingwell" %% "scala-guice" % scalaGuiceVersion
 libraryDependencies += "com.typesafe" % "config" % typesafeConfigVersion
 
 scalacOptions ++= Seq(
+  "-encoding", "UTF-8",
+  "-unchecked",
+  "-deprecation",
+  "-Ywarn-dead-code",
   "-feature",
-  "-language:implicitConversions"
+  "-language:implicitConversions",
+
 )
 
 // Make sure (midi) libraries can get loaded in the correct way

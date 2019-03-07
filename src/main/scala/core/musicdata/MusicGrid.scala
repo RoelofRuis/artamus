@@ -2,7 +2,7 @@ package core.musicdata
 
 import scala.util.Try
 
-private[core] case class MusicGrid private(lengthDenominator: Int, elements: Seq[MusicData])
+case class MusicGrid private(lengthDenominator: Int, elements: Seq[MusicData])
 
 object MusicGrid {
 
