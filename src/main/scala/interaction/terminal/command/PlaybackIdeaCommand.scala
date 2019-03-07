@@ -2,10 +2,10 @@ package interaction.terminal.command
 
 import java.util.IllegalFormatConversionException
 
-import application.core.ServiceRegistry
-import application.components.PlaybackDevice
+import application.components.ServiceRegistry
 import application.idea.Idea
 import application.musicdata.GridRepository
+import application.ports.PlaybackDevice
 import interaction.terminal.Prompt
 import javax.inject.Inject
 

@@ -1,6 +1,6 @@
 package storage
 
-import application.components.storage.{KeyValueStorage, Storage}
+import application.ports.storage.{KeyValueStorage, Storage}
 import application.idea.Idea
 import application.symbolic.Music.Grid
 import net.codingwell.scalaguice.ScalaModule

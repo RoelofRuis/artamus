@@ -1,6 +1,6 @@
 package application.musicdata
 
-import application.components.storage.KeyValueStorage
+import application.ports.storage.KeyValueStorage
 import com.google.inject.Inject
 import application.idea.Idea
 import application.symbolic.Music.Grid

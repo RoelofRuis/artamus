@@ -1,4 +1,4 @@
-package application.core
+package application.components
 
 import com.google.inject.Inject
 

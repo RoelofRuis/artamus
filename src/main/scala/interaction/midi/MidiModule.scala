@@ -1,7 +1,7 @@
 package interaction.midi
 
+import application.ports.PlaybackDevice
 import com.google.inject.internal.SingletonScope
-import application.components.PlaybackDevice
 import interaction.midi.device._
 import javax.sound.midi.Sequencer
 import net.codingwell.scalaguice.{ScalaMapBinder, ScalaModule}

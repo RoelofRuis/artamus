@@ -1,7 +1,7 @@
 package interaction.midi.device
 
+import application.ports.InputDevice
 import com.google.inject.Inject
-import application.components.InputDevice
 import application.symbolic.Music.Grid
 import javax.sound.midi._
 

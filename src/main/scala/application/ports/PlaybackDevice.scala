@@ -1,4 +1,4 @@
-package application.components
+package application.ports
 
 import application.symbolic.Music.Grid
 

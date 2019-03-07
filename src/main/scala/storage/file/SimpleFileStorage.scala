@@ -4,7 +4,7 @@ import java.io.File
 import java.nio.charset.StandardCharsets
 import java.nio.file.{Files, Path, Paths, StandardOpenOption}
 
-import application.components.storage.Storage
+import application.ports.storage.Storage
 import application.idea.Idea
 
 import scala.collection.JavaConverters._

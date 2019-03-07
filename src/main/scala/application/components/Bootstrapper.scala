@@ -1,8 +1,8 @@
-package application.core
+package application.components
 
 import application.BootstrapperInterface
 import com.google.inject.Inject
-import application.components._
+import application.ports.{ApplicationRunner, InputDevice, Logger, PlaybackDevice}
 
 private[application] class Bootstrapper @Inject() private (
   loggerRegistry: ServiceRegistry[Logger],

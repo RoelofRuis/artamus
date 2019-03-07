@@ -1,7 +1,7 @@
 package interaction.terminal
 
+import application.ports.ApplicationRunner
 import com.google.inject.Inject
-import application.components.ApplicationRunner
 import interaction.terminal.command.{Command, Continue, ResponseFactory}
 
 import scala.collection.immutable

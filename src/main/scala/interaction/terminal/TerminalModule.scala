@@ -1,6 +1,6 @@
 package interaction.terminal
 
-import application.components.{ApplicationRunner, InputDevice, Logger, PlaybackDevice}
+import application.ports.{ApplicationRunner, InputDevice, Logger, PlaybackDevice}
 import interaction.terminal.command.ConfigureCommand.ConfigDescription
 import interaction.terminal.command._
 import interaction.terminal.device.{TerminalInputDevice, TerminalLogger}

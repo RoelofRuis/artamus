@@ -1,4 +1,4 @@
-package application.components.storage
+package application.ports.storage
 
 import application.idea.Idea
 

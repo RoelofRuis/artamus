@@ -1,7 +1,7 @@
 package interaction.terminal.device
 
+import application.ports.InputDevice
 import com.google.inject.Inject
-import application.components.InputDevice
 import application.symbolic.Music._
 import interaction.terminal.Prompt
 

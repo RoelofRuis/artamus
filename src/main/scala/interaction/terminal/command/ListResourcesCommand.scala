@@ -1,6 +1,6 @@
 package interaction.terminal.command
 
-import application.core.ResourceManager
+import application.components.ResourceManager
 import javax.inject.Inject
 
 class ListResourcesCommand @Inject() (

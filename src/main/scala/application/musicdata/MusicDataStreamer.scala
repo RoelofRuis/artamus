@@ -1,8 +1,8 @@
 package application.musicdata
 
-import application.core.ServiceRegistry
-import application.components.InputDevice
+import application.components.ServiceRegistry
 import application.idea.Idea
+import application.ports.InputDevice
 import javax.inject.Inject
 
 class MusicDataStreamer @Inject() (input: ServiceRegistry[InputDevice], repository: GridRepository) {

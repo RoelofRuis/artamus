@@ -1,10 +1,10 @@
 package application
 
-import application.components._
-import application.components.storage.{KeyValueStorage, Storage}
-import application.core.{Bootstrapper, ResourceManager, ServiceRegistry}
+import application.ports.storage.{KeyValueStorage, Storage}
+import application.components.{Bootstrapper, ResourceManager, ServiceRegistry}
 import application.idea.{Idea, IdeaRepository}
 import application.musicdata.{GridRepository, MusicDataStreamer}
+import application.ports.{ApplicationRunner, InputDevice, Logger, PlaybackDevice}
 import application.symbolic.Music.Grid
 import com.google.inject.Key
 import net.codingwell.scalaguice.ScalaModule
@@ -17,7 +17,7 @@ class CoreModule extends ScalaModule {
     bind[ResourceManager].asEagerSingleton()
     requireBinding(new Key[ApplicationRunner]() {})
 
-    // Database // TODO: these should be plugged in some way
+    // Database
     requireBinding(new Key[Storage[Idea]]() {})
     requireBinding(new Key[KeyValueStorage[Idea.ID, Grid]]() {})
 
