@@ -2,12 +2,14 @@ package interaction.midi.device
 
 import com.google.inject.Inject
 import core.components.InputDevice
-import core.musicdata.{MusicGrid, Part}
+import core.symbolic.Music.Grid
 import javax.sound.midi._
+
+import scala.util.{Failure, Try}
 
 class MidiInputDevice @Inject() (sequencer: Sequencer) extends InputDevice {
 
-  override def open: Part = {
+  override def readData: Try[Grid] = {
     // TODO: This needs serious work after the music modelling is properly done.
     /*
     val recordingSequence = new Sequence(Sequence.PPQ, 24, 1)
@@ -34,7 +36,7 @@ class MidiInputDevice @Inject() (sequencer: Sequencer) extends InputDevice {
     MusicGrid(4, elements)
     */
 
-    Part(MusicGrid.empty)
+    Failure(new NotImplementedError)
   }
 
 }

@@ -5,8 +5,9 @@ import core.components.InputDevice
 import core.idea.Idea
 import javax.inject.Inject
 
-class MusicDataStreamer @Inject() (input: ServiceRegistry[InputDevice], repository: PartRepository) {
+class MusicDataStreamer @Inject() (input: ServiceRegistry[InputDevice], repository: GridRepository) {
 
-  def run(idea: Idea): Unit = input.map(device => repository.store(idea.id, device.open))
-
+  def run(idea: Idea): Unit = input.map { device =>
+    device.readData.foreach(data => repository.store(idea.id, data))
+  }
 }

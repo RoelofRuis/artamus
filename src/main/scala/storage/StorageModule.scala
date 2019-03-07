@@ -2,7 +2,7 @@ package storage
 
 import core.components.{KeyValueStorage, Storage}
 import core.idea.Idea
-import core.musicdata.Part
+import core.symbolic.Music.Grid
 import net.codingwell.scalaguice.ScalaModule
 import storage.memory.{InMemoryKeyValueStorage, InMemoryStorage}
 
@@ -13,7 +13,7 @@ class StorageModule extends ScalaModule {
 //    bind[Storage[Idea]].toInstance(new SimpleFileStorage[Idea]("idea"))
 
     bind[Storage[Idea]].to[InMemoryStorage[Idea]].asEagerSingleton()
-    bind[KeyValueStorage[Idea.ID, Part]].to[InMemoryKeyValueStorage[Idea.ID, Part]].asEagerSingleton()
+    bind[KeyValueStorage[Idea.ID, Grid]].to[InMemoryKeyValueStorage[Idea.ID, Grid]].asEagerSingleton()
   }
 
 }

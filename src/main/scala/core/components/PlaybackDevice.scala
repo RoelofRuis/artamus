@@ -1,9 +1,9 @@
 package core.components
 
-import core.musicdata.Part
+import core.symbolic.Music.Grid
 
 trait PlaybackDevice {
 
-  def play(part: Part)
+  def play(grid: Grid)
 
 }

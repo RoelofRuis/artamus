@@ -1,9 +1,11 @@
 package core.components
 
-import core.musicdata.Part
+import core.symbolic.Music.Grid
+
+import scala.util.Try
 
 trait InputDevice {
 
-  def open: Part
+  def readData: Try[Grid]
 
 }

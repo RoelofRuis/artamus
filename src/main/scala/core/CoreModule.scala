@@ -4,7 +4,8 @@ import com.google.inject.Key
 import core.application._
 import core.components._
 import core.idea.{Idea, IdeaRepository}
-import core.musicdata.{MusicDataStreamer, Part, PartRepository}
+import core.musicdata.{GridRepository, MusicDataStreamer}
+import core.symbolic.Music.Grid
 import net.codingwell.scalaguice.ScalaModule
 
 class CoreModule extends ScalaModule {
@@ -17,7 +18,7 @@ class CoreModule extends ScalaModule {
 
     // Database // TODO: these should be plugged in some way
     requireBinding(new Key[Storage[Idea]]() {})
-    requireBinding(new Key[KeyValueStorage[Idea.ID, Part]]() {})
+    requireBinding(new Key[KeyValueStorage[Idea.ID, Grid]]() {})
 
     // Pluggable PlaybackDevice
     bind[ServiceRegistry[PlaybackDevice]].asEagerSingleton()
@@ -30,7 +31,7 @@ class CoreModule extends ScalaModule {
 
     // Repositories
     bind[IdeaRepository].asEagerSingleton()
-    bind[PartRepository].asEagerSingleton()
+    bind[GridRepository].asEagerSingleton()
 
     // Public Services
     bind[MusicDataStreamer]
