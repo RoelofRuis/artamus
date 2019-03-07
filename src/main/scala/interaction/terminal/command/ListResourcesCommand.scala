@@ -8,9 +8,9 @@ class ListResourcesCommand @Inject() (
 ) extends Command {
 
   val name = "list-resources"
-  override val helpText = "List the currently open application resources"
+  val helpText = "List the currently open application resources"
 
-  def run(): CommandResponse = {
+  def run(args: Array[String]): CommandResponse = {
     val resourceString = resourceManager
       .getRegisteredResources
       .zipWithIndex

@@ -12,9 +12,9 @@ class ConfigureCommand[A] @Inject() (
 ) extends Command {
 
   val name: String = configDescription.commandName
-  override val helpText: String = configDescription.commandHelpText
+  val helpText: String = configDescription.commandHelpText
 
-  def run(): CommandResponse = {
+  def run(args: Array[String]): CommandResponse = {
     val info = registry.getRegistered.map { service =>
       if (registry.getActive.contains(service._1)) s" (selected) > ${service._1}"
       else s"            - ${service._1}"

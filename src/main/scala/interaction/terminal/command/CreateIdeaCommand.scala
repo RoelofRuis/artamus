@@ -12,9 +12,9 @@ class CreateIdeaCommand @Inject() (
 ) extends Command {
 
   val name = "idea"
-  override val helpText = "Write down a new idea"
+  val helpText = "Write down a new idea"
 
-  def run(): CommandResponse = {
+  def run(args: Array[String]): CommandResponse = {
     val title = prompt.read("Idea title")
 
     val idea = ideaRepository.add(title)

@@ -5,9 +5,9 @@ import javax.sound.midi.MidiSystem
 class MidiCommand extends Command {
 
   val name = "midi"
-  override val helpText = "View available system MIDI resources"
+  val helpText = "View available system MIDI resources"
 
-  def run(): CommandResponse = {
+  def run(args: Array[String]): CommandResponse = {
     val info = MidiSystem.getMidiDeviceInfo
       .zipWithIndex
       .map { case (device, pos) =>

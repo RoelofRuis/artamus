@@ -9,13 +9,15 @@ import scala.collection.immutable
 class TerminalRunner @Inject() (prompt: Prompt, commands: immutable.Set[Command]) extends ApplicationRunner with ResponseFactory {
 
   def run(): Unit = {
-    val input = prompt.read("Enter command")
+    val input: Array[String] = prompt.read("Enter command").split(" ")
 
-    val response = if (input == "help") display(helpText)
+    val commandName = input.headOption.getOrElse("")
+
+    val response = if (commandName == "help") display(helpText)
     else {
-      commands.find(_.name == input) match {
-        case Some(command) => command.run()
-        case None => display(s"unknown command [$input]\n$helpText")
+      commands.find(_.name == commandName) match {
+        case Some(command) => command.run(input.tail)
+        case None => display(s"unknown command [$commandName]\n$helpText")
       }
     }
 
@@ -23,6 +25,6 @@ class TerminalRunner @Inject() (prompt: Prompt, commands: immutable.Set[Command]
     if (response.action == Continue) run()
   }
 
-  private def helpText: String = commands.map(c => s"${c.name}: ${c.helpText}").mkString("\n")
+  private def helpText: String = commands.map(c => s"${(c.name +: c.argsHelp.toSeq).mkString(" ")}: ${c.helpText}").mkString("\n")
 
 }

@@ -1,11 +1,15 @@
 package interaction.terminal.command
 
+import java.util.IllegalFormatConversionException
+
 import core.application.ServiceRegistry
 import core.components.PlaybackDevice
 import core.idea.Idea
 import core.musicdata.GridRepository
 import interaction.terminal.Prompt
 import javax.inject.Inject
+
+import scala.util.Try
 
 class PlaybackIdeaCommand @Inject() (
   prompt: Prompt,
@@ -14,16 +18,22 @@ class PlaybackIdeaCommand @Inject() (
 ) extends Command {
 
   val name = "playback"
-  override val helpText = "Playback an idea"
+  val helpText = "Playback an idea"
+  override val argsHelp = Some("<id>")
 
-  def run(): CommandResponse = {
-    val id = prompt.read("Input the idea ID")
-
-    gridRepository.retrieve(Idea.ID(id.toLong)) match {
-      case None => display(s"No Part stored for idea with ID [$id]")
-      case Some(data) =>
-        playbackRegistry.map(_.play(data))
-        continue
+  def run(args: Array[String]): CommandResponse = {
+    Try(Idea.ID(args(0).toLong)).map { id =>
+      gridRepository.retrieve(id) match {
+        case None => display(s"No Part stored for idea with ID [$id]")
+        case Some(data) =>
+          playbackRegistry.map(_.play(data))
+          continue
+      }
     }
+      .recover {
+        case _: NumberFormatException => display(s"Invalid number [${args(0)}]")
+        case _: ArrayIndexOutOfBoundsException => display(s"No Idea ID given")
+      }
+      .getOrElse(continue)
   }
 }
