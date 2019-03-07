@@ -1,41 +1,44 @@
 package application
 
-import application.component.{Bootstrapper, ResourceManager, ServiceRegistry}
-import application.controller.IdeaController
+import application.component.{Application, ResourceManager, ServiceRegistry}
+import application.controller.{IdeaController, ServiceController}
 import application.model.Idea
+import application.model.Music.Grid
 import application.model.repository.{GridRepository, IdeaRepository}
 import application.ports._
-import application.model.Music.Grid
 import com.google.inject.Key
-import net.codingwell.scalaguice.ScalaModule
+import net.codingwell.scalaguice.ScalaPrivateModule
 
-class CoreModule extends ScalaModule {
+class CoreModule extends ScalaPrivateModule {
 
   override def configure(): Unit = {
     // Application
-    bind[BootstrapperInterface].to[Bootstrapper].asEagerSingleton()
+    bind[ApplicationEntryPoint].to[Application].asEagerSingleton()
     bind[ResourceManager].asEagerSingleton()
-    requireBinding(new Key[ApplicationRunner]() {})
+    requireBinding(new Key[Driver]() {})
 
-    // Database
     requireBinding(new Key[Storage[Idea]]() {})
     requireBinding(new Key[KeyValueStorage[Idea.ID, Grid]]() {})
 
-    // Pluggable PlaybackDevice
     bind[ServiceRegistry[PlaybackDevice]].asEagerSingleton()
-
-    // Pluggable InputDevice
     bind[ServiceRegistry[InputDevice]].asEagerSingleton()
-
-    // Pluggable Logger
     bind[ServiceRegistry[Logger]].asEagerSingleton()
 
-    // Repositories
     bind[IdeaRepository].asEagerSingleton()
     bind[GridRepository].asEagerSingleton()
 
+    bind[IdeaController].asEagerSingleton()
+    bind[ServiceController[Logger]].asEagerSingleton()
+    bind[ServiceController[PlaybackDevice]].asEagerSingleton()
+    bind[ServiceController[InputDevice]].asEagerSingleton()
+
     // Public Services
-    bind[IdeaController]
+    expose[ApplicationEntryPoint]
+    expose[ServiceController[Logger]]
+    expose[ServiceController[InputDevice]]
+    expose[ServiceController[PlaybackDevice]]
+    expose[IdeaController]
+    expose[ResourceManager]
   }
 
 }

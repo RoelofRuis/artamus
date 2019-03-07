@@ -26,6 +26,6 @@ class ServiceRegistry[A] @Inject() (implementations: immutable.Map[String, A]) {
 
   def getActive: Option[String] = activeService
 
-  def map(f: A => Unit): Unit = activeService.flatMap(service => services.get(service)).foreach(f)
+  def use(f: A => Unit): Unit = activeService.flatMap(service => services.get(service)).foreach(f)
 
 }

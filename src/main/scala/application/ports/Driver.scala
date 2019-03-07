@@ -1,6 +1,6 @@
 package application.ports
 
-trait ApplicationRunner {
+trait Driver {
 
   def run(): Unit
 

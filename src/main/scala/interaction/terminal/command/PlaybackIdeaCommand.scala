@@ -1,11 +1,7 @@
 package interaction.terminal.command
 
-import java.util.IllegalFormatConversionException
-
-import application.component.ServiceRegistry
+import application.controller.IdeaController
 import application.model.Idea
-import application.model.repository.GridRepository
-import application.ports.PlaybackDevice
 import interaction.terminal.Prompt
 import javax.inject.Inject
 
@@ -13,8 +9,7 @@ import scala.util.Try
 
 class PlaybackIdeaCommand @Inject() (
   prompt: Prompt,
-  gridRepository: GridRepository,
-  playbackRegistry: ServiceRegistry[PlaybackDevice]
+  controller: IdeaController,
 ) extends Command {
 
   val name = "playback"
@@ -23,12 +18,8 @@ class PlaybackIdeaCommand @Inject() (
 
   def run(args: Array[String]): CommandResponse = {
     Try(Idea.ID(args(0).toLong)).map { id =>
-      gridRepository.retrieve(id) match {
-        case None => display(s"No Part stored for idea with ID [$id]")
-        case Some(data) =>
-          playbackRegistry.map(_.play(data))
-          continue
-      }
+      if (controller.play(id)) continue
+      else display(s"No Part stored for idea with ID [$id]")
     }
       .recover {
         case _: NumberFormatException => display(s"Invalid number [${args(0)}]")

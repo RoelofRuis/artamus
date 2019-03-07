@@ -1,12 +1,12 @@
 package interaction.terminal.command
 
-import application.component.ServiceRegistry
+import application.controller.ServiceController
 import interaction.terminal.Prompt
 import interaction.terminal.command.ConfigureCommand.ConfigDescription
 import javax.inject.Inject
 
 class ConfigureCommand[A] @Inject() (
-  registry: ServiceRegistry[A],
+  controller: ServiceController[A],
   configDescription: ConfigDescription[A],
   prompt: Prompt
 ) extends Command {
@@ -15,21 +15,24 @@ class ConfigureCommand[A] @Inject() (
   val helpText: String = configDescription.commandHelpText
 
   def run(args: Array[String]): CommandResponse = {
-    val info = registry.getRegistered.map { service =>
-      if (registry.getActive.contains(service._1)) s" (selected) > ${service._1}"
-      else s"            - ${service._1}"
+    val info = controller.getAll.map {
+      case (n, true) => s" (selected) > $n"
+      case (n, false) => s"            - $n"
     }
-      .mkString("", "\n", "\n")
-      .concat(registry.getActive.map(_ => "            - OFF").getOrElse(" (selected) > OFF"))
+      .mkString("", "\n","\n")
+      .concat {
+        if (controller.hasActive) "            - OFF"
+        else " (selected) > OFF"
+      }
 
     prompt.write(info)
 
     val selectedService = prompt.read(s"Which ${configDescription.serviceName} device to use?")
 
     if (selectedService.toLowerCase == "off") {
-      registry.deactivate()
+      controller.deactivateAll
       display(s"Using no ${configDescription.serviceName}")
-    } else if (registry.setActive(selectedService)) display(s"${configDescription.serviceName} [$selectedService] active")
+    } else if (controller.activateOne(selectedService)) display(s"${configDescription.serviceName} [$selectedService] active")
     else display(s"Unknown ${configDescription.serviceName} [$selectedService]")
   }
 

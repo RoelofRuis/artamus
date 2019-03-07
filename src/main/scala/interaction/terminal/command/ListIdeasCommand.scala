@@ -1,15 +1,15 @@
 package interaction.terminal.command
 
-import application.model.repository.IdeaRepository
+import application.controller.IdeaController
 import javax.inject.Inject
 
-class ListIdeasCommand @Inject() (ideaRepository: IdeaRepository) extends Command {
+class ListIdeasCommand @Inject() (ideaController: IdeaController) extends Command {
 
   val name = "list"
   val helpText = "List the available ideas"
 
   def run(args: Array[String]): CommandResponse = {
-    val response = ideaRepository
+    val response = ideaController
       .getAll
       .map(idea => s"${idea.id}. : ${idea.title}")
       .mkString("\n")

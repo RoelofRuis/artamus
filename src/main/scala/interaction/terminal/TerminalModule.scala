@@ -1,6 +1,6 @@
 package interaction.terminal
 
-import application.ports.{ApplicationRunner, InputDevice, Logger, PlaybackDevice}
+import application.ports.{Driver, InputDevice, Logger, PlaybackDevice}
 import interaction.terminal.command.ConfigureCommand.ConfigDescription
 import interaction.terminal.command._
 import interaction.terminal.device.{TerminalInputDevice, TerminalLogger}
@@ -9,7 +9,7 @@ import net.codingwell.scalaguice.{ScalaMapBinder, ScalaModule, ScalaMultibinder}
 class TerminalModule extends ScalaModule {
 
   override def configure(): Unit = {
-    bind[ApplicationRunner].to[TerminalRunner]
+    bind[Driver].to[TerminalDriver]
     bind[Prompt].to[TerminalPrompt]
 
     val commands = ScalaMultibinder.newSetBinder[Command](binder)

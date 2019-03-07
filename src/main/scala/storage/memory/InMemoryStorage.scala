@@ -1,25 +1,17 @@
 package storage.memory
 
-import application.component.ServiceRegistry
 import application.model.Idea
-import application.ports.{Logger, Storage}
-import javax.inject.Inject
+import application.ports.Storage
 
 import scala.collection.mutable.ListBuffer
 
-class InMemoryStorage[A] @Inject() (logger: ServiceRegistry[Logger]) extends Storage[A] {
+class InMemoryStorage[A] extends Storage[A] {
 
   private val buffer = ListBuffer[A]()
 
-  override def put(thing: A): Unit = {
-    logger.map(_.debug(s"[$this] inserting $thing"))
-    buffer.append(thing)
-  }
+  override def put(thing: A): Unit = buffer.append(thing)
 
-  override def getAll: Vector[A] = {
-    logger.map(_.debug(s"[$this] getting all"))
-    buffer.toVector
-  }
+  override def getAll: Vector[A] = buffer.toVector
 
   override def getNextID: Idea.ID = Idea.ID(buffer.size + 1)
 

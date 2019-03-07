@@ -1,6 +1,6 @@
 package application
 
-trait BootstrapperInterface {
+trait ApplicationEntryPoint {
 
   def run(): Unit
 

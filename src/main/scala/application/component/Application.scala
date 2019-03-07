@@ -1,16 +1,16 @@
 package application.component
 
-import application.BootstrapperInterface
+import application.ApplicationEntryPoint
 import com.google.inject.Inject
-import application.ports.{ApplicationRunner, InputDevice, Logger, PlaybackDevice}
+import application.ports.{Driver, InputDevice, Logger, PlaybackDevice}
 
-private[application] class Bootstrapper @Inject() private (
+private[application] class Application @Inject() private (
   loggerRegistry: ServiceRegistry[Logger],
   inputRegistry: ServiceRegistry[InputDevice],
   playbackRegistry: ServiceRegistry[PlaybackDevice],
   resourceManager: ResourceManager,
-  runner: ApplicationRunner
-) extends BootstrapperInterface {
+  runner: Driver
+) extends ApplicationEntryPoint {
 
   def run(): Unit = {
     // TODO: better way to assign app defaults, for now enable practical default services
