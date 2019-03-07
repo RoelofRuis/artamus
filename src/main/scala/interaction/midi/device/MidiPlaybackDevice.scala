@@ -1,11 +1,12 @@
 package interaction.midi.device
 
+import com.google.inject.Provider
 import core.components.PlaybackDevice
 import core.musicdata.{MusicData, Part}
 import javax.inject.Inject
 import javax.sound.midi._
 
-class MidiPlaybackDevice @Inject() (sequencer: Sequencer) extends PlaybackDevice {
+class MidiPlaybackDevice @Inject() (sequencerProvider: Provider[Sequencer]) extends PlaybackDevice {
 
   override def play(part: Part): Unit = {
     val ticksPerQuarter = 96
@@ -20,6 +21,7 @@ class MidiPlaybackDevice @Inject() (sequencer: Sequencer) extends PlaybackDevice
 
     buildTrack(grid.elements.toList, noteDuration).foreach(track.add)
 
+    val sequencer = sequencerProvider.get
     sequencer.setSequence(sequence)
     sequencer.setTempoInBPM(120)
 

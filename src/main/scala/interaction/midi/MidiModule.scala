@@ -9,7 +9,7 @@ import net.codingwell.scalaguice.{ScalaMapBinder, ScalaModule}
 class MidiModule extends ScalaModule {
 
   override def configure(): Unit = {
-    bind[MidiInterface].to[FocusriteMidiInterface].asEagerSingleton()
+    bind[MidiInterface].toProvider[FocusriteMidiInterfaceProvider]
 
     bind[Sequencer].toProvider[SequencerProvider].in(new SingletonScope())
 
