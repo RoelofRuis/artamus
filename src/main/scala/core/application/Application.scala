@@ -13,7 +13,6 @@ class Application @Inject() private (
 
   def run(): Unit = {
     // TODO: better way to assign app defaults, for now enable practical default services
-    loggerRegistry.setActive("terminal")
     inputRegistry.setActive("terminal")
     playbackRegistry.setActive("midi")
 

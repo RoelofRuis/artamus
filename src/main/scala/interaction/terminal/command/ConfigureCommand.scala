@@ -16,16 +16,20 @@ class ConfigureCommand[A] @Inject() (
 
   def run(): CommandResponse = {
     val info = registry.getRegistered.map { service =>
-      if (registry.getActive.contains(service._1)) s" (active) > ${service._1}"
-      else s"          - ${service._1}"
-    }.mkString("\n")
+      if (registry.getActive.contains(service._1)) s" (selected) > ${service._1}"
+      else s"            - ${service._1}"
+    }
+      .mkString("", "\n", "\n")
+      .concat(registry.getActive.map(_ => "            - OFF").getOrElse(" (selected) > OFF"))
 
     prompt.write(info)
 
     val selectedService = prompt.read(s"Which ${configDescription.serviceName} device to use?")
 
-    if (selectedService.isEmpty) display("Nothing changed")
-    else if (registry.setActive(selectedService)) display(s"${configDescription.serviceName} [$selectedService] active")
+    if (selectedService.toLowerCase == "off") {
+      registry.deactivate()
+      display(s"Using no ${configDescription.serviceName}")
+    } else if (registry.setActive(selectedService)) display(s"${configDescription.serviceName} [$selectedService] active")
     else display(s"Unknown ${configDescription.serviceName} [$selectedService]")
   }
 

@@ -20,6 +20,10 @@ class ServiceRegistry[A] @Inject() (implementations: immutable.Map[String, A]) {
     } else false
   }
 
+  def deactivate(): Unit = {
+    activeService = None
+  }
+
   def getActive: Option[String] = activeService
 
   def map(f: A => Unit): Unit = activeService.flatMap(service => services.get(service)).foreach(f)
