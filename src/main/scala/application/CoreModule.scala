@@ -1,7 +1,7 @@
 package application
 
 import application.component.{Application, ResourceManager, ServiceRegistry}
-import application.controller.{IdeaController, ServiceController}
+import application.controller.{IdeaController, ResourceController, ServiceController}
 import application.model.Idea
 import application.model.Music.Grid
 import application.model.repository.{GridRepository, IdeaRepository}
@@ -12,7 +12,6 @@ import net.codingwell.scalaguice.ScalaPrivateModule
 class CoreModule extends ScalaPrivateModule {
 
   override def configure(): Unit = {
-    // Application
     bind[ApplicationEntryPoint].to[Application].asEagerSingleton()
     bind[ResourceManager].asEagerSingleton()
     requireBinding(new Key[Driver]() {})
@@ -27,6 +26,7 @@ class CoreModule extends ScalaPrivateModule {
     bind[IdeaRepository].asEagerSingleton()
     bind[GridRepository].asEagerSingleton()
 
+    bind[ResourceController].asEagerSingleton()
     bind[IdeaController].asEagerSingleton()
     bind[ServiceController[Logger]].asEagerSingleton()
     bind[ServiceController[PlaybackDevice]].asEagerSingleton()
@@ -38,7 +38,7 @@ class CoreModule extends ScalaPrivateModule {
     expose[ServiceController[InputDevice]]
     expose[ServiceController[PlaybackDevice]]
     expose[IdeaController]
-    expose[ResourceManager]
+    expose[ResourceController]
   }
 
 }

@@ -1,10 +1,10 @@
 package interaction.midi.device
 
 import com.google.inject.{Inject, Provider}
-import application.component.ResourceManager
+import interaction.midi.ResourceContainer
 import javax.sound.midi.{MidiDevice, MidiSystem}
 
-class FocusriteMidiInterfaceProvider @Inject() (resourceManager: ResourceManager) extends Provider[MidiInterface] {
+class FocusriteMidiInterfaceProvider @Inject() (resourceContainer: ResourceContainer) extends Provider[MidiInterface] {
 
   override lazy val get: MidiInterface = new MidiInterface {
     // TODO: improve by catching Exceptions and using Options
@@ -20,7 +20,7 @@ class FocusriteMidiInterfaceProvider @Inject() (resourceManager: ResourceManager
         device.open()
 
         val name = "Focusrite USB MIDI IN"
-        resourceManager.register(name, () => device.close())
+        resourceContainer.register(name, () => device.close())
 
         midiInDevice = Some(device)
 
@@ -37,7 +37,7 @@ class FocusriteMidiInterfaceProvider @Inject() (resourceManager: ResourceManager
         device.open()
 
         val name = "Focusrite USB MIDI OUT"
-        resourceManager.register(name, () => device.close())
+        resourceContainer.register(name, () => device.close())
 
         midiOutDevice = Some(device)
 

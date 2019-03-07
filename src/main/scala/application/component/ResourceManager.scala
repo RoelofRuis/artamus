@@ -1,26 +1,14 @@
 package application.component
 
-import application.ports.Logger
+import application.ports.ManagedResource
 import com.google.inject.Inject
 
-import scala.collection.mutable.ListBuffer
+import scala.collection.immutable
 
-class ResourceManager @Inject() (logger: ServiceRegistry[Logger]) {
+class ResourceManager @Inject() (resources: immutable.Set[ManagedResource]) {
 
-  private val hooks = ListBuffer[(String, () => Unit)]()
+  def getRegisteredResources: Vector[String] = resources.map(_.getName).toVector
 
-  def register(name: String, shutdownHook: () => Unit): Unit = {
-    logger.use(_.debug(s"Registering [$name]"))
-    hooks.append((name, shutdownHook))
-  }
-
-  def closeAll(): Unit = {
-    hooks.foreach{ case (name, shutdownHook) =>
-      logger.use(_.debug(s"Closing $name"))
-      shutdownHook()
-    }
-  }
-
-  def getRegisteredResources: Vector[String] = hooks.map(_._1).toVector
+  def closeAll(): Unit = resources.foreach(_.close())
 
 }

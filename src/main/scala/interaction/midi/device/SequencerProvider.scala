@@ -1,11 +1,11 @@
 package interaction.midi.device
 
 import com.google.inject.{Inject, Provider}
-import application.component.ResourceManager
+import interaction.midi.ResourceContainer
 import javax.sound.midi._
 
 class SequencerProvider @Inject() (
-  resourceManager: ResourceManager,
+  resourceContainer: ResourceContainer,
   interfaceProvider: Provider[MidiInterface],
 ) extends Provider[Sequencer] {
 
@@ -18,7 +18,7 @@ class SequencerProvider @Inject() (
     sequencer.getTransmitter.setReceiver(interface.out.getReceiver)
     interface.in.getTransmitter.setReceiver(sequencer.getReceiver)
 
-    resourceManager.register("System Sequencer", () => { sequencer.close() })
+    resourceContainer.register("System Sequencer", () => { sequencer.close() })
 
     sequencer
   }
