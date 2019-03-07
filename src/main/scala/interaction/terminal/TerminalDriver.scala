@@ -6,7 +6,13 @@ import javax.inject.Inject
 
 import scala.collection.immutable
 
-class TerminalDriver @Inject() (prompt: Prompt, commands: immutable.Set[Command]) extends Driver with ResponseFactory {
+class TerminalDriver @Inject() (prompt: Prompt, unsortedCommands: immutable.Set[Command]) extends Driver with ResponseFactory {
+
+  implicit object CommandOrdering extends Ordering[Command] {
+    def compare(command1: Command, command2: Command): Int = command2.name.compareTo(command1.name)
+  }
+
+  private val commands = immutable.SortedSet[Command]() ++ unsortedCommands
 
   def run(): Unit = {
     val input: Array[String] = prompt.read("Enter command").split(" ")

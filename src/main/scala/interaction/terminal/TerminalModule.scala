@@ -3,7 +3,7 @@ package interaction.terminal
 import application.ports.{Driver, InputDevice, Logger, PlaybackDevice}
 import interaction.terminal.command.ConfigureCommand.ConfigDescription
 import interaction.terminal.command._
-import interaction.terminal.device.{TerminalInputDevice, TerminalLogger}
+import interaction.terminal.device.{TerminalInputDevice, TerminalLogger, TerminalPlaybackDevice}
 import net.codingwell.scalaguice.{ScalaMapBinder, ScalaModule, ScalaMultibinder}
 
 class TerminalModule extends ScalaModule {
@@ -32,6 +32,9 @@ class TerminalModule extends ScalaModule {
 
     ScalaMapBinder.newMapBinder[String, Logger](binder)
       .addBinding("terminal").to[TerminalLogger]
+
+    ScalaMapBinder.newMapBinder[String, PlaybackDevice](binder)
+      .addBinding("terminal").to[TerminalPlaybackDevice]
   }
 
 }
