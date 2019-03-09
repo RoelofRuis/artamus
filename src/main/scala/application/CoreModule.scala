@@ -1,7 +1,7 @@
 package application
 
 import application.component.{Application, ResourceManager, ServiceRegistry}
-import application.controller.{IdeaController, ResourceController, ServiceController}
+import application.controller._
 import application.model.Idea
 import application.model.Music.Grid
 import application.model.repository.{GridRepository, IdeaRepository}
@@ -26,11 +26,11 @@ class CoreModule extends ScalaPrivateModule {
     bind[IdeaRepository].asEagerSingleton()
     bind[GridRepository].asEagerSingleton()
 
-    bind[ResourceController].asEagerSingleton()
-    bind[IdeaController].asEagerSingleton()
-    bind[ServiceController[Logger]].asEagerSingleton()
-    bind[ServiceController[PlaybackDevice]].asEagerSingleton()
-    bind[ServiceController[InputDevice]].asEagerSingleton()
+    bind[ResourceController].to[ResourceControllerImpl].asEagerSingleton()
+    bind[IdeaController].to[IdeaControllerImpl].asEagerSingleton()
+    bind[ServiceController[Logger]].to[ServiceControllerImpl[Logger]].asEagerSingleton()
+    bind[ServiceController[PlaybackDevice]].to[ServiceControllerImpl[PlaybackDevice]].asEagerSingleton()
+    bind[ServiceController[InputDevice]].to[ServiceControllerImpl[InputDevice]]asEagerSingleton()
 
     // Public Services
     expose[ApplicationEntryPoint]

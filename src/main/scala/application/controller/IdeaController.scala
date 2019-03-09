@@ -7,12 +7,22 @@ import application.model.repository.{GridRepository, IdeaRepository}
 import application.ports.{InputDevice, PlaybackDevice}
 import javax.inject.Inject
 
-class IdeaController @Inject() (
+trait IdeaController {
+
+  def getAll: Vector[Idea]
+
+  def create(title: String): Idea
+
+  def play(id: ID): Boolean
+
+}
+
+private[application] class IdeaControllerImpl @Inject() (
   ideaRepository: IdeaRepository,
   gridRepository: GridRepository,
   input: ServiceRegistry[InputDevice],
   playback: ServiceRegistry[PlaybackDevice]
-) {
+) extends IdeaController {
 
   def getAll: Vector[Idea] = ideaRepository.getAll
 
