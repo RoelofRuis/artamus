@@ -8,7 +8,9 @@ class ResourceContainer(containerName: String) extends ManagedResource {
 
   private val closeHooks = ListBuffer[(String, () => Unit)]()
 
-  override def getName: String = closeHooks.map { case (name, _) => s"- [$name]" }.mkString(s"Container [$containerName] Holding:\n", "\n", "")
+  override def getName: String = "MIDI Container"
+
+  override def getDescription: String = closeHooks.map { case (name, _) => s"- [$name]" }.mkString(s"Container [$containerName] Holding:\n", "\n", "")
 
   override def close(): Unit = closeHooks.foreach { case (_, hook) => hook() }
 
