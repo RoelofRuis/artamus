@@ -1,6 +1,7 @@
 package interaction.terminal.device
 
-import application.model.Unquantized.{MidiVolume, Ticks, UnquantizedMidiNote, UnquantizedTrack}
+import application.model.Midi
+import application.model.Unquantized.{Ticks, UnquantizedMidiNote, UnquantizedTrack}
 import application.ports.InputDevice
 import interaction.terminal.Prompt
 import javax.inject.Inject
@@ -11,7 +12,7 @@ class TerminalInputDevice @Inject() (prompt: Prompt) extends InputDevice {
 
   case class InvalidTerminalInputException private (msg: String) extends Exception
 
-  private final val defaultVolume = MidiVolume(32)
+  private final val defaultVolume = 32
 
   override def readUnquantized(ticksPerQuarter: Int): Try[UnquantizedTrack] = {
     Try(parseFromString(prompt.read("Input music data"), ticksPerQuarter))
@@ -37,7 +38,7 @@ class TerminalInputDevice @Inject() (prompt: Prompt) extends InputDevice {
         val note = parts(0)
 
         if (note == "s") parseElements(tail, ticksPerQuarter, pos + length, result)
-        else parseElements(tail, ticksPerQuarter, pos + length, result :+ UnquantizedMidiNote(note.toInt, defaultVolume, Ticks(pos), Ticks(length)))
+        else parseElements(tail, ticksPerQuarter, pos + length, result :+ UnquantizedMidiNote(Midi.Note(note.toInt, defaultVolume), Ticks(pos), Ticks(length)))
       case Nil => result
     }
   }

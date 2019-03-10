@@ -1,5 +1,6 @@
 package interaction.midi.device
 
+import application.model.Midi
 import application.model.Unquantized._
 import application.ports.InputDevice
 import javax.inject.{Inject, Provider}
@@ -44,7 +45,7 @@ class MidiInputDevice @Inject() (sequencerProvider: Provider[Sequencer]) extends
           activeNotes.get(msg.getData1) match {
             case Some((start, volume)) =>
               activeNotes - msg.getData1
-              symbols :+= UnquantizedMidiNote(msg.getData1, MidiVolume(volume), Ticks(start - firstOnset.get), Ticks(midiEvent.getTick - start))
+              symbols :+= UnquantizedMidiNote(Midi.Note(msg.getData1, volume), Ticks(start - firstOnset.get), Ticks(midiEvent.getTick - start))
             case None =>
           }
 
