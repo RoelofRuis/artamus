@@ -8,6 +8,7 @@ import application.model.Quantized.QuantizedTrack
 import application.model.Unquantized.UnquantizedTrack
 import application.model.repository.{IdeaRepository, TrackRepository}
 import application.ports._
+import application.quantization.{NaiveQuantizer, Quantizer}
 import com.google.inject.Key
 import net.codingwell.scalaguice.ScalaPrivateModule
 
@@ -28,6 +29,8 @@ class CoreModule extends ScalaPrivateModule {
     bind[ServiceRegistry[InputDevice]].asEagerSingleton()
     bind[Settings[Logger]].toInstance(Settings[Logger](allowsMultiple = true))
     bind[ServiceRegistry[Logger]].asEagerSingleton()
+
+    bind[Quantizer].toInstance(new NaiveQuantizer())
 
     bind[IdeaRepository].asEagerSingleton()
     bind[TrackRepository].asEagerSingleton()
