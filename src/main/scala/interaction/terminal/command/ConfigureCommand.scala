@@ -15,25 +15,28 @@ class ConfigureCommand[A] @Inject() (
   val helpText: String = configDescription.commandHelpText
 
   def run(args: Array[String]): CommandResponse = {
-    val info = controller.getAll.map {
-      case (n, true) => s" (selected) > $n"
-      case (n, false) => s"            - $n"
-    }
-      .mkString("", "\n","\n")
-      .concat {
-        if (controller.hasActive) "            - OFF"
-        else " (selected) > OFF"
-      }
+    prompt.write(formatServiceInfo)
 
-    prompt.write(info)
-
-    val selectedService = prompt.read(s"Which ${configDescription.serviceName} device to use?")
+    val selectedService = prompt.read(s"Which ${configDescription.serviceName} to toggle?")
 
     if (selectedService.toLowerCase == "off") {
       controller.deactivateAll
-      display(s"Using no ${configDescription.serviceName}")
-    } else if (controller.activateOne(selectedService)) display(s"${configDescription.serviceName} [$selectedService] active")
+      display(formatServiceInfo)
+    }
+    else if (controller.toggle(selectedService)) display(formatServiceInfo)
     else display(s"Unknown ${configDescription.serviceName} [$selectedService]")
+  }
+
+  private def formatServiceInfo: String = {
+    val hasActive = if (controller.hasActive) s"[${controller.getAll.count { case (_, isActive) => isActive }}]" else "[OFF]"
+    val allowsMultiple = if (controller.allowsMultiple) "[MULTIPLE]" else "[SINGLE]"
+
+    val servicesStatus = controller.getAll.map {
+      case (n, true) => s" (selected) > $n"
+      case (n, false) => s"            - $n"
+    }.mkString("\n")
+
+    s"Service [${configDescription.serviceName}]: $allowsMultiple $hasActive\n$servicesStatus"
   }
 
 }

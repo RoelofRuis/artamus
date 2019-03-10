@@ -5,7 +5,7 @@ import javax.inject.Inject
 
 import scala.collection.immutable
 
-class ResourceManager @Inject() (resources: immutable.Set[ManagedResource], logger: ServiceRegistry[Logger]) {
+private[application] class ResourceManager @Inject() (resources: immutable.Set[ManagedResource], logger: ServiceRegistry[Logger]) {
 
   def getRegisteredResources: Vector[String] = resources.map(_.getDescription).toVector
 

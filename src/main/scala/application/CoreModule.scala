@@ -1,5 +1,6 @@
 package application
 
+import application.component.ServiceRegistry.Settings
 import application.component.{Application, ResourceManager, ServiceRegistry}
 import application.controller._
 import application.model.Idea
@@ -19,8 +20,11 @@ class CoreModule extends ScalaPrivateModule {
     requireBinding(new Key[Storage[Idea]]() {})
     requireBinding(new Key[KeyValueStorage[Idea.ID, UnquantizedTrack]]() {})
 
+    bind[Settings[PlaybackDevice]].toInstance(Settings[PlaybackDevice](allowsMultiple = true))
     bind[ServiceRegistry[PlaybackDevice]].asEagerSingleton()
+    bind[Settings[InputDevice]].toInstance(Settings[InputDevice](allowsMultiple = false))
     bind[ServiceRegistry[InputDevice]].asEagerSingleton()
+    bind[Settings[Logger]].toInstance(Settings[Logger](allowsMultiple = true))
     bind[ServiceRegistry[Logger]].asEagerSingleton()
 
     bind[IdeaRepository].asEagerSingleton()

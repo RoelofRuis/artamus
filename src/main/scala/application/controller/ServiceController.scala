@@ -22,25 +22,40 @@ trait ServiceController[A] {
 
   /**
     * @param string The service name
-    * @return Whether activating the given service succeeded
+    * @return Whether toggling the service succeeded
     */
-  def activateOne(string: String): Boolean
+  def toggle(string: String): Boolean
+
+  /**
+    * @return Whether the service allows multiple implementations to be selected simultaneously
+    */
+  def allowsMultiple: Boolean
 
 }
 
 private[application] class ServiceControllerImpl[A] @Inject() (registry: ServiceRegistry[A]) extends ServiceController[A] {
 
   def getAll: Vector[(String, Boolean)] = {
-    registry.getRegistered.map { case (name, _) => (name, registry.getActive.contains(name)) }
+    registry.getRegistered.map(name => (name, registry.isActive(name)))
   }
 
-  def hasActive: Boolean = registry.getActive.isDefined
+  def hasActive: Boolean = registry.hasActive
+
+  def toggle(string: String): Boolean = {
+    if (registry.allowsMultiple) {
+      if (registry.isActive(string)) registry.deactivateOne(string)
+      else registry.alsoActivate(string)
+    } else {
+      if (registry.isActive(string)) registry.deactivateAll()
+      else registry.onlyActivate(string)
+    }
+  }
 
   def deactivateAll: Boolean = {
-    registry.deactivate()
+    registry.deactivateAll()
     true
   }
 
-  def activateOne(string: String): Boolean = registry.setActive(string)
+  def allowsMultiple: Boolean = registry.allowsMultiple
 
 }
