@@ -1,6 +1,6 @@
 package interaction.midi
 
-import application.ports.{ManagedResource, PlaybackDevice}
+import application.ports.{InputDevice, ManagedResource, PlaybackDevice}
 import com.google.inject.internal.SingletonScope
 import interaction.midi.device._
 import javax.sound.midi.Sequencer
@@ -19,13 +19,12 @@ class MidiModule extends ScalaModule {
     ScalaMapBinder.newMapBinder[String, PlaybackDevice](binder)
       .addBinding("midi").to[MidiPlaybackDevice]
 
+    ScalaMapBinder.newMapBinder[String, InputDevice](binder)
+      .addBinding("midi").to[MidiInputDevice]
+
     bind[ResourceContainer].toInstance(resourceContainer)
     ScalaMultibinder.newSetBinder[ManagedResource](binder)
       .addBinding.toInstance(resourceContainer)
-
-    // TODO: use this once the implementation is improved
-    //ScalaMapBinder.newMapBinder[String, InputDevice](binder)
-    //  .addBinding("midi").to[MidiInputDevice]
   }
 
 }

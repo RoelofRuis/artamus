@@ -14,8 +14,8 @@ private[application] class Application @Inject() private (
 
   def run(): Unit = {
     // TODO: better way to assign app defaults, for now enable practical default services
-    inputRegistry.setActive("terminal")
-    playbackRegistry.setActive("midi")
+    inputRegistry.setActive("midi")
+    playbackRegistry.setActive("terminal")
 
     driver.run()
     resourceManager.closeAll()

@@ -3,7 +3,6 @@ package application
 import application.component.{Application, ResourceManager, ServiceRegistry}
 import application.controller._
 import application.model.Idea
-import application.model.Music.Grid
 import application.model.Unquantized.UnquantizedTrack
 import application.model.repository.IdeaRepository
 import application.ports._

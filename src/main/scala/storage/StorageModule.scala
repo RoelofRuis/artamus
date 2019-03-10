@@ -1,9 +1,8 @@
 package storage
 
 import application.model.Idea
-import application.ports.{KeyValueStorage, Storage}
-import application.model.Music.Grid
 import application.model.Unquantized.UnquantizedTrack
+import application.ports.{KeyValueStorage, Storage}
 import net.codingwell.scalaguice.ScalaModule
 import storage.memory.{InMemoryKeyValueStorage, InMemoryStorage}
 
