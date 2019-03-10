@@ -13,8 +13,8 @@ class MidiPlaybackDevice @Inject() (sequencerProvider: Provider[Sequencer]) exte
     val midiTrack = sequence.createTrack()
 
     track.elements.foreach {
-      case UnquantizedMidiNote(midiPitch, start, duration) =>
-        midiTrack.add(new MidiEvent(new ShortMessage(ShortMessage.NOTE_ON, 0, midiPitch, 32), start.value))
+      case UnquantizedMidiNote(midiPitch, volume, start, duration) =>
+        midiTrack.add(new MidiEvent(new ShortMessage(ShortMessage.NOTE_ON, 0, midiPitch, volume.value), start.value))
         midiTrack.add(new MidiEvent(new ShortMessage(ShortMessage.NOTE_OFF, 0, midiPitch, 0), start.value + duration.value))
       case _ =>
     }

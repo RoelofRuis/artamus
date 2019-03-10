@@ -1,6 +1,6 @@
 package interaction.midi.device
 
-import application.model.Unquantized.{Ticks, UnquantizedMidiNote, UnquantizedSymbol, UnquantizedTrack}
+import application.model.Unquantized._
 import application.ports.InputDevice
 import javax.inject.{Inject, Provider}
 import javax.sound.midi._
@@ -29,7 +29,7 @@ class MidiInputDevice @Inject() (sequencerProvider: Provider[Sequencer]) extends
 
     sequencer.stopRecording()
 
-    var activeNotes = Map[Int, Long]()
+    var activeNotes = Map[Int, (Long, Int)]()
     var firstOnset: Option[Long] = None
     var symbols = Seq[UnquantizedSymbol]()
 
@@ -37,14 +37,14 @@ class MidiInputDevice @Inject() (sequencerProvider: Provider[Sequencer]) extends
       val midiEvent = track.get(i)
       midiEvent.getMessage match {
         case msg: ShortMessage if msg.getCommand == ShortMessage.NOTE_ON && msg.getData2 != 0 =>
-          activeNotes += (msg.getData1 -> midiEvent.getTick)
+          activeNotes += (msg.getData1 -> (midiEvent.getTick, msg.getData2))
           if (firstOnset.isEmpty) firstOnset = Some(midiEvent.getTick)
 
         case msg: ShortMessage if msg.getCommand == ShortMessage.NOTE_ON && msg.getData2 == 0 =>
           activeNotes.get(msg.getData1) match {
-            case Some(start) =>
+            case Some((start, volume)) =>
               activeNotes - msg.getData1
-              symbols :+= UnquantizedMidiNote(msg.getData1, Ticks(start - firstOnset.get), Ticks(midiEvent.getTick - start))
+              symbols :+= UnquantizedMidiNote(msg.getData1, MidiVolume(volume), Ticks(start - firstOnset.get), Ticks(midiEvent.getTick - start))
             case None =>
           }
 
