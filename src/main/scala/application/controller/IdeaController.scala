@@ -22,7 +22,6 @@ private[application] class IdeaControllerImpl @Inject() (
   trackRepository: TrackRepository,
   input: ServiceRegistry[InputDevice],
   playback: ServiceRegistry[PlaybackDevice],
-  logger: ServiceRegistry[Logger],
 ) extends IdeaController {
 
   def getAll: Vector[Idea] = ideaRepository.getAll
@@ -42,7 +41,7 @@ private[application] class IdeaControllerImpl @Inject() (
   }
 
   def play(id: ID): Boolean = {
-    trackRepository.retrieve(id) match {
+    trackRepository.retrieveUnquantized(id) match {
       case None => false
       case Some(data) =>
         playback.use(_.playbackUnquantized(data))

@@ -21,6 +21,7 @@ class TerminalModule extends ScalaModule {
     commands.addBinding.to[ConfigureCommand[Logger]]
     commands.addBinding.to[ConfigureCommand[InputDevice]]
     commands.addBinding.to[ConfigureCommand[PlaybackDevice]]
+    commands.addBinding.to[QuantizeCommand]
     commands.addBinding.to[QuitCommand]
 
     bind[ConfigDescription[Logger]].toInstance(ConfigDescription("logger", "conf-logger", "Configure the system logger"))
