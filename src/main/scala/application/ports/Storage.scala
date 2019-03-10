@@ -2,6 +2,9 @@ package application.ports
 
 import application.model.Idea
 
+/**
+  * A simple storage interface to store some type A.
+  */
 trait Storage[A] {
 
   def getNextID: Idea.ID
