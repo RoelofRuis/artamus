@@ -17,7 +17,7 @@ class CoreModule extends ScalaPrivateModule {
     bind[ResourceManager].asEagerSingleton()
     requireBinding(new Key[Driver]() {})
 
-    requireBinding(new Key[Storage[Idea]]() {})
+    requireBinding(new Key[KeyValueStorage[Idea.ID, Idea]]() {})
     requireBinding(new Key[KeyValueStorage[Idea.ID, UnquantizedTrack]]() {})
 
     bind[Settings[PlaybackDevice]].toInstance(Settings[PlaybackDevice](allowsMultiple = true))

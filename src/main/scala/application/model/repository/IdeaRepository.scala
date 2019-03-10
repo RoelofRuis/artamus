@@ -1,14 +1,16 @@
 package application.model.repository
 
 import application.model.Idea
-import application.ports.Storage
+import application.ports.KeyValueStorage
 import javax.inject.Inject
 
-class IdeaRepository @Inject() (ideaStorage: Storage[Idea]) {
+class IdeaRepository @Inject() (ideaStorage: KeyValueStorage[Idea.ID, Idea]) {
 
   def add(title: String): Idea = {
-    val idea = Idea(ideaStorage.getNextID, title)
-    ideaStorage.put(idea)
+    val id = Idea.ID(ideaStorage.nextId)
+    val idea = Idea(id, title)
+
+    ideaStorage.put(id, idea)
 
     idea
   }
