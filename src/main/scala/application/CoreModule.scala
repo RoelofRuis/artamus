@@ -4,7 +4,8 @@ import application.component.{Application, ResourceManager, ServiceRegistry}
 import application.controller._
 import application.model.Idea
 import application.model.Music.Grid
-import application.model.repository.{GridRepository, IdeaRepository}
+import application.model.Unquantized.UnquantizedTrack
+import application.model.repository.IdeaRepository
 import application.ports._
 import com.google.inject.Key
 import net.codingwell.scalaguice.ScalaPrivateModule
@@ -17,14 +18,13 @@ class CoreModule extends ScalaPrivateModule {
     requireBinding(new Key[Driver]() {})
 
     requireBinding(new Key[Storage[Idea]]() {})
-    requireBinding(new Key[KeyValueStorage[Idea.ID, Grid]]() {})
+    requireBinding(new Key[KeyValueStorage[Idea.ID, UnquantizedTrack]]() {})
 
     bind[ServiceRegistry[PlaybackDevice]].asEagerSingleton()
     bind[ServiceRegistry[InputDevice]].asEagerSingleton()
     bind[ServiceRegistry[Logger]].asEagerSingleton()
 
     bind[IdeaRepository].asEagerSingleton()
-    bind[GridRepository].asEagerSingleton()
 
     bind[ResourceController].to[ResourceControllerImpl].asEagerSingleton()
     bind[IdeaController].to[IdeaControllerImpl].asEagerSingleton()

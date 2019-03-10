@@ -1,7 +1,7 @@
 package interaction.terminal.device
 
+import application.model.Unquantized.{Ticks, UnquantizedMidiNote, UnquantizedTrack}
 import application.ports.InputDevice
-import application.model.Music._
 import interaction.terminal.Prompt
 import javax.inject.Inject
 
@@ -11,37 +11,33 @@ class TerminalInputDevice @Inject() (prompt: Prompt) extends InputDevice {
 
   case class InvalidTerminalInputException private (msg: String) extends Exception
 
-  override def readData: Try[Grid] = Try {
-    parseGridFromString(prompt.read("Input music data"))
+  private final val TICKS_PER_QUARTER = 96
+
+  override def readUnquantized: Try[UnquantizedTrack] = {
+    Try(parseFromString(prompt.read("Input music data")))
   }
 
-  private def parseGridFromString(input: String): Grid = {
-    val parts = input.split("\\|")
-    if (parts.length != 2) throw InvalidTerminalInputException("Input should contain only one '|'")
+  private def parseFromString(input: String): UnquantizedTrack = {
+    val elements = parseElements(
+      input.trim.split(" ").toList,
+      0,
+      Seq[UnquantizedMidiNote]()
+    )
 
-    val divisions = Try(parts(0).toInt).getOrElse(4)
-    val elements = parts(1).trim
-      .split(" ")
-      .map(parseGridElementFromString)
-
-    Grid(SubGrid(Divisions(divisions), elements), NoteLength(4))
+    UnquantizedTrack(Ticks(TICKS_PER_QUARTER), elements)
   }
 
-  private def parseGridElementFromString(input: String): GridElement = {
-    val parts = input.split("\\*")
+  private def parseElements(input: List[String], pos: Long, result: Seq[UnquantizedMidiNote]): Seq[UnquantizedMidiNote] = {
+    input match {
+      case head :: tail =>
+        val parts = head.split("\\.")
+        val dur = parts(1).toInt
+        val length = (TICKS_PER_QUARTER * (4.0 / dur)).toInt
+        val note = parts(0)
 
-    if (parts.length == 1) Event(parseMidiPitch(parts(0)), PositionsOccupied(1))
-    else if (parts.length == 2) {
-      Event(
-        parseMidiPitch(parts(0)),
-        PositionsOccupied(Try(parts(1).toInt).getOrElse(1))
-      )
-    } else throw InvalidTerminalInputException(s"Invalid element string [$input]")
+        if (note == "s") parseElements(tail, pos + length, result)
+        else parseElements(tail, pos + length, result :+ UnquantizedMidiNote(note.toInt, Ticks(pos), Ticks(length)))
+      case Nil => result
+    }
   }
-
-  private def parseMidiPitch(input: String): Option[MidiPitch] = {
-    if (input == "s") None
-    else Try(input.toInt).toOption.map(MidiPitch)
-  }
-
 }

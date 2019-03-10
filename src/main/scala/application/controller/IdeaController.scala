@@ -3,8 +3,8 @@ package application.controller
 import application.component.ServiceRegistry
 import application.model.Idea
 import application.model.Idea.ID
-import application.model.repository.{GridRepository, IdeaRepository}
-import application.ports.{InputDevice, PlaybackDevice}
+import application.model.repository.{IdeaRepository, TrackRepository}
+import application.ports.{InputDevice, Logger, PlaybackDevice}
 import javax.inject.Inject
 
 trait IdeaController {
@@ -19,9 +19,10 @@ trait IdeaController {
 
 private[application] class IdeaControllerImpl @Inject() (
   ideaRepository: IdeaRepository,
-  gridRepository: GridRepository,
+  trackRepository: TrackRepository,
   input: ServiceRegistry[InputDevice],
-  playback: ServiceRegistry[PlaybackDevice]
+  playback: ServiceRegistry[PlaybackDevice],
+  logger: ServiceRegistry[Logger],
 ) extends IdeaController {
 
   def getAll: Vector[Idea] = ideaRepository.getAll
@@ -31,17 +32,17 @@ private[application] class IdeaControllerImpl @Inject() (
     val idea = ideaRepository.add(title)
 
     input.use { device =>
-      device.readData.foreach(data => gridRepository.store(idea.id, data))
+        device.readUnquantized.foreach(trackRepository.storeUnquantized(idea.id, _))
     }
 
     idea
   }
 
   def play(id: ID): Boolean = {
-    gridRepository.retrieve(id) match {
+    trackRepository.retrieve(id) match {
       case None => false
       case Some(data) =>
-        playback.use(_.play(data))
+        playback.use(_.playbackUnquantized(data))
         true
     }
   }

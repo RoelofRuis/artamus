@@ -1,25 +1,20 @@
 package interaction.terminal.device
 
-import application.model.Music
-import application.model.Music.{Event, MidiPitch, PositionsOccupied}
+import application.model.Unquantized
+import application.model.Unquantized.{Ticks, UnquantizedMidiNote}
 import application.ports.PlaybackDevice
 import interaction.terminal.Prompt
 import javax.inject.Inject
 
 class TerminalPlaybackDevice @Inject() (prompt: Prompt) extends PlaybackDevice {
 
-  override def play(grid: Music.Grid): Unit = {
-    val music = grid.root.elements.map {
-      case Event(None, PositionsOccupied(posOcc)) => s"[s*$posOcc]"
-      case Event(Some(MidiPitch(pitch)), PositionsOccupied(posOcc)) => s"[$pitch*$posOcc]"
+  override def playbackUnquantized(track: Unquantized.UnquantizedTrack): Unit = {
+    val music = track.elements.map {
+      case UnquantizedMidiNote(midiPitch: Int, start: Ticks, duration: Ticks) => s"[@${start.value}: $midiPitch for ${duration.value}]"
       case _ => ""
-    }.mkString("")
+    }.mkString("\n")
 
-    val output =
-      s"""Base note length: [${grid.baseNoteLength.value}]
-         |Divisions: [${grid.root.divisions.value}]
-         |Music: $music
-      """.stripMargin
+    val output = s"Ticks per quarter: ${track.ticksPerQuarter}\n$music"
 
     prompt.write(output)
   }

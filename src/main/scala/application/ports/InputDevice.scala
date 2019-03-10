@@ -1,11 +1,11 @@
 package application.ports
 
-import application.model.Music.Grid
+import application.model.Unquantized.UnquantizedTrack
 
 import scala.util.Try
 
 trait InputDevice {
 
-  def readData: Try[Grid]
+  def readUnquantized: Try[UnquantizedTrack]
 
 }

@@ -1,9 +1,9 @@
 package application.ports
 
-import application.model.Music.Grid
+import application.model.Unquantized.UnquantizedTrack
 
 trait PlaybackDevice {
 
-  def play(grid: Grid)
+  def playbackUnquantized(track: UnquantizedTrack)
 
 }

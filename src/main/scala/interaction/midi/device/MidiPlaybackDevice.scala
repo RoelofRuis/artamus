@@ -1,44 +1,28 @@
 package interaction.midi.device
 
+import application.model.Unquantized.{UnquantizedMidiNote, UnquantizedTrack}
 import application.ports.PlaybackDevice
-import application.model.Music.{Event, Grid, GridElement}
 import javax.inject.{Inject, Provider}
 import javax.sound.midi._
 
 class MidiPlaybackDevice @Inject() (sequencerProvider: Provider[Sequencer]) extends PlaybackDevice {
 
-  override def play(grid: Grid): Unit = {
-    val ticksPerQuarter = 96
+  override def playbackUnquantized(track: UnquantizedTrack): Unit = {
+    val sequence = new Sequence(Sequence.PPQ, track.ticksPerQuarter.value.toInt)
 
-    val sequence = new Sequence(Sequence.PPQ, ticksPerQuarter)
+    val midiTrack = sequence.createTrack()
 
-    val track = sequence.createTrack()
-
-    val subgrid = grid.root
-
-    val noteDuration = ticksPerQuarter / (subgrid.divisions.value / 4)
-
-    buildTrack(subgrid.elements.toList, noteDuration).foreach(track.add)
+    track.elements.foreach {
+      case UnquantizedMidiNote(midiPitch, start, duration) =>
+        midiTrack.add(new MidiEvent(new ShortMessage(ShortMessage.NOTE_ON, 0, midiPitch, 32), start.value))
+        midiTrack.add(new MidiEvent(new ShortMessage(ShortMessage.NOTE_OFF, 0, midiPitch, 0), start.value + duration.value))
+      case _ =>
+    }
 
     val sequencer = sequencerProvider.get
     sequencer.setSequence(sequence)
     sequencer.setTempoInBPM(120)
 
     sequencer.start()
-  }
-
-  private def buildTrack(elements: List[GridElement], noteDuration: Int, pos: Int = 0, acc: Seq[MidiEvent] = Seq()): Seq[MidiEvent] = {
-    elements match {
-      case Event(note, dur) :: tail =>
-        val notes = note match {
-          case Some(midiNote) => Seq(
-            new MidiEvent(new ShortMessage(ShortMessage.NOTE_ON, 0, midiNote.value, 32), pos * noteDuration),
-            new MidiEvent(new ShortMessage(ShortMessage.NOTE_OFF, 0, midiNote.value, 32), (pos + dur.value) * noteDuration)
-          )
-          case None => Seq()
-        }
-        buildTrack(tail, noteDuration, pos + dur.value, acc ++ notes)
-      case _ => acc
-    }
   }
 }
