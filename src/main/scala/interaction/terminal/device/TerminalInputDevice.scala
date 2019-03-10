@@ -11,32 +11,31 @@ class TerminalInputDevice @Inject() (prompt: Prompt) extends InputDevice {
 
   case class InvalidTerminalInputException private (msg: String) extends Exception
 
-  private final val TICKS_PER_QUARTER = 96
-
-  override def readUnquantized: Try[UnquantizedTrack] = {
-    Try(parseFromString(prompt.read("Input music data")))
+  override def readUnquantized(ticksPerQuarter: Int): Try[UnquantizedTrack] = {
+    Try(parseFromString(prompt.read("Input music data"), ticksPerQuarter))
   }
 
-  private def parseFromString(input: String): UnquantizedTrack = {
+  private def parseFromString(input: String, ticksPerQuarter: Int): UnquantizedTrack = {
     val elements = parseElements(
       input.trim.split(" ").toList,
+      ticksPerQuarter,
       0,
       Seq[UnquantizedMidiNote]()
     )
 
-    UnquantizedTrack(Ticks(TICKS_PER_QUARTER), elements)
+    UnquantizedTrack(Ticks(ticksPerQuarter), elements)
   }
 
-  private def parseElements(input: List[String], pos: Long, result: Seq[UnquantizedMidiNote]): Seq[UnquantizedMidiNote] = {
+  private def parseElements(input: List[String], ticksPerQuarter: Int, pos: Long, result: Seq[UnquantizedMidiNote]): Seq[UnquantizedMidiNote] = {
     input match {
       case head :: tail =>
         val parts = head.split("\\.")
         val dur = parts(1).toInt
-        val length = (TICKS_PER_QUARTER * (4.0 / dur)).toInt
+        val length = (ticksPerQuarter * (4.0 / dur)).toInt
         val note = parts(0)
 
-        if (note == "s") parseElements(tail, pos + length, result)
-        else parseElements(tail, pos + length, result :+ UnquantizedMidiNote(note.toInt, Ticks(pos), Ticks(length)))
+        if (note == "s") parseElements(tail, ticksPerQuarter, pos + length, result)
+        else parseElements(tail, ticksPerQuarter, pos + length, result :+ UnquantizedMidiNote(note.toInt, Ticks(pos), Ticks(length)))
       case Nil => result
     }
   }

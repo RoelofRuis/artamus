@@ -2,19 +2,19 @@ package interaction.midi.device
 
 import application.model.Unquantized.{Ticks, UnquantizedMidiNote, UnquantizedSymbol, UnquantizedTrack}
 import application.ports.InputDevice
-import javax.inject.Inject
+import javax.inject.{Inject, Provider}
 import javax.sound.midi._
 
 import scala.util.{Success, Try}
 
-class MidiInputDevice @Inject() (sequencer: Sequencer) extends InputDevice {
-
-  private final val TICKS_PER_QUARTER = 96
+class MidiInputDevice @Inject() (sequencerProvider: Provider[Sequencer]) extends InputDevice {
 
   // TODO: improve this crappy implementation
-  override def readUnquantized: Try[UnquantizedTrack] = {
+  override def readUnquantized(ticksPerQuarter: Int): Try[UnquantizedTrack] = {
 
-    val recordingSequence = new Sequence(Sequence.PPQ, TICKS_PER_QUARTER, 1)
+    val sequencer = sequencerProvider.get
+
+    val recordingSequence = new Sequence(Sequence.PPQ, ticksPerQuarter, 1)
 
     sequencer.setSequence(recordingSequence)
     val track = recordingSequence.getTracks()(0)
@@ -52,6 +52,6 @@ class MidiInputDevice @Inject() (sequencer: Sequencer) extends InputDevice {
       }
     }
 
-    Success(UnquantizedTrack(Ticks(TICKS_PER_QUARTER), symbols))
+    Success(UnquantizedTrack(Ticks(ticksPerQuarter), symbols))
   }
 }

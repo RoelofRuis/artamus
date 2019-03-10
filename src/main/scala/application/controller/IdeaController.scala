@@ -27,12 +27,15 @@ private[application] class IdeaControllerImpl @Inject() (
 
   def getAll: Vector[Idea] = ideaRepository.getAll
 
+  private final val TICKS_PER_QUARTER = 96
+
   // TODO: Try[Idea] as return value
   def create(title: String): Idea = {
     val idea = ideaRepository.add(title)
 
     input.use { device =>
-        device.readUnquantized.foreach(trackRepository.storeUnquantized(idea.id, _))
+        device.readUnquantized(TICKS_PER_QUARTER)
+          .foreach(trackRepository.storeUnquantized(idea.id, _))
     }
 
     idea
