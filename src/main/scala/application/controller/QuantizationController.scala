@@ -2,7 +2,7 @@ package application.controller
 
 import application.model.Idea
 import application.model.repository.TrackRepository
-import application.quantization.Quantizer
+import application.quantization.TrackQuantizer
 import javax.inject.Inject
 
 trait QuantizationController {
@@ -13,12 +13,12 @@ trait QuantizationController {
 
 case class QuantizationControllerImpl @Inject() (
   trackRepository: TrackRepository,
-  quantizer: Quantizer
+  trackQuantizer: TrackQuantizer
 ) extends QuantizationController {
 
   override def quantize(id: Idea.ID): Unit = {
     trackRepository.retrieveUnquantized(id).foreach { track =>
-      trackRepository.storeQuantized(id, quantizer.quantize(track))
+      trackRepository.storeQuantized(id, trackQuantizer.quantizeTrack(track))
     }
   }
 
