@@ -1,7 +1,7 @@
 package interaction.terminal.command
 
 import application.controller.IdeaController
-import application.model.{Idea, Quantized, Unquantized}
+import application.model.{Idea, Quantized, TrackType, Unquantized}
 import interaction.terminal.Prompt
 import javax.inject.Inject
 
@@ -13,28 +13,24 @@ class PlaybackIdeaCommand @Inject() (
 ) extends Command {
 
   val name = "playback"
-  val helpText = "Playback an idea"
-  override val argsHelp = Some("<id> <+|->")
+  val helpText = "Playback an idea, either the quantized or unquantized version"
+  override val argsHelp = Some("[id: Int] [quant: \"+|-\"]")
 
   def run(args: Array[String]): CommandResponse = {
-    Try(Idea.ID(args(0).toLong)).flatMap {
-      id => {
-        Try {
-          args(1) match {
-            case "+" => Quantized
-            case "-" => Unquantized
-            case _ => throw new Exception(s"Usage: + = Quantized, - = Unquantized")
-          }
-        }.map { trackType =>
-          if (controller.play(id, trackType)) continue
-          else display(s"No Part stored for idea with ID [$id]")
-        }
-      }
+    val res = for {
+      id <- Try(Idea.ID(args(0).toLong))
+      trackType <- Try(parseTrackType(args(1)))
+    } yield {
+      if (controller.play(id, trackType)) continue
+      else display(s"No Track stored for idea [$id $trackType]")
     }
-      .recover {
-        case _: NumberFormatException => display(s"Invalid number [${args(0)}]")
-        case _: ArrayIndexOutOfBoundsException => display(s"Argument missing, requires: $argsHelp")
-      }
-      .getOrElse(continue)
+
+    returnRecovered(res)
+  }
+
+  private def parseTrackType: String => TrackType = {
+    case "+" => Quantized
+    case "-" => Unquantized
+    case _ => throw new Exception(s"Usage: + = Quantized, - = Unquantized")
   }
 }

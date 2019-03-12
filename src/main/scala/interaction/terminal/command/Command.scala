@@ -1,5 +1,7 @@
 package interaction.terminal.command
 
+import scala.util.Try
+
 trait Command extends ResponseFactory {
 
   val name: String
@@ -7,5 +9,12 @@ trait Command extends ResponseFactory {
   val argsHelp: Option[String] = None
 
   def run(args: Array[String]): CommandResponse
+
+  protected def returnRecovered(response: Try[CommandResponse]): CommandResponse = {
+    response.recover {
+      case _: Exception => display(s"Invalid arguments, usage:\n$name ${argsHelp.get}")
+    }
+      .getOrElse(continue)
+  }
 
 }

@@ -8,8 +8,8 @@ case class CommandResponse(response: Option[String], action: ResponseAction)
 
 trait ResponseFactory {
 
-  def continue = CommandResponse(None, Continue)
-  def halt = CommandResponse(None, Halt)
-  def display(text: String) = CommandResponse(Some(text), Continue)
+  protected def continue = CommandResponse(None, Continue)
+  protected def halt = CommandResponse(None, Halt)
+  protected def display(text: String) = CommandResponse(Some(text), Continue)
 
 }

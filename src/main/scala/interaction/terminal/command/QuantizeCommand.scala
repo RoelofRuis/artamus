@@ -5,7 +5,7 @@ import application.model.Idea
 import interaction.terminal.Prompt
 import javax.inject.Inject
 
-import scala.util.Try
+import scala.util.{Success, Try}
 
 class QuantizeCommand @Inject() (
   prompt: Prompt,
@@ -14,18 +14,15 @@ class QuantizeCommand @Inject() (
 
   val name = "quant"
   val helpText = "Quantize an idea"
-  override val argsHelp = Some("<id>")
+  override val argsHelp = Some("[id: Int]")
 
   def run(args: Array[String]): CommandResponse = {
-    Try(Idea.ID(args(0).toLong)).map { id =>
-      controller.quantize(id)
-      display(s"Quantized the idea")
-    }
-      .recover {
-        case _: NumberFormatException => display(s"Invalid number [${args(0)}]")
-        case _: ArrayIndexOutOfBoundsException => display(s"No Idea ID given")
-      }
-      .getOrElse(continue)
+    val res: Try[CommandResponse] = for {
+      id <- Try(Idea.ID(args(0).toLong))
+      _ <- Success(controller.quantize(id))
+    } yield display(s"Quantized the idea")
+
+    returnRecovered(res)
   }
 
 }
