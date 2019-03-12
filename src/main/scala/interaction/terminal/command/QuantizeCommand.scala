@@ -14,14 +14,15 @@ class QuantizeCommand @Inject() (
 
   val name = "quant"
   val helpText = "Quantize an idea"
-  override val argsHelp = Some("[id: Int] [subdiv: Int = 1]")
+  override val argsHelp = Some("[id: Int] [subdiv: Int = 1] [errMul: Int = 10]")
 
   def run(args: Array[String]): CommandResponse = {
     val res: Try[CommandResponse] = for {
       id <- Try(Idea.ID(args(0).toLong))
-      subdiv <- Try(args(1).toInt) recover { case _ => 1 }
+      subdivision <- Try(args(1).toInt) recover { case _ => 1 }
+      gridErrorMultiplier <- Try(args(2).toInt) recover { case _ => 10 }
     } yield {
-      controller.quantize(id, subdiv)
+      controller.quantize(id, subdivision, gridErrorMultiplier)
       display(s"Quantized the idea")
     }
 
