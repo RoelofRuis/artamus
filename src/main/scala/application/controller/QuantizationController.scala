@@ -1,9 +1,9 @@
 package application.controller
 
-import application.model.{Idea, Quantized, Unquantized}
 import application.model.repository.TrackRepository
+import application.model.{Idea, Quantized, Unquantized}
+import application.quantization.DefaultQuantizer.Params
 import application.quantization.TrackSpacingQuantizer
-import application.quantization.TrackSpacingQuantizer.Params
 import javax.inject.Inject
 
 trait QuantizationController {
