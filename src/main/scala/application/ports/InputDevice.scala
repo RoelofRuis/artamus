@@ -1,6 +1,6 @@
 package application.ports
 
-import application.model.Unquantized.UnquantizedTrack
+import application.model.{Note, Track}
 
 import scala.util.Try
 
@@ -9,6 +9,6 @@ import scala.util.Try
   */
 trait InputDevice {
 
-  def readUnquantized(ticksPerQuarter: Int): Try[UnquantizedTrack]
+  def readUnquantized(ticksPerQuarter: Int): Try[Track[Note]]
 
 }

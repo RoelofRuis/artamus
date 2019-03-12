@@ -1,30 +1,45 @@
 package application.quantization
 
-import application.model.Quantized.{QuantizedSymbol, QuantizedTrack}
-import application.model.Unquantized.{UnquantizedMidiNote, UnquantizedTrack}
-import application.quantization.quantization.Onset
-import javax.inject.Inject
+import application.model.{Ticks, Track}
 
-case class TrackQuantizer @Inject() (quantizerFactory: GridQuantizerFactory) {
+case class TrackQuantizer() {
 
-  def quantizeTrack(track: UnquantizedTrack): QuantizedTrack = {
-    val onsets: List[Onset] = track.elements.map {
-      case UnquantizedMidiNote(_, start, _) => start.value
-    }.toList
+  def quantizeTrack[A](track: Track[A]): Track[A] = {
+    val onsets: List[Ticks] = track.elements.map { case (timespan, _) => timespan.start }.toList
 
-    val quantizer = quantizerFactory.createQuantizer(onsets)
+    val ticksPerQuarter = track.ticksPerQuarter.value / 2
 
-    println(s"Cell size: ${quantizer.cellSize}")
+    val spacing = bestSpacing(1, 100, onsets)
+    val scaleFactor = ticksPerQuarter / spacing
 
-    track.elements.foreach {
-      case UnquantizedMidiNote(note, start, duration) =>
-        val qStart = quantizer.quantize(start.value)
-        val qDur = quantizer.quantize(start.value + duration.value) - qStart
-        println(s"Quantized: [$start - $duration] -> [$qStart - $qDur]")
+    // (in.toDouble / cellSize).round * cellSize
+    val quantizer: Ticks => Ticks = o => Ticks((o.value.toDouble / ticksPerQuarter).round * ticksPerQuarter)
+
+    track.elements.foreach { case (timespan, _) =>
+      val s = timespan.start
+      val e = Ticks(timespan.start.value + timespan.duration.value)
+      println(s"Quantized [$s - $e] -> [${quantizer(s)} - ${quantizer(e)}]")
     }
 
-    // TODO: finish implementation, for now only prints
-    QuantizedTrack(Seq[QuantizedSymbol]())
+    track
   }
+
+  private def bestSpacing(min: Int, max: Int, gVec: Iterable[Ticks]): Int = {
+
+    def error(s: Int): Long = {
+      val pointError = gVec.map { g => math.pow(g.value - ((g.value.toDouble / s).round.toInt * s), 2).toInt }.sum
+      val gridError = (gVec.head.value + gVec.last.value) / s
+
+      pointError + gridError * 15
+    }
+
+    Range.inclusive(min, max).map(i => (i, error(i)))
+      .minBy { case (_, err) => err }
+      ._1
+  }
+
+
+
+
 
 }

@@ -1,7 +1,6 @@
 package interaction.terminal.device
 
-import application.model.Midi
-import application.model.Unquantized.{Ticks, UnquantizedMidiNote, UnquantizedTrack}
+import application.model.{Note, Ticks, TimeSpan, Track}
 import application.ports.InputDevice
 import interaction.terminal.Prompt
 import javax.inject.Inject
@@ -14,22 +13,22 @@ class TerminalInputDevice @Inject() (prompt: Prompt) extends InputDevice {
 
   private final val defaultVolume = 32
 
-  override def readUnquantized(ticksPerQuarter: Int): Try[UnquantizedTrack] = {
+  override def readUnquantized(ticksPerQuarter: Int): Try[Track[Note]] = {
     Try(parseFromString(prompt.read("Input music data"), ticksPerQuarter))
   }
 
-  private def parseFromString(input: String, ticksPerQuarter: Int): UnquantizedTrack = {
+  private def parseFromString(input: String, ticksPerQuarter: Int): Track[Note] = {
     val elements = parseElements(
       input.trim.split(" ").toList,
       ticksPerQuarter,
       0,
-      Seq[UnquantizedMidiNote]()
+      Seq[(TimeSpan, Note)]()
     )
 
-    UnquantizedTrack(Ticks(ticksPerQuarter), elements)
+    Track(Ticks(ticksPerQuarter), elements)
   }
 
-  private def parseElements(input: List[String], ticksPerQuarter: Int, pos: Long, result: Seq[UnquantizedMidiNote]): Seq[UnquantizedMidiNote] = {
+  private def parseElements(input: List[String], ticksPerQuarter: Int, pos: Long, result: Seq[(TimeSpan, Note)]): Seq[(TimeSpan, Note)] = {
     input match {
       case head :: tail =>
         val parts = head.split("\\.")
@@ -38,7 +37,7 @@ class TerminalInputDevice @Inject() (prompt: Prompt) extends InputDevice {
         val note = parts(0)
 
         if (note == "s") parseElements(tail, ticksPerQuarter, pos + length, result)
-        else parseElements(tail, ticksPerQuarter, pos + length, result :+ UnquantizedMidiNote(Midi.Note(note.toInt, defaultVolume), Ticks(pos), Ticks(length)))
+        else parseElements(tail, ticksPerQuarter, pos + length, result :+ (TimeSpan(Ticks(pos), Ticks(length)), Note(note.toInt, defaultVolume)))
       case Nil => result
     }
   }

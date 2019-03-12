@@ -3,14 +3,10 @@ package application
 import application.component.ServiceRegistry.Settings
 import application.component.{Application, ResourceManager, ServiceRegistry}
 import application.controller._
-import application.model.Idea
-import application.model.Quantized.QuantizedTrack
-import application.model.Unquantized.UnquantizedTrack
 import application.model.repository.{IdeaRepository, TrackRepository}
+import application.model.{Idea, Note, Track}
 import application.ports._
-import application.quantization.GridQuantizerFactory.GridQuantizationSettings
-import application.quantization.{GridQuantizerFactory, TrackQuantizer}
-import application.quantization.quantization.QuantizerFactory
+import application.quantization.TrackQuantizer
 import com.google.inject.Key
 import net.codingwell.scalaguice.ScalaPrivateModule
 
@@ -22,8 +18,7 @@ class CoreModule extends ScalaPrivateModule {
     requireBinding(new Key[Driver]() {})
 
     requireBinding(new Key[KeyValueStorage[Idea.ID, Idea]]() {})
-    requireBinding(new Key[KeyValueStorage[Idea.ID, UnquantizedTrack]]() {})
-    requireBinding(new Key[KeyValueStorage[Idea.ID, QuantizedTrack]]() {})
+    requireBinding(new Key[KeyValueStorage[Idea.ID, Track[Note]]]() {})
 
     bind[Settings[PlaybackDevice]].toInstance(Settings[PlaybackDevice](allowsMultiple = true))
     bind[ServiceRegistry[PlaybackDevice]].asEagerSingleton()
@@ -32,9 +27,6 @@ class CoreModule extends ScalaPrivateModule {
     bind[Settings[Logger]].toInstance(Settings[Logger](allowsMultiple = true))
     bind[ServiceRegistry[Logger]].asEagerSingleton()
 
-    bind[QuantizerFactory].toInstance(
-      new GridQuantizerFactory(GridQuantizationSettings(10, 100, GridQuantizerFactory.linearWindow(5)))
-    )
     bind[TrackQuantizer]
 
     bind[IdeaRepository].asEagerSingleton()

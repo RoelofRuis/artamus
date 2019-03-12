@@ -1,22 +1,15 @@
 package application.model.repository
 
-import application.model.Idea
-import application.model.Quantized.QuantizedTrack
-import application.model.Unquantized.UnquantizedTrack
+import application.model.{Idea, Note, Track}
 import application.ports.KeyValueStorage
 import javax.inject.Inject
 
 class TrackRepository @Inject() (
-  unquantizedStorage: KeyValueStorage[Idea.ID, UnquantizedTrack],
-  quantizedStorage: KeyValueStorage[Idea.ID, QuantizedTrack]
+  storage: KeyValueStorage[Idea.ID, Track[Note]],
 ) {
 
-  def storeUnquantized(idea: Idea.ID, track: UnquantizedTrack): Unit = unquantizedStorage.put(idea, track)
+  def store(idea: Idea.ID, track: Track[Note]): Unit = storage.put(idea, track)
 
-  def storeQuantized(idea: Idea.ID, track: QuantizedTrack): Unit = quantizedStorage.put(idea, track)
-
-  def retrieveUnquantized(idea: Idea.ID): Option[UnquantizedTrack] = unquantizedStorage.get(idea)
-
-  def retrieveQuantized(idea: Idea.ID): Option[QuantizedTrack] = quantizedStorage.get(idea)
+  def retrieve(idea: Idea.ID): Option[Track[Note]] = storage.get(idea)
 
 }

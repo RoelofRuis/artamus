@@ -1,7 +1,6 @@
 package interaction.midi.device
 
-import application.model.Midi
-import application.model.Unquantized._
+import application.model.{Note, Ticks, TimeSpan, Track => SymbolTrack}
 import application.ports.InputDevice
 import javax.inject.{Inject, Provider}
 import javax.sound.midi._
@@ -11,7 +10,7 @@ import scala.util.{Success, Try}
 class MidiInputDevice @Inject() (sequencerProvider: Provider[Sequencer]) extends InputDevice {
 
   // TODO: improve this crappy implementation
-  override def readUnquantized(ticksPerQuarter: Int): Try[UnquantizedTrack] = {
+  override def readUnquantized(ticksPerQuarter: Int): Try[SymbolTrack[Note]] = {
 
     val sequencer = sequencerProvider.get
 
@@ -32,7 +31,7 @@ class MidiInputDevice @Inject() (sequencerProvider: Provider[Sequencer]) extends
 
     var activeNotes = Map[Int, (Long, Int)]()
     var firstOnset: Option[Long] = None
-    var symbols = Seq[UnquantizedSymbol]()
+    var symbols = Seq[(TimeSpan, Note)]()
 
     Range(0, track.size).foreach { i =>
       val midiEvent = track.get(i)
@@ -45,7 +44,7 @@ class MidiInputDevice @Inject() (sequencerProvider: Provider[Sequencer]) extends
           activeNotes.get(msg.getData1) match {
             case Some((start, volume)) =>
               activeNotes - msg.getData1
-              symbols :+= UnquantizedMidiNote(Midi.Note(msg.getData1, volume), Ticks(start - firstOnset.get), Ticks(midiEvent.getTick - start))
+              symbols :+= (TimeSpan(Ticks(start - firstOnset.get), Ticks(midiEvent.getTick - start)), Note(msg.getData1, volume))
             case None =>
           }
 
@@ -53,6 +52,6 @@ class MidiInputDevice @Inject() (sequencerProvider: Provider[Sequencer]) extends
       }
     }
 
-    Success(UnquantizedTrack(Ticks(ticksPerQuarter), symbols))
+    Success(SymbolTrack(Ticks(ticksPerQuarter), symbols))
   }
 }

@@ -17,8 +17,9 @@ case class QuantizationControllerImpl @Inject() (
 ) extends QuantizationController {
 
   override def quantize(id: Idea.ID): Unit = {
-    trackRepository.retrieveUnquantized(id).foreach { track =>
-      trackRepository.storeQuantized(id, trackQuantizer.quantizeTrack(track))
+    trackRepository.retrieve(id).foreach { track =>
+      // TODO: make sure it stores the track as well
+      trackQuantizer.quantizeTrack(track)
     }
   }
 

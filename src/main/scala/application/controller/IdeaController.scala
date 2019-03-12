@@ -4,7 +4,7 @@ import application.component.ServiceRegistry
 import application.model.Idea
 import application.model.Idea.ID
 import application.model.repository.{IdeaRepository, TrackRepository}
-import application.ports.{InputDevice, Logger, PlaybackDevice}
+import application.ports.{InputDevice, PlaybackDevice}
 import javax.inject.Inject
 
 trait IdeaController {
@@ -34,14 +34,14 @@ private[application] class IdeaControllerImpl @Inject() (
 
     input.use { device =>
         device.readUnquantized(TICKS_PER_QUARTER)
-          .foreach(trackRepository.storeUnquantized(idea.id, _))
+          .foreach(trackRepository.store(idea.id, _))
     }
 
     idea
   }
 
   def play(id: ID): Boolean = {
-    trackRepository.retrieveUnquantized(id) match {
+    trackRepository.retrieve(id) match {
       case None => false
       case Some(data) =>
         playback.use(_.playbackUnquantized(data))
