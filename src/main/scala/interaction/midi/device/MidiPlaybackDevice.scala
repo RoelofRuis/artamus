@@ -8,7 +8,7 @@ import javax.sound.midi._
 
 class MidiPlaybackDevice @Inject() (sequencerProvider: Provider[Sequencer]) extends PlaybackDevice {
 
-  override def playbackUnquantized(track: SymbolTrack[Note]): Unit = {
+  override def playback(track: SymbolTrack[Note]): Unit = {
     val sequence = new Sequence(Sequence.PPQ, track.ticksPerQuarter.value.toInt)
 
     val midiTrack = sequence.createTrack()

@@ -1,7 +1,7 @@
 package application.controller
 
 import application.component.ServiceRegistry
-import application.model.Idea
+import application.model.{Idea, TrackType, Unquantized}
 import application.model.Idea.ID
 import application.model.repository.{IdeaRepository, TrackRepository}
 import application.ports.{InputDevice, PlaybackDevice}
@@ -13,7 +13,7 @@ trait IdeaController {
 
   def create(title: String): Idea
 
-  def play(id: ID): Boolean
+  def play(id: ID, trackType: TrackType): Boolean
 
 }
 
@@ -33,18 +33,18 @@ private[application] class IdeaControllerImpl @Inject() (
     val idea = ideaRepository.add(title)
 
     input.use { device =>
-        device.readUnquantized(TICKS_PER_QUARTER)
-          .foreach(trackRepository.store(idea.id, _))
+        device.read(TICKS_PER_QUARTER)
+          .foreach(trackRepository.store(idea.id, Unquantized, _))
     }
 
     idea
   }
 
-  def play(id: ID): Boolean = {
-    trackRepository.retrieve(id) match {
+  def play(id: ID, trackType: TrackType): Boolean = {
+    trackRepository.retrieve(id, trackType) match {
       case None => false
       case Some(data) =>
-        playback.use(_.playbackUnquantized(data))
+        playback.use(_.playback(data))
         true
     }
   }

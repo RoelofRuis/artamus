@@ -25,4 +25,8 @@ package object model {
     }
   }
 
+  sealed trait TrackType
+  case object Unquantized extends TrackType
+  case object Quantized extends TrackType
+
 }

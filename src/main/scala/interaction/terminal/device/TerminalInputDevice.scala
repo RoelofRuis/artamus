@@ -13,7 +13,7 @@ class TerminalInputDevice @Inject() (prompt: Prompt) extends InputDevice {
 
   private final val defaultVolume = 32
 
-  override def readUnquantized(ticksPerQuarter: Int): Try[Track[Note]] = {
+  override def read(ticksPerQuarter: Int): Try[Track[Note]] = {
     Try(parseFromString(prompt.read("Input music data"), ticksPerQuarter))
   }
 

@@ -9,6 +9,6 @@ import scala.util.Try
   */
 trait InputDevice {
 
-  def readUnquantized(ticksPerQuarter: Int): Try[Track[Note]]
+  def read(ticksPerQuarter: Int): Try[Track[Note]]
 
 }

@@ -4,7 +4,7 @@ import application.component.ServiceRegistry.Settings
 import application.component.{Application, ResourceManager, ServiceRegistry}
 import application.controller._
 import application.model.repository.{IdeaRepository, TrackRepository}
-import application.model.{Idea, Note, Track}
+import application.model.{Idea, Note, Track, TrackType}
 import application.ports._
 import application.quantization.TrackSpacingQuantizer
 import com.google.inject.Key
@@ -18,7 +18,7 @@ class CoreModule extends ScalaPrivateModule {
     requireBinding(new Key[Driver]() {})
 
     requireBinding(new Key[KeyValueStorage[Idea.ID, Idea]]() {})
-    requireBinding(new Key[KeyValueStorage[Idea.ID, Track[Note]]]() {})
+    requireBinding(new Key[KeyValueStorage[(Idea.ID, TrackType), Track[Note]]]() {})
 
     bind[Settings[PlaybackDevice]].toInstance(Settings[PlaybackDevice](allowsMultiple = true))
     bind[ServiceRegistry[PlaybackDevice]].asEagerSingleton()

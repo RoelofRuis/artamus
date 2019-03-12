@@ -7,6 +7,6 @@ import application.model.{Note, Track}
   */
 trait PlaybackDevice {
 
-  def playbackUnquantized(track: Track[Note])
+  def playback(track: Track[Note])
 
 }
