@@ -8,7 +8,7 @@ import javax.inject.Inject
 
 trait QuantizationController {
 
-  def quantize(id: Idea.ID): Unit
+  def quantize(id: Idea.ID, subdivision: Int): Unit
 
 }
 
@@ -17,13 +17,15 @@ case class QuantizationControllerImpl @Inject() (
   spacingQuantizer: TrackSpacingQuantizer
 ) extends QuantizationController {
 
-  override def quantize(id: Idea.ID): Unit = {
+  override def quantize(id: Idea.ID, subdivision: Int): Unit = {
+    val quantizationParams = Params(10, 100, 10, subdivision)
+
     trackRepository.retrieve(id,Unquantized)
       .foreach { track =>
         trackRepository.store(
           id,
           Quantized,
-          spacingQuantizer.quantize(track,Params(minGrid = 10, maxGrid =  100, gridErrorWeight =  10))
+          spacingQuantizer.quantize(track,quantizationParams)
         )
       }
   }

@@ -7,12 +7,12 @@ import javax.inject.Inject
 
 import scala.util.Try
 
-class PlaybackIdeaCommand @Inject() (
+class PlayIdeaCommand @Inject() (
   prompt: Prompt,
   controller: IdeaController,
 ) extends Command {
 
-  val name = "playback"
+  val name = "play"
   val helpText = "Playback an idea, either the quantized or unquantized version"
   override val argsHelp = Some("[id: Int] [quant: \"+|-\"]")
 

@@ -1,13 +1,14 @@
 package application.quantization
 
-import application.model.{Ticks, Track}
+import application.component.ServiceRegistry
+import application.model._
+import application.ports.Logger
 import application.quantization.DefaultQuantizer.Params
+import javax.inject.Inject
 
-case class DefaultQuantizer() extends TrackSpacingQuantizer {
+case class DefaultQuantizer @Inject() (logger: ServiceRegistry[Logger]) extends TrackSpacingQuantizer {
 
   def quantize[A](track: Track[A], params: Params): Track[A] = {
-    val ticksPerQuarter = track.ticksPerQuarter.value
-
     val spacing = detectSpacing(
       params.minGrid,
       params.maxGrid,
@@ -15,13 +16,14 @@ case class DefaultQuantizer() extends TrackSpacingQuantizer {
       track.onsets
     )
 
-    val quantizer: Ticks => Ticks = { o =>
-      Ticks(
-        (o.value.toDouble / spacing).round * ticksPerQuarter
-      )
+    logger.use(_.debug(s"Quantizer: |g / $spacing|"))
+
+    val quantizer: Quantizer = {
+      case (point, Start) => Ticks((point.value.toDouble / spacing).round)
+      case (point, End) => Ticks((point.value.toDouble / spacing).round.max(1))
     }
 
-    track.quantize(quantizer)
+    track.quantize(Ticks(params.quarterSubdivision), quantizer)
   }
 
   private def detectSpacing(min: Int, max: Int, gridErrorWeight: Int, gVec: Iterable[Ticks]): Int = {
@@ -42,10 +44,17 @@ case class DefaultQuantizer() extends TrackSpacingQuantizer {
 
 object DefaultQuantizer {
 
+  /**
+    * @param minGrid            The smallest grid to consider
+    * @param maxGrid            The largest grid to consider
+    * @param gridErrorWeight    Multiplier which increases the error for many grid lines
+    * @param quarterSubdivision The note value to equal whatever spacing the grid picked up
+    */
   case class Params(
     minGrid: Int,
     maxGrid: Int,
-    gridErrorWeight: Int
+    gridErrorWeight: Int,
+    quarterSubdivision: Int
   )
 
 }
