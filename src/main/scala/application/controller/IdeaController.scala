@@ -26,7 +26,7 @@ private[application] class IdeaControllerImpl @Inject() (
 
   def getAll: Vector[Idea] = ideaRepository.getAll
 
-  private final val TICKS_PER_QUARTER = 96
+  private final val TICKS_PER_QUARTER = 100
 
   // TODO: Try[Idea] as return value
   def create(title: String): Idea = {

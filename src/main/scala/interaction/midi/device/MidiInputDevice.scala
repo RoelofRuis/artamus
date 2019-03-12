@@ -23,7 +23,9 @@ class MidiInputDevice @Inject() (sequencerProvider: Provider[Sequencer]) extends
     sequencer.setTickPosition(0)
     sequencer.startRecording()
 
-    val t: Thread = new Thread(() => Thread.sleep(5000))
+    val recordForSec = 10
+
+    val t: Thread = new Thread(() => Thread.sleep(recordForSec * 1000))
     t.start()
     t.join()
 

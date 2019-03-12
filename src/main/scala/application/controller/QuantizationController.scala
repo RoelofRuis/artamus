@@ -2,7 +2,8 @@ package application.controller
 
 import application.model.Idea
 import application.model.repository.TrackRepository
-import application.quantization.TrackQuantizer
+import application.quantization.TrackSpacingQuantizer
+import application.quantization.TrackSpacingQuantizer.Params
 import javax.inject.Inject
 
 trait QuantizationController {
@@ -13,13 +14,13 @@ trait QuantizationController {
 
 case class QuantizationControllerImpl @Inject() (
   trackRepository: TrackRepository,
-  trackQuantizer: TrackQuantizer
+  spacingQuantizer: TrackSpacingQuantizer
 ) extends QuantizationController {
 
   override def quantize(id: Idea.ID): Unit = {
     trackRepository.retrieve(id).foreach { track =>
       // TODO: make sure it stores the track as well
-      trackQuantizer.quantizeTrack(track)
+      spacingQuantizer.quantize(track, Params(minGrid = 10, maxGrid =  100, gridErrorWeight =  10))
     }
   }
 
