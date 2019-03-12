@@ -27,7 +27,7 @@ class CoreModule extends ScalaPrivateModule {
     bind[Settings[Logger]].toInstance(Settings[Logger](allowsMultiple = true))
     bind[ServiceRegistry[Logger]].asEagerSingleton()
 
-    bind[TrackSpacingQuantizer].to[DefaultQuantizer]
+    bind[TrackSpacingQuantizer].toInstance(new DefaultQuantizer())
 
     bind[IdeaRepository].asEagerSingleton()
     bind[TrackRepository].asEagerSingleton()

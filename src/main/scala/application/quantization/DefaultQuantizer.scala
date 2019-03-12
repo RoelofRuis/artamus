@@ -1,12 +1,9 @@
 package application.quantization
 
-import application.component.ServiceRegistry
 import application.model._
-import application.ports.Logger
 import application.quantization.DefaultQuantizer.Params
-import javax.inject.Inject
 
-case class DefaultQuantizer @Inject() (logger: ServiceRegistry[Logger]) extends TrackSpacingQuantizer {
+case class DefaultQuantizer() extends TrackSpacingQuantizer {
 
   def quantize[A](track: Track[A], params: Params): Track[A] = {
     val spacing = detectSpacing(
@@ -15,8 +12,6 @@ case class DefaultQuantizer @Inject() (logger: ServiceRegistry[Logger]) extends 
       params.gridErrorWeight,
       track.onsets
     )
-
-    logger.use(_.debug(s"Quantizer: |g / $spacing|"))
 
     val quantizer: Quantizer = {
       case (point, Start) => Ticks((point.value.toDouble / spacing).round)
