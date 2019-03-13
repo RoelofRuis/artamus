@@ -25,6 +25,7 @@ package object model {
     }
   }
 
+  // Might be solved more elegantly using scalaz or other type library
   sealed trait TrackType
   case object Unquantized extends TrackType
   case object Quantized extends TrackType
@@ -34,5 +35,9 @@ package object model {
   case object End extends EventBoundary
 
   type Quantizer = (Ticks, EventBoundary) => Ticks
+
+  case class Measure[A](baseNote: Int, baseNotesPerMeasure: Int) {
+    // TODO: implement
+  }
 
 }
