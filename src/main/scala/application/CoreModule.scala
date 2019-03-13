@@ -6,7 +6,7 @@ import application.controller._
 import application.model.repository.{IdeaRepository, TrackRepository}
 import application.model.{Idea, Note, Track, TrackType}
 import application.ports._
-import application.quantization.{DefaultQuantizer, TrackSpacingQuantizer}
+import application.quantization.{DefaultQuantizer, TrackQuantizer}
 import com.google.inject.Key
 import net.codingwell.scalaguice.ScalaPrivateModule
 
@@ -27,7 +27,7 @@ class CoreModule extends ScalaPrivateModule {
     bind[Settings[Logger]].toInstance(Settings[Logger](allowsMultiple = true))
     bind[ServiceRegistry[Logger]].asEagerSingleton()
 
-    bind[TrackSpacingQuantizer].toInstance(new DefaultQuantizer())
+    bind[TrackQuantizer].toInstance(DefaultQuantizer())
 
     bind[IdeaRepository].asEagerSingleton()
     bind[TrackRepository].asEagerSingleton()

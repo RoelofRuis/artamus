@@ -1,9 +1,9 @@
 package application.quantization
 
 import application.model._
-import application.quantization.DefaultQuantizer.Params
+import application.quantization.TrackQuantizer.Params
 
-case class DefaultQuantizer() extends TrackSpacingQuantizer {
+case class DefaultQuantizer() extends TrackQuantizer {
 
   def quantize[A](track: Track[A], params: Params): Track[A] = {
     val spacing = detectSpacing(
@@ -35,21 +35,4 @@ case class DefaultQuantizer() extends TrackSpacingQuantizer {
       .minBy { case (_, err) => err }
       ._1
   }
-}
-
-object DefaultQuantizer {
-
-  /**
-    * @param minGrid            The smallest grid to consider
-    * @param maxGrid            The largest grid to consider
-    * @param gridErrorWeight    Multiplier which increases the error for many grid lines
-    * @param quarterSubdivision The note value to equal whatever spacing the grid picked up
-    */
-  case class Params(
-    minGrid: Int,
-    maxGrid: Int,
-    gridErrorWeight: Int,
-    quarterSubdivision: Int
-  )
-
 }
