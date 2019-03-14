@@ -2,7 +2,10 @@ package application.model
 
 import application.model.Track.{End, Quantizer, Start}
 
-case class Track(ticksPerQuarter: Ticks, elements: Iterable[(TimeSpan, Note)]) {
+case class Track(
+  ticksPerQuarter: Ticks,
+  elements: Iterable[(TimeSpan, Note)]
+) {
 
   def onsets: Iterable[Ticks] = elements.map { case (timeSpan, _) => timeSpan.start }
 
@@ -19,6 +22,8 @@ case class Track(ticksPerQuarter: Ticks, elements: Iterable[(TimeSpan, Note)]) {
 }
 
 object Track {
+
+  type Track_ID = ID[Track]
 
   // Might be solved more elegantly using scalaz or other type library
   sealed trait TrackType

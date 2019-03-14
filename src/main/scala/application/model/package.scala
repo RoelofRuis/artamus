@@ -1,8 +1,10 @@
 package application
 
+import scala.reflect.ClassTag
+
 package object model {
 
-  case class ID(id: Long) extends AnyVal
+  case class ID[C: ClassTag](id: Long)
 
   case class Ticks(value: Long) extends AnyVal
 
