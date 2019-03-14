@@ -1,7 +1,7 @@
 package storage
 
 import application.model.Idea.Idea_ID
-import application.model.Track.TrackType
+import application.model.Track.Track_ID
 import application.model._
 import application.ports.KeyValueStorage
 import net.codingwell.scalaguice.ScalaModule
@@ -11,7 +11,7 @@ class StorageModule extends ScalaModule {
 
   override def configure(): Unit = {
     bind[KeyValueStorage[Idea_ID, Idea]].to[InMemoryKeyValueStorage[Idea_ID, Idea]].asEagerSingleton()
-    bind[KeyValueStorage[(Idea_ID, TrackType), Track]].to[InMemoryKeyValueStorage[(Idea_ID, TrackType), Track]].asEagerSingleton()
+    bind[KeyValueStorage[Track_ID, Track]].to[InMemoryKeyValueStorage[Track_ID, Track]].asEagerSingleton()
   }
 
 }

@@ -8,8 +8,7 @@ import javax.inject.Inject
 
 import scala.util.Try
 
-// TODO: rename to 'PlayTrack'
-class PlayIdeaCommand @Inject() (
+class PlayTrackCommand @Inject() (
   prompt: Prompt,
   controller: TrackController,
 ) extends Command {
@@ -20,10 +19,10 @@ class PlayIdeaCommand @Inject() (
 
   def run(args: Array[String]): CommandResponse = {
     val res = for {
-      id <- Try(ID[Idea](args(0).toLong))
+      id <- Try(ID[Track](args(0).toLong))
       trackType <- Try(parseTrackType(args(1)))
     } yield {
-      if (controller.play(id, trackType)) continue
+      if (controller.play(id)) continue
       else display(s"No Track stored for idea [$id $trackType]")
     }
 

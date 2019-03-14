@@ -1,6 +1,7 @@
 package interaction.midi.device
 
-import application.model.{Note, Ticks, TimeSpan, Track => SymbolTrack}
+import application.model.Track.TrackElements
+import application.model.{Note, Ticks, TimeSpan}
 import application.ports.InputDevice
 import javax.inject.{Inject, Provider}
 import javax.sound.midi._
@@ -10,7 +11,7 @@ import scala.util.{Success, Try}
 class MidiInputDevice @Inject() (sequencerProvider: Provider[Sequencer]) extends InputDevice {
 
   // TODO: improve this crappy implementation
-  override def read(ticksPerQuarter: Int): Try[SymbolTrack] = {
+  override def read(ticksPerQuarter: Int): Try[TrackElements] = {
 
     val sequencer = sequencerProvider.get
 
@@ -54,6 +55,6 @@ class MidiInputDevice @Inject() (sequencerProvider: Provider[Sequencer]) extends
       }
     }
 
-    Success(SymbolTrack(Ticks(ticksPerQuarter), symbols))
+    Success(symbols)
   }
 }

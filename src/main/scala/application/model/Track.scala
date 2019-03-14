@@ -1,27 +1,23 @@
 package application.model
 
-import application.model.Track.{End, Quantizer, Start}
+import application.model.Idea.Idea_ID
+import application.model.Track._
 
 case class Track(
+  id: Track_ID,
+  ideaId: Idea_ID,
+  trackType: TrackType,
   ticksPerQuarter: Ticks,
-  elements: Iterable[(TimeSpan, Note)]
+  elements: TrackElements
 ) {
 
   def onsets: Iterable[Ticks] = elements.map { case (timeSpan, _) => timeSpan.start }
 
-  // TODO: Might not belong here, how to construct new ID?
-  def quantize(targetTicksPerQuarter: Ticks, q: Quantizer): Track = {
-    val qElements = elements.map { case (timeSpan, a) =>
-      val qStart = q(timeSpan.start, Start)
-      val qDur = Ticks(q(timeSpan.end, End).value - qStart.value)
-      (TimeSpan(qStart, qDur), a)
-    }
-
-    Track(targetTicksPerQuarter, qElements)
-  }
 }
 
 object Track {
+
+  type TrackElements = Iterable[(TimeSpan, Note)]
 
   type Track_ID = ID[Track]
 
@@ -33,7 +29,5 @@ object Track {
   sealed trait EventBoundary
   case object Start extends EventBoundary
   case object End extends EventBoundary
-
-  type Quantizer = (Ticks, EventBoundary) => Ticks
 
 }

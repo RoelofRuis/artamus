@@ -1,12 +1,12 @@
 package application.quantization
 
-import application.model.Track.{End, Quantizer, Start}
+import application.model.Track.{End, Start, TrackElements}
 import application.model._
-import application.quantization.TrackQuantizer.Params
+import application.quantization.TrackQuantizer.{Params, Quantizer}
 
 case class DefaultQuantizer() extends TrackQuantizer {
 
-  def quantize(track: Track, params: Params): Track = {
+  def quantize(track: Track, params: Params): (Ticks, TrackElements) = {
     val spacing = detectSpacing(
       params.minGrid,
       params.maxGrid,
@@ -19,7 +19,13 @@ case class DefaultQuantizer() extends TrackQuantizer {
       case (point, End) => Ticks((point.value.toDouble / spacing).round.max(1))
     }
 
-    track.quantize(Ticks(params.quarterSubdivision), quantizer)
+    val qElements = track.elements.map { case (timeSpan, a) =>
+      val qStart = quantizer(timeSpan.start, Start)
+      val qDur = Ticks(quantizer(timeSpan.end, End).value - qStart.value)
+      (TimeSpan(qStart, qDur), a)
+    }
+
+    (Ticks(params.ticksPerQuarter), qElements)
   }
 
   private def detectSpacing(min: Int, max: Int, gridErrorWeight: Int, gVec: Iterable[Ticks]): Int = {

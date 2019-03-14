@@ -2,8 +2,9 @@ package application.controller
 
 import application.component.ServiceRegistry
 import application.model.Idea.Idea_ID
-import application.model.Track.{Quantized, TrackType, Unquantized}
+import application.model.Track.{Track_ID, Unquantized}
 import application.model.repository.TrackRepository
+import application.model.{Ticks, Track}
 import application.ports.{InputDevice, PlaybackDevice}
 import application.quantization.TrackQuantizer
 import application.quantization.TrackQuantizer.Params
@@ -11,36 +12,43 @@ import javax.inject.Inject
 
 trait TrackController {
 
-  def record(ideaID: Idea_ID): Unit //ID[Track.type]
+  def record(ideaID: Idea_ID): Option[Track]
 
-  def stopRecording(): Unit
+  def stopRecording(): Unit // TODO: Determine return type
 
-  def play(idea: Idea_ID, trackType: TrackType): Boolean
+  def play(track: Track_ID): Boolean
 
-  def quantize(ideaID: Idea_ID, subdivision: Int, gridErrorMultiplier: Int): Unit
+  def quantize(track: Track_ID, subdivision: Int, gridErrorMultiplier: Int): Option[Track]
 
 }
 
 class TrackControllerImpl @Inject() (
   trackRepository: TrackRepository,
-  spacingQuantizer: TrackQuantizer,
+  quantizer: TrackQuantizer,
   input: ServiceRegistry[InputDevice],
   playback: ServiceRegistry[PlaybackDevice],
 ) extends TrackController {
 
   private final val TICKS_PER_QUARTER = 96
 
-  def record(ideaID: Idea_ID): Unit = {
+  def record(ideaID: Idea_ID): Option[Track] = {
+    // TODO: clean up this hack without using the var (or move to ServiceRegistry)
+    var res: Option[Track] = None
+
     input.use { device =>
-      device.read(TICKS_PER_QUARTER)
-        .foreach(trackRepository.store(ideaID, Unquantized, _))
+      res =
+        device.read(TICKS_PER_QUARTER)
+          .map(trackRepository.add(ideaID, Unquantized, Ticks(TICKS_PER_QUARTER), _))
+          .toOption
     }
+
+    res
   }
 
   def stopRecording(): Unit = ???
 
-  def play(ideaID: Idea_ID, trackType: TrackType): Boolean = {
-    trackRepository.retrieve(ideaID, trackType) match {
+  def play(id: Track_ID): Boolean = {
+    trackRepository.get(id) match {
       case None => false
       case Some(data) =>
         playback.use(_.playback(data))
@@ -48,15 +56,18 @@ class TrackControllerImpl @Inject() (
     }
   }
 
-  override def quantize(ideaID: Idea_ID, subdivision: Int, gridErrorMultiplier: Int): Unit = {
+  override def quantize(id: Track_ID, subdivision: Int, gridErrorMultiplier: Int): Option[Track] = {
     val quantizationParams = Params(6, 192, gridErrorMultiplier, subdivision)
 
-    trackRepository.retrieve(ideaID, Unquantized)
-      .foreach { track =>
-        trackRepository.store(
-          ideaID,
-          Quantized,
-          spacingQuantizer.quantize(track,quantizationParams)
+    trackRepository.get(id)
+      .map { track =>
+        val (newTicksPerQuarter, newElements) = quantizer.quantize(track, quantizationParams)
+
+        trackRepository.add(
+          track.ideaId,
+          track.trackType,
+          newTicksPerQuarter,
+          newElements
         )
       }
   }

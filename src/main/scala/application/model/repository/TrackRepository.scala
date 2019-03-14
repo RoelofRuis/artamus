@@ -1,15 +1,27 @@
 package application.model.repository
 
 import application.model.Idea.Idea_ID
-import application.model.Track.TrackType
+import application.model.Track.{TrackElements, TrackType, Track_ID}
 import application.model._
 import application.ports.KeyValueStorage
 import javax.inject.Inject
 
-class TrackRepository @Inject() (storage: KeyValueStorage[(Idea_ID, TrackType), Track]) {
+class TrackRepository @Inject() (storage: KeyValueStorage[Track_ID, Track]) {
 
-  def store(idea: Idea_ID, trackType: TrackType, track: Track): Unit = storage.put((idea, trackType), track)
+  def add(
+    ideaId: Idea_ID,
+    trackType: TrackType,
+    ticksPerQuarter: Ticks,
+    elements: TrackElements
+  ): Track = {
+    val id = ID[Track](storage.nextId)
+    val track = Track(id, ideaId, trackType, ticksPerQuarter, elements)
 
-  def retrieve(idea: Idea_ID, trackType: TrackType): Option[Track] = storage.get((idea, trackType))
+    storage.put(id, track)
+
+    track
+  }
+
+  def get(id: Track_ID): Option[Track] = storage.get(id)
 
 }

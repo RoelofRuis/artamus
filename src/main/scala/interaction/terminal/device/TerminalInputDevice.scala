@@ -1,6 +1,7 @@
 package interaction.terminal.device
 
-import application.model.{Note, Ticks, TimeSpan, Track}
+import application.model.Track.TrackElements
+import application.model.{Note, Ticks, TimeSpan}
 import application.ports.InputDevice
 import interaction.terminal.Prompt
 import javax.inject.Inject
@@ -13,19 +14,17 @@ class TerminalInputDevice @Inject() (prompt: Prompt) extends InputDevice {
 
   private final val defaultVolume = 32
 
-  override def read(ticksPerQuarter: Int): Try[Track] = {
-    Try(parseFromString(prompt.read("Input music data"), ticksPerQuarter))
-  }
+  override def read(ticksPerQuarter: Int): Try[TrackElements] = {
+    Try {
+      val input = prompt.read("Input music data")
 
-  private def parseFromString(input: String, ticksPerQuarter: Int): Track = {
-    val elements = parseElements(
-      input.trim.split(" ").toList,
-      ticksPerQuarter,
-      0,
-      Seq[(TimeSpan, Note)]()
-    )
-
-    Track(Ticks(ticksPerQuarter), elements)
+      parseElements(
+        input.trim.split(" ").toList,
+        ticksPerQuarter,
+        0,
+        Seq[(TimeSpan, Note)]()
+      )
+    }
   }
 
   private def parseElements(input: List[String], ticksPerQuarter: Int, pos: Long, result: Seq[(TimeSpan, Note)]): Seq[(TimeSpan, Note)] = {
