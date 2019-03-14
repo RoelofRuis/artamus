@@ -36,6 +36,7 @@ class CoreModule extends ScalaPrivateModule {
 
     bind[ResourceController].to[ResourceControllerImpl].asEagerSingleton()
     bind[IdeaController].to[IdeaControllerImpl].asEagerSingleton()
+    bind[TrackController].to[TrackControllerImpl].asEagerSingleton()
     bind[ServiceController[Logger]].to[ServiceControllerImpl[Logger]].asEagerSingleton()
     bind[ServiceController[PlaybackDevice]].to[ServiceControllerImpl[PlaybackDevice]].asEagerSingleton()
     bind[ServiceController[InputDevice]].to[ServiceControllerImpl[InputDevice]]asEagerSingleton()
@@ -46,6 +47,7 @@ class CoreModule extends ScalaPrivateModule {
     expose[ServiceController[InputDevice]]
     expose[ServiceController[PlaybackDevice]]
     expose[IdeaController]
+    expose[TrackController]
     expose[ResourceController]
   }
 

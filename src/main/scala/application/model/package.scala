@@ -2,7 +2,7 @@ package application
 
 package object model {
 
-  case class ID[A](id: Long)
+  case class ID(id: Long) extends AnyVal
 
   case class Ticks(value: Long) extends AnyVal
 

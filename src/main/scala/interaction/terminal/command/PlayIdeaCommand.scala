@@ -19,7 +19,7 @@ class PlayIdeaCommand @Inject() (
 
   def run(args: Array[String]): CommandResponse = {
     val res = for {
-      id <- Try(ID[Idea.type](args(0).toLong))
+      id <- Try(ID(args(0).toLong))
       trackType <- Try(parseTrackType(args(1)))
     } yield {
       if (controller.play(id, trackType)) continue
