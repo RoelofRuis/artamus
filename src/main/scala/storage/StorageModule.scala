@@ -1,5 +1,6 @@
 package storage
 
+import application.model.Idea.Idea_ID
 import application.model.Track.TrackType
 import application.model._
 import application.ports.KeyValueStorage
@@ -9,8 +10,8 @@ import storage.memory.InMemoryKeyValueStorage
 class StorageModule extends ScalaModule {
 
   override def configure(): Unit = {
-    bind[KeyValueStorage[ID[Idea.type], Idea]].to[InMemoryKeyValueStorage[ID[Idea.type], Idea]].asEagerSingleton()
-    bind[KeyValueStorage[(ID[Idea.type], TrackType), Track[Note]]].to[InMemoryKeyValueStorage[(ID[Idea.type], TrackType), Track[Note]]].asEagerSingleton()
+    bind[KeyValueStorage[Idea_ID, Idea]].to[InMemoryKeyValueStorage[Idea_ID, Idea]].asEagerSingleton()
+    bind[KeyValueStorage[(Idea_ID, TrackType), Track[Note]]].to[InMemoryKeyValueStorage[(Idea_ID, TrackType), Track[Note]]].asEagerSingleton()
   }
 
 }

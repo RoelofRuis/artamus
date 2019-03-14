@@ -3,6 +3,7 @@ package application
 import application.component.ServiceRegistry.Settings
 import application.component.{Application, ResourceManager, ServiceRegistry}
 import application.controller._
+import application.model.Idea.Idea_ID
 import application.model.Track.TrackType
 import application.model.repository.{IdeaRepository, TrackRepository}
 import application.model._
@@ -18,8 +19,8 @@ class CoreModule extends ScalaPrivateModule {
     bind[ResourceManager].asEagerSingleton()
     requireBinding(new Key[Driver]() {})
 
-    requireBinding(new Key[KeyValueStorage[ID[Idea.type], Idea]]() {})
-    requireBinding(new Key[KeyValueStorage[(ID[Idea.type], TrackType), Track[Note]]]() {})
+    requireBinding(new Key[KeyValueStorage[Idea_ID, Idea]]() {})
+    requireBinding(new Key[KeyValueStorage[(Idea_ID, TrackType), Track[Note]]]() {})
 
     bind[Settings[PlaybackDevice]].toInstance(Settings[PlaybackDevice](allowsMultiple = true))
     bind[ServiceRegistry[PlaybackDevice]].asEagerSingleton()
