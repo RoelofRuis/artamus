@@ -1,13 +1,11 @@
 package application.model
 
-import application.model.Idea.ID
+import application.model.Idea.Idea_ID
 
-case class Idea(id: ID, title: String)
+case class Idea(id: Idea_ID, title: String)
 
-object Idea {
+case object Idea {
 
-  case class ID(id: Long) extends AnyVal {
-    override def toString: String = id.toString
-  }
+  type Idea_ID = ID[Idea.type]
 
 }

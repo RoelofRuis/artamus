@@ -1,5 +1,6 @@
 package application.quantization
 
+import application.model.Track.{End, Quantizer, Start}
 import application.model._
 import application.quantization.TrackQuantizer.Params
 

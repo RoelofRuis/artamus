@@ -1,12 +1,13 @@
 package interaction.terminal.command
 
-import application.controller.IdeaController
+import application.controller.{IdeaController, TrackController}
 import interaction.terminal.Prompt
 import javax.inject.Inject
 
 class CreateIdeaCommand @Inject() (
   prompt: Prompt,
-  controller: IdeaController
+  ideaController: IdeaController,
+  trackController: TrackController
 ) extends Command {
 
   val name = "idea"
@@ -15,7 +16,9 @@ class CreateIdeaCommand @Inject() (
   def run(args: Array[String]): CommandResponse = {
     val title = prompt.read("Idea title")
 
-    val idea = controller.create(title)
+    val idea = ideaController.create(title)
+
+    trackController.record(idea.id)
 
     display(s"Created idea [$title] with id [${idea.id}]")
   }

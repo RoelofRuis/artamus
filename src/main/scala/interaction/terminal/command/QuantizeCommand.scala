@@ -1,7 +1,7 @@
 package interaction.terminal.command
 
-import application.controller.QuantizationController
-import application.model.Idea
+import application.controller.TrackController
+import application.model.{ID, Idea}
 import interaction.terminal.Prompt
 import javax.inject.Inject
 
@@ -9,7 +9,7 @@ import scala.util.Try
 
 class QuantizeCommand @Inject() (
   prompt: Prompt,
-  controller: QuantizationController
+  controller: TrackController
 ) extends Command {
 
   val name = "quant"
@@ -18,7 +18,7 @@ class QuantizeCommand @Inject() (
 
   def run(args: Array[String]): CommandResponse = {
     val res: Try[CommandResponse] = for {
-      id <- Try(Idea.ID(args(0).toLong))
+      id <- Try(ID[Idea.type](args(0).toLong))
       subdivision <- Try(args(1).toInt) recover { case _ => 1 }
       gridErrorMultiplier <- Try(args(2).toInt) recover { case _ => 10 }
     } yield {

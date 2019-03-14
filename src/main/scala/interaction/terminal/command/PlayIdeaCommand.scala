@@ -1,7 +1,8 @@
 package interaction.terminal.command
 
-import application.controller.IdeaController
-import application.model.{Idea, Quantized, TrackType, Unquantized}
+import application.controller.TrackController
+import application.model.Track.{Quantized, TrackType, Unquantized}
+import application.model._
 import interaction.terminal.Prompt
 import javax.inject.Inject
 
@@ -9,7 +10,7 @@ import scala.util.Try
 
 class PlayIdeaCommand @Inject() (
   prompt: Prompt,
-  controller: IdeaController,
+  controller: TrackController,
 ) extends Command {
 
   val name = "play"
@@ -18,7 +19,7 @@ class PlayIdeaCommand @Inject() (
 
   def run(args: Array[String]): CommandResponse = {
     val res = for {
-      id <- Try(Idea.ID(args(0).toLong))
+      id <- Try(ID[Idea.type](args(0).toLong))
       trackType <- Try(parseTrackType(args(1)))
     } yield {
       if (controller.play(id, trackType)) continue
