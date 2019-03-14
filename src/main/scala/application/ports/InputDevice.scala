@@ -1,6 +1,6 @@
 package application.ports
 
-import application.model.{Note, Track}
+import application.model.Track
 
 import scala.util.Try
 
@@ -9,6 +9,6 @@ import scala.util.Try
   */
 trait InputDevice {
 
-  def read(ticksPerQuarter: Int): Try[Track[Note]]
+  def read(ticksPerQuarter: Int): Try[Track]
 
 }

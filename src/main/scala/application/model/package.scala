@@ -12,7 +12,7 @@ package object model {
     def end: Ticks = Ticks(start.value + duration.value)
   }
 
-  case class Measure[A](baseNote: Int, baseNotesPerMeasure: Int) {
+  case class Measure(baseNote: Int, baseNotesPerMeasure: Int) {
     // TODO: implement
   }
 

@@ -1,12 +1,12 @@
 package application.ports
 
-import application.model.{Note, Track}
+import application.model.Track
 
 /**
   * A Playback device for playing symbolic music.
   */
 trait PlaybackDevice {
 
-  def playback(track: Track[Note])
+  def playback(track: Track)
 
 }

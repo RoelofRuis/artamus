@@ -20,7 +20,7 @@ class CoreModule extends ScalaPrivateModule {
     requireBinding(new Key[Driver]() {})
 
     requireBinding(new Key[KeyValueStorage[Idea_ID, Idea]]() {})
-    requireBinding(new Key[KeyValueStorage[(Idea_ID, TrackType), Track[Note]]]() {})
+    requireBinding(new Key[KeyValueStorage[(Idea_ID, TrackType), Track]]() {})
 
     bind[Settings[PlaybackDevice]].toInstance(Settings[PlaybackDevice](allowsMultiple = true))
     bind[ServiceRegistry[PlaybackDevice]].asEagerSingleton()

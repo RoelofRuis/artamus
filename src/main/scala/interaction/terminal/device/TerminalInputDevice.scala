@@ -13,11 +13,11 @@ class TerminalInputDevice @Inject() (prompt: Prompt) extends InputDevice {
 
   private final val defaultVolume = 32
 
-  override def read(ticksPerQuarter: Int): Try[Track[Note]] = {
+  override def read(ticksPerQuarter: Int): Try[Track] = {
     Try(parseFromString(prompt.read("Input music data"), ticksPerQuarter))
   }
 
-  private def parseFromString(input: String, ticksPerQuarter: Int): Track[Note] = {
+  private def parseFromString(input: String, ticksPerQuarter: Int): Track = {
     val elements = parseElements(
       input.trim.split(" ").toList,
       ticksPerQuarter,

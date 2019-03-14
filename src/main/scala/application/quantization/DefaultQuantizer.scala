@@ -6,7 +6,7 @@ import application.quantization.TrackQuantizer.Params
 
 case class DefaultQuantizer() extends TrackQuantizer {
 
-  def quantize[A](track: Track[A], params: Params): Track[A] = {
+  def quantize(track: Track, params: Params): Track = {
     val spacing = detectSpacing(
       params.minGrid,
       params.maxGrid,

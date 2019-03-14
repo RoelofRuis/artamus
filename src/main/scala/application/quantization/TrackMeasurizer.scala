@@ -4,6 +4,6 @@ import application.model.{Measure, Track}
 
 trait TrackMeasurizer {
 
-  def measurize[A](track: Track[A]): Seq[Measure[A]]
+  def measurize(track: Track): Seq[Measure]
 
 }

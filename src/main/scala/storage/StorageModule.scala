@@ -11,7 +11,7 @@ class StorageModule extends ScalaModule {
 
   override def configure(): Unit = {
     bind[KeyValueStorage[Idea_ID, Idea]].to[InMemoryKeyValueStorage[Idea_ID, Idea]].asEagerSingleton()
-    bind[KeyValueStorage[(Idea_ID, TrackType), Track[Note]]].to[InMemoryKeyValueStorage[(Idea_ID, TrackType), Track[Note]]].asEagerSingleton()
+    bind[KeyValueStorage[(Idea_ID, TrackType), Track]].to[InMemoryKeyValueStorage[(Idea_ID, TrackType), Track]].asEagerSingleton()
   }
 
 }

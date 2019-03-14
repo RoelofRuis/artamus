@@ -6,12 +6,10 @@ import application.model._
 import application.ports.KeyValueStorage
 import javax.inject.Inject
 
-class TrackRepository @Inject() (
-  storage: KeyValueStorage[(Idea_ID, TrackType), Track[Note]],
-) {
+class TrackRepository @Inject() (storage: KeyValueStorage[(Idea_ID, TrackType), Track]) {
 
-  def store(idea: Idea_ID, trackType: TrackType, track: Track[Note]): Unit = storage.put((idea, trackType), track)
+  def store(idea: Idea_ID, trackType: TrackType, track: Track): Unit = storage.put((idea, trackType), track)
 
-  def retrieve(idea: Idea_ID, trackType: TrackType): Option[Track[Note]] = storage.get((idea, trackType))
+  def retrieve(idea: Idea_ID, trackType: TrackType): Option[Track] = storage.get((idea, trackType))
 
 }

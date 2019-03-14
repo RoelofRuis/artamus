@@ -2,12 +2,12 @@ package application.model
 
 import application.model.Track.{End, Quantizer, Start}
 
-case class Track[A](ticksPerQuarter: Ticks, elements: Iterable[(TimeSpan, A)]) {
+case class Track(ticksPerQuarter: Ticks, elements: Iterable[(TimeSpan, Note)]) {
 
   def onsets: Iterable[Ticks] = elements.map { case (timeSpan, _) => timeSpan.start }
 
   // TODO: Might not belong here, how to construct new ID?
-  def quantize(targetTicksPerQuarter: Ticks, q: Quantizer): Track[A] = {
+  def quantize(targetTicksPerQuarter: Ticks, q: Quantizer): Track = {
     val qElements = elements.map { case (timeSpan, a) =>
       val qStart = q(timeSpan.start, Start)
       val qDur = Ticks(q(timeSpan.end, End).value - qStart.value)

@@ -10,7 +10,7 @@ import scala.util.{Success, Try}
 class MidiInputDevice @Inject() (sequencerProvider: Provider[Sequencer]) extends InputDevice {
 
   // TODO: improve this crappy implementation
-  override def read(ticksPerQuarter: Int): Try[SymbolTrack[Note]] = {
+  override def read(ticksPerQuarter: Int): Try[SymbolTrack] = {
 
     val sequencer = sequencerProvider.get
 

@@ -5,7 +5,7 @@ import application.quantization.TrackQuantizer.Params
 
 trait TrackQuantizer {
 
-  def quantize[A](track: Track[A], params: Params): Track[A]
+  def quantize(track: Track, params: Params): Track
 
 }
 
