@@ -15,8 +15,6 @@ trait TrackController {
 
   def record(ideaID: Idea_ID): Option[Track]
 
-  def stopRecording(): Unit // TODO: Determine return type
-
   def play(track: Track_ID): Boolean
 
   def quantize(track: Track_ID, subdivision: Int, gridErrorMultiplier: Int): Option[Track]
@@ -46,8 +44,6 @@ class TrackControllerImpl @Inject() (
 
     res
   }
-
-  def stopRecording(): Unit = ???
 
   def play(id: Track_ID): Boolean = {
     trackRepository.get(id) match {
