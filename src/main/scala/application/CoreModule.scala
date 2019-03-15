@@ -16,6 +16,8 @@ class CoreModule extends ScalaPrivateModule {
 
   override def configure(): Unit = {
     bind[ApplicationEntryPoint].to[Application].asEagerSingleton()
+    expose[ApplicationEntryPoint]
+
     bind[ResourceManager].asEagerSingleton()
     requireBinding(new Key[Driver]() {})
 
@@ -29,26 +31,34 @@ class CoreModule extends ScalaPrivateModule {
     bind[Settings[Logger]].toInstance(Settings[Logger](allowsMultiple = true))
     bind[ServiceRegistry[Logger]].asEagerSingleton()
 
+    // Configuration
+    bind[TicksPerQuarter].toInstance(TicksPerQuarter(96))
+
+    // Services
     bind[TrackQuantizer].toInstance(DefaultQuantizer())
 
+    // Repositories
     bind[IdeaRepository].asEagerSingleton()
     bind[TrackRepository].asEagerSingleton()
 
+    // Controllers
     bind[ResourceController].to[ResourceControllerImpl].asEagerSingleton()
-    bind[IdeaController].to[IdeaControllerImpl].asEagerSingleton()
-    bind[TrackController].to[TrackControllerImpl].asEagerSingleton()
-    bind[ServiceController[Logger]].to[ServiceControllerImpl[Logger]].asEagerSingleton()
-    bind[ServiceController[PlaybackDevice]].to[ServiceControllerImpl[PlaybackDevice]].asEagerSingleton()
-    bind[ServiceController[InputDevice]].to[ServiceControllerImpl[InputDevice]]asEagerSingleton()
-
-    // Public Services
-    expose[ApplicationEntryPoint]
-    expose[ServiceController[Logger]]
-    expose[ServiceController[InputDevice]]
-    expose[ServiceController[PlaybackDevice]]
-    expose[IdeaController]
-    expose[TrackController]
     expose[ResourceController]
+
+    bind[IdeaController].to[IdeaControllerImpl].asEagerSingleton()
+    expose[IdeaController]
+
+    bind[TrackController].to[TrackControllerImpl].asEagerSingleton()
+    expose[TrackController]
+
+    bind[ServiceController[Logger]].to[ServiceControllerImpl[Logger]].asEagerSingleton()
+    expose[ServiceController[Logger]]
+
+    bind[ServiceController[PlaybackDevice]].to[ServiceControllerImpl[PlaybackDevice]].asEagerSingleton()
+    expose[ServiceController[PlaybackDevice]]
+
+    bind[ServiceController[InputDevice]].to[ServiceControllerImpl[InputDevice]]asEagerSingleton()
+    expose[ServiceController[InputDevice]]
   }
 
 }

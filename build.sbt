@@ -9,8 +9,6 @@ val typesafeConfigVersion = "1.3.3"
 
 libraryDependencies += "net.codingwell" %% "scala-guice" % scalaGuiceVersion
 
-libraryDependencies += "com.typesafe" % "config" % typesafeConfigVersion
-
 scalacOptions ++= Seq(
   "-encoding", "UTF-8",
   "-unchecked",

@@ -1,5 +1,6 @@
 package application.controller
 
+import application.TicksPerQuarter
 import application.component.ServiceRegistry
 import application.model.Idea.Idea_ID
 import application.model.Track.{Track_ID, Unquantized}
@@ -29,9 +30,8 @@ class TrackControllerImpl @Inject() (
   quantizer: TrackQuantizer,
   input: ServiceRegistry[InputDevice],
   playback: ServiceRegistry[PlaybackDevice],
+  recordingResolution: TicksPerQuarter,
 ) extends TrackController {
-
-  private final val TICKS_PER_QUARTER = 96
 
   def record(ideaID: Idea_ID): Option[Track] = {
     // TODO: clean up this hack without using the var (or move to ServiceRegistry)
@@ -39,8 +39,8 @@ class TrackControllerImpl @Inject() (
 
     input.use { device =>
       res =
-        device.read(TICKS_PER_QUARTER)
-          .map(trackRepository.add(ideaID, Unquantized, Ticks(TICKS_PER_QUARTER), _))
+        device.read(recordingResolution.ticks)
+          .map(trackRepository.add(ideaID, Unquantized, Ticks(recordingResolution.ticks), _))
           .toOption
     }
 
@@ -59,7 +59,12 @@ class TrackControllerImpl @Inject() (
   }
 
   def quantize(id: Track_ID, subdivision: Int, gridErrorMultiplier: Int): Option[Track] = {
-    val quantizationParams = Params(6, 192, gridErrorMultiplier, subdivision)
+    val quantizationParams = Params(
+      recordingResolution.ticks / 16,
+      recordingResolution.ticks * 2,
+      gridErrorMultiplier,
+      subdivision
+    )
 
     trackRepository.get(id)
       .map { track =>
