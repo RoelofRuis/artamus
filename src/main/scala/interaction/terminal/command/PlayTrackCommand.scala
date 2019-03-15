@@ -1,7 +1,6 @@
 package interaction.terminal.command
 
 import application.controller.TrackController
-import application.model.Track.{Quantized, TrackType, Unquantized}
 import application.model._
 import interaction.terminal.Prompt
 import javax.inject.Inject
@@ -14,24 +13,17 @@ class PlayTrackCommand @Inject() (
 ) extends Command {
 
   val name = "play"
-  val helpText = "Playback an idea, either the quantized or unquantized version"
-  override val argsHelp = Some("[id: Int] [quant: \"+|-\"]")
+  val helpText = "Play a track"
+  override val argsHelp = Some("[id: Int]")
 
   def run(args: Array[String]): CommandResponse = {
     val res = for {
       id <- Try(ID[Track](args(0).toLong))
-      trackType <- Try(parseTrackType(args(1)))
     } yield {
       if (controller.play(id)) continue
-      else display(s"No Track stored for idea [$id $trackType]")
+      else display(s"Unknown track ID [$id]")
     }
 
     returnRecovered(res)
-  }
-
-  private def parseTrackType: String => TrackType = {
-    case "+" => Quantized
-    case "-" => Unquantized
-    case _ => throw new Exception(s"Usage: + = Quantized, - = Unquantized")
   }
 }

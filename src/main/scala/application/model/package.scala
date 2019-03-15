@@ -1,10 +1,12 @@
 package application
 
-import scala.reflect.ClassTag
+import scala.reflect._
 
 package object model {
 
-  case class ID[C: ClassTag](id: Long)
+  case class ID[C: ClassTag](id: Long) {
+    override def toString: String = s"${classTag[C].runtimeClass.getSimpleName}($id)"
+  }
 
   case class Ticks(value: Long) extends AnyVal
 

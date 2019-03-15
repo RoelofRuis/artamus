@@ -24,4 +24,6 @@ class TrackRepository @Inject() (storage: KeyValueStorage[Track_ID, Track]) {
 
   def get(id: Track_ID): Option[Track] = storage.get(id)
 
+  def getAll: Vector[Track] = storage.getAll
+
 }

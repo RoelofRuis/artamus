@@ -20,6 +20,8 @@ trait TrackController {
 
   def quantize(track: Track_ID, subdivision: Int, gridErrorMultiplier: Int): Option[Track]
 
+  def getAll: Vector[Track]
+
 }
 
 class TrackControllerImpl @Inject() (
@@ -56,7 +58,7 @@ class TrackControllerImpl @Inject() (
     }
   }
 
-  override def quantize(id: Track_ID, subdivision: Int, gridErrorMultiplier: Int): Option[Track] = {
+  def quantize(id: Track_ID, subdivision: Int, gridErrorMultiplier: Int): Option[Track] = {
     val quantizationParams = Params(6, 192, gridErrorMultiplier, subdivision)
 
     trackRepository.get(id)
@@ -71,5 +73,7 @@ class TrackControllerImpl @Inject() (
         )
       }
   }
+
+  def getAll: Vector[Track] = trackRepository.getAll
 
 }

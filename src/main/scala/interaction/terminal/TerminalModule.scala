@@ -14,7 +14,7 @@ class TerminalModule extends ScalaModule {
 
     val commands = ScalaMultibinder.newSetBinder[Command](binder)
     commands.addBinding.to[CreateIdeaCommand]
-    commands.addBinding.to[ListIdeasCommand]
+    commands.addBinding.to[ListTracksCommand]
     commands.addBinding.to[PlayTrackCommand]
     commands.addBinding.to[ListResourcesCommand]
     commands.addBinding.to[MidiCommand]

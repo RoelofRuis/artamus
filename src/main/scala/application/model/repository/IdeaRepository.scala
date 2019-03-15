@@ -5,17 +5,19 @@ import application.model.{ID, Idea}
 import application.ports.KeyValueStorage
 import javax.inject.Inject
 
-class IdeaRepository @Inject() (ideaStorage: KeyValueStorage[Idea_ID, Idea]) {
+class IdeaRepository @Inject() (storage: KeyValueStorage[Idea_ID, Idea]) {
 
   def add(title: String): Idea = {
-    val id = ID[Idea](ideaStorage.nextId)
+    val id = ID[Idea](storage.nextId)
     val idea = Idea(id, title)
 
-    ideaStorage.put(id, idea)
+    storage.put(id, idea)
 
     idea
   }
 
-  def getAll: Vector[Idea] = ideaStorage.getAll
+  def get(id: Idea_ID): Option[Idea] = storage.get(id)
+
+  def getAll: Vector[Idea] = storage.getAll
 
 }

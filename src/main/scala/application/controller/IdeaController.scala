@@ -1,12 +1,13 @@
 package application.controller
 
 import application.model.Idea
+import application.model.Idea.Idea_ID
 import application.model.repository.IdeaRepository
 import javax.inject.Inject
 
 trait IdeaController {
 
-  def getAll: Vector[Idea]
+  def get(id: Idea_ID): Option[Idea]
 
   def create(title: String): Idea
 
@@ -14,7 +15,7 @@ trait IdeaController {
 
 private[application] class IdeaControllerImpl @Inject() (ideaRepository: IdeaRepository) extends IdeaController {
 
-  def getAll: Vector[Idea] = ideaRepository.getAll
+  def get(id: Idea_ID): Option[Idea] = ideaRepository.get(id)
 
   def create(title: String): Idea = ideaRepository.add(title)
 
