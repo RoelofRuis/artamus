@@ -37,9 +37,7 @@ class TrackControllerImpl @Inject() (
   recordingManager: RecordingManager
 ) extends TrackController {
 
-  def startRecording: Try[Unit] = {
-    recordingManager.startRecording
-  }
+  def startRecording: Try[Unit] = recordingManager.startRecording
 
   def storeRecorded(ideaId: Idea_ID): Try[Track] = {
     recordingManager.stopRecording.map { case (ticks, elements) =>

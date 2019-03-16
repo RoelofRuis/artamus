@@ -12,7 +12,7 @@ class StartRecordingCommand @Inject() (controller: TrackController) extends Comm
     controller
       .startRecording
       .fold(
-        ex => display(s"Error: ${ex.getMessage}"),
+        ex => display(s"$ex"),
         _ => display("Recording started")
       )
   }
