@@ -43,7 +43,9 @@ private[application] class ServiceRegistry[A] @Inject() (implementations: immuta
     true
   }
 
-  def use(f: A => Unit): Unit = activeServices.flatMap(service => services.get(service)).foreach(f)
+  def useAllActive(f: A => Unit): Unit = activeServices.flatMap(service => services.get(service)).foreach(f)
+
+  def mapHead[B](f: A => B): Option[B] = activeServices.headOption.flatMap(service => services.get(service)).map(f)
 
 }
 

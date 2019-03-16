@@ -10,7 +10,7 @@ private[application] class ResourceManager @Inject() (resources: immutable.Set[M
   def getRegisteredResources: Vector[String] = resources.map(_.getDescription).toVector
 
   def closeAll(): Unit = resources.foreach{ res =>
-    logger.use(_.debug(s"Closing [${res.getName}]"))
+    logger.useAllActive(_.debug(s"Closing [${res.getName}]"))
     res.close()
   }
 }

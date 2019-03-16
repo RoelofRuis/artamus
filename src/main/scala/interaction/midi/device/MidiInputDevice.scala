@@ -2,36 +2,41 @@ package interaction.midi.device
 
 import application.model.Track.TrackElements
 import application.model.{Note, Ticks, TimeSpan}
-import application.ports.InputDevice
+import application.ports.RecordingDevice
 import javax.inject.{Inject, Provider}
 import javax.sound.midi._
 
 import scala.util.{Success, Try}
 
-class MidiInputDevice @Inject() (sequencerProvider: Provider[Sequencer]) extends InputDevice {
+class MidiInputDevice @Inject() (sequencerProvider: Provider[Sequencer]) extends RecordingDevice {
 
-  // TODO: improve this crappy implementation
-  override def read(ticksPerQuarter: Int): Try[TrackElements] = {
+  private final val sequencer: Sequencer = sequencerProvider.get
+  private var recordingSequence: Option[Sequence] = None
 
-    val sequencer = sequencerProvider.get
+  def start(ticksPerQuarter: Int): Try[Unit] = {
+    Try {
+      val sequence = new Sequence(Sequence.PPQ, ticksPerQuarter, 1)
+      recordingSequence = Some(sequence)
 
-    val recordingSequence = new Sequence(Sequence.PPQ, ticksPerQuarter, 1)
+      sequencer.setSequence(sequence)
+      sequencer.setTempoInBPM(120)
+      sequencer.recordEnable(sequence.getTracks()(0), -1)
+      sequencer.setTickPosition(0)
+      sequencer.startRecording()
+    }
+  }
 
-    sequencer.setSequence(recordingSequence)
-    val track = recordingSequence.getTracks()(0)
-    sequencer.setTempoInBPM(120)
-    sequencer.recordEnable(track, -1)
-    sequencer.setTickPosition(0)
-    sequencer.startRecording()
-
-    val recordForSec = 10
-
-    val t: Thread = new Thread(() => Thread.sleep(recordForSec * 1000))
-    t.start()
-    t.join()
-
+  def stop(): Try[(Ticks, TrackElements)] = {
     sequencer.stopRecording()
 
+    for {
+      sequence <- Try(recordingSequence.get)
+      elements <- parseTrack(sequence.getTracks()(0))
+    } yield (Ticks(sequence.getResolution), elements)
+  }
+
+  // TODO: this could be rewritten recursively
+  private def parseTrack(track: Track): Try[TrackElements] = {
     var activeNotes = Map[Int, (Long, Int)]()
     var firstOnset: Option[Long] = None
     var symbols = Seq[(TimeSpan, Note)]()

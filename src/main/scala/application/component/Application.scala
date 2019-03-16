@@ -1,12 +1,12 @@
 package application.component
 
 import application.ApplicationEntryPoint
-import application.ports.{Driver, InputDevice, Logger, PlaybackDevice}
+import application.ports._
 import javax.inject.Inject
 
 private[application] class Application @Inject() private (
   loggerRegistry: ServiceRegistry[Logger],
-  inputRegistry: ServiceRegistry[InputDevice],
+  recordingRegistry: ServiceRegistry[RecordingDevice],
   playbackRegistry: ServiceRegistry[PlaybackDevice],
   resourceManager: ResourceManager,
   driver: Driver
@@ -14,7 +14,8 @@ private[application] class Application @Inject() private (
 
   def run(): Unit = {
     // TODO: better way to assign app defaults, for now enable practical default services
-    inputRegistry.onlyActivate("midi")
+    loggerRegistry.onlyActivate("terminal")
+    recordingRegistry.onlyActivate("midi")
     playbackRegistry.onlyActivate("terminal")
 
     driver.run()
