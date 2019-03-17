@@ -3,9 +3,7 @@ package interaction.terminal.command
 import application.controller.ResourceController
 import javax.inject.Inject
 
-class ListResourcesCommand @Inject() (
-  resourceController: ResourceController
-) extends Command {
+class ListResourcesCommand @Inject() (resourceController: ResourceController) extends Command {
 
   val name = "list-resources"
   val helpText = "List the currently registered application resources"

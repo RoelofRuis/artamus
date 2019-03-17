@@ -1,23 +1,25 @@
 package interaction.terminal.command
 
 import application.controller.IdeaController
-import interaction.terminal.Prompt
 import javax.inject.Inject
 
-class CreateIdeaCommand @Inject() (
-  prompt: Prompt,
-  ideaController: IdeaController
-) extends Command {
+import scala.util.Try
+
+class CreateIdeaCommand @Inject() (ideaController: IdeaController) extends Command {
 
   val name = "idea"
   val helpText = "Create a new idea"
+  override val argsHelp = Some("[title: String]")
 
   def run(args: Array[String]): CommandResponse = {
-    val title = prompt.read("Idea title")
+    val res = for {
+      title <- Try(args(0))
+      idea <- ideaController.create(title)
+    } yield {
+      display(s"Created idea [$title] with id [${idea.id}]")
+    }
 
-    val idea = ideaController.create(title)
-
-    display(s"Created idea [$title] with id [${idea.id}]")
+    res getOrElse display("Unable to create idea")
   }
 
 }

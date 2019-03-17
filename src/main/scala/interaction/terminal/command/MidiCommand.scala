@@ -2,6 +2,7 @@ package interaction.terminal.command
 
 import javax.sound.midi.MidiSystem
 
+// TODO: remove this command or make it go via the core; MIDI logic should not be in here.
 class MidiCommand extends Command {
 
   val name = "midi"

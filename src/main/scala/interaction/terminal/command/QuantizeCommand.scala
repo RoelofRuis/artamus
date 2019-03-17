@@ -2,15 +2,11 @@ package interaction.terminal.command
 
 import application.controller.TrackController
 import application.model.{ID, Track}
-import interaction.terminal.Prompt
 import javax.inject.Inject
 
 import scala.util.Try
 
-class QuantizeCommand @Inject() (
-  prompt: Prompt,
-  controller: TrackController
-) extends Command {
+class QuantizeCommand @Inject() (controller: TrackController) extends Command {
 
   val name = "quant"
   val helpText = "Quantize an idea"

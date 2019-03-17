@@ -2,15 +2,11 @@ package interaction.terminal.command
 
 import application.controller.TrackController
 import application.model.{ID, Idea}
-import interaction.terminal.Prompt
 import javax.inject.Inject
 
 import scala.util.Try
 
-class StoreRecordingCommand @Inject() (
-  prompt: Prompt,
-  controller: TrackController,
-) extends Command {
+class StoreRecordingCommand @Inject() (controller: TrackController) extends Command {
 
   val name = "store"
   val helpText = "Store the currently running recording"
