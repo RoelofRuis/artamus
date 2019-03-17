@@ -14,15 +14,13 @@ class MessageBus @Inject() private (
   logger: ServiceRegistry[Logger]
 ) {
 
-  def execute[Res, A](command: Command[Res], callback: Try[Res] => A): A = {
+  def execute[Res, A](command: Command[Res]): Try[Res] = {
     logger.useAllActive(_.debug(s"Message bus received [$command]"))
 
-    val response = controllers
+    controllers
       .map(_.handle(command))
       .collectFirst { case Some(r) => Success(r) }
       .getOrElse(Failure(new RuntimeException(s"No message handler found for [${command.getClass.getName}]")))
-
-    callback(response)
   }
 
 }
