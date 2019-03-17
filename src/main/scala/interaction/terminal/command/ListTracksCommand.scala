@@ -1,10 +1,14 @@
 package interaction.terminal.command
 
-import application.controller.{IdeaController, TrackController}
+import application.MessageBus
+import application.command.IdeaCommand.GetIdea
+import application.controller.TrackController
 import javax.inject.Inject
 
+import scala.util.Success
+
 class ListTracksCommand @Inject() (
-  ideaController: IdeaController,
+  messageBus: MessageBus,
   trackController: TrackController
 ) extends Command {
 
@@ -14,9 +18,9 @@ class ListTracksCommand @Inject() (
   def run(args: Array[String]): CommandResponse = {
     val response = trackController.getAll
       .groupBy(_.ideaId)
-      .map { case (ideaId, tracks) => (ideaController.get(ideaId), tracks)}
+      .map { case (ideaId, tracks) => (messageBus.execute(GetIdea(ideaId)), tracks) }
       .collect {
-        case (Some(idea), tracks) =>
+        case (Success(idea), tracks) =>
           val trackData = tracks.map(track => s" - [${track.id}](${track.trackType}) - ${track.ticksPerQuarter}").mkString("\n")
           s"[${idea.id}] ${idea.title} :\n$trackData"
       }.mkString("\n")

@@ -1,11 +1,12 @@
 package interaction.terminal.command
 
-import application.controller.IdeaController
+import application.MessageBus
+import application.command.IdeaCommand.CreateIdea
 import javax.inject.Inject
 
 import scala.util.Try
 
-class CreateIdeaCommand @Inject() (ideaController: IdeaController) extends Command {
+class CreateIdeaCommand @Inject() (messageBus: MessageBus) extends Command {
 
   val name = "idea"
   val helpText = "Create a new idea"
@@ -14,7 +15,7 @@ class CreateIdeaCommand @Inject() (ideaController: IdeaController) extends Comma
   def run(args: Array[String]): CommandResponse = {
     val res = for {
       title <- Try(args(0))
-      idea <- ideaController.create(title)
+      idea <- messageBus.execute(CreateIdea(title))
     } yield {
       display(s"Created idea [$title] with id [${idea.id}]")
     }

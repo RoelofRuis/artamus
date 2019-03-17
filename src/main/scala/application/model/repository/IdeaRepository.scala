@@ -5,6 +5,8 @@ import application.model.{ID, Idea}
 import application.ports.KeyValueStorage
 import javax.inject.Inject
 
+import scala.util.{Failure, Success, Try}
+
 class IdeaRepository @Inject() (storage: KeyValueStorage[Idea_ID, Idea]) {
 
   def add(title: String): Idea = {
@@ -16,7 +18,12 @@ class IdeaRepository @Inject() (storage: KeyValueStorage[Idea_ID, Idea]) {
     idea
   }
 
-  def get(id: Idea_ID): Option[Idea] = storage.get(id)
+  def get(id: Idea_ID): Try[Idea] = {
+    storage.get(id) match {
+      case Some(idea) => Success(idea)
+      case None => Failure(NotFoundException(s"No Idea with ID [$id]"))
+    }
+  }
 
   def getAll: Vector[Idea] = storage.getAll
 

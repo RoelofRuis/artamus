@@ -11,7 +11,7 @@ import application.ports._
 import application.quantization.{DefaultQuantizer, TrackQuantizer}
 import application.recording.RecordingManager
 import com.google.inject.Key
-import net.codingwell.scalaguice.ScalaPrivateModule
+import net.codingwell.scalaguice.{ScalaMultibinder, ScalaPrivateModule}
 
 class CoreModule extends ScalaPrivateModule {
 
@@ -42,13 +42,15 @@ class CoreModule extends ScalaPrivateModule {
     // Repositories
     bind[IdeaRepository].asEagerSingleton()
     bind[TrackRepository].asEagerSingleton()
+    bind[MessageBus].asEagerSingleton()
+    expose[MessageBus]
+
+    val controllers = ScalaMultibinder.newSetBinder[Controller](binder)
+    controllers.addBinding.to[IdeaController]
 
     // Controllers
     bind[ResourceController].to[ResourceControllerImpl].asEagerSingleton()
     expose[ResourceController]
-
-    bind[IdeaController].to[IdeaControllerImpl].asEagerSingleton()
-    expose[IdeaController]
 
     bind[TrackController].to[TrackControllerImpl].asEagerSingleton()
     expose[TrackController]

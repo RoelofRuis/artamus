@@ -7,19 +7,18 @@ import application.ports.Logger
 import javax.inject.Inject
 
 import scala.collection.immutable
-import scala.util.{Failure, Success, Try}
+import scala.util.{Failure, Try}
 
 class MessageBus @Inject() private (
   controllers: immutable.Set[Controller],
   logger: ServiceRegistry[Logger]
 ) {
 
-  def execute[Res, A](command: Command[Res]): Try[Res] = {
-    logger.useAllActive(_.debug(s"Message bus received [$command]"))
-
+  def execute[Res](command: Command[Res]): Try[Res] = {
     controllers
-      .map(_.handle(command))
-      .collectFirst { case Some(r) => Success(r) }
+      .map(_.handle[Res])
+      .reduceLeft(_ orElse _)
+      .lift(command)
       .getOrElse(Failure(new RuntimeException(s"No message handler found for [${command.getClass.getName}]")))
   }
 
