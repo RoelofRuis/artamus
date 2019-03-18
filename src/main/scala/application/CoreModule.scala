@@ -17,7 +17,9 @@ class CoreModule extends ScalaPrivateModule {
 
   override def configure(): Unit = {
     bind[ApplicationEntryPoint].to[Application].asEagerSingleton()
+    bind[MessageBus].asEagerSingleton()
     expose[ApplicationEntryPoint]
+    expose[MessageBus]
 
     bind[ResourceManager].asEagerSingleton()
     requireBinding(new Key[Driver]() {})
@@ -42,22 +44,11 @@ class CoreModule extends ScalaPrivateModule {
     // Repositories
     bind[IdeaRepository].asEagerSingleton()
     bind[TrackRepository].asEagerSingleton()
-    bind[MessageBus].asEagerSingleton()
-    expose[MessageBus]
 
     val controllers = ScalaMultibinder.newSetBinder[Controller](binder)
     controllers.addBinding.to[IdeaController]
     controllers.addBinding.to[ResourceController]
     controllers.addBinding.to[TrackController]
-
-    bind[ServiceControllerOld[Logger]].to[ServiceControllerOldImpl[Logger]].asEagerSingleton()
-    expose[ServiceControllerOld[Logger]]
-
-    bind[ServiceControllerOld[PlaybackDevice]].to[ServiceControllerOldImpl[PlaybackDevice]].asEagerSingleton()
-    expose[ServiceControllerOld[PlaybackDevice]]
-
-    bind[ServiceControllerOld[RecordingDevice]].to[ServiceControllerOldImpl[RecordingDevice]]asEagerSingleton()
-    expose[ServiceControllerOld[RecordingDevice]]
   }
 
 }

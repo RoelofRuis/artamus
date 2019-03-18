@@ -15,7 +15,6 @@ class MidiModule extends ScalaModule {
 
     bind[Sequencer].toProvider[SequencerProvider].in(new SingletonScope())
 
-
     ScalaMapBinder.newMapBinder[String, PlaybackDevice](binder)
       .addBinding("midi").to[MidiPlaybackDevice]
 

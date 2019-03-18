@@ -1,3 +1,5 @@
 package application.command
 
-abstract class Command[Res]
+import scala.reflect.runtime.universe._
+
+abstract class Command[Res: TypeTag]

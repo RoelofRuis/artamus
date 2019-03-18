@@ -8,7 +8,7 @@ object ServiceCommand {
 
   case class DeactivateAll[A]() extends Command[Boolean]
 
-  case class Toggle[A](string: String) extends Command[Boolean]
+  case class Toggle[A](optionName: String) extends Command[Boolean]
 
   case class AllowsMultiple[A]() extends Command[Boolean]
 
