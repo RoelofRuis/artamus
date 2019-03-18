@@ -1,16 +1,16 @@
 package application.controller
 
+import application.command.Command
+import application.command.ResourceCommand.GetAllResources
 import application.component.ResourceManager
 import javax.inject.Inject
 
-trait ResourceController {
+import scala.util.{Success, Try}
 
-  def getAll: Vector[String]
+private[application] class ResourceController @Inject() (resourceManager: ResourceManager) extends Controller {
 
-}
-
-private[application] class ResourceControllerImpl @Inject() (resourceManager: ResourceManager) extends ResourceController {
-
-  def getAll: Vector[String] = resourceManager.getRegisteredResources
+  override def handle[Res]: PartialFunction[Command[Res], Try[Res]] = {
+    case GetAllResources => Success(resourceManager.getRegisteredResources)
+  }
 
 }

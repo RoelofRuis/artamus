@@ -15,6 +15,8 @@ class MessageBus @Inject() private (
 ) {
 
   def execute[Res](command: Command[Res]): Try[Res] = {
+    logger.useAllActive(_.debug(s"Message Bus received [$command]"))
+
     controllers
       .map(_.handle[Res])
       .reduceLeft(_ orElse _)

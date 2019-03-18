@@ -47,11 +47,9 @@ class CoreModule extends ScalaPrivateModule {
 
     val controllers = ScalaMultibinder.newSetBinder[Controller](binder)
     controllers.addBinding.to[IdeaController]
+    controllers.addBinding.to[ResourceController]
 
     // Controllers
-    bind[ResourceController].to[ResourceControllerImpl].asEagerSingleton()
-    expose[ResourceController]
-
     bind[TrackController].to[TrackControllerImpl].asEagerSingleton()
     expose[TrackController]
 
