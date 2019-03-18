@@ -1,12 +1,13 @@
 package interaction.terminal.command
 
-import application.controller.TrackController
+import application.MessageBus
+import application.command.TrackCommand.Play
 import application.model._
 import javax.inject.Inject
 
 import scala.util.Try
 
-class PlayTrackCommand @Inject() (controller: TrackController) extends Command {
+class PlayTrackCommand @Inject() (messageBus: MessageBus) extends Command {
 
   val name = "play"
   val helpText = "Play a track"
@@ -16,7 +17,7 @@ class PlayTrackCommand @Inject() (controller: TrackController) extends Command {
     val res = for {
       id <- Try(ID[Track](args(0).toLong))
     } yield {
-      if (controller.play(id)) continue
+      if (messageBus.execute(Play(id)).isSuccess) continue
       else display(s"Unknown track ID [$id]")
     }
 

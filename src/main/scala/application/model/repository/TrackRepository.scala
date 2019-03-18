@@ -6,6 +6,8 @@ import application.model._
 import application.ports.KeyValueStorage
 import javax.inject.Inject
 
+import scala.util.{Failure, Success, Try}
+
 class TrackRepository @Inject() (storage: KeyValueStorage[Track_ID, Track]) {
 
   def add(
@@ -22,7 +24,12 @@ class TrackRepository @Inject() (storage: KeyValueStorage[Track_ID, Track]) {
     track
   }
 
-  def get(id: Track_ID): Option[Track] = storage.get(id)
+  def get(id: Track_ID): Try[Track] = {
+    storage.get(id) match {
+      case Some(idea) => Success(idea)
+      case None => Failure(NotFoundException(s"No Idea with ID [$id]"))
+    }
+  }
 
   def getAll: Vector[Track] = storage.getAll
 

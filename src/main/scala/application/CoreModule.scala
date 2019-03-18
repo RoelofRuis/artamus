@@ -33,7 +33,7 @@ class CoreModule extends ScalaPrivateModule {
     bind[ServiceRegistry[Logger]].asEagerSingleton()
 
     // Configuration
-    bind[Int].annotatedWithName("TicksPerQuarter")toInstance 96
+    bind[Int].annotatedWithName("TicksPerQuarter") toInstance 96
 
     // Services
     bind[TrackQuantizer].toInstance(DefaultQuantizer())
@@ -48,19 +48,16 @@ class CoreModule extends ScalaPrivateModule {
     val controllers = ScalaMultibinder.newSetBinder[Controller](binder)
     controllers.addBinding.to[IdeaController]
     controllers.addBinding.to[ResourceController]
+    controllers.addBinding.to[TrackController]
 
-    // Controllers
-    bind[TrackController].to[TrackControllerImpl].asEagerSingleton()
-    expose[TrackController]
+    bind[ServiceControllerOld[Logger]].to[ServiceControllerOldImpl[Logger]].asEagerSingleton()
+    expose[ServiceControllerOld[Logger]]
 
-    bind[ServiceController[Logger]].to[ServiceControllerImpl[Logger]].asEagerSingleton()
-    expose[ServiceController[Logger]]
+    bind[ServiceControllerOld[PlaybackDevice]].to[ServiceControllerOldImpl[PlaybackDevice]].asEagerSingleton()
+    expose[ServiceControllerOld[PlaybackDevice]]
 
-    bind[ServiceController[PlaybackDevice]].to[ServiceControllerImpl[PlaybackDevice]].asEagerSingleton()
-    expose[ServiceController[PlaybackDevice]]
-
-    bind[ServiceController[RecordingDevice]].to[ServiceControllerImpl[RecordingDevice]]asEagerSingleton()
-    expose[ServiceController[RecordingDevice]]
+    bind[ServiceControllerOld[RecordingDevice]].to[ServiceControllerOldImpl[RecordingDevice]]asEagerSingleton()
+    expose[ServiceControllerOld[RecordingDevice]]
   }
 
 }

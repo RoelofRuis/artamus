@@ -3,7 +3,7 @@ package application.controller
 import application.component.ServiceRegistry
 import javax.inject.Inject
 
-trait ServiceController[A] {
+trait ServiceControllerOld[A] {
 
   /**
     * @return Vector holding a tuple: the available service names and whether the service is active.
@@ -33,7 +33,7 @@ trait ServiceController[A] {
 
 }
 
-private[application] class ServiceControllerImpl[A] @Inject() (registry: ServiceRegistry[A]) extends ServiceController[A] {
+private[application] class ServiceControllerOldImpl[A] @Inject() (registry: ServiceRegistry[A]) extends ServiceControllerOld[A] {
 
   def getAll: Vector[(String, Boolean)] = {
     registry.getRegistered.map(name => (name, registry.isActive(name)))

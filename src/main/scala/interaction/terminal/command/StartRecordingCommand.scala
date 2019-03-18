@@ -1,16 +1,16 @@
 package interaction.terminal.command
 
-import application.controller.TrackController
+import application.MessageBus
+import application.command.TrackCommand.StartRecording
 import javax.inject.Inject
 
-class StartRecordingCommand @Inject() (controller: TrackController) extends Command {
+class StartRecordingCommand @Inject() (messageBus: MessageBus) extends Command {
 
   val name = "rec"
   val helpText = "Start recording"
 
   def run(args: Array[String]): CommandResponse = {
-    controller
-      .startRecording
+    messageBus.execute(StartRecording)
       .fold(
         ex => display(s"$ex"),
         _ => display("Recording started")

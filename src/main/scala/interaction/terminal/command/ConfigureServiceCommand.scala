@@ -1,13 +1,13 @@
 package interaction.terminal.command
 
-import application.controller.ServiceController
+import application.controller.ServiceControllerOld
 import interaction.terminal.command.ConfigureServiceCommand.ConfigDescription
 import javax.inject.Inject
 
 import scala.util.Try
 
 class ConfigureServiceCommand[A] @Inject() (
-  controller: ServiceController[A],
+  controller: ServiceControllerOld[A],
   configDescription: ConfigDescription[A]
 ) extends Command {
 

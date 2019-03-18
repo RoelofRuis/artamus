@@ -1,5 +1,7 @@
 package application.controller
 
+import application.command.Command
+import application.command.TrackCommand._
 import application.component.ServiceRegistry
 import application.model.Idea.Idea_ID
 import application.model.Track
@@ -11,35 +13,26 @@ import application.quantization.TrackQuantizer.Params
 import application.recording.RecordingManager
 import javax.inject.{Inject, Named}
 
-import scala.util.Try
-
-trait TrackController {
-
-  def startRecording: Try[Unit]
-
-  def storeRecorded(idea_ID: Idea_ID): Try[Track]
-
-  def play(track: Track_ID): Boolean
-
-  // TODO: refactor to yield Try[Track] as return type
-  def quantize(track: Track_ID, subdivision: Int, gridErrorMultiplier: Int): Option[Track]
-
-  def getAll: Vector[Track]
-
-}
+import scala.util.{Failure, Success, Try}
 
 // TODO: see if TrackQuantizer and TicksPerQuarter can be moved to a separate service/controller
-class TrackControllerImpl @Inject() (
+class TrackController @Inject() (
   trackRepository: TrackRepository,
   quantizer: TrackQuantizer,
   @Named("TicksPerQuarter") recordingResolution: Int,
   playback: ServiceRegistry[PlaybackDevice],
   recordingManager: RecordingManager
-) extends TrackController {
+) extends Controller {
 
-  def startRecording: Try[Unit] = recordingManager.startRecording
+  override def handle[Res]: PartialFunction[Command[Res], Try[Res]] = {
+    case StartRecording => recordingManager.startRecording
+    case StoreRecorded(ideaId) => storeRecorded(ideaId)
+    case Quantize(trackId, subdivision, gridErrorMultiplier) => quantize(trackId, subdivision, gridErrorMultiplier)
+    case Play(trackId) => play(trackId)
+    case GetAll => Success(trackRepository.getAll)
+  }
 
-  def storeRecorded(ideaId: Idea_ID): Try[Track] = {
+  private def storeRecorded(ideaId: Idea_ID): Try[Track] = {
     recordingManager.stopRecording.map { case (ticks, elements) =>
       trackRepository.add(
         ideaId,
@@ -50,16 +43,13 @@ class TrackControllerImpl @Inject() (
     }
   }
 
-  def play(id: Track_ID): Boolean = {
-    trackRepository.get(id) match {
-      case None => false
-      case Some(data) =>
-        playback.useAllActive(_.playback(data))
-        true
+  private def play(id: Track_ID): Try[Unit] = {
+    trackRepository.get(id).map { track =>
+      playback.useAllActive(_.playback(track))
     }
   }
 
-  def quantize(id: Track_ID, subdivision: Int, gridErrorMultiplier: Int): Option[Track] = {
+  def quantize(id: Track_ID, subdivision: Int, gridErrorMultiplier: Int): Try[Track] = {
     val quantizationParams = Params(
       recordingResolution / 16,
       recordingResolution * 2,
@@ -79,7 +69,4 @@ class TrackControllerImpl @Inject() (
         )
       }
   }
-
-  def getAll: Vector[Track] = trackRepository.getAll
-
 }

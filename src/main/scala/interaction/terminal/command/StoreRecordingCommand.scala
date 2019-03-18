@@ -1,12 +1,13 @@
 package interaction.terminal.command
 
-import application.controller.TrackController
+import application.MessageBus
+import application.command.TrackCommand.StoreRecorded
 import application.model.{ID, Idea}
 import javax.inject.Inject
 
 import scala.util.Try
 
-class StoreRecordingCommand @Inject() (controller: TrackController) extends Command {
+class StoreRecordingCommand @Inject() (messageBus: MessageBus) extends Command {
 
   val name = "store"
   val helpText = "Store the currently running recording"
@@ -15,7 +16,7 @@ class StoreRecordingCommand @Inject() (controller: TrackController) extends Comm
   def run(args: Array[String]): CommandResponse = {
     val res = for {
       ideaId <- Try(ID[Idea](args(0).toLong))
-      track <- controller.storeRecorded(ideaId)
+      track <- messageBus.execute(StoreRecorded(ideaId))
     } yield track
 
     res.fold(
