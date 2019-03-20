@@ -1,6 +1,5 @@
 package interaction.midi.device
 
-import application.model.Note
 import application.model.{Track => SymbolTrack}
 import application.ports.PlaybackDevice
 import javax.inject.{Inject, Provider}

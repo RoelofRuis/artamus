@@ -1,6 +1,6 @@
 package interaction.terminal.device
 
-import application.model.{Note, Track}
+import application.model.Track
 import application.ports.PlaybackDevice
 import interaction.terminal.Prompt
 import javax.inject.Inject
