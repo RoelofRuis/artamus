@@ -8,7 +8,9 @@ import net.codingwell.scalaguice.{ScalaMapBinder, ScalaModule, ScalaMultibinder}
 class TerminalModule extends ScalaModule {
 
   override def configure(): Unit = {
-    bind[Driver].to[TerminalDriver]
+    ScalaMapBinder.newMapBinder[String, Driver](binder)
+      .addBinding("terminal").to[TerminalDriver]
+
     bind[Prompt].to[TerminalPrompt]
 
     val commands = ScalaMultibinder.newSetBinder[Command](binder)

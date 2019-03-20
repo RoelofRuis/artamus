@@ -1,22 +1,21 @@
 package interaction.terminal.command
 
-import application.MessageBus
 import application.command.IdeaCommand.GetIdea
 import application.command.TrackCommand.GetAll
-import javax.inject.Inject
+import application.ports.MessageBus
 
 import scala.util.Success
 
-class ListTracksCommand @Inject() (messageBus: MessageBus) extends Command {
+class ListTracksCommand extends Command {
 
   val name = "tracks"
   val helpText = "List the available tracks, per idea"
 
-  def run(args: Array[String]): CommandResponse = {
-    messageBus.execute(GetAll)
+  def execute(bus: MessageBus, args: Array[String]): CommandResponse = {
+    bus.execute(GetAll)
       .map {
         _.groupBy(_.ideaId)
-        .map { case (ideaId, tracks) => (messageBus.execute(GetIdea(ideaId)), tracks) }
+        .map { case (ideaId, tracks) => (bus.execute(GetIdea(ideaId)), tracks) }
         .collect {
           case (Success(idea), tracks) =>
             val trackData = tracks.map(track => s" - [${track.id}](${track.trackType}) - ${track.ticksPerQuarter}").mkString("\n")

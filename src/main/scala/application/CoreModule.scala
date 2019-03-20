@@ -1,7 +1,7 @@
 package application
 
 import application.component.ServiceRegistry.Settings
-import application.component.{Application, ResourceManager, ServiceRegistry}
+import application.component.{Application, ResourceManager, ServiceRegistry, SynchronizedMessageBus}
 import application.controller._
 import application.model.Idea.Idea_ID
 import application.model.Track.Track_ID
@@ -17,12 +17,10 @@ class CoreModule extends ScalaPrivateModule {
 
   override def configure(): Unit = {
     bind[ApplicationEntryPoint].to[Application].asEagerSingleton()
-    bind[MessageBus].asEagerSingleton()
     expose[ApplicationEntryPoint]
-    expose[MessageBus]
 
+    bind[SynchronizedMessageBus].asEagerSingleton()
     bind[ResourceManager].asEagerSingleton()
-    requireBinding(new Key[Driver]() {})
 
     requireBinding(new Key[KeyValueStorage[Idea_ID, Idea]]() {})
     requireBinding(new Key[KeyValueStorage[Track_ID, Track]]() {})
@@ -49,6 +47,7 @@ class CoreModule extends ScalaPrivateModule {
     controllers.addBinding.to[IdeaController]
     controllers.addBinding.to[ResourceController]
     controllers.addBinding.to[TrackController]
+    controllers.addBinding.to[ApplicationController]
   }
 
 }

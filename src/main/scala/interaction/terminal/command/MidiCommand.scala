@@ -1,5 +1,6 @@
 package interaction.terminal.command
 
+import application.ports.MessageBus
 import javax.sound.midi.MidiSystem
 
 // TODO: remove this command or make it go via the core; MIDI logic should not be in here.
@@ -8,7 +9,7 @@ class MidiCommand extends Command {
   val name = "midi"
   val helpText = "View available system MIDI resources"
 
-  def run(args: Array[String]): CommandResponse = {
+  def execute(bus: MessageBus, args: Array[String]): CommandResponse = {
     val info = MidiSystem.getMidiDeviceInfo
       .zipWithIndex
       .map { case (device, pos) =>
