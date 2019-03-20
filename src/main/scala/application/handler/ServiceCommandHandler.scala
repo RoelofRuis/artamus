@@ -1,4 +1,4 @@
-package application.controller
+package application.handler
 
 import application.command.Command
 import application.command.ServiceCommand._
@@ -11,7 +11,7 @@ import scala.util.{Success, Try}
   * @deprecated No longer used, but kept for now to show the functionality
   *             Should be replaced by different contains passed to plugins and management by service name instead of type.
   */
-private[application] class ServiceController[A] @Inject() (registry: ServiceRegistry[A]) extends Controller {
+private[application] class ServiceCommandHandler[A] @Inject() (registry: ServiceRegistry[A]) extends CommandHandler {
 
   override def handle[Res]: PartialFunction[Command[Res], Try[Res]] = {
     case _: GetAll[A] => Success(registry.getRegistered.map(name => (name, registry.isActive(name))))

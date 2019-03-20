@@ -1,4 +1,4 @@
-package application.controller
+package application.handler
 
 import application.command.Command
 import application.command.IdeaCommand.{CreateIdea, GetIdea}
@@ -7,7 +7,7 @@ import javax.inject.Inject
 
 import scala.util.{Success, Try}
 
-private[application] class IdeaController @Inject() (ideaRepository: IdeaRepository) extends Controller {
+private[application] class IdeaCommandHandler @Inject() (ideaRepository: IdeaRepository) extends CommandHandler {
 
   def handle[Res]: PartialFunction[Command[Res], Try[Res]] = {
     case GetIdea(id) => ideaRepository.get(id)

@@ -1,4 +1,4 @@
-package application.controller
+package application.handler
 
 import application.command.Command
 import application.command.TrackCommand._
@@ -16,13 +16,13 @@ import javax.inject.{Inject, Named}
 import scala.util.{Failure, Success, Try}
 
 // TODO: see if TrackQuantizer and TicksPerQuarter can be moved to a separate service/controller
-class TrackController @Inject() (
+class TrackCommandHandler @Inject() (
   trackRepository: TrackRepository,
   quantizer: TrackQuantizer,
   @Named("TicksPerQuarter") recordingResolution: Int,
   playback: ServiceRegistry[PlaybackDevice],
   recordingManager: RecordingManager
-) extends Controller {
+) extends CommandHandler {
 
   override def handle[Res]: PartialFunction[Command[Res], Try[Res]] = {
     case StartRecording => recordingManager.startRecording

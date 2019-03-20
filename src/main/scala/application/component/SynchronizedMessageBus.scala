@@ -4,7 +4,7 @@ import java.util.concurrent.SynchronousQueue
 
 import application.command.ApplicationCommand.CloseApplication
 import application.command.Command
-import application.controller.Controller
+import application.handler.CommandHandler
 import application.ports.{Logger, MessageBus}
 import javax.inject.Inject
 
@@ -12,7 +12,7 @@ import scala.collection.immutable
 import scala.util.{Failure, Try}
 
 private[application] class SynchronizedMessageBus @Inject() private (
-  controllers: immutable.Set[Controller],
+  controllers: immutable.Set[CommandHandler],
   logger: Logger
 ) extends MessageBus {
 

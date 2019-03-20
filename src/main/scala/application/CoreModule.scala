@@ -2,7 +2,7 @@ package application
 
 import application.component.ServiceRegistry.Settings
 import application.component.{Application, ResourceManager, ServiceRegistry, SynchronizedMessageBus}
-import application.controller._
+import application.handler._
 import application.model.Idea.Idea_ID
 import application.model.Track.Track_ID
 import application.model.repository.{IdeaRepository, TrackRepository}
@@ -43,11 +43,11 @@ class CoreModule extends ScalaPrivateModule {
     bind[IdeaRepository].asEagerSingleton()
     bind[TrackRepository].asEagerSingleton()
 
-    val controllers = ScalaMultibinder.newSetBinder[Controller](binder)
-    controllers.addBinding.to[IdeaController]
-    controllers.addBinding.to[ResourceController]
-    controllers.addBinding.to[TrackController]
-    controllers.addBinding.to[ApplicationController]
+    val controllers = ScalaMultibinder.newSetBinder[CommandHandler](binder)
+    controllers.addBinding.to[IdeaCommandHandler]
+    controllers.addBinding.to[ResourceCommandHandler]
+    controllers.addBinding.to[TrackCommandHandler]
+    controllers.addBinding.to[ApplicationCommandHandler]
   }
 
 }
