@@ -2,7 +2,7 @@ package interaction.terminal
 
 import application.ports._
 import interaction.terminal.command._
-import interaction.terminal.device.{TerminalInputDevice, TerminalLogger, TerminalPlaybackDevice}
+import interaction.terminal.device.{TerminalInputDevice, TerminalPlaybackDevice}
 import net.codingwell.scalaguice.{ScalaMapBinder, ScalaModule, ScalaMultibinder}
 
 class TerminalModule extends ScalaModule {
@@ -23,8 +23,6 @@ class TerminalModule extends ScalaModule {
     commands.addBinding.to[MidiCommand]
     commands.addBinding.to[QuantizeCommand]
     commands.addBinding.to[QuitCommand]
-
-    bind[Logger].to[TerminalLogger].asEagerSingleton()
 
     ScalaMapBinder.newMapBinder[String, RecordingDevice](binder)
       .addBinding("terminal").to[TerminalInputDevice]

@@ -1,6 +1,6 @@
 package application.component
 
-import application.ports.{Logger, ManagedResource}
+import application.ports.ManagedResource
 import javax.inject.Inject
 
 import scala.collection.immutable

@@ -1,7 +1,7 @@
 package application
 
 import application.component.ServiceRegistry.Settings
-import application.component.{Application, ResourceManager, ServiceRegistry, SynchronizedMessageBus}
+import application.component._
 import application.handler._
 import application.model.Idea.Idea_ID
 import application.model.Track.Track_ID
@@ -21,6 +21,7 @@ class CoreModule extends ScalaPrivateModule {
 
     bind[SynchronizedMessageBus].asEagerSingleton()
     bind[ResourceManager].asEagerSingleton()
+    bind[Logger].asEagerSingleton()
 
     requireBinding(new Key[KeyValueStorage[Idea_ID, Idea]]() {})
     requireBinding(new Key[KeyValueStorage[Track_ID, Track]]() {})
@@ -29,8 +30,6 @@ class CoreModule extends ScalaPrivateModule {
     bind[ServiceRegistry[PlaybackDevice]].asEagerSingleton()
     bind[Settings[RecordingDevice]].toInstance(Settings[RecordingDevice](allowsMultiple = false))
     bind[ServiceRegistry[RecordingDevice]].asEagerSingleton()
-
-    requireBinding(new Key[Logger]() {})
 
     // Configuration
     bind[Int].annotatedWithName("TicksPerQuarter") toInstance 96

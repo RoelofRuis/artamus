@@ -5,7 +5,7 @@ import java.util.concurrent.SynchronousQueue
 import application.command.ApplicationCommand.CloseApplication
 import application.command.Command
 import application.handler.CommandHandler
-import application.ports.{Logger, MessageBus}
+import application.ports.MessageBus
 import javax.inject.Inject
 
 import scala.collection.immutable

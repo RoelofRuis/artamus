@@ -2,10 +2,10 @@ package application.recording
 
 import java.util.concurrent.atomic.AtomicBoolean
 
-import application.component.ServiceRegistry
+import application.component.{Logger, ServiceRegistry}
 import application.model.Ticks
 import application.model.Track.TrackElements
-import application.ports.{Logger, RecordingDevice}
+import application.ports.RecordingDevice
 import application.recording.RecordingManager.RecordingException
 import javax.inject.{Inject, Named, Singleton}
 
