@@ -8,9 +8,9 @@ import scala.collection.immutable
 
 private[application] class Application @Inject() private (
   recordingRegistry: ServiceRegistry[RecordingDevice],
-  playbackRegistry: ServiceRegistry[PlaybackDevice],
   resourceManager: ResourceManager,
   messageBus: SynchronizedMessageBus,
+  eventBus: CoreEventBus,
   drivers: immutable.Map[String, Driver],
   logger: Logger
 ) extends ApplicationEntryPoint {
@@ -18,15 +18,14 @@ private[application] class Application @Inject() private (
   def run(): Unit = {
     // TODO: better way to assign app defaults, for now enable practical default services
     recordingRegistry.onlyActivate("midi")
-    playbackRegistry.onlyActivate("terminal")
 
     logger.debug("Starting drivers...")
     val driverThreads: Map[String, Thread] = drivers.map {
-      case (name, driver) => name -> new Thread(() => driver.run(messageBus))
+      case (name, driver) => name -> new Thread(() => driver.run(messageBus, eventBus))
     }
 
     if (driverThreads.isEmpty) {
-      logger.debug("No drivers registered, shutting down...")
+      logger.debug("No drivers registered...")
     }
 
     driverThreads.foreach { case (name, thread) =>
@@ -34,11 +33,9 @@ private[application] class Application @Inject() private (
       thread.start()
     }
 
-    logger.debug("Starting application...")
+    logger.debug("Accepting messages on message bus...")
 
-    while (messageBus.handle())
-
-    logger.debug(s"Threads: $driverThreads")
+    while (messageBus.handle()) {}
 
     driverThreads.foreach { case (name, thread) =>
       logger.debug(s"Waiting 5s for thread [$name] to join...")

@@ -1,13 +1,10 @@
-package interaction.terminal.device
+package interaction.terminal
 
 import application.model.Track
-import application.ports.PlaybackDevice
-import interaction.terminal.Prompt
-import javax.inject.Inject
 
-class TerminalPlaybackDevice @Inject() (prompt: Prompt) extends PlaybackDevice {
+object TerminalPlayback {
 
-  override def playback(track: Track): Unit = {
+  def playback(prompt: Prompt, track: Track): Unit = {
     val music = track.elements.map {
       case (timespan, note) =>
         s"[@${timespan.start.value}: ${note.pitch} for ${timespan.duration.value} at volume ${note.volume}]"

@@ -2,12 +2,11 @@ package application.handler
 
 import application.command.Command
 import application.command.TrackCommand._
-import application.component.ServiceRegistry
+import application.component.CoreEventBus
 import application.model.Idea.Idea_ID
 import application.model.Track
 import application.model.Track.{Track_ID, Unquantized}
 import application.model.repository.TrackRepository
-import application.ports.PlaybackDevice
 import application.quantization.TrackQuantizer
 import application.quantization.TrackQuantizer.Params
 import application.recording.RecordingManager
@@ -20,7 +19,7 @@ class TrackCommandHandler @Inject() (
   trackRepository: TrackRepository,
   quantizer: TrackQuantizer,
   @Named("TicksPerQuarter") recordingResolution: Int,
-  playback: ServiceRegistry[PlaybackDevice],
+  coreEventBus: CoreEventBus,
   recordingManager: RecordingManager
 ) extends CommandHandler {
 
@@ -45,7 +44,7 @@ class TrackCommandHandler @Inject() (
 
   private def play(id: Track_ID): Try[Unit] = {
     trackRepository.get(id).map { track =>
-      playback.useAllActive(_.playback(track))
+      coreEventBus.publish(track)
     }
   }
 

@@ -1,6 +1,6 @@
 package interaction.terminal
 
-import application.ports.{Driver, MessageBus}
+import application.ports.{Driver, EventBus, MessageBus}
 import interaction.terminal.command.{Command, Continue, ResponseFactory}
 import javax.inject.Inject
 
@@ -14,7 +14,16 @@ class TerminalDriver @Inject() (prompt: Prompt, unsortedCommands: immutable.Set[
 
   private val commands = immutable.SortedSet[Command]() ++ unsortedCommands
 
-  def run(bus: MessageBus): Unit = {
+  def run(bus: MessageBus, eventBus: EventBus): Unit = {
+    setSubscriptions(eventBus)
+    runInternal(bus)
+  }
+
+  private def setSubscriptions(eventBus: EventBus): Unit = {
+    eventBus.subscribe(t => TerminalPlayback.playback(prompt, t))
+  }
+
+  private def runInternal(bus: MessageBus): Unit = {
     val input: Array[String] = prompt.read("Enter command").split(" ")
 
     val commandName = input.headOption.getOrElse("")
@@ -28,7 +37,7 @@ class TerminalDriver @Inject() (prompt: Prompt, unsortedCommands: immutable.Set[
     }
 
     response.response.foreach(prompt.write)
-    if (response.action == Continue) run(bus)
+    if (response.action == Continue) runInternal(bus)
   }
 
   private def helpText: String = commands.map(c => s"${(c.name +: c.argsHelp.toSeq).mkString(" ")}: ${c.helpText}").mkString("\n")
