@@ -4,6 +4,9 @@ import javax.inject.Inject
 
 import scala.collection.immutable
 
+/**
+  * @deprecated Should be removed in favor of listeners and subscribers
+  */
 private[application] class ServiceRegistry[A] @Inject() (implementations: immutable.Map[String, A], settings: ServiceRegistry.Settings[A]) {
 
   private val services: Map[String, A] = implementations

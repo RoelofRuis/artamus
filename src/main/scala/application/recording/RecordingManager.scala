@@ -15,7 +15,7 @@ import scala.util.{Failure, Try}
 class RecordingManager @Inject() (
   @Named("TicksPerQuarter") resolution: Int,
   recordingDevice: ServiceRegistry[RecordingDevice],
-  logger: ServiceRegistry[Logger]
+  logger: Logger
 ) {
 
   private val isRecording: AtomicBoolean = new AtomicBoolean(false)
@@ -23,7 +23,7 @@ class RecordingManager @Inject() (
   def startRecording: Try[Unit] = {
     recordingDevice.mapHead { device =>
       if (isRecording.compareAndSet(false, true)) {
-        logger.useAllActive(_.debug("Recording started"))
+        logger.debug("Recording started")
         device.start(resolution).recoverWith {
           case e => Failure(RecordingException("start", "device", e.getMessage))
         }
@@ -35,7 +35,7 @@ class RecordingManager @Inject() (
   def stopRecording: Try[(Ticks, TrackElements)] = {
     recordingDevice.mapHead { device =>
       if (isRecording.compareAndSet(true, false)) {
-        logger.useAllActive(_.debug("Recording stopped"))
+        logger.debug("Recording stopped")
         device.stop().recoverWith {
           case e => Failure(RecordingException("stop", "device", e.getMessage))
         }

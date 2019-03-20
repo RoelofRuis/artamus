@@ -22,11 +22,10 @@ class TerminalModule extends ScalaModule {
     commands.addBinding.to[QuantizeCommand]
     commands.addBinding.to[QuitCommand]
 
+    bind[Logger].to[TerminalLogger].asEagerSingleton()
+
     ScalaMapBinder.newMapBinder[String, RecordingDevice](binder)
       .addBinding("terminal").to[TerminalInputDevice]
-
-    ScalaMapBinder.newMapBinder[String, Logger](binder)
-      .addBinding("terminal").to[TerminalLogger]
 
     ScalaMapBinder.newMapBinder[String, PlaybackDevice](binder)
       .addBinding("terminal").to[TerminalPlaybackDevice]

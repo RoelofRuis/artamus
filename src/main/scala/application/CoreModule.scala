@@ -31,8 +31,8 @@ class CoreModule extends ScalaPrivateModule {
     bind[ServiceRegistry[PlaybackDevice]].asEagerSingleton()
     bind[Settings[RecordingDevice]].toInstance(Settings[RecordingDevice](allowsMultiple = false))
     bind[ServiceRegistry[RecordingDevice]].asEagerSingleton()
-    bind[Settings[Logger]].toInstance(Settings[Logger](allowsMultiple = true))
-    bind[ServiceRegistry[Logger]].asEagerSingleton()
+
+    requireBinding(new Key[Logger]() {})
 
     // Configuration
     bind[Int].annotatedWithName("TicksPerQuarter") toInstance 96
