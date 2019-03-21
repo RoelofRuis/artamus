@@ -1,6 +1,6 @@
 package interaction.midi
 
-import application.ports.{ManagedResource, PlaybackDevice, RecordingDevice}
+import application.ports.{Driver, ManagedResource, RecordingDevice}
 import com.google.inject.internal.SingletonScope
 import interaction.midi.device._
 import javax.sound.midi.Sequencer
@@ -13,10 +13,10 @@ class MidiModule extends ScalaModule {
   override def configure(): Unit = {
     bind[MidiInterface].toProvider[FocusriteMidiInterfaceProvider]
 
-    bind[Sequencer].toProvider[SequencerProvider].in(new SingletonScope())
+    ScalaMapBinder.newMapBinder[String, Driver](binder)
+      .addBinding("midi").to[MidiDriver]
 
-    ScalaMapBinder.newMapBinder[String, PlaybackDevice](binder)
-      .addBinding("midi").to[MidiPlaybackDevice]
+    bind[Sequencer].toProvider[SequencerProvider].in(new SingletonScope())
 
     ScalaMapBinder.newMapBinder[String, RecordingDevice](binder)
       .addBinding("midi").to[MidiInputDevice]

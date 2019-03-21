@@ -1,13 +1,12 @@
 package interaction.midi.device
 
 import application.model.{Track => SymbolTrack}
-import application.ports.PlaybackDevice
 import javax.inject.{Inject, Provider}
 import javax.sound.midi._
 
-class MidiPlaybackDevice @Inject() (sequencerProvider: Provider[Sequencer]) extends PlaybackDevice {
+class MidiPlaybackDevice @Inject() (sequencerProvider: Provider[Sequencer]) {
 
-  override def playback(track: SymbolTrack): Unit = {
+  def playback(track: SymbolTrack): Unit = {
     val sequence = new Sequence(Sequence.PPQ, track.ticksPerQuarter.value.toInt)
 
     val midiTrack = sequence.createTrack()

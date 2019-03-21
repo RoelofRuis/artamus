@@ -1,5 +1,6 @@
 package application
 
+import application.channels.{Channel, Playback}
 import application.component.ServiceRegistry.Settings
 import application.component._
 import application.handler._
@@ -26,6 +27,11 @@ class CoreModule extends ScalaPrivateModule {
     requireBinding(new Key[KeyValueStorage[Idea_ID, Idea]]() {})
     requireBinding(new Key[KeyValueStorage[Track_ID, Track]]() {})
 
+    val playbackChannel = new Key[Channel[Playback.type]]() {}
+
+    bind(playbackChannel).asEagerSingleton()
+    expose(playbackChannel)
+
     bind[Settings[RecordingDevice]].toInstance(Settings[RecordingDevice](allowsMultiple = false))
     bind[ServiceRegistry[RecordingDevice]].asEagerSingleton()
 
@@ -40,11 +46,11 @@ class CoreModule extends ScalaPrivateModule {
     bind[IdeaRepository].asEagerSingleton()
     bind[TrackRepository].asEagerSingleton()
 
-    val controllers = ScalaMultibinder.newSetBinder[CommandHandler](binder)
-    controllers.addBinding.to[IdeaCommandHandler]
-    controllers.addBinding.to[ResourceCommandHandler]
-    controllers.addBinding.to[TrackCommandHandler]
-    controllers.addBinding.to[ApplicationCommandHandler]
+    val handlers = ScalaMultibinder.newSetBinder[CommandHandler](binder)
+    handlers.addBinding.to[IdeaCommandHandler]
+    handlers.addBinding.to[ResourceCommandHandler]
+    handlers.addBinding.to[TrackCommandHandler]
+    handlers.addBinding.to[ApplicationCommandHandler]
   }
 
 }

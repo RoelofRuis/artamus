@@ -1,17 +1,27 @@
 package application.channels
 
-class Channel[A] private () {
+import application.component.Logger
+import application.model.Track
+import javax.inject.Inject
 
-  private var subscribers: List[A => Unit] = List()
-
-  def sub(sub: A => Unit): Unit = subscribers +:= sub
-
-  def pub(obj: A): Unit = subscribers.foreach(_(obj))
-
+trait ChannelType {
+  type A
 }
 
-private[application] object Channel {
+case object Playback extends ChannelType { type A = Track }
 
-  def apply[A]: Channel[A] = new Channel[A]()
+class Channel[T <: ChannelType] @Inject()(logger: Logger) {
+
+  private var subscribers: List[T#A => Unit] = List()
+
+  def sub(sub: T#A => Unit): Unit = {
+    subscribers +:= sub
+  }
+
+  def pub(obj: T#A): Unit = {
+    logger.debug(s"Channel sends [$obj] to [${subscribers.size}] subs")
+
+    subscribers.foreach(_(obj))
+  }
 
 }
