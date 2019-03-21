@@ -10,7 +10,6 @@ private[application] class Application @Inject() private (
   recordingRegistry: ServiceRegistry[RecordingDevice],
   resourceManager: ResourceManager,
   messageBus: SynchronizedMessageBus,
-  eventBus: CoreEventBus,
   drivers: immutable.Map[String, Driver],
   logger: Logger
 ) extends ApplicationEntryPoint {
@@ -21,7 +20,7 @@ private[application] class Application @Inject() private (
 
     logger.debug("Starting drivers...")
     val driverThreads: Map[String, Thread] = drivers.map {
-      case (name, driver) => name -> new Thread(() => driver.run(messageBus, eventBus))
+      case (name, driver) => name -> new Thread(() => driver.run(messageBus))
     }
 
     if (driverThreads.isEmpty) {

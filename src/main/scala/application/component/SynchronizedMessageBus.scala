@@ -12,7 +12,7 @@ import scala.collection.immutable
 import scala.util.{Failure, Try}
 
 private[application] class SynchronizedMessageBus @Inject() private (
-  controllers: immutable.Set[CommandHandler],
+  handlers: immutable.Set[CommandHandler],
   logger: Logger
 ) extends MessageBus {
 
@@ -33,7 +33,7 @@ private[application] class SynchronizedMessageBus @Inject() private (
   def handle[Res](): Boolean = {
     val command = queueIn.take().asInstanceOf[Command[Res]]
 
-    val res: Try[Res] = controllers
+    val res: Try[Res] = handlers
       .map(_.handle[Res])
       .reduceLeft(_ orElse _)
       .lift(command)

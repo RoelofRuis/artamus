@@ -1,8 +1,8 @@
 package application.handler
 
+import application.channels.Channels
 import application.command.Command
 import application.command.TrackCommand._
-import application.component.CoreEventBus
 import application.model.Idea.Idea_ID
 import application.model.Track
 import application.model.Track.{Track_ID, Unquantized}
@@ -19,7 +19,6 @@ class TrackCommandHandler @Inject() (
   trackRepository: TrackRepository,
   quantizer: TrackQuantizer,
   @Named("TicksPerQuarter") recordingResolution: Int,
-  coreEventBus: CoreEventBus,
   recordingManager: RecordingManager
 ) extends CommandHandler {
 
@@ -44,7 +43,7 @@ class TrackCommandHandler @Inject() (
 
   private def play(id: Track_ID): Try[Unit] = {
     trackRepository.get(id).map { track =>
-      coreEventBus.publish(track)
+      Channels.PlaybackChannel.pub(track)
     }
   }
 

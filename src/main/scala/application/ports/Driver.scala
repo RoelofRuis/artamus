@@ -10,6 +10,6 @@ trait Driver {
     *
     * Drivers should use the message bus to communicate with the core.
     */
-  def run(messageBus: MessageBus, eventBus: EventBus): Unit
+  def run(messageBus: MessageBus): Unit
 
 }
