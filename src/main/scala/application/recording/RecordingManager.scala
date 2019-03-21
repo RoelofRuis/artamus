@@ -2,7 +2,7 @@ package application.recording
 
 import java.util.concurrent.atomic.AtomicBoolean
 
-import application.component.{Logger, ServiceRegistry}
+import application.component.Logger
 import application.model.Ticks
 import application.model.Track.TrackElements
 import application.ports.RecordingDevice
@@ -14,34 +14,30 @@ import scala.util.{Failure, Try}
 @Singleton
 class RecordingManager @Inject() (
   @Named("TicksPerQuarter") resolution: Int,
-  recordingDevice: ServiceRegistry[RecordingDevice],
+  device: RecordingDevice,
   logger: Logger
 ) {
 
   private val isRecording: AtomicBoolean = new AtomicBoolean(false)
 
   def startRecording: Try[Unit] = {
-    recordingDevice.mapHead { device =>
-      if (isRecording.compareAndSet(false, true)) {
-        logger.debug("Recording started")
-        device.start(resolution).recoverWith {
-          case e => Failure(RecordingException("start", "device", e.getMessage))
-        }
+    if (isRecording.compareAndSet(false, true)) {
+      logger.debug("Recording started")
+      device.start(resolution).recoverWith {
+        case e => Failure(RecordingException("start", "device", e.getMessage))
       }
-      else Failure(RecordingException("start", "state", "Unable to start recording twice"))
-    } getOrElse Failure(RecordingException("start", "state", "No recording device configured"))
+    }
+    else Failure(RecordingException("start", "state", "Unable to start recording twice"))
   }
 
   def stopRecording: Try[(Ticks, TrackElements)] = {
-    recordingDevice.mapHead { device =>
-      if (isRecording.compareAndSet(true, false)) {
-        logger.debug("Recording stopped")
-        device.stop().recoverWith {
-          case e => Failure(RecordingException("stop", "device", e.getMessage))
-        }
+    if (isRecording.compareAndSet(true, false)) {
+      logger.debug("Recording stopped")
+      device.stop().recoverWith {
+        case e => Failure(RecordingException("stop", "device", e.getMessage))
       }
-      else Failure(RecordingException("stop", "state", "Unable to stop recording twice"))
-    } getOrElse Failure(RecordingException("stop", "state", "No recording device configured"))
+    }
+    else Failure(RecordingException("stop", "state", "Unable to stop recording twice"))
   }
 }
 

@@ -17,9 +17,7 @@ class MidiModule extends ScalaModule {
       .addBinding("midi").to[MidiDriver]
 
     bind[Sequencer].toProvider[SequencerProvider].in(new SingletonScope())
-
-    ScalaMapBinder.newMapBinder[String, RecordingDevice](binder)
-      .addBinding("midi").to[MidiInputDevice]
+    bind[RecordingDevice].to[MidiInputDevice]
 
     bind[ResourceContainer].toInstance(resourceContainer)
     ScalaMultibinder.newSetBinder[ManagedResource](binder)

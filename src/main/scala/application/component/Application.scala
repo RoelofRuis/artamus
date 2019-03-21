@@ -7,7 +7,6 @@ import javax.inject.Inject
 import scala.collection.immutable
 
 private[application] class Application @Inject() private (
-  recordingRegistry: ServiceRegistry[RecordingDevice],
   resourceManager: ResourceManager,
   messageBus: SynchronizedMessageBus,
   drivers: immutable.Map[String, Driver],
@@ -15,9 +14,6 @@ private[application] class Application @Inject() private (
 ) extends ApplicationEntryPoint {
 
   def run(): Unit = {
-    // TODO: better way to assign app defaults, for now enable practical default services
-    recordingRegistry.onlyActivate("midi")
-
     logger.debug("Starting drivers...")
     val driverThreads: Map[String, Thread] = drivers.map {
       case (name, driver) => name -> new Thread(() => driver.run(messageBus))
