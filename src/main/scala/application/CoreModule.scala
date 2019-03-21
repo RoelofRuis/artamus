@@ -1,6 +1,6 @@
 package application
 
-import application.channels.{Channel, Playback}
+import application.channels.{Channel, Logging, Playback}
 import application.component.ServiceRegistry.Settings
 import application.component._
 import application.handler._
@@ -27,8 +27,11 @@ class CoreModule extends ScalaPrivateModule {
     requireBinding(new Key[KeyValueStorage[Idea_ID, Idea]]() {})
     requireBinding(new Key[KeyValueStorage[Track_ID, Track]]() {})
 
-    val playbackChannel = new Key[Channel[Playback.type]]() {}
+    val loggingChannel = new Key[Channel[Logging.type]]() {}
+    bind(loggingChannel).asEagerSingleton()
+    expose(loggingChannel)
 
+    val playbackChannel = new Key[Channel[Playback.type]]() {}
     bind(playbackChannel).asEagerSingleton()
     expose(playbackChannel)
 

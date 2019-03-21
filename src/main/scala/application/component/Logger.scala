@@ -1,10 +1,10 @@
 package application.component
 
-// Improve logging later
-private[application] class Logger {
+import application.channels.{Channel, Logging}
+import com.google.inject.Inject
 
-  def debug(text: String): Unit = {
-    println(s"[DEBUG] $text")
-  }
+private[application] class Logger @Inject() (channel: Channel[Logging.type]) {
+
+  def debug(text: String): Unit = channel.pub(s"[DEBUG] $text")
 
 }

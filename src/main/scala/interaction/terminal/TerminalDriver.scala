@@ -1,6 +1,6 @@
 package interaction.terminal
 
-import application.channels.{Channel, Playback}
+import application.channels.{Channel, Logging, Playback}
 import application.model.Track
 import application.ports.{Driver, MessageBus}
 import interaction.terminal.command.{Command, Continue, ResponseFactory}
@@ -11,7 +11,8 @@ import scala.collection.immutable
 class TerminalDriver @Inject() (
   prompt: Prompt,
   unsortedCommands: immutable.Set[Command],
-  playbackChannel: Channel[Playback.type]
+  playbackChannel: Channel[Playback.type],
+  loggingChannel: Channel[Logging.type]
 ) extends Driver with ResponseFactory {
 
   implicit object CommandOrdering extends Ordering[Command] {
@@ -27,6 +28,7 @@ class TerminalDriver @Inject() (
 
   private def setSubscriptions(): Unit = {
     playbackChannel.sub((t: Track) => TerminalPlayback.playback(prompt, t))
+    loggingChannel.sub((s: String) => prompt.write(s))
   }
 
   private def runInternal(bus: MessageBus): Unit = {
