@@ -5,25 +5,26 @@ import application.component.DomainEventBus.{Channel, TypedMap}
 
 import scala.reflect.runtime.universe._
 import application.ports.EventBus
+import javax.inject.Inject
 
-private[application] class DomainEventBus extends EventBus {
+private[application] class DomainEventBus @Inject() (logger: Logger) extends EventBus {
 
   private var channels: TypedMap[EventMessage, Channel] = new TypedMap
 
-  def subscribe[M <: EventMessage: TypeTag](f: M => Unit): Unit = synchronized {
-    if (channels.get[M].isEmpty) {
-      channels = channels.add[M](new Channel[M])
+  def subscribe[A <: EventMessage: TypeTag](f: A => Unit): Unit = synchronized {
+    logger.io("EVENTBUS", "SUB", s"$f")
+
+    if (channels.get[A].isEmpty) {
+      channels = channels.add[A](new Channel[A])
     }
 
-    channels.get[M].foreach(c => c.sub(f))
+    channels.get[A].foreach(c => c.subscribe(f))
   }
 
-  def publish[M <: EventMessage: TypeTag](msg: M): Boolean = {
-    channels.get[M]
-      .exists { c =>
-        c.pub(msg)
-        true
-      }
+  def publish[A <: EventMessage: TypeTag](event: A): Unit = {
+    logger.io("EVENTBUS", "PUB", s"$event")
+
+    channels.get[A].foreach(c => c.publish(event))
   }
 
 }
@@ -50,8 +51,8 @@ object DomainEventBus {
 
     private var subscribers: List[M => Unit] = List()
 
-    def sub(sub: M => Unit): Unit = subscribers +:= sub
+    def subscribe(sub: M => Unit): Unit = subscribers +:= sub
 
-    def pub(msg: M): Unit = subscribers.foreach(_(msg))
+    def publish(msg: M): Unit = subscribers.foreach(_(msg))
   }
 }

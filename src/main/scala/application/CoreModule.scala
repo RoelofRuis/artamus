@@ -1,5 +1,6 @@
 package application
 
+import application.component.Logger.CmdLogger
 import application.component._
 import application.handler._
 import application.model.Idea.Idea_ID
@@ -21,8 +22,9 @@ class CoreModule extends ScalaPrivateModule {
     bind[SynchronizedMessageBus].asEagerSingleton()
     bind[DomainEventBus].asEagerSingleton()
 
+    bind[Logger].to[CmdLogger].asEagerSingleton()
+
     bind[ResourceManager].asEagerSingleton()
-    bind[Logger].asEagerSingleton()
 
     requireBinding(new Key[KeyValueStorage[Idea_ID, Idea]]() {})
     requireBinding(new Key[KeyValueStorage[Track_ID, Track]]() {})

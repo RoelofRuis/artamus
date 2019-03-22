@@ -20,12 +20,12 @@ private[application] class SynchronizedMessageBus @Inject() private (
   private val queueOut: SynchronousQueue[Try[_]] = new SynchronousQueue[Try[_]]()
 
   def execute[Res](command: Command[Res]): Try[Res] = synchronized {
-    logger.debug(s"Message Bus received [$command]")
+    logger.io("MESSAGE BUS", "EXE", s"$command")
 
     queueIn.put(command)
     val res = queueOut.take().flatMap(res => Try(res.asInstanceOf[Res]))
 
-    logger.debug(s"Handled with result [$res]")
+    logger.io("MESSAGE BUS", "RES",s"$res")
 
     res
   }

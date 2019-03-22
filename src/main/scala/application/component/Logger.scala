@@ -1,10 +1,20 @@
 package application.component
 
-import application.channels.LoggedMessage
-import com.google.inject.Inject
+private[application] trait Logger {
 
-private[application] class Logger @Inject() (eventBus: DomainEventBus) {
+  def debug(text: String): Unit
 
-  def debug(text: String): Unit = eventBus.publish(LoggedMessage(s"[DEBUG] $text"))
+  def io(component: String, action: String, msg: String): Unit
 
+}
+
+object Logger {
+
+  class CmdLogger extends Logger {
+
+    def debug(text: String): Unit = println(s"[DEBUG] $text")
+
+    def io(component: String, action: String, msg: String): Unit = println(s"<IO> [$component: $action] [$msg]")
+
+  }
 }

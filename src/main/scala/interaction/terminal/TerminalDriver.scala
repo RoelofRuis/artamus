@@ -25,7 +25,6 @@ class TerminalDriver @Inject() (
 
   private def setSubscriptions(eventBus: EventBus): Unit = {
     eventBus.subscribe[PlaybackRequest](r => TerminalPlayback.playback(prompt, r.track))
-    eventBus.subscribe[LoggedMessage](m => prompt.write(m.content))
   }
 
   private def runInternal(bus: MessageBus): Unit = {
