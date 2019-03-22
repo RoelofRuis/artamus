@@ -1,8 +1,9 @@
 package application.handler
 
-import application.channels.{Channel, Playback}
+import application.channels.PlaybackRequest
 import application.command.Command
 import application.command.TrackCommand._
+import application.component.DomainEventBus
 import application.model.Idea.Idea_ID
 import application.model.Track
 import application.model.Track.{Track_ID, Unquantized}
@@ -20,7 +21,7 @@ class TrackCommandHandler @Inject() (
   quantizer: TrackQuantizer,
   @Named("TicksPerQuarter") recordingResolution: Int,
   recordingManager: RecordingManager,
-  playbackChannel: Channel[Playback.type]
+  eventBus: DomainEventBus
 ) extends CommandHandler {
 
   override def handle[Res]: PartialFunction[Command[Res], Try[Res]] = {
@@ -44,7 +45,7 @@ class TrackCommandHandler @Inject() (
 
   private def play(id: Track_ID): Try[Unit] = {
     trackRepository.get(id).map { track =>
-      playbackChannel.pub(track)
+      eventBus.publish(PlaybackRequest(track))
     }
   }
 

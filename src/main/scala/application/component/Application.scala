@@ -9,6 +9,7 @@ import scala.collection.immutable
 private[application] class Application @Inject() private (
   resourceManager: ResourceManager,
   messageBus: SynchronizedMessageBus,
+  eventBus: DomainEventBus,
   drivers: immutable.Map[String, Driver],
   logger: Logger
 ) extends ApplicationEntryPoint {
@@ -16,7 +17,7 @@ private[application] class Application @Inject() private (
   def run(): Unit = {
     logger.debug("Starting drivers...")
     val driverThreads: Map[String, Thread] = drivers.map {
-      case (name, driver) => name -> new Thread(() => driver.run(messageBus))
+      case (name, driver) => name -> new Thread(() => driver.run(messageBus, eventBus))
     }
 
     if (driverThreads.isEmpty) {

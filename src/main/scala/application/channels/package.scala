@@ -4,11 +4,9 @@ import application.model.Track
 
 package object channels {
 
-  trait ChannelType {
-    type A
-  }
+  trait EventMessage
 
-  case object Playback extends ChannelType { type A = Track }
-  case object Logging extends ChannelType { type A = String }
+  case class LoggedMessage(content: String) extends EventMessage
+  case class PlaybackRequest(track: Track) extends EventMessage
 
 }

@@ -1,6 +1,5 @@
 package application
 
-import application.channels.{Channel, Logging, Playback}
 import application.component._
 import application.handler._
 import application.model.Idea.Idea_ID
@@ -20,20 +19,14 @@ class CoreModule extends ScalaPrivateModule {
     expose[ApplicationEntryPoint]
 
     bind[SynchronizedMessageBus].asEagerSingleton()
+    bind[DomainEventBus].asEagerSingleton()
+
     bind[ResourceManager].asEagerSingleton()
     bind[Logger].asEagerSingleton()
 
     requireBinding(new Key[KeyValueStorage[Idea_ID, Idea]]() {})
     requireBinding(new Key[KeyValueStorage[Track_ID, Track]]() {})
     requireBinding(new Key[RecordingDevice]() {})
-
-    val loggingChannel = new Key[Channel[Logging.type]]() {}
-    bind(loggingChannel).asEagerSingleton()
-    expose(loggingChannel)
-
-    val playbackChannel = new Key[Channel[Playback.type]]() {}
-    bind(playbackChannel).asEagerSingleton()
-    expose(playbackChannel)
 
     // Configuration
     bind[Int].annotatedWithName("TicksPerQuarter") toInstance 96

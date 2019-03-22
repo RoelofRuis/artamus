@@ -1,8 +1,7 @@
 package interaction.terminal
 
-import application.channels.{Channel, Logging, Playback}
-import application.model.Track
-import application.ports.{Driver, MessageBus}
+import application.channels._
+import application.ports.{Driver, EventBus, MessageBus}
 import interaction.terminal.command.{Command, Continue, ResponseFactory}
 import javax.inject.Inject
 
@@ -10,9 +9,7 @@ import scala.collection.immutable
 
 class TerminalDriver @Inject() (
   prompt: Prompt,
-  unsortedCommands: immutable.Set[Command],
-  playbackChannel: Channel[Playback.type],
-  loggingChannel: Channel[Logging.type]
+  unsortedCommands: immutable.Set[Command]
 ) extends Driver with ResponseFactory {
 
   implicit object CommandOrdering extends Ordering[Command] {
@@ -21,14 +18,14 @@ class TerminalDriver @Inject() (
 
   private val commands = immutable.SortedSet[Command]() ++ unsortedCommands
 
-  def run(bus: MessageBus): Unit = {
-    setSubscriptions()
+  def run(bus: MessageBus, eventBus: EventBus): Unit = {
+    setSubscriptions(eventBus)
     runInternal(bus)
   }
 
-  private def setSubscriptions(): Unit = {
-    playbackChannel.sub((t: Track) => TerminalPlayback.playback(prompt, t))
-    loggingChannel.sub((s: String) => prompt.write(s))
+  private def setSubscriptions(eventBus: EventBus): Unit = {
+    eventBus.subscribe[PlaybackRequest](r => TerminalPlayback.playback(prompt, r.track))
+    eventBus.subscribe[LoggedMessage](m => prompt.write(m.content))
   }
 
   private def runInternal(bus: MessageBus): Unit = {

@@ -1,10 +1,10 @@
 package application.component
 
-import application.channels.{Channel, Logging}
+import application.channels.LoggedMessage
 import com.google.inject.Inject
 
-private[application] class Logger @Inject() (channel: Channel[Logging.type]) {
+private[application] class Logger @Inject() (eventBus: DomainEventBus) {
 
-  def debug(text: String): Unit = channel.pub(s"[DEBUG] $text")
+  def debug(text: String): Unit = eventBus.publish(LoggedMessage(s"[DEBUG] $text"))
 
 }
