@@ -5,6 +5,9 @@ import javax.inject.Inject
 
 import scala.collection.immutable
 
+/**
+  * @deprecated Drivers should manage their own resources
+  */
 private[application] class ResourceManager @Inject() (resources: immutable.Set[ManagedResource], logger: Logger) {
 
   def getRegisteredResources: Vector[String] = resources.map(_.getDescription).toVector
