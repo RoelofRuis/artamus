@@ -24,8 +24,6 @@ class CoreModule extends ScalaPrivateModule {
 
     bind[Logger].to[CmdLogger].asEagerSingleton()
 
-    bind[ResourceManager].asEagerSingleton()
-
     requireBinding(new Key[KeyValueStorage[Idea_ID, Idea]]() {})
     requireBinding(new Key[KeyValueStorage[Track_ID, Track]]() {})
     requireBinding(new Key[RecordingDevice]() {})
@@ -43,7 +41,6 @@ class CoreModule extends ScalaPrivateModule {
 
     val handlers = ScalaMultibinder.newSetBinder[CommandHandler](binder)
     handlers.addBinding.to[IdeaCommandHandler]
-    handlers.addBinding.to[ResourceCommandHandler]
     handlers.addBinding.to[TrackCommandHandler]
     handlers.addBinding.to[ApplicationCommandHandler]
   }

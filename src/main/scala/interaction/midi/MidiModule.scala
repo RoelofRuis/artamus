@@ -1,10 +1,10 @@
 package interaction.midi
 
-import application.ports.{Driver, ManagedResource, RecordingDevice}
+import application.ports.{Driver, RecordingDevice}
 import com.google.inject.internal.SingletonScope
 import interaction.midi.device._
 import javax.sound.midi.Sequencer
-import net.codingwell.scalaguice.{ScalaMapBinder, ScalaModule, ScalaMultibinder}
+import net.codingwell.scalaguice.{ScalaMapBinder, ScalaModule}
 
 class MidiModule extends ScalaModule {
 
@@ -20,8 +20,6 @@ class MidiModule extends ScalaModule {
     bind[RecordingDevice].to[MidiInputDevice]
 
     bind[ResourceContainer].toInstance(resourceContainer)
-    ScalaMultibinder.newSetBinder[ManagedResource](binder)
-      .addBinding.toInstance(resourceContainer)
   }
 
 }

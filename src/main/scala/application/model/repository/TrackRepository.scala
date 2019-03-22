@@ -27,7 +27,7 @@ class TrackRepository @Inject() (storage: KeyValueStorage[Track_ID, Track]) {
   def get(id: Track_ID): Try[Track] = {
     storage.get(id) match {
       case Some(idea) => Success(idea)
-      case None => Failure(NotFoundException(s"No Idea with ID [$id]"))
+      case None => Failure(NotFoundException(s"No Track with ID [$id]"))
     }
   }
 

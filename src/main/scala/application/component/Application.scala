@@ -7,7 +7,6 @@ import javax.inject.Inject
 import scala.collection.immutable
 
 private[application] class Application @Inject() private (
-  resourceManager: ResourceManager,
   messageBus: SynchronizedMessageBus,
   eventBus: DomainEventBus,
   drivers: immutable.Map[String, Driver],
@@ -16,16 +15,17 @@ private[application] class Application @Inject() private (
 
   def run(): Unit = {
     logger.debug("Starting drivers...")
-    val driverThreads: Map[String, Thread] = drivers.map {
-      case (name, driver) => name -> new Thread(() => driver.run(messageBus, eventBus))
+
+    val driverThreads: Map[String, (Driver, Thread)] = drivers.map {
+      case (name, driver) => name -> (driver, new Thread(() => driver.run(messageBus, eventBus)))
     }
 
     if (driverThreads.isEmpty) {
       logger.debug("No drivers registered...")
     }
 
-    driverThreads.foreach { case (name, thread) =>
-      logger.debug(s"Starting driver [$name]")
+    driverThreads.foreach { case (name, (_, thread)) =>
+      logger.debug(s"Starting driver thread [$name]")
       thread.start()
     }
 
@@ -33,13 +33,12 @@ private[application] class Application @Inject() private (
 
     while (messageBus.handle()) {}
 
-    driverThreads.foreach { case (name, thread) =>
+    driverThreads.foreach { case (name, (driver, thread)) =>
+      logger.debug(s"Closing driver [$name]")
+      driver.close()
       logger.debug(s"Waiting 5s for thread [$name] to join...")
       thread.join(5000)
     }
-
-    logger.debug("Closing resources...")
-    resourceManager.closeAll()
   }
 
 }
