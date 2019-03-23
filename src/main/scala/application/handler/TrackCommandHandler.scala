@@ -4,7 +4,6 @@ import application.api.Commands._
 import application.api.Events.PlaybackRequest
 import application.interact.DomainEventBus
 import application.domain.Idea.Idea_ID
-import application.domain.Track
 import application.domain.Track.{Track_ID, Unquantized}
 import application.domain.repository.TrackRepository
 import application.service.quantization.TrackQuantizer
@@ -28,10 +27,9 @@ class TrackCommandHandler @Inject() (
     case StoreRecorded(ideaId) => storeRecorded(ideaId)
     case Quantize(trackId, subdivision, gridErrorMultiplier) => quantize(trackId, subdivision, gridErrorMultiplier)
     case Play(trackId) => play(trackId)
-    case GetAll => Success(trackRepository.getAll)
   }
 
-  private def storeRecorded(ideaId: Idea_ID): Try[Track] = {
+  private def storeRecorded(ideaId: Idea_ID): Try[(Track_ID, Int)] = {
     recordingManager.stopRecording.map { case (ticks, elements) =>
       trackRepository.add(
         ideaId,
@@ -39,7 +37,7 @@ class TrackCommandHandler @Inject() (
         ticks,
         elements
       )
-    }
+    }.map(t => (t.id, t.elements.size))
   }
 
   private def play(id: Track_ID): Try[Unit] = {
@@ -48,7 +46,7 @@ class TrackCommandHandler @Inject() (
     }
   }
 
-  def quantize(id: Track_ID, subdivision: Int, gridErrorMultiplier: Int): Try[Track] = {
+  def quantize(id: Track_ID, subdivision: Int, gridErrorMultiplier: Int): Try[Track_ID] = {
     val quantizationParams = Params(
       recordingResolution / 16,
       recordingResolution * 2,
@@ -66,6 +64,6 @@ class TrackCommandHandler @Inject() (
           newTicksPerQuarter,
           newElements
         )
-      }
+      }.map(_.id)
   }
 }

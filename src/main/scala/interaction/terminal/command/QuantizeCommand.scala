@@ -21,7 +21,7 @@ class QuantizeCommand extends Command {
       bus.execute(Quantize(id, subdivision, gridErrorMultiplier))
         .fold(
           ex => display(s"Unable to quantize idea [$ex]"),
-          track => display(s"Quantized and stored as track [${track.id}]")
+          trackId => display(s"Quantized and stored as track [$trackId]")
         )
     }
 

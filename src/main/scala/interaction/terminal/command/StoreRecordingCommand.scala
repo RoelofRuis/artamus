@@ -2,6 +2,7 @@ package interaction.terminal.command
 
 import application.api.Commands.StoreRecorded
 import application.api.CommandBus
+import application.domain.Track.Track_ID
 import application.domain.{ID, Idea}
 
 import scala.util.Try
@@ -13,14 +14,14 @@ class StoreRecordingCommand extends Command {
   override val argsHelp = Some("[idea id: Int]")
 
   def execute(bus: CommandBus, args: Array[String]): CommandResponse = {
-    val res = for {
+    val res: Try[(Track_ID, Int)] = for {
       ideaId <- Try(ID[Idea](args(0).toLong))
-      track <- bus.execute(StoreRecorded(ideaId))
-    } yield track
+      (trackId, lenght) <- bus.execute(StoreRecorded(ideaId))
+    } yield (trackId, lenght)
 
     res.fold(
       ex => display(s"Could not store recording: $ex"),
-      track => display(s"Stored ${track.id} with num events [${track.elements.size}]")
+      data => display(s"Stored ${data._1} with num events [${data._2}]")
     )
   }
 }

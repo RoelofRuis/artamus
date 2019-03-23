@@ -1,12 +1,12 @@
 package application.api
 
-// TODO: Remove references to domain types, use DTO's for communication between layers
 import application.domain.Track
 
 object Events {
 
   trait EventMessage
 
+  // TODO: Separate Track from a `playable` equivalent that is to be broadcasted
   case class PlaybackRequest(track: Track) extends EventMessage
 
 }
