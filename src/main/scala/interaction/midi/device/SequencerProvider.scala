@@ -6,7 +6,7 @@ import javax.sound.midi._
 
 class SequencerProvider @Inject() (
   resourceContainer: ResourceContainer,
-  interfaceProvider: Provider[MidiInterface],
+  interfaceProvider: Provider[MidiInterface]
 ) extends Provider[Sequencer] {
 
   override lazy val get: Sequencer = {

@@ -1,7 +1,7 @@
 package interaction.midi
 
-import application.api.{Driver, EventBus, CommandBus}
 import application.api.Events.PlaybackRequest
+import application.api.{CommandBus, Driver, EventBus}
 import interaction.midi.device.MidiPlaybackDevice
 import javax.inject.Inject
 
