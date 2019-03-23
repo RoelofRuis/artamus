@@ -8,8 +8,6 @@ import net.codingwell.scalaguice.{ScalaMapBinder, ScalaModule}
 
 class MidiModule extends ScalaModule {
 
-  private val resourceContainer = new ResourceContainer("MIDI")
-
   override def configure(): Unit = {
     bind[MidiInterface].toProvider[FocusriteMidiInterfaceProvider]
 
@@ -19,7 +17,7 @@ class MidiModule extends ScalaModule {
     bind[Sequencer].toProvider[SequencerProvider].in(new SingletonScope())
     bind[RecordingDevice].to[MidiInputDevice]
 
-    bind[ResourceContainer].toInstance(resourceContainer)
+    bind[ResourceContainer].toInstance(new ResourceContainer("MIDI"))
   }
 
 }
