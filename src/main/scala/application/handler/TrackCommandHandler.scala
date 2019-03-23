@@ -1,16 +1,15 @@
 package application.handler
 
-import application.channels.PlaybackRequest
-import application.command.Command
-import application.command.TrackCommand._
-import application.component.DomainEventBus
-import application.model.Idea.Idea_ID
-import application.model.Track
-import application.model.Track.{Track_ID, Unquantized}
-import application.model.repository.TrackRepository
-import application.quantization.TrackQuantizer
-import application.quantization.TrackQuantizer.Params
-import application.recording.RecordingManager
+import application.api.Commands._
+import application.api.Events.PlaybackRequest
+import application.interact.DomainEventBus
+import application.domain.Idea.Idea_ID
+import application.domain.Track
+import application.domain.Track.{Track_ID, Unquantized}
+import application.domain.repository.TrackRepository
+import application.service.quantization.TrackQuantizer
+import application.service.quantization.TrackQuantizer.Params
+import application.service.recording.RecordingManager
 import javax.inject.{Inject, Named}
 
 import scala.util.{Failure, Success, Try}

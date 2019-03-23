@@ -1,8 +1,7 @@
 package application.handler
 
-import application.command.Command
-import application.command.IdeaCommand.{CreateIdea, GetIdea}
-import application.model.repository.IdeaRepository
+import application.api.Commands.{Command, CreateIdea, GetIdea}
+import application.domain.repository.IdeaRepository
 import javax.inject.Inject
 
 import scala.util.{Success, Try}

@@ -1,9 +1,9 @@
 package storage
 
-import application.model.Idea.Idea_ID
-import application.model.Track.Track_ID
-import application.model._
-import application.ports.KeyValueStorage
+import application.api.KeyValueStorage
+import application.domain.Idea.Idea_ID
+import application.domain.Track.Track_ID
+import application.domain._
 import net.codingwell.scalaguice.ScalaModule
 import storage.memory.InMemoryKeyValueStorage
 

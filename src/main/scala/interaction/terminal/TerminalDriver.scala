@@ -1,7 +1,7 @@
 package interaction.terminal
 
-import application.channels._
-import application.ports.{Driver, EventBus, MessageBus}
+import application.api.{Driver, EventBus, CommandBus}
+import application.api.Events.PlaybackRequest
 import interaction.terminal.command.{Command, Continue, ResponseFactory}
 import javax.inject.Inject
 
@@ -18,7 +18,7 @@ class TerminalDriver @Inject() (
 
   private val commands = immutable.SortedSet[Command]() ++ unsortedCommands
 
-  def run(bus: MessageBus, eventBus: EventBus): Unit = {
+  def run(bus: CommandBus, eventBus: EventBus): Unit = {
     setSubscriptions(eventBus)
     runInternal(bus)
   }
@@ -27,7 +27,7 @@ class TerminalDriver @Inject() (
     eventBus.subscribe[PlaybackRequest](r => TerminalPlayback.playback(prompt, r.track))
   }
 
-  private def runInternal(bus: MessageBus): Unit = {
+  private def runInternal(bus: CommandBus): Unit = {
     val input: Array[String] = prompt.read("Enter command").split(" ")
 
     val commandName = input.headOption.getOrElse("")

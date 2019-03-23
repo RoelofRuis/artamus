@@ -1,6 +1,6 @@
 package interaction.terminal
 
-import application.ports._
+import application.api.{Driver, RecordingDevice}
 import interaction.terminal.command._
 import interaction.terminal.device.TerminalInputDevice
 import net.codingwell.scalaguice.{ScalaMapBinder, ScalaModule, ScalaMultibinder}

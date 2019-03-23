@@ -1,8 +1,8 @@
-package application.model.repository
+package application.domain.repository
 
-import application.model.Idea.Idea_ID
-import application.model.{ID, Idea}
-import application.ports.KeyValueStorage
+import application.api.KeyValueStorage
+import application.domain.Idea.Idea_ID
+import application.domain.{ID, Idea}
 import javax.inject.Inject
 
 import scala.util.{Failure, Success, Try}

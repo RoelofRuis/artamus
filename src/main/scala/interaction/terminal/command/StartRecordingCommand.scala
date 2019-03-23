@@ -1,14 +1,14 @@
 package interaction.terminal.command
 
-import application.ports.MessageBus
-import application.command.TrackCommand.StartRecording
+import application.api.Commands.StartRecording
+import application.api.CommandBus
 
 class StartRecordingCommand extends Command {
 
   val name = "rec"
   val helpText = "Start recording"
 
-  def execute(bus: MessageBus, args: Array[String]): CommandResponse = {
+  def execute(bus: CommandBus, args: Array[String]): CommandResponse = {
     bus.execute(StartRecording)
       .fold(
         ex => display(s"$ex"),

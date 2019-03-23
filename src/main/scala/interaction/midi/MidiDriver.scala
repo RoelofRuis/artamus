@@ -1,7 +1,7 @@
 package interaction.midi
 
-import application.channels.PlaybackRequest
-import application.ports.{Driver, EventBus, MessageBus}
+import application.api.{Driver, EventBus, CommandBus}
+import application.api.Events.PlaybackRequest
 import interaction.midi.device.MidiPlaybackDevice
 import javax.inject.Inject
 
@@ -12,7 +12,7 @@ class MidiDriver @Inject() (
 
   override def close(): Unit = resourceContainer.close()
 
-  override def run(messageBus: MessageBus, eventBus: EventBus): Unit = {
+  override def run(messageBus: CommandBus, eventBus: EventBus): Unit = {
     eventBus.subscribe[PlaybackRequest](request => midiPlayback.playback(request.track))
   }
 

@@ -1,13 +1,13 @@
-package application.component
+package application
 
-import application.ApplicationEntryPoint
-import application.ports._
+import application.api.Driver
+import application.interact.{DomainEventBus, Logger, SynchronizedCommandBus}
 import javax.inject.Inject
 
 import scala.collection.immutable
 
 private[application] class Application @Inject() private (
-  messageBus: SynchronizedMessageBus,
+  messageBus: SynchronizedCommandBus,
   eventBus: DomainEventBus,
   drivers: immutable.Map[String, Driver],
   logger: Logger

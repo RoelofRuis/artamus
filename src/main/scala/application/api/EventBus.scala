@@ -1,8 +1,8 @@
-package application.ports
-
-import application.channels.EventMessage
+package application.api
 
 import scala.reflect.runtime.universe._
+
+import application.api.Events.EventMessage
 
 trait EventBus {
 

@@ -1,9 +1,9 @@
-package application.model.repository
+package application.domain.repository
 
-import application.model.Idea.Idea_ID
-import application.model.Track.{TrackElements, TrackType, Track_ID}
-import application.model._
-import application.ports.KeyValueStorage
+import application.api.KeyValueStorage
+import application.domain.Idea.Idea_ID
+import application.domain.Track.{TrackElements, TrackType, Track_ID}
+import application.domain._
 import javax.inject.Inject
 
 import scala.util.{Failure, Success, Try}

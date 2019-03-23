@@ -1,4 +1,4 @@
-package application.ports
+package application.api
 
 /**
   * Simple key value storage.

@@ -1,6 +1,6 @@
 package interaction.midi.device
 
-import application.model.{Track => SymbolTrack}
+import application.domain.{Track => SymbolTrack}
 import javax.inject.{Inject, Provider}
 import javax.sound.midi._
 

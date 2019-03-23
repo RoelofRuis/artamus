@@ -1,10 +1,10 @@
-package application.component
+package application.interact
 
-import application.channels.EventMessage
-import application.component.DomainEventBus.{Channel, TypedMap}
+import application.api.EventBus
+import application.api.Events.EventMessage
+import application.interact.DomainEventBus.{Channel, TypedMap}
 
 import scala.reflect.runtime.universe._
-import application.ports.EventBus
 import javax.inject.Inject
 
 private[application] class DomainEventBus @Inject() (logger: Logger) extends EventBus {

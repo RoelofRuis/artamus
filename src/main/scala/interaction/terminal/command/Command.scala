@@ -1,6 +1,6 @@
 package interaction.terminal.command
 
-import application.ports.MessageBus
+import application.api.CommandBus
 
 import scala.util.Try
 
@@ -10,7 +10,7 @@ trait Command extends ResponseFactory {
   val helpText: String
   val argsHelp: Option[String] = None
 
-  def execute(bus: MessageBus, args: Array[String]): CommandResponse
+  def execute(bus: CommandBus, args: Array[String]): CommandResponse
 
   protected def returnRecovered(response: Try[CommandResponse]): CommandResponse = {
     response.recover {

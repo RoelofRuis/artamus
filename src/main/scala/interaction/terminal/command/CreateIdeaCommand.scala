@@ -1,7 +1,7 @@
 package interaction.terminal.command
 
-import application.command.IdeaCommand.CreateIdea
-import application.ports.MessageBus
+import application.api.Commands.CreateIdea
+import application.api.CommandBus
 
 import scala.util.Try
 
@@ -11,7 +11,7 @@ class CreateIdeaCommand extends Command {
   val helpText = "Create a new idea"
   override val argsHelp = Some("[title: String]")
 
-  def execute(bus: MessageBus, args: Array[String]): CommandResponse = {
+  def execute(bus: CommandBus, args: Array[String]): CommandResponse = {
     val res = for {
       title <- Try(args(0))
       idea <- bus.execute(CreateIdea(title))

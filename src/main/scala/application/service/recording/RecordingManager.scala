@@ -1,12 +1,12 @@
-package application.recording
+package application.service.recording
 
 import java.util.concurrent.atomic.AtomicBoolean
 
-import application.component.Logger
-import application.model.Ticks
-import application.model.Track.TrackElements
-import application.ports.RecordingDevice
-import application.recording.RecordingManager.RecordingException
+import application.api.RecordingDevice
+import application.interact.Logger
+import application.domain.Ticks
+import application.domain.Track.TrackElements
+import application.service.recording.RecordingManager.RecordingException
 import javax.inject.{Inject, Named, Singleton}
 
 import scala.util.{Failure, Try}

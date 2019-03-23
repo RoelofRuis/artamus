@@ -1,8 +1,8 @@
 package interaction.terminal.device
 
-import application.model.Track.TrackElements
-import application.model.{Note, Ticks, TimeSpan}
-import application.ports.RecordingDevice
+import application.api.RecordingDevice
+import application.domain.Track.TrackElements
+import application.domain.{Note, Ticks, TimeSpan}
 import interaction.terminal.Prompt
 import javax.inject.Inject
 

@@ -1,6 +1,6 @@
 package interaction.midi
 
-import application.ports.{Driver, RecordingDevice}
+import application.api.{Driver, RecordingDevice}
 import com.google.inject.internal.SingletonScope
 import interaction.midi.device._
 import javax.sound.midi.Sequencer

@@ -1,4 +1,4 @@
-package application.component
+package application.interact
 
 private[application] trait Logger {
 

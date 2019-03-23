@@ -1,14 +1,15 @@
 Storing small musical ideas and playing around with modularization using Guice.
 
 Modules:
-APPLICATION
-  |-> COMPONENT  (private application components)
-  |-> CONTROLLER (public accessible controllers)
-  |-> MODEL      (the internal data model)
-  |-> PORTS      (interfaces that that other modules should extend to work with the core)
+APPLICATION (what is the system about?)
+  |-> API      (public components to be used for outside interaction)
+  |-> DOMAIN   (private domain models)
+  |-> HANDLER  (command handlers taking up the work)
+  |-> INTERACT (private components implementing interactions with the core)
+  |-> SERVICE  (different kinds of services)
 Contains the application engine and logic of models, and "business" (music) rules. Should depend on no other module.
 
-INTERACTION (how should the user interact with the system?)
+INTERACTION (how should the user and the system interact?)
   |-> MIDI     (how should midi systems interact?)
   |-> TERMINAL (how should a terminal interact?)
 Should depend only on CORE.

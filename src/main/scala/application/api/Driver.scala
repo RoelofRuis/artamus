@@ -1,4 +1,4 @@
-package application.ports
+package application.api
 
 /**
   * An application driver.
@@ -10,7 +10,7 @@ trait Driver {
     *
     * Provides the required busses to communicate with the core.
     */
-  def run(messageBus: MessageBus, eventBus: EventBus): Unit
+  def run(messageBus: CommandBus, eventBus: EventBus): Unit
 
   /**
     * Called on application shutdown, before the driver thread is joined.

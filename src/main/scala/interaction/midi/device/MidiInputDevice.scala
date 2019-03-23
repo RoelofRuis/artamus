@@ -1,8 +1,8 @@
 package interaction.midi.device
 
-import application.model.Track.TrackElements
-import application.model.{Note, Ticks, TimeSpan}
-import application.ports.RecordingDevice
+import application.api.RecordingDevice
+import application.domain.Track.TrackElements
+import application.domain.{Note, Ticks, TimeSpan}
 import javax.inject.{Inject, Provider}
 import javax.sound.midi._
 

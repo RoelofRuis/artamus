@@ -1,6 +1,6 @@
 package interaction.terminal
 
-import application.model.Track
+import application.domain.Track
 
 object TerminalPlayback {
 

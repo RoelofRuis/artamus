@@ -1,8 +1,7 @@
 package interaction.terminal.command
 
-import application.command.IdeaCommand.GetIdea
-import application.command.TrackCommand.GetAll
-import application.ports.MessageBus
+import application.api.Commands.{GetAll, GetIdea}
+import application.api.CommandBus
 
 import scala.util.Success
 
@@ -11,7 +10,7 @@ class ListTracksCommand extends Command {
   val name = "tracks"
   val helpText = "List the available tracks, per idea"
 
-  def execute(bus: MessageBus, args: Array[String]): CommandResponse = {
+  def execute(bus: CommandBus, args: Array[String]): CommandResponse = {
     bus.execute(GetAll)
       .map {
         _.groupBy(_.ideaId)

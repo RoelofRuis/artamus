@@ -1,7 +1,7 @@
-package application.ports
+package application.api
 
-import application.model.Ticks
-import application.model.Track.TrackElements
+import application.domain.Ticks
+import application.domain.Track.TrackElements
 
 import scala.util.Try
 

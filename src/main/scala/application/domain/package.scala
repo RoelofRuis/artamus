@@ -2,7 +2,7 @@ package application
 
 import scala.reflect._
 
-package object model {
+package object domain {
 
   case class ID[C: ClassTag](id: Long) {
     override def toString: String = s"${classTag[C].runtimeClass.getSimpleName}($id)"

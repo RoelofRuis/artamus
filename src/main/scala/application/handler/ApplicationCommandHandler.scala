@@ -1,7 +1,6 @@
 package application.handler
 
-import application.command.ApplicationCommand.CloseApplication
-import application.command.Command
+import application.api.Commands.{CloseApplication, Command}
 
 import scala.util.{Success, Try}
 

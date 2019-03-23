@@ -1,6 +1,6 @@
 package application.handler
 
-import application.command.Command
+import application.api.Commands.Command
 
 import scala.util.Try
 

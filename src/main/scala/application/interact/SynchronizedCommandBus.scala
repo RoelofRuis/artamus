@@ -1,20 +1,19 @@
-package application.component
+package application.interact
 
 import java.util.concurrent.SynchronousQueue
 
-import application.command.ApplicationCommand.CloseApplication
-import application.command.Command
+import application.api.Commands.{CloseApplication, Command}
+import application.api.CommandBus
 import application.handler.CommandHandler
-import application.ports.MessageBus
 import javax.inject.Inject
 
 import scala.collection.immutable
 import scala.util.{Failure, Try}
 
-private[application] class SynchronizedMessageBus @Inject() private (
+private[application] class SynchronizedCommandBus @Inject() private (
   handlers: immutable.Set[CommandHandler],
   logger: Logger
-) extends MessageBus {
+) extends CommandBus {
 
   private val queueIn: SynchronousQueue[Command[_]] = new SynchronousQueue[Command[_]]()
   private val queueOut: SynchronousQueue[Try[_]] = new SynchronousQueue[Try[_]]()

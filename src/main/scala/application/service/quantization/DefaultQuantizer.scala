@@ -1,8 +1,8 @@
-package application.quantization
+package application.service.quantization
 
-import application.model.Track.{End, Start, TrackElements}
-import application.model._
-import application.quantization.TrackQuantizer.{Params, Quantizer}
+import application.domain.Track.{End, Start, TrackElements}
+import application.domain._
+import application.service.quantization.TrackQuantizer.{Params, Quantizer}
 
 case class DefaultQuantizer() extends TrackQuantizer {
 

@@ -1,7 +1,7 @@
-package application.model
+package application.domain
 
-import application.model.Idea.Idea_ID
-import application.model.Track._
+import application.domain.Idea.Idea_ID
+import application.domain.Track._
 
 case class Track(
   id: Track_ID,
