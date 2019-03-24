@@ -1,13 +1,14 @@
 package application
 
+import application.api.Commands.CloseApplication
 import application.api.Driver
-import application.interact.{DomainEventBus, Logger, SynchronizedCommandBus}
+import application.interact.{DomainEventBus, Logger, SynchronousCommandBus}
 import javax.inject.Inject
 
 import scala.collection.immutable
 
 private[application] class Application @Inject() private (
-  messageBus: SynchronizedCommandBus,
+  commandBus: SynchronousCommandBus,
   eventBus: DomainEventBus,
   drivers: immutable.Map[String, Driver],
   logger: Logger
@@ -17,7 +18,7 @@ private[application] class Application @Inject() private (
     logger.debug("Starting drivers...")
 
     val driverThreads: Map[String, (Driver, Thread)] = drivers.map {
-      case (name, driver) => name -> (driver, new Thread(() => driver.run(messageBus, eventBus)))
+      case (name, driver) => name -> (driver, new Thread(() => driver.run(commandBus, eventBus)))
     }
 
     if (driverThreads.isEmpty) {
@@ -31,7 +32,7 @@ private[application] class Application @Inject() private (
 
     logger.debug("Accepting messages on message bus...")
 
-    while (messageBus.handle()) {}
+    while (! commandBus.handleNext().isInstanceOf[CloseApplication.type]) {}
 
     driverThreads.foreach { case (name, (driver, thread)) =>
       logger.debug(s"Closing driver [$name]")

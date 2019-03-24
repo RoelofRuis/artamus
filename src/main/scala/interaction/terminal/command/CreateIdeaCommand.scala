@@ -16,7 +16,7 @@ class CreateIdeaCommand extends Command {
       title <- Try(args(0))
       id <- bus.execute(CreateIdea(title))
     } yield {
-      display(s"Created idea [$title] with id [${id}]")
+      display(s"Created idea [$title] with id [$id]")
     }
 
     res getOrElse display("Unable to create idea")

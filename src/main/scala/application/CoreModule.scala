@@ -19,7 +19,7 @@ class CoreModule extends ScalaPrivateModule {
     bind[ApplicationEntryPoint].to[Application].asEagerSingleton()
     expose[ApplicationEntryPoint]
 
-    bind[SynchronizedCommandBus].asEagerSingleton()
+    bind[SynchronousCommandBus].asEagerSingleton()
     bind[DomainEventBus].asEagerSingleton()
 
     bind[Logger].to[CmdLogger].asEagerSingleton()
@@ -39,10 +39,9 @@ class CoreModule extends ScalaPrivateModule {
     bind[IdeaRepository].asEagerSingleton()
     bind[TrackRepository].asEagerSingleton()
 
-    val handlers = ScalaMultibinder.newSetBinder[CommandHandler](binder)
-    handlers.addBinding.to[IdeaCommandHandler]
-    handlers.addBinding.to[TrackCommandHandler]
-    handlers.addBinding.to[ApplicationCommandHandler]
+    bind[IdeaCommandHandler].asEagerSingleton()
+    bind[TrackCommandHandler].asEagerSingleton()
+    bind[ApplicationCommandHandler].asEagerSingleton()
   }
 
 }

@@ -2,32 +2,31 @@ package application.handler
 
 import application.api.Commands._
 import application.api.Events.PlaybackRequest
-import application.interact.DomainEventBus
 import application.domain.Idea.Idea_ID
 import application.domain.Track.{Track_ID, Unquantized}
 import application.domain.repository.TrackRepository
+import application.interact.{DomainEventBus, SynchronousCommandBus}
 import application.service.quantization.TrackQuantizer
 import application.service.quantization.TrackQuantizer.Params
 import application.service.recording.RecordingManager
 import javax.inject.{Inject, Named}
 
-import scala.util.{Failure, Success, Try}
+import scala.util.Try
 
 // TODO: see if TrackQuantizer and TicksPerQuarter can be moved to a separate service/controller
 class TrackCommandHandler @Inject() (
+  bus: SynchronousCommandBus,
   trackRepository: TrackRepository,
   quantizer: TrackQuantizer,
   @Named("TicksPerQuarter") recordingResolution: Int,
   recordingManager: RecordingManager,
   eventBus: DomainEventBus
-) extends CommandHandler {
+) {
 
-  override def handle[Res]: PartialFunction[Command[Res], Try[Res]] = {
-    case StartRecording => recordingManager.startRecording
-    case StoreRecorded(ideaId) => storeRecorded(ideaId)
-    case Quantize(trackId, subdivision, gridErrorMultiplier) => quantize(trackId, subdivision, gridErrorMultiplier)
-    case Play(trackId) => play(trackId)
-  }
+  bus.subscribeHandler(Handler[StartRecording.type](_ => recordingManager.startRecording))
+  bus.subscribeHandler(Handler[StoreRecorded](c => storeRecorded(c.ideaId)))
+  bus.subscribeHandler(Handler[Quantize](c => quantize(c.trackId, c.subdivision, c.gridErrorMultiplier)))
+  bus.subscribeHandler(Handler[Play](c => play(c.trackId)))
 
   private def storeRecorded(ideaId: Idea_ID): Try[(Track_ID, Int)] = {
     recordingManager.stopRecording.map { case (ticks, elements) =>
