@@ -19,7 +19,7 @@ class TerminalModule extends ScalaModule {
     commands.addBinding.to[PlayTrackCommand]
     commands.addBinding.to[StartRecordingCommand]
     commands.addBinding.to[StoreRecordingCommand]
-    commands.addBinding.to[MidiCommand]
+    commands.addBinding.to[DevicesCommand]
     commands.addBinding.to[QuantizeCommand]
     commands.addBinding.to[QuitCommand]
 

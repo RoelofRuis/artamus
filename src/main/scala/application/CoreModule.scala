@@ -1,6 +1,6 @@
 package application
 
-import application.api.{KeyValueStorage, RecordingDevice}
+import application.api.{DevicePool, KeyValueStorage, RecordingDevice}
 import application.interact.Logger.CmdLogger
 import application.interact._
 import application.handler._
@@ -11,7 +11,7 @@ import application.domain._
 import application.service.quantization.{DefaultQuantizer, TrackQuantizer}
 import application.service.recording.RecordingManager
 import com.google.inject.Key
-import net.codingwell.scalaguice.{ScalaMultibinder, ScalaPrivateModule}
+import net.codingwell.scalaguice.ScalaPrivateModule
 
 class CoreModule extends ScalaPrivateModule {
 
@@ -27,6 +27,7 @@ class CoreModule extends ScalaPrivateModule {
     requireBinding(new Key[KeyValueStorage[Idea_ID, Idea]]() {})
     requireBinding(new Key[KeyValueStorage[Track_ID, Track]]() {})
     requireBinding(new Key[RecordingDevice]() {})
+    requireBinding(new Key[DevicePool]() {})
 
     // Configuration
     bind[Int].annotatedWithName("TicksPerQuarter") toInstance 96

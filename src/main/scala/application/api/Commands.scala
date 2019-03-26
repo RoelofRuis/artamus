@@ -11,6 +11,7 @@ object Commands {
 
   // Application
   case object CloseApplication extends Command { type Res = Unit }
+  case object GetDevices extends Command { type Res = Array[String] }
 
   // Idea
   case class CreateIdea(title: String) extends Command { type Res = Idea_ID }

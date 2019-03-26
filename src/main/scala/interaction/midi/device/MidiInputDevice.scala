@@ -3,36 +3,44 @@ package interaction.midi.device
 import application.api.RecordingDevice
 import application.domain.Track.TrackElements
 import application.domain.{Note, Ticks, TimeSpan}
-import javax.inject.{Inject, Provider}
+import javax.inject.Inject
 import javax.sound.midi._
 
-import scala.util.{Success, Try}
+import scala.util.{Failure, Success, Try}
 
-class MidiInputDevice @Inject() (sequencerProvider: Provider[Sequencer]) extends RecordingDevice {
+class MidiInputDevice @Inject() (midiDevicePool: MidiDeviceProvider) extends RecordingDevice {
 
-  private final val sequencer: Sequencer = sequencerProvider.get
-  private var recordingSequence: Option[Sequence] = None
+  private val deviceHash = 0x4628b1d3 // TODO: load from config
 
   def start(ticksPerQuarter: Int): Try[Unit] = {
-    Try {
-      val sequence = new Sequence(Sequence.PPQ, ticksPerQuarter, 1)
-      recordingSequence = Some(sequence)
+    midiDevicePool.openInSequencer(deviceHash).map { sequencer =>
+      Try {
+        val sequence = new Sequence(Sequence.PPQ, ticksPerQuarter, 1)
 
-      sequencer.setSequence(sequence)
-      sequencer.setTempoInBPM(120)
-      sequencer.recordEnable(sequence.getTracks()(0), -1)
-      sequencer.setTickPosition(0)
-      sequencer.startRecording()
-    }
+        sequencer.setSequence(sequence)
+        sequencer.setTempoInBPM(120)
+        sequencer.recordEnable(sequence.getTracks()(0), -1)
+        sequencer.setTickPosition(0)
+        sequencer.startRecording()
+        println(s"Start: sequencer [${sequencer.hashCode().toHexString}], sequence [${sequence.hashCode().toHexString}]")
+      }
+    }.getOrElse(Failure(new Throwable("No device was opened")))
   }
 
   def stop(): Try[(Ticks, TrackElements)] = {
-    sequencer.stopRecording()
+    midiDevicePool.openInSequencer(deviceHash).map { sequencer =>
+      println(s"Stop: sequencer:[${sequencer.hashCode().toHexString}]")
+      sequencer.stop()
 
-    for {
-      sequence <- Try(recordingSequence.get)
-      elements <- parseTrack(sequence.getTracks()(0))
-    } yield (Ticks(sequence.getResolution), elements)
+      val sequence = sequencer.getSequence
+
+      for {
+        elements <- parseTrack(sequence.getTracks()(0))
+      } yield {
+        println(s"Trekzeis: ${sequence.getTracks()(0).size}")
+        (Ticks(sequence.getResolution), elements)
+      }
+    }.getOrElse(Failure(new Throwable("No device was opened")))
   }
 
   // TODO: this could be rewritten recursively
