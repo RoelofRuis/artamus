@@ -1,6 +1,6 @@
 package interaction.midi.device
 
-import javax.sound.midi.{MidiDevice, MidiSystem, Sequencer}
+import javax.sound.midi._
 
 class MidiDeviceProvider {
 
@@ -74,6 +74,7 @@ class MidiDeviceProvider {
 
         val transmitter = device.getTransmitter
 
+        // Connect sequencer to device transmitter
         transmitter.setReceiver(sequencer.getReceiver)
 
         sequencer.open()

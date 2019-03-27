@@ -22,14 +22,12 @@ class MidiInputDevice @Inject() (midiDevicePool: MidiDeviceProvider) extends Rec
         sequencer.recordEnable(sequence.getTracks()(0), -1)
         sequencer.setTickPosition(0)
         sequencer.startRecording()
-        println(s"Start: sequencer [${sequencer.hashCode().toHexString}], sequence [${sequence.hashCode().toHexString}]")
       }
     }.getOrElse(Failure(new Throwable("No device was opened")))
   }
 
   def stop(): Try[(Ticks, TrackElements)] = {
-    midiDevicePool.openInSequencer(deviceHash).map { sequencer =>
-      println(s"Stop: sequencer:[${sequencer.hashCode().toHexString}]")
+    val res = midiDevicePool.openInSequencer(deviceHash).map { sequencer =>
       sequencer.stop()
 
       val sequence = sequencer.getSequence
@@ -37,10 +35,13 @@ class MidiInputDevice @Inject() (midiDevicePool: MidiDeviceProvider) extends Rec
       for {
         elements <- parseTrack(sequence.getTracks()(0))
       } yield {
-        println(s"Trekzeis: ${sequence.getTracks()(0).size}")
         (Ticks(sequence.getResolution), elements)
       }
     }.getOrElse(Failure(new Throwable("No device was opened")))
+
+    midiDevicePool.closeSequencer(deviceHash)
+
+    res
   }
 
   // TODO: this could be rewritten recursively
