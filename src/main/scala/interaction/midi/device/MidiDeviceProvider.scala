@@ -4,7 +4,7 @@ import javax.sound.midi._
 
 class MidiDeviceProvider {
 
-  type DeviceHash = Int
+  type DeviceHash = String
 
   private val devices: Map[DeviceHash, MidiDevice] = {
     MidiSystem.getMidiDeviceInfo
@@ -12,11 +12,13 @@ class MidiDeviceProvider {
 
         val device = MidiSystem.getMidiDevice(info)
 
-        info.hashCode() -> device
+        val hashBase = info.getName + device.getClass.getSimpleName
+
+        hashBase.hashCode.toHexString.padTo(8, '0') -> device
       }.toMap
   }
 
-  private var sequencers: Map[Int, (AutoCloseable, Sequencer)] = Map()
+  private var sequencers: Map[DeviceHash, (AutoCloseable, Sequencer)] = Map()
 
   def close(): Unit = {
     sequencers.values.foreach {
@@ -31,7 +33,7 @@ class MidiDeviceProvider {
     devices.map { case (hash, device) =>
       val deviceOpen = if (device.isOpen) "opened" else "closed"
       val sequenceOpen = sequencers.get(hash).fold("closed")(_ => "opened")
-       s"""[${hash.toHexString}]: ${device.getDeviceInfo.getName} (${device.getClass.getSimpleName})
+       s"""[$hash]: ${device.getDeviceInfo.getName} (${device.getClass.getSimpleName})
          |  - device:   $deviceOpen
          |  - seqencer: $sequenceOpen
          |  - transm:   ${device.getTransmitters.size()} - ${device.getMaxTransmitters}

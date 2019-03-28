@@ -6,7 +6,7 @@ import javax.sound.midi._
 
 class MidiPlaybackDevice @Inject() (devicePool: MidiDeviceProvider) {
 
-  private val hash = 0x52350abb // TODO: load from config
+  private val hash = "c7797746" // TODO: load from config
 
   def playback(track: SymbolTrack): Unit = {
     devicePool.openOutSequencer(hash).foreach { sequencer =>

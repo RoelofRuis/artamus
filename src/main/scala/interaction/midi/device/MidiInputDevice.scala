@@ -10,7 +10,7 @@ import scala.util.{Failure, Success, Try}
 
 class MidiInputDevice @Inject() (midiDevicePool: MidiDeviceProvider) extends RecordingDevice {
 
-  private val deviceHash = 0x4628b1d3 // TODO: load from config
+  private val deviceHash = "658ef990" // TODO: load from config
 
   def start(ticksPerQuarter: Int): Try[Unit] = {
     midiDevicePool.openInSequencer(deviceHash).map { sequencer =>
