@@ -16,8 +16,19 @@ package object domain {
     def end: Ticks = Ticks(start.value + duration.value)
   }
 
-  case class Measure(baseNote: Int, baseNotesPerMeasure: Int) {
-    // TODO: implement
-  }
+  case class NoteValue(num: Int, denom: Int)
+
+  trait SymbolProperty
+
+  case class MidiPitch(n: Int) extends SymbolProperty
+  case class Duration(n: Int, note: NoteValue) extends SymbolProperty
+  case class Position(n: Int, note: NoteValue) extends SymbolProperty
+
+  import scala.language.existentials
+
+  case class Symbol(id: Long, properties: Iterable[A forSome { type A <: SymbolProperty}])
+
+  case class SymbolTrack(symbols: Iterable[Symbol])
+
 
 }

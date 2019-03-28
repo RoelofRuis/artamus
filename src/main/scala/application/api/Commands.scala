@@ -1,6 +1,7 @@
 package application.api
 
 import application.domain.Idea.Idea_ID
+import application.domain.SymbolTrack
 import application.domain.Track.Track_ID
 
 object Commands {
@@ -22,5 +23,6 @@ object Commands {
   case class StoreRecorded(ideaId: Idea_ID) extends Command { type Res = (Track_ID, Int) }
   case class Play(trackId: Track_ID) extends Command { type Res = Unit }
   case class Quantize(trackId: Track_ID, subdivision: Int, gridErrorMultiplier: Int) extends Command { type Res = Track_ID }
+  case class ToSymbolTrack(trackId: Track_ID) extends Command { type Res = SymbolTrack }
 
 }

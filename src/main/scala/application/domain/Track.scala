@@ -21,7 +21,6 @@ object Track {
 
   type Track_ID = ID[Track]
 
-  // Might be solved more elegantly using scalaz or other type library
   sealed trait TrackType
   case object Unquantized extends TrackType
   case object Quantized extends TrackType

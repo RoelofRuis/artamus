@@ -8,6 +8,7 @@ import application.domain.Idea.Idea_ID
 import application.domain.Track.Track_ID
 import application.domain.repository.{IdeaRepository, TrackRepository}
 import application.domain._
+import application.service.SymbolTrackFactory
 import application.service.quantization.{DefaultQuantizer, TrackQuantizer}
 import application.service.recording.RecordingManager
 import com.google.inject.Key
@@ -34,6 +35,7 @@ class CoreModule extends ScalaPrivateModule {
 
     // Services
     bind[TrackQuantizer].toInstance(DefaultQuantizer())
+    bind[SymbolTrackFactory].asEagerSingleton()
     bind[RecordingManager]
 
     // Repositories

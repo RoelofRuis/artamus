@@ -21,6 +21,7 @@ class TerminalModule extends ScalaModule {
     commands.addBinding.to[StoreRecordingCommand]
     commands.addBinding.to[DevicesCommand]
     commands.addBinding.to[QuantizeCommand]
+    commands.addBinding.to[SymbolTrackCommand]
     commands.addBinding.to[QuitCommand]
 
     ScalaMapBinder.newMapBinder[String, RecordingDevice](binder)
