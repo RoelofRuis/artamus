@@ -1,11 +1,12 @@
 package application.service
 
 import application.domain._
+import application.util.Rational
 
 class SymbolTrackFactory {
 
   def trackToSymbolTrack(track: Track): SymbolTrack = {
-    val baseNote = NoteValue(1, 4 * track.ticksPerQuarter.value.toInt)
+    val baseNote = Rational(1, 4 * track.ticksPerQuarter.value.toInt)
 
     val symbols = track.elements
       .zipWithIndex
