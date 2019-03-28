@@ -16,13 +16,15 @@ package object domain {
     def end: Ticks = Ticks(start.value + duration.value)
   }
 
-  case class NoteValue(num: Int, denom: Int)
+  case class NoteValue(num: Int, denom: Int) {
+    def toDouble: Double = num.toDouble / denom
+  }
 
   trait SymbolProperty
 
-  case class MidiPitch(n: Int) extends SymbolProperty
-  case class Duration(n: Int, note: NoteValue) extends SymbolProperty
-  case class Position(n: Int, note: NoteValue) extends SymbolProperty
+  case class MidiPitch(p: Int) extends SymbolProperty
+  case class Duration(len: Int, note: NoteValue) extends SymbolProperty
+  case class Position(pos: Int, note: NoteValue) extends SymbolProperty
 
   import scala.language.existentials
 

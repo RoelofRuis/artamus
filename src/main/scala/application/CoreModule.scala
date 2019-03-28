@@ -23,7 +23,7 @@ class CoreModule extends ScalaPrivateModule {
     bind[SynchronousCommandBus].asEagerSingleton()
     bind[DomainEventBus].asEagerSingleton()
 
-    bind[Logger].to[CmdLogger].asEagerSingleton()
+    bind[Logger].toInstance(new CmdLogger(false))
 
     requireBinding(new Key[KeyValueStorage[Idea_ID, Idea]]() {})
     requireBinding(new Key[KeyValueStorage[Track_ID, Track]]() {})
