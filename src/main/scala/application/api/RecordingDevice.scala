@@ -1,7 +1,7 @@
 package application.api
 
-import application.domain.Ticks
-import application.domain.Track.TrackElements
+import application.model.event.Track.TrackElements
+import application.model.event.domain.Ticks
 
 import scala.util.Try
 

@@ -2,7 +2,8 @@ package interaction.terminal.command
 
 import application.api.Commands.Play
 import application.api.CommandBus
-import application.domain._
+import application.model.event.Track
+import application.model.event.domain.ID
 
 import scala.util.Try
 

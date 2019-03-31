@@ -2,7 +2,10 @@ package interaction.terminal.command
 
 import application.api.CommandBus
 import application.api.Commands.ToSymbolTrack
-import application.domain._
+import application.model.event.Track
+import application.model.event.domain.ID
+import application.model.symbolic.SymbolProperty.{Duration, MidiPitch, Position}
+import application.model.symbolic.SymbolTrack
 
 import scala.util.Try
 

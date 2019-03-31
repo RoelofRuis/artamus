@@ -1,9 +1,8 @@
 package interaction.terminal.command
 
-import application.api.Commands.StoreRecorded
 import application.api.CommandBus
-import application.domain.Track.Track_ID
-import application.domain.{ID, Idea}
+import application.api.Commands.StoreRecorded
+import application.model.event.Track.Track_ID
 
 import scala.util.Try
 
@@ -15,8 +14,7 @@ class StoreRecordingCommand extends Command {
 
   def execute(bus: CommandBus, args: Array[String]): CommandResponse = {
     val res: Try[(Track_ID, Int)] = for {
-      ideaId <- Try(ID[Idea](args(0).toLong))
-      (trackId, lenght) <- bus.execute(StoreRecorded(ideaId))
+      (trackId, lenght) <- bus.execute(StoreRecorded())
     } yield (trackId, lenght)
 
     res.fold(

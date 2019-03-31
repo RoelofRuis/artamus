@@ -1,8 +1,9 @@
 package interaction.terminal.command
 
-import application.api.Commands.Quantize
 import application.api.CommandBus
-import application.domain.{ID, Track}
+import application.api.Commands.Quantize
+import application.model.event.Track
+import application.model.event.domain.ID
 
 import scala.util.Try
 

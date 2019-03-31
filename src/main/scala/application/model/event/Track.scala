@@ -1,12 +1,10 @@
-package application.domain
+package application.model.event
 
-import application.domain.Idea.Idea_ID
-import application.domain.Track._
+import application.model.event.Track.{TrackElements, Track_ID}
+import application.model.event.domain.{ID, Note, Ticks, TimeSpan}
 
 case class Track(
   id: Track_ID,
-  ideaId: Idea_ID,
-  trackType: TrackType,
   ticksPerQuarter: Ticks,
   elements: TrackElements
 ) {
@@ -20,10 +18,6 @@ object Track {
   type TrackElements = Iterable[(TimeSpan, Note)]
 
   type Track_ID = ID[Track]
-
-  sealed trait TrackType
-  case object Unquantized extends TrackType
-  case object Quantized extends TrackType
 
   sealed trait EventBoundary
   case object Start extends EventBoundary

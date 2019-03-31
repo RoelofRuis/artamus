@@ -2,14 +2,14 @@ package application
 
 import application.api.Commands.CloseApplication
 import application.api.Driver
-import application.interact.{DomainEventBus, Logger, SynchronousCommandBus}
+import application.interact.{ApplicationEventBus, Logger, SynchronousCommandBus}
 import javax.inject.Inject
 
 import scala.collection.immutable
 
 private[application] class Application @Inject() private (
   commandBus: SynchronousCommandBus,
-  eventBus: DomainEventBus,
+  eventBus: ApplicationEventBus,
   drivers: immutable.Map[String, Driver],
   logger: Logger
 ) extends ApplicationEntryPoint {

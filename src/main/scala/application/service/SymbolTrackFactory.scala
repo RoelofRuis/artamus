@@ -1,6 +1,8 @@
 package application.service
 
-import application.domain._
+import application.model.event.Track
+import application.model.symbolic.SymbolProperty.{Duration, MidiPitch, Position}
+import application.model.symbolic.{Symbol, SymbolTrack}
 import application.util.Rational
 
 class SymbolTrackFactory {

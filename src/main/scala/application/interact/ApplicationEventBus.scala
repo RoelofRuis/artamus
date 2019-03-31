@@ -2,12 +2,12 @@ package application.interact
 
 import application.api.EventBus
 import application.api.Events.EventMessage
-import application.interact.DomainEventBus.{Channel, TypedMap}
+import application.interact.ApplicationEventBus.{Channel, TypedMap}
 
 import scala.reflect.runtime.universe._
 import javax.inject.Inject
 
-private[application] class DomainEventBus @Inject() (logger: Logger) extends EventBus {
+private[application] class ApplicationEventBus @Inject() (logger: Logger) extends EventBus {
 
   private var channels: TypedMap[EventMessage, Channel] = new TypedMap
 
@@ -29,7 +29,7 @@ private[application] class DomainEventBus @Inject() (logger: Logger) extends Eve
 
 }
 
-object DomainEventBus {
+object ApplicationEventBus {
 
   import scala.language.higherKinds
 

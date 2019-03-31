@@ -1,6 +1,6 @@
 package interaction.midi.device
 
-import application.domain.{Track => SymbolTrack}
+import application.model.event
 import javax.inject.Inject
 import javax.sound.midi._
 
@@ -8,7 +8,7 @@ class MidiPlaybackDevice @Inject() (devicePool: MidiDeviceProvider) {
 
   private val hash = "c7797746" // TODO: load from config
 
-  def playback(track: SymbolTrack): Unit = {
+  def playback(track: event.Track): Unit = {
     devicePool.openOutSequencer(hash).foreach { sequencer =>
       val sequence = new Sequence(Sequence.PPQ, track.ticksPerQuarter.value.toInt)
 

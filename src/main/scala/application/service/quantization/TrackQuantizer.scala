@@ -1,7 +1,8 @@
 package application.service.quantization
 
-import application.domain.{Ticks, Track}
-import application.domain.Track.{EventBoundary, TrackElements}
+import application.model.event.Track
+import application.model.event.Track.{EventBoundary, TrackElements}
+import application.model.event.domain.Ticks
 import application.service.quantization.TrackQuantizer.Params
 
 trait TrackQuantizer {

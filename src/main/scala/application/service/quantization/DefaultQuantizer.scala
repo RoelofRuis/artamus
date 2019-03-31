@@ -1,7 +1,8 @@
 package application.service.quantization
 
-import application.domain.Track.{End, Start, TrackElements}
-import application.domain._
+import application.model.event.Track
+import application.model.event.Track.{End, Start, TrackElements}
+import application.model.event.domain.{Ticks, TimeSpan}
 import application.service.quantization.TrackQuantizer.{Params, Quantizer}
 
 case class DefaultQuantizer() extends TrackQuantizer {

@@ -1,13 +1,12 @@
 package application
 
 import application.api.{DevicePool, KeyValueStorage, RecordingDevice}
+import application.handler._
 import application.interact.Logger.CmdLogger
 import application.interact._
-import application.handler._
-import application.domain.Idea.Idea_ID
-import application.domain.Track.Track_ID
-import application.domain.repository.{IdeaRepository, TrackRepository}
-import application.domain._
+import application.model.event.Track
+import application.model.event.Track.Track_ID
+import application.repository.TrackRepository
 import application.service.SymbolTrackFactory
 import application.service.quantization.{DefaultQuantizer, TrackQuantizer}
 import application.service.recording.RecordingManager
@@ -21,11 +20,10 @@ class CoreModule extends ScalaPrivateModule {
     expose[ApplicationEntryPoint]
 
     bind[SynchronousCommandBus].asEagerSingleton()
-    bind[DomainEventBus].asEagerSingleton()
+    bind[ApplicationEventBus].asEagerSingleton()
 
     bind[Logger].toInstance(new CmdLogger(false))
 
-    requireBinding(new Key[KeyValueStorage[Idea_ID, Idea]]() {})
     requireBinding(new Key[KeyValueStorage[Track_ID, Track]]() {})
     requireBinding(new Key[RecordingDevice]() {})
     requireBinding(new Key[DevicePool]() {})
@@ -39,10 +37,8 @@ class CoreModule extends ScalaPrivateModule {
     bind[RecordingManager]
 
     // Repositories
-    bind[IdeaRepository].asEagerSingleton()
     bind[TrackRepository].asEagerSingleton()
 
-    bind[IdeaCommandHandler].asEagerSingleton()
     bind[TrackCommandHandler].asEagerSingleton()
     bind[ApplicationCommandHandler].asEagerSingleton()
   }

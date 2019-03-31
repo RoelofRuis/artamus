@@ -4,8 +4,8 @@ import java.util.concurrent.atomic.AtomicBoolean
 
 import application.api.RecordingDevice
 import application.interact.Logger
-import application.domain.Ticks
-import application.domain.Track.TrackElements
+import application.model.event.Track.TrackElements
+import application.model.event.domain.Ticks
 import application.service.recording.RecordingManager.RecordingException
 import javax.inject.{Inject, Named, Singleton}
 

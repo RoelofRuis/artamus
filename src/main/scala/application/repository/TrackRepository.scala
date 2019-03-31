@@ -1,9 +1,9 @@
-package application.domain.repository
+package application.repository
 
 import application.api.KeyValueStorage
-import application.domain.Idea.Idea_ID
-import application.domain.Track.{TrackElements, TrackType, Track_ID}
-import application.domain._
+import application.model.event.Track
+import application.model.event.Track.{TrackElements, Track_ID}
+import application.model.event.domain.{ID, Ticks}
 import javax.inject.Inject
 
 import scala.util.{Failure, Success, Try}
@@ -11,13 +11,11 @@ import scala.util.{Failure, Success, Try}
 class TrackRepository @Inject() (storage: KeyValueStorage[Track_ID, Track]) {
 
   def add(
-    ideaId: Idea_ID,
-    trackType: TrackType,
     ticksPerQuarter: Ticks,
     elements: TrackElements
   ): Track = {
     val id = ID[Track](storage.nextId)
-    val track = Track(id, ideaId, trackType, ticksPerQuarter, elements)
+    val track = Track(id, ticksPerQuarter, elements)
 
     storage.put(id, track)
 
