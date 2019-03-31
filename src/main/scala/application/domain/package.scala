@@ -30,5 +30,4 @@ package object domain {
 
   case class SymbolTrack(symbols: Iterable[Symbol])
 
-
 }
