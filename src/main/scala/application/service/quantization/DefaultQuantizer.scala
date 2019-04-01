@@ -1,13 +1,13 @@
 package application.service.quantization
 
-import application.model.event.Track
-import application.model.event.Track.{End, Start, TrackElements}
+import application.model.event.MidiTrack
+import application.model.event.MidiTrack.{End, Start, TrackElements}
 import application.model.event.domain.{Ticks, TimeSpan}
 import application.service.quantization.TrackQuantizer.{Params, Quantizer}
 
 case class DefaultQuantizer() extends TrackQuantizer {
 
-  def quantize(track: Track, params: Params): (Ticks, TrackElements) = {
+  def quantize(track: MidiTrack, params: Params): (Ticks, TrackElements) = {
     val spacing = detectSpacing(
       params.minGrid,
       params.maxGrid,

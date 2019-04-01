@@ -2,7 +2,7 @@ package interaction.terminal.command
 
 import application.api.CommandBus
 import application.api.Commands.Quantize
-import application.model.event.Track
+import application.model.event.MidiTrack
 import application.model.event.domain.ID
 
 import scala.util.Try
@@ -15,7 +15,7 @@ class QuantizeCommand extends Command {
 
   def execute(bus: CommandBus, args: Array[String]): CommandResponse = {
     val res: Try[CommandResponse] = for {
-      id <- Try(ID[Track](args(0).toLong))
+      id <- Try(ID[MidiTrack](args(0).toLong))
       subdivision <- Try(args(1).toInt) recover { case _ => 1 }
       gridErrorMultiplier <- Try(args(2).toInt) recover { case _ => 10 }
     } yield {

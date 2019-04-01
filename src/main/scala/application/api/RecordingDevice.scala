@@ -1,6 +1,6 @@
 package application.api
 
-import application.model.event.Track.TrackElements
+import application.model.event.MidiTrack.TrackElements
 import application.model.event.domain.Ticks
 
 import scala.util.Try

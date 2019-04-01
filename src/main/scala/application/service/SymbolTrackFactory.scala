@@ -1,28 +1,27 @@
 package application.service
 
-import application.model.event.Track
-import application.model.symbolic.SymbolProperty.{Duration, MidiPitch, Position}
-import application.model.symbolic.{Symbol, SymbolTrack}
+import application.model.event.MidiTrack
+import application.model.symbolic.SymbolProperties.{MidiPitch, NoteDuration, NotePosition}
+import application.model.symbolic.TrackProperties.TicksPerQuarter
+import application.model.symbolic.{Symbol, Track}
 import application.util.Rational
 
+/** @deprecated */
 class SymbolTrackFactory {
 
-  def trackToSymbolTrack(track: Track): SymbolTrack = {
+  def trackToSymbolTrack(track: MidiTrack): Track = {
     val baseNote = Rational(1, 4 * track.ticksPerQuarter.value.toInt)
 
-    val symbols = track.elements
-      .zipWithIndex
-      .map { case ((timespan, note), index) =>
-        val properties = Array(
+    val symbolProperties: Iterable[Symbol.Properties] = track.elements
+      .map { case (timespan, note) =>
+        Iterable(
           MidiPitch(note.pitch),
-          Position(timespan.start.value.toInt, baseNote),
-          Duration(timespan.duration.value.toInt, baseNote),
+          NotePosition(timespan.start.value.toInt, baseNote),
+          NoteDuration(timespan.duration.value.toInt, baseNote),
         )
-
-        Symbol(index, properties)
       }
 
-    SymbolTrack(symbols)
+    Track(symbolProperties, Array(TicksPerQuarter(track.ticksPerQuarter.value)))
   }
 
 }

@@ -3,8 +3,8 @@ package application.handler
 import application.api.Commands._
 import application.api.Events.PlaybackRequest
 import application.interact.{ApplicationEventBus, SynchronousCommandBus}
-import application.model.event.Track.Track_ID
-import application.model.symbolic.SymbolTrack
+import application.model.event.MidiTrack.Track_ID
+import application.model.symbolic.Track
 import application.repository.TrackRepository
 import application.service.SymbolTrackFactory
 import application.service.quantization.TrackQuantizer
@@ -66,7 +66,7 @@ class TrackCommandHandler @Inject() (
       }.map(_.id)
   }
 
-  private def toSymbolTrack(id: Track_ID): Try[SymbolTrack] = {
+  private def toSymbolTrack(id: Track_ID): Try[Track] = {
     trackRepository.get(id).map(symbolTrackFactory.trackToSymbolTrack)
   }
 }

@@ -8,7 +8,7 @@ class MidiPlaybackDevice @Inject() (devicePool: MidiDeviceProvider) {
 
   private val hash = "c7797746" // TODO: load from config
 
-  def playback(track: event.Track): Unit = {
+  def playback(track: event.MidiTrack): Unit = {
     devicePool.openOutSequencer(hash).foreach { sequencer =>
       val sequence = new Sequence(Sequence.PPQ, track.ticksPerQuarter.value.toInt)
 

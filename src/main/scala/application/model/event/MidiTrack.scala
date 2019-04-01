@@ -1,9 +1,10 @@
 package application.model.event
 
-import application.model.event.Track.{TrackElements, Track_ID}
+import application.model.event.MidiTrack.{TrackElements, Track_ID}
 import application.model.event.domain.{ID, Note, Ticks, TimeSpan}
 
-case class Track(
+/** @deprecated */
+case class MidiTrack(
   id: Track_ID,
   ticksPerQuarter: Ticks,
   elements: TrackElements
@@ -13,11 +14,11 @@ case class Track(
 
 }
 
-object Track {
+object MidiTrack {
 
   type TrackElements = Iterable[(TimeSpan, Note)]
 
-  type Track_ID = ID[Track]
+  type Track_ID = ID[MidiTrack]
 
   sealed trait EventBoundary
   case object Start extends EventBoundary

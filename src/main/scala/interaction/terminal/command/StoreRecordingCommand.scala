@@ -2,7 +2,7 @@ package interaction.terminal.command
 
 import application.api.CommandBus
 import application.api.Commands.StoreRecorded
-import application.model.event.Track.Track_ID
+import application.model.event.MidiTrack.Track_ID
 
 import scala.util.Try
 
