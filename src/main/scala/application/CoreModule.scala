@@ -25,7 +25,7 @@ class CoreModule extends ScalaPrivateModule {
 
     bind[Logger].toInstance(new CmdLogger(false))
 
-    requireBinding(new Key[KeyValueStorage[Track.ID, Track]]() {})
+    requireBinding(new Key[KeyValueStorage[Track.TrackID, Track]]() {})
 
     requireBinding(new Key[KeyValueStorage[Track_ID, MidiTrack]]() {})
     requireBinding(new Key[RecordingDevice]() {})
