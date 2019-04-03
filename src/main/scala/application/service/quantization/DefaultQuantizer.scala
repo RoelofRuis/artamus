@@ -1,39 +1,53 @@
 package application.service.quantization
 
-import application.model.event.MidiTrack
-import application.model.event.MidiTrack.{End, Start, TrackElements}
-import application.model.event.domain.{Ticks, TimeSpan}
-import application.service.quantization.TrackQuantizer.{Params, Quantizer}
+import application.model.SymbolProperties.{NoteDuration, NotePosition, TickDuration, TickPosition}
+import application.model.Track
+import application.service.quantization.TrackQuantizer.{End, Params, Quantizer, Start}
+import application.util.Rational
 
 case class DefaultQuantizer() extends TrackQuantizer {
 
-  def quantize(track: MidiTrack, params: Params): (Ticks, TrackElements) = {
+  def quantize(track: Track, params: Params): Track = {
     val spacing = detectSpacing(
       params.minGrid,
       params.maxGrid,
       params.gridErrorWeight,
-      track.onsets
+      track.symbols.flatMap(_.properties.collectFirst { case TickPosition(p) => p })
     )
 
+    val baseNote = Rational(1, 4 * params.ticksPerQuarter)
+
     val quantizer: Quantizer = {
-      case (point, Start) => Ticks((point.value.toDouble / spacing).round)
-      case (point, End) => Ticks((point.value.toDouble / spacing).round.max(1))
+      case (point, Start) => (point.toDouble / spacing).round
+      case (point, End) => (point.toDouble / spacing).round.max(1)
     }
 
-    val qElements = track.elements.map { case (timeSpan, a) =>
-      val qStart = quantizer(timeSpan.start, Start)
-      val qDur = Ticks(quantizer(timeSpan.end, End).value - qStart.value)
-      (TimeSpan(qStart, qDur), a)
+    // TODO: make cleaner separation with build logic
+    val qElements = track.symbols.map { symbol =>
+      for {
+        tickPos <- symbol.properties.collectFirst { case TickPosition(pos) => pos }
+        tickDur <- symbol.properties.collectFirst { case TickDuration(dur) => dur }
+      } yield {
+        val qStart = quantizer(tickPos, Start)
+        val qDur = quantizer(tickPos + tickDur, End) - qStart
+
+        symbol.properties ++ Seq(NotePosition(qStart, baseNote), NoteDuration(qDur, baseNote))
+      }
     }
 
-    (Ticks(params.ticksPerQuarter), qElements)
+    val builder = Track.builder
+    track.properties.foreach(builder.addTrackProperty)
+    qElements.collect { case Some(props) => props }
+      .foreach(builder.addSymbolFromProps)
+
+    builder.build
   }
 
-  private def detectSpacing(min: Int, max: Int, gridErrorWeight: Int, gVec: Iterable[Ticks]): Int = {
+  private def detectSpacing(min: Int, max: Int, gridErrorWeight: Int, gVec: Iterable[Long]): Int = {
 
     def error(s: Int): Long = {
-      val pointError = gVec.map { g => math.pow(g.value - ((g.value.toDouble / s).round.toInt * s), 2).toInt }.sum
-      val gridError = (gVec.head.value + gVec.last.value) / s
+      val pointError = gVec.map { g => math.pow(g - ((g.toDouble / s).round.toInt * s), 2).toInt }.sum
+      val gridError = (gVec.head + gVec.last) / s
 
       pointError + (gridError * gridErrorWeight)
     }

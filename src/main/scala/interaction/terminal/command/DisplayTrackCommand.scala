@@ -1,25 +1,25 @@
 package interaction.terminal.command
 
+import java.util.UUID
+
 import application.api.CommandBus
-import application.api.Commands.ToSymbolTrack
-import application.model.event.MidiTrack
-import application.model.event.domain.ID
-import application.model.symbolic.SymbolProperties.{MidiPitch, NoteDuration, NotePosition}
-import application.model.symbolic.Track
+import application.api.Commands.GetTrack
+import application.model.SymbolProperties.{MidiPitch, NoteDuration, NotePosition}
+import application.model.Track
 
 import scala.util.Try
 
-class SymbolTrackCommand extends Command {
+class DisplayTrackCommand extends Command {
 
-  val name = "symb"
-  val helpText = "Transform a track to a symbolic representation"
+  val name = "disp"
+  val helpText = "Display symbolic track representation"
   override val argsHelp = Some("[id: Int]")
 
   def execute(bus: CommandBus, args: Array[String]): CommandResponse = {
     val res: Try[CommandResponse] = for {
-      id <- Try(ID[MidiTrack](args(0).toLong))
+      id <- Try(UUID.fromString(args(0)))
     } yield {
-      bus.execute(ToSymbolTrack(id))
+      bus.execute(GetTrack(id))
         .fold(
           ex => display(s"Unable to transform to symbol track [$ex]"),
           symbolTrack => display(printSymbolTrack(symbolTrack))
@@ -33,8 +33,8 @@ class SymbolTrackCommand extends Command {
     symbolTrack.symbols.map { symbol =>
       for {
         idx <- symbol.properties.collectFirst { case NotePosition(pos, _) => pos }
-        posString <- symbol.properties.collectFirst { case NotePosition(pos, nv) => s"@ ${nv * pos}" }
-        durString <- symbol.properties.collectFirst { case NoteDuration(len, nv) => s"for ${nv * len}" }
+        posString <- symbol.properties.collectFirst { case NotePosition(pos, nv) => s"@ ${nv * pos.toInt}" }
+        durString <- symbol.properties.collectFirst { case NoteDuration(len, nv) => s"for ${nv * len.toInt}" }
         pitchString <- symbol.properties.collectFirst { case MidiPitch(pitch) => s"MIDI($pitch)" }
       } yield {
         idx -> s"$pitchString $posString $durString"

@@ -4,11 +4,8 @@ import application.api.{DevicePool, KeyValueStorage, RecordingDevice}
 import application.handler._
 import application.interact.Logger.CmdLogger
 import application.interact._
-import application.model.event.MidiTrack
-import application.model.event.MidiTrack.Track_ID
-import application.model.symbolic.Track
+import application.model.Track
 import application.repository.TrackRepository
-import application.service.SymbolTrackFactory
 import application.service.quantization.{DefaultQuantizer, TrackQuantizer}
 import application.service.recording.RecordingManager
 import com.google.inject.Key
@@ -27,7 +24,6 @@ class CoreModule extends ScalaPrivateModule {
 
     requireBinding(new Key[KeyValueStorage[Track.TrackID, Track]]() {})
 
-    requireBinding(new Key[KeyValueStorage[Track_ID, MidiTrack]]() {})
     requireBinding(new Key[RecordingDevice]() {})
     requireBinding(new Key[DevicePool]() {})
 
@@ -36,7 +32,6 @@ class CoreModule extends ScalaPrivateModule {
 
     // Services
     bind[TrackQuantizer].toInstance(DefaultQuantizer())
-    bind[SymbolTrackFactory].asEagerSingleton()
     bind[RecordingManager]
 
     // Repositories

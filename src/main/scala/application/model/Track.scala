@@ -1,16 +1,16 @@
-package application.model.symbolic
+package application.model
 
 import java.util.UUID
 
-import application.model.symbolic.SymbolProperties.SymbolProperty
-import application.model.symbolic.TrackProperties.TrackProperty
+import application.model.SymbolProperties.SymbolProperty
+import application.model.TrackProperties.TrackProperty
 
 import scala.language.existentials
 
 final case class Track private (
   id: Track.TrackID,
   properties: Track.TrackProperties,
-  symbols: Seq[Track.Symbol]
+  symbols: Seq[Track.TrackSymbol]
 )
 
 object Track {
@@ -23,7 +23,7 @@ object Track {
 
   def builder: TrackBuilder = new TrackBuilder
 
-  final case class Symbol private (
+  final case class TrackSymbol private (
     id: SymbolID,
     properties: SymbolProperties
   )
@@ -40,7 +40,7 @@ object Track {
     def build: Track = {
       val symbols = symbolPropertyCollection.zipWithIndex
         .map {
-          case (properties, index) => Symbol(index, properties)
+          case (properties, index) => TrackSymbol(index, properties)
         }
 
       Track(

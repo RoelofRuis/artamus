@@ -1,8 +1,10 @@
 package interaction.terminal.device
 
 import application.api.RecordingDevice
-import application.model.event.MidiTrack.TrackElements
-import application.model.event.domain.{Note, Ticks, TimeSpan}
+import application.model.SymbolProperties.{MidiPitch, MidiVelocity, TickDuration, TickPosition}
+import application.model.Track
+import application.model.Track.TrackBuilder
+import application.model.TrackProperties.TicksPerQuarter
 import interaction.terminal.Prompt
 import javax.inject.Inject
 
@@ -19,27 +21,30 @@ class TerminalInputDevice @Inject() (prompt: Prompt) extends RecordingDevice {
     Success(Unit)
   }
 
-  def stop(): Try[(Ticks, TrackElements)] = {
+  def stop(): Try[Track] = {
     for {
       resolution <- Try(configuredTicksPerQuarter.get)
-      elements <- read(resolution)
-    } yield (Ticks(resolution), elements)
-  }
-
-  private def read(ticksPerQuarter: Int): Try[TrackElements] = {
-    Try {
-      val input = prompt.read("Input music data")
-
-      parseElements(
-        input.trim.split(" ").toList,
-        ticksPerQuarter,
-        0,
-        Seq[(TimeSpan, Note)]()
-      )
+      builder <- Try(read(resolution))
+    } yield {
+      builder.addTrackProperty(TicksPerQuarter(resolution))
+      builder.build
     }
   }
 
-  private def parseElements(input: List[String], ticksPerQuarter: Int, pos: Long, result: Seq[(TimeSpan, Note)]): TrackElements = {
+  private def read(ticksPerQuarter: Int): TrackBuilder = {
+    val builder = Track.builder
+
+    val input = prompt.read("Input music data")
+
+    parseElements(
+      input.trim.split(" ").toList,
+      ticksPerQuarter,
+      0,
+      builder
+    )
+  }
+
+  private def parseElements(input: List[String], ticksPerQuarter: Int, pos: Long, builder: TrackBuilder): TrackBuilder = {
     input match {
       case head :: tail =>
         val parts = head.split("\\.")
@@ -47,9 +52,17 @@ class TerminalInputDevice @Inject() (prompt: Prompt) extends RecordingDevice {
         val length = (ticksPerQuarter * (4.0 / dur)).toInt
         val note = parts(0)
 
-        if (note == "s") parseElements(tail, ticksPerQuarter, pos + length, result)
-        else parseElements(tail, ticksPerQuarter, pos + length, result :+ (TimeSpan(Ticks(pos), Ticks(length)), Note(note.toInt, defaultVolume)))
-      case Nil => result
+        if (note == "s") parseElements(tail, ticksPerQuarter, pos + length, builder)
+        else {
+          builder.addSymbolFromProps(
+            TickPosition(pos),
+            TickDuration(length),
+            MidiPitch(note.toInt),
+            MidiVelocity(defaultVolume)
+          )
+          parseElements(tail, ticksPerQuarter, pos + length, builder)
+        }
+      case Nil => builder
     }
   }
 }

@@ -1,8 +1,6 @@
 package application.service.quantization
 
-import application.model.event.MidiTrack
-import application.model.event.MidiTrack.{EventBoundary, TrackElements}
-import application.model.event.domain.Ticks
+import application.model.Track
 import application.service.quantization.TrackQuantizer.Params
 
 trait TrackQuantizer {
@@ -10,11 +8,17 @@ trait TrackQuantizer {
   /**
     * @return (newTicksPerQuarter: Ticks, newTrackElements: TrackElements)
     */
-  def quantize(track: MidiTrack, params: Params): (Ticks, TrackElements)
+  def quantize(track: Track, params: Params): Track
 
 }
 
 object TrackQuantizer {
+
+  type Ticks = Long
+
+  sealed trait EventBoundary
+  case object Start extends EventBoundary
+  case object End extends EventBoundary
 
   type Quantizer = (Ticks, EventBoundary) => Ticks
 

@@ -1,12 +1,12 @@
 package application.api
 
-import application.model.event.MidiTrack
+import application.model.Track
 
 object Events {
 
   trait EventMessage
 
   // TODO: Separate Track from a `playable` equivalent that is to be broadcasted
-  case class PlaybackRequest(track: MidiTrack) extends EventMessage
+  case class PlaybackRequest(track: Track) extends EventMessage
 
 }

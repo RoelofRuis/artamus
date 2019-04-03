@@ -1,4 +1,4 @@
-package application.model.symbolic
+package application.model
 
 object TrackProperties {
   sealed trait TrackProperty

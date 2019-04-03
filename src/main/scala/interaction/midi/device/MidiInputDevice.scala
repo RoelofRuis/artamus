@@ -1,10 +1,12 @@
 package interaction.midi.device
 
 import application.api.RecordingDevice
-import application.model.event.MidiTrack.TrackElements
-import application.model.event.domain.{Note, Ticks, TimeSpan}
+import application.model.SymbolProperties.{MidiPitch, MidiVelocity, TickDuration, TickPosition}
+import application.model.Track
+import application.model.Track.TrackBuilder
+import application.model.TrackProperties.TicksPerQuarter
 import javax.inject.Inject
-import javax.sound.midi._
+import javax.sound.midi.{Sequence, ShortMessage, Track => MidiTrack}
 
 import scala.util.{Failure, Success, Try}
 
@@ -26,29 +28,32 @@ class MidiInputDevice @Inject() (midiDevicePool: MidiDeviceProvider) extends Rec
     }.getOrElse(Failure(new Throwable("No device was opened")))
   }
 
-  def stop(): Try[(Ticks, TrackElements)] = {
-    val res = midiDevicePool.openInSequencer(deviceHash).map { sequencer =>
+  def stop(): Try[Track] = {
+    val res: Option[Track] = midiDevicePool.openInSequencer(deviceHash).map { sequencer =>
       sequencer.stop()
 
       val sequence = sequencer.getSequence
 
-      for {
-        elements <- parseTrack(sequence.getTracks()(0))
-      } yield {
-        (Ticks(sequence.getResolution), elements)
-      }
-    }.getOrElse(Failure(new Throwable("No device was opened")))
+      val builder = parseTrack(sequence.getTracks()(0))
+
+      builder.addTrackProperty(TicksPerQuarter(sequence.getTickLength))
+
+      builder.build
+    }
 
     midiDevicePool.closeSequencer(deviceHash)
 
-    res
+    res.fold[Try[Track]](
+      Failure(new Throwable("No device was opened"))
+    )(
+      track => Success(track)
+    )
   }
 
-  // TODO: this could be rewritten recursively
-  private def parseTrack(track: Track): Try[TrackElements] = {
+  private def parseTrack(track: MidiTrack): TrackBuilder = {
+    val builder = Track.builder
     var activeNotes = Map[Int, (Long, Int)]()
     var firstOnset: Option[Long] = None
-    var symbols = Seq[(TimeSpan, Note)]()
 
     Range(0, track.size).foreach { i =>
       val midiEvent = track.get(i)
@@ -61,7 +66,12 @@ class MidiInputDevice @Inject() (midiDevicePool: MidiDeviceProvider) extends Rec
           activeNotes.get(msg.getData1) match {
             case Some((start, volume)) =>
               activeNotes - msg.getData1
-              symbols :+= (TimeSpan(Ticks(start - firstOnset.get), Ticks(midiEvent.getTick - start)), Note(msg.getData1, volume))
+              builder.addSymbolFromProps(
+                TickPosition(start - firstOnset.get),
+                TickDuration(midiEvent.getTick - start),
+                MidiPitch(msg.getData1),
+                MidiVelocity(volume)
+              )
             case None =>
           }
 
@@ -69,6 +79,6 @@ class MidiInputDevice @Inject() (midiDevicePool: MidiDeviceProvider) extends Rec
       }
     }
 
-    Success(symbols)
+    builder
   }
 }

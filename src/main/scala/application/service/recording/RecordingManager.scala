@@ -4,8 +4,7 @@ import java.util.concurrent.atomic.AtomicBoolean
 
 import application.api.RecordingDevice
 import application.interact.Logger
-import application.model.event.MidiTrack.TrackElements
-import application.model.event.domain.Ticks
+import application.model.Track
 import application.service.recording.RecordingManager.RecordingException
 import javax.inject.{Inject, Named, Singleton}
 
@@ -30,7 +29,7 @@ class RecordingManager @Inject() (
     else Failure(RecordingException("start", "state", "Unable to start recording twice"))
   }
 
-  def stopRecording: Try[(Ticks, TrackElements)] = {
+  def stopRecording: Try[Track] = {
     if (isRecording.compareAndSet(true, false)) {
       logger.debug("Recording stopped")
       device.stop().recoverWith {

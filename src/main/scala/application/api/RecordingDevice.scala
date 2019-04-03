@@ -1,7 +1,6 @@
 package application.api
 
-import application.model.event.MidiTrack.TrackElements
-import application.model.event.domain.Ticks
+import application.model.Track
 
 import scala.util.Try
 
@@ -12,6 +11,6 @@ trait RecordingDevice {
 
   def start(ticksPerQuarter: Int): Try[Unit]
 
-  def stop(): Try[(Ticks, TrackElements)]
+  def stop(): Try[Track]
 
 }

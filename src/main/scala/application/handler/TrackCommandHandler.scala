@@ -3,10 +3,8 @@ package application.handler
 import application.api.Commands._
 import application.api.Events.PlaybackRequest
 import application.interact.{ApplicationEventBus, SynchronousCommandBus}
-import application.model.event.MidiTrack.Track_ID
-import application.model.symbolic.Track
+import application.model.Track
 import application.repository.TrackRepository
-import application.service.SymbolTrackFactory
 import application.service.quantization.TrackQuantizer
 import application.service.quantization.TrackQuantizer.Params
 import application.service.recording.RecordingManager
@@ -21,7 +19,6 @@ class TrackCommandHandler @Inject() (
   quantizer: TrackQuantizer,
   @Named("TicksPerQuarter") recordingResolution: Int,
   recordingManager: RecordingManager,
-  symbolTrackFactory: SymbolTrackFactory,
   eventBus: ApplicationEventBus
 ) {
 
@@ -30,24 +27,22 @@ class TrackCommandHandler @Inject() (
   bus.subscribeHandler(Handler[StoreRecorded](_ => storeRecorded()))
   bus.subscribeHandler(Handler[Quantize](c => quantize(c.trackId, c.subdivision, c.gridErrorMultiplier)))
   bus.subscribeHandler(Handler[Play](c => play(c.trackId)))
-  bus.subscribeHandler(Handler[ToSymbolTrack](c => toSymbolTrack(c.trackId)))
+  bus.subscribeHandler(Handler[GetTrack](c => toSymbolTrack(c.trackId)))
 
-  private def storeRecorded(): Try[(Track_ID, Int)] = {
-    recordingManager.stopRecording.map { case (ticks, elements) =>
-      trackRepository.add(
-        ticks,
-        elements
-      )
-    }.map(t => (t.id, t.elements.size))
+  private def storeRecorded(): Try[(Track.TrackID, Int)] = {
+    recordingManager
+      .stopRecording
+      .map(trackRepository.add)
+      .map(t => (t.id, t.symbols.size))
   }
 
-  private def play(id: Track_ID): Try[Unit] = {
+  private def play(id: Track.TrackID): Try[Unit] = {
     trackRepository.get(id).map { track =>
       eventBus.publish(PlaybackRequest(track))
     }
   }
 
-  private def quantize(id: Track_ID, subdivision: Int, gridErrorMultiplier: Int): Try[Track_ID] = {
+  private def quantize(id: Track.TrackID, subdivision: Int, gridErrorMultiplier: Int): Try[Track.TrackID] = {
     val quantizationParams = Params(
       recordingResolution / 16,
       recordingResolution * 2,
@@ -57,16 +52,11 @@ class TrackCommandHandler @Inject() (
 
     trackRepository.get(id)
       .map { track =>
-        val (newTicksPerQuarter, newElements) = quantizer.quantize(track, quantizationParams)
+        val quantizedTrack = quantizer.quantize(track, quantizationParams)
 
-        trackRepository.add(
-          newTicksPerQuarter,
-          newElements
-        )
+        trackRepository.add(quantizedTrack)
       }.map(_.id)
   }
 
-  private def toSymbolTrack(id: Track_ID): Try[Track] = {
-    trackRepository.get(id).map(symbolTrackFactory.trackToSymbolTrack)
-  }
+  private def toSymbolTrack(id: Track.TrackID): Try[Track] = trackRepository.get(id)
 }

@@ -1,7 +1,6 @@
 package application.api
 
-import application.model.event.MidiTrack.Track_ID
-import application.model.symbolic.Track
+import application.model.Track
 
 object Commands {
 
@@ -15,10 +14,10 @@ object Commands {
 
   // Track
   case object StartRecording extends Command { type Res = Unit }
-  case class StoreRecorded() extends Command { type Res = (Track_ID, Int) }
-  case class Play(trackId: Track_ID) extends Command { type Res = Unit }
-  case class Quantize(trackId: Track_ID, subdivision: Int, gridErrorMultiplier: Int) extends Command { type Res = Track_ID }
-  case object GetAll extends Command { type Res = Iterable[Track_ID] }
-  case class ToSymbolTrack(trackId: Track_ID) extends Command { type Res = Track }
+  case class StoreRecorded() extends Command { type Res = (Track.TrackID, Int) }
+  case class Play(trackId: Track.TrackID) extends Command { type Res = Unit }
+  case class Quantize(trackId: Track.TrackID, subdivision: Int, gridErrorMultiplier: Int) extends Command { type Res = Track.TrackID }
+  case object GetAll extends Command { type Res = Iterable[Track.TrackID] }
+  case class GetTrack(trackId: Track.TrackID) extends Command { type Res = Track }
 
 }
