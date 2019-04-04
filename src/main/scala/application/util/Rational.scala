@@ -10,8 +10,7 @@ case class Rational private (n: Int, d: Int) {
     else {
       val i = n / d
       val rest = if ((n - i) > 0) s" ${n - (i * d)}/$d" else ""
-      val wholes = if (i > 0) s"$i" else ""
-      s"$wholes$rest"
+      if (i > 0) s"$i $rest" else s"$rest"
     }
   }
 }

@@ -19,7 +19,7 @@ class DisplayTrackCommand extends Command {
     } yield {
       bus.execute(GetTrack(id))
         .fold(
-          ex => display(s"Unable to transform to symbol track [$ex]"),
+          ex => display(s"Cannot display track [$id]: [$ex]"),
           symbolTrack => display(printSymbolTrack(symbolTrack))
         )
     }

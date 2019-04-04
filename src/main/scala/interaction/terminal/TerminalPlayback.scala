@@ -16,7 +16,9 @@ object TerminalPlayback {
       } yield {
         s"[@$tickPos: $pitch for $tickDur at volume $velocity]"
       }
-    }.mkString("\n")
+    }
+      .collect { case Some(s) => s }
+      .mkString("\n")
 
     val output = s"Ticks per quarter: ${track.getTrackProperty[TicksPerQuarter]}\n$music"
 
