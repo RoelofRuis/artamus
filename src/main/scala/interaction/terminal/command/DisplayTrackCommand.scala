@@ -25,7 +25,7 @@ class DisplayTrackCommand extends Command {
           symbolTrack => {
             tpe match {
               case "piano" => display(printPianoRoll(symbolTrack))
-              case _ => display(printSymbolTrack(symbolTrack))
+              case _ => display(printSymbolData(symbolTrack))
             }
           }
         )
@@ -76,7 +76,7 @@ class DisplayTrackCommand extends Command {
     }.mkString("\n")
   }
 
-  private def printSymbolTrack(symbolTrack: Track): String = {
+  private def printSymbolData(symbolTrack: Track): String = {
     symbolTrack.mapSymbols { symbol =>
       for {
         idx <- symbol.properties.collectFirst { case NotePosition(pos, _) => pos }
