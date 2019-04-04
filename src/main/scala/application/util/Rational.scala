@@ -5,11 +5,17 @@ case class Rational private (n: Int, d: Int) {
 
   def /(a: Int): Rational = Rational.apply(n, d * a)
 
+  def -(that: Rational): Rational = Rational.apply(n * that.d - that.n * d, d * that.d)
+
+  def +(that: Rational): Rational = Rational.apply(n * that.d + that.n * d, d * that.d)
+
+  def toDouble: Double = n.toDouble / d
+
   override def toString: String = {
     if (n == 0 || d == 0) "0"
     else {
       val i = n / d
-      val rest = if ((n - i) > 0) s" ${n - (i * d)}/$d" else ""
+      val rest = if ((n - i) > 0) s"${n - (i * d)}/$d" else ""
       if (i > 0) s"$i $rest" else s"$rest"
     }
   }
@@ -18,7 +24,7 @@ case class Rational private (n: Int, d: Int) {
 object Rational {
 
   def apply(n: Int, d: Int): Rational = {
-    val g = gcd(n, d)
+    val g = gcd(Math.abs(n), Math.abs(d))
     new Rational(n / g, d / g)
   }
 

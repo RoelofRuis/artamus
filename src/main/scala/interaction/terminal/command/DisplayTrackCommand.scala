@@ -4,6 +4,7 @@ import application.api.CommandBus
 import application.api.Commands.{GetTrack, TrackID}
 import application.model.SymbolProperties.{MidiPitch, NoteDuration, NotePosition}
 import application.model.Track
+import application.util.Rational
 
 import scala.util.Try
 
@@ -16,15 +17,63 @@ class DisplayTrackCommand extends Command {
   def execute(bus: CommandBus, args: Array[String]): CommandResponse = {
     val res: Try[CommandResponse] = for {
       id <- Try(TrackID(args(0).toLong))
+      tpe <- Try(if (args.isDefinedAt(1)) args(1) else "")
     } yield {
       bus.execute(GetTrack(id))
         .fold(
           ex => display(s"Cannot display track [$id]: [$ex]"),
-          symbolTrack => display(printSymbolTrack(symbolTrack))
+          symbolTrack => {
+            tpe match {
+              case "piano" => display(printPianoRoll(symbolTrack))
+              case _ => display(printSymbolTrack(symbolTrack))
+            }
+          }
         )
     }
 
     returnRecovered(res)
+  }
+
+  private def printPianoRoll(symbolTrack: Track): String = {
+    val indexedData: Map[Rational, Array[(Rational, Rational, Int)]] = symbolTrack.mapSymbols { symbol =>
+      for {
+        pos <- symbol.properties.collectFirst { case NotePosition(pos, nv) => nv * pos.toInt }
+        dur <- symbol.properties.collectFirst { case NoteDuration(len, nv) => nv * len.toInt }
+        pitch <- symbol.properties.collectFirst { case MidiPitch(pitch) => pitch }
+      } yield (pos, dur, pitch)
+    }
+      .collect { case Some(x) => x }
+      .toArray
+      .sortBy { case (pos, _, _) => pos.n.toLong / pos.d }
+      .groupBy { case (pos, _, _) => pos }
+
+    val MIN_PITCH = 30
+    val MAX_PITCH = 90
+    val STEPS_PER_QUARTER = 8
+    val GRID_STEP = Rational(1, STEPS_PER_QUARTER * 4)
+
+    var active = Map[Int, Rational]()
+
+    Range.apply(0, 64).map { i =>
+      indexedData
+        .getOrElse(GRID_STEP * i, Array())
+        .map { case (_, dur, pitch) => (pitch, dur) }
+        .foreach { case (pitch, dur) => active += (pitch -> dur)}
+
+      val onQuarter = (i % STEPS_PER_QUARTER) == 0
+      val sidebar = if (onQuarter) "-----+" else "     |"
+      val activePitchString = Range.inclusive(MIN_PITCH, MAX_PITCH)
+        .map { p =>
+          if (active.get(p).isDefined) '#'
+          else if (onQuarter) '-'
+          else ' '
+        }
+        .mkString("")
+
+      active = active.mapValues(_ - GRID_STEP).filterNot { case (_, dur) => dur.toDouble <= 0 }
+
+      s"$sidebar$activePitchString"
+    }.mkString("\n")
   }
 
   private def printSymbolTrack(symbolTrack: Track): String = {
