@@ -22,27 +22,27 @@ class TrackCommandHandler @Inject() (
   eventBus: ApplicationEventBus
 ) {
 
-  bus.subscribeHandler(Handler[GetAll.type](_ => Success(trackRepository.getAll.map(_.id))))
+  bus.subscribeHandler(Handler[GetAll.type](_ => Success(trackRepository.getAllIds)))
   bus.subscribeHandler(Handler[StartRecording.type](_ => recordingManager.startRecording))
   bus.subscribeHandler(Handler[StoreRecorded](_ => storeRecorded()))
   bus.subscribeHandler(Handler[Quantize](c => quantize(c.trackId, c.subdivision, c.gridErrorMultiplier)))
   bus.subscribeHandler(Handler[Play](c => play(c.trackId)))
   bus.subscribeHandler(Handler[GetTrack](c => toSymbolTrack(c.trackId)))
 
-  private def storeRecorded(): Try[(Track.TrackID, Int)] = {
+  private def storeRecorded(): Try[(TrackID, Int)] = {
     recordingManager
       .stopRecording
       .map(trackRepository.add)
-      .map(t => (t.id, t.symbols.size))
+      .map { case (newId, track) => (newId, track.symbols.size) }
   }
 
-  private def play(id: Track.TrackID): Try[Unit] = {
+  private def play(id: TrackID): Try[Unit] = {
     trackRepository.get(id).map { track =>
       eventBus.publish(PlaybackRequest(track))
     }
   }
 
-  private def quantize(id: Track.TrackID, subdivision: Int, gridErrorMultiplier: Int): Try[Track.TrackID] = {
+  private def quantize(id: TrackID, subdivision: Int, gridErrorMultiplier: Int): Try[TrackID] = {
     val quantizationParams = Params(
       recordingResolution / 16,
       recordingResolution * 2,
@@ -55,8 +55,8 @@ class TrackCommandHandler @Inject() (
         val quantizedTrack = quantizer.quantize(track, quantizationParams)
 
         trackRepository.add(quantizedTrack)
-      }.map(_.id)
+      }.map { case (newId, _) => newId }
   }
 
-  private def toSymbolTrack(id: Track.TrackID): Try[Track] = trackRepository.get(id)
+  private def toSymbolTrack(id: TrackID): Try[Track] = trackRepository.get(id)
 }

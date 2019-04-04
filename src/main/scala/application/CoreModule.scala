@@ -1,5 +1,6 @@
 package application
 
+import application.api.Commands.TrackID
 import application.api.{DevicePool, KeyValueStorage, RecordingDevice}
 import application.handler._
 import application.interact.Logger.CmdLogger
@@ -22,7 +23,7 @@ class CoreModule extends ScalaPrivateModule {
 
     bind[Logger].toInstance(new CmdLogger(false))
 
-    requireBinding(new Key[KeyValueStorage[Track.TrackID, Track]]() {})
+    requireBinding(new Key[KeyValueStorage[TrackID, Track]]() {})
 
     requireBinding(new Key[RecordingDevice]() {})
     requireBinding(new Key[DevicePool]() {})

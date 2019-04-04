@@ -1,9 +1,7 @@
 package interaction.terminal.command
 
-import java.util.UUID
-
 import application.api.CommandBus
-import application.api.Commands.GetTrack
+import application.api.Commands.{GetTrack, TrackID}
 import application.model.SymbolProperties.{MidiPitch, NoteDuration, NotePosition}
 import application.model.Track
 
@@ -17,7 +15,7 @@ class DisplayTrackCommand extends Command {
 
   def execute(bus: CommandBus, args: Array[String]): CommandResponse = {
     val res: Try[CommandResponse] = for {
-      id <- Try(UUID.fromString(args(0)))
+      id <- Try(TrackID(args(0).toLong))
     } yield {
       bus.execute(GetTrack(id))
         .fold(

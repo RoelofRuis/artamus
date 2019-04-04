@@ -1,8 +1,7 @@
 package interaction.terminal.command
 
 import application.api.CommandBus
-import application.api.Commands.StoreRecorded
-import application.model.Track
+import application.api.Commands.{StoreRecorded, TrackID}
 
 import scala.util.Try
 
@@ -13,7 +12,7 @@ class StoreRecordingCommand extends Command {
   override val argsHelp = Some("[idea id: Int]")
 
   def execute(bus: CommandBus, args: Array[String]): CommandResponse = {
-    val res: Try[(Track.TrackID, Int)] = for {
+    val res: Try[(TrackID, Int)] = for {
       (trackId, lenght) <- bus.execute(StoreRecorded())
     } yield (trackId, lenght)
 

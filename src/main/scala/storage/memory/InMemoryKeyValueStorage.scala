@@ -14,6 +14,8 @@ class InMemoryKeyValueStorage[K, V] extends KeyValueStorage[K, V] {
 
   def get(key: K): Option[V] = buffer.get(key)
 
+  def getAllKeys: Vector[K] = buffer.keys.toVector
+
   def getAll: Vector[V] = buffer.values.toVector
 
 }

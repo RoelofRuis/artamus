@@ -14,6 +14,8 @@ trait KeyValueStorage[K, V] {
 
   def get(key: K): Option[V]
 
+  def getAllKeys: Vector[K]
+
   def getAll: Vector[V]
 
 }
