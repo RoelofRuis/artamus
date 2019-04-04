@@ -36,7 +36,7 @@ class MidiInputDevice @Inject() (midiDevicePool: MidiDeviceProvider) extends Rec
 
       val builder = parseTrack(sequence.getTracks()(0))
 
-      builder.addTrackProperty(TicksPerQuarter(sequence.getTickLength))
+      builder.addTrackProperty(TicksPerQuarter(sequence.getResolution))
 
       builder.build
     }
