@@ -12,7 +12,7 @@ case class DefaultQuantizer() extends TrackQuantizer {
       params.minGrid,
       params.maxGrid,
       params.gridErrorWeight,
-      track.symbols.flatMap(_.properties.collectFirst { case TickPosition(p) => p })
+      track.mapSymbolProperties[TickPosition, Long](_.tick)
     )
 
     val baseNote = Rational(1, 4 * params.ticksPerQuarter)
@@ -23,7 +23,7 @@ case class DefaultQuantizer() extends TrackQuantizer {
     }
 
     // TODO: make cleaner separation with build logic
-    val qElements = track.symbols.map { symbol =>
+    val qElements = track.mapSymbols { symbol =>
       for {
         tickPos <- symbol.properties.collectFirst { case TickPosition(pos) => pos }
         tickDur <- symbol.properties.collectFirst { case TickDuration(dur) => dur }
@@ -36,7 +36,7 @@ case class DefaultQuantizer() extends TrackQuantizer {
     }
 
     val builder = Track.builder
-    track.properties.foreach(builder.addTrackProperty)
+    track.getTrackProperties.foreach(builder.addTrackProperty)
     qElements.collect { case Some(props) => props }
       .foreach(builder.addSymbolFromProps)
 

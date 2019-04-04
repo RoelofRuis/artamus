@@ -1,14 +1,30 @@
 package application.model
 
 import application.model.SymbolProperties.SymbolProperty
+import application.model.Track.TrackSymbol
 import application.model.TrackProperties.TrackProperty
 
 import scala.language.existentials
+import scala.reflect.ClassTag
 
-final case class Track private (
+final class Track private (
   properties: Track.TrackProperties,
   symbols: Seq[Track.TrackSymbol]
-)
+) {
+
+  def getTrackProperties: Track.TrackProperties = properties
+
+  def getTrackProperty[A <: TrackProperty: ClassTag]: Option[A] = properties.collectFirst { case p: A => p }
+
+  def mapSymbolProperties[A <: SymbolProperty: ClassTag, B](f: A => B): Iterable[B] = {
+    symbols.flatMap(_.properties.collectFirst { case v: A => f(v) })
+  }
+
+  def mapSymbols[A](f: TrackSymbol => A): Iterable[A] = symbols.map(f(_))
+
+  def numSymbols: Int = symbols.size
+
+}
 
 object Track {
 
@@ -39,7 +55,7 @@ object Track {
           case (properties, index) => TrackSymbol(index, properties)
         }
 
-      Track(
+      new Track(
         trackProperties,
         symbols
       )

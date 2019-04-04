@@ -7,7 +7,7 @@ import application.model.TrackProperties.TicksPerQuarter
 object TerminalPlayback {
 
   def playback(prompt: Prompt, track: Track): Unit = {
-    val music = track.symbols.map { symbol =>
+    val music = track.mapSymbols { symbol =>
       for {
         pitch <- symbol.properties.collectFirst { case MidiPitch(p) => p }
         velocity <- symbol.properties.collectFirst { case MidiVelocity(v) => v }
@@ -18,7 +18,7 @@ object TerminalPlayback {
       }
     }.mkString("\n")
 
-    val output = s"Ticks per quarter: ${track.properties.collectFirst { case TicksPerQuarter(t) => t }}\n$music"
+    val output = s"Ticks per quarter: ${track.getTrackProperty[TicksPerQuarter]}\n$music"
 
     prompt.write(output)
   }

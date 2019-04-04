@@ -33,7 +33,7 @@ class TrackCommandHandler @Inject() (
     recordingManager
       .stopRecording
       .map(trackRepository.add)
-      .map { case (newId, track) => (newId, track.symbols.size) }
+      .map { case (newId, track) => (newId, track.numSymbols) }
   }
 
   private def play(id: TrackID): Try[Unit] = {

@@ -13,13 +13,13 @@ class MidiPlaybackDevice @Inject() (devicePool: MidiDeviceProvider) {
   def playback(track: model.Track): Unit = {
     for {
       sequencer <- devicePool.openOutSequencer(hash)
-      ticksPerQuarter <- track.properties.collectFirst { case TicksPerQuarter(ticks) => ticks }
+      ticksPerQuarter <- track.getTrackProperty[TicksPerQuarter]
     } yield {
-      val sequence = new Sequence(Sequence.PPQ, ticksPerQuarter.toInt)
+      val sequence = new Sequence(Sequence.PPQ, ticksPerQuarter.ticks.toInt)
 
       val midiTrack = sequence.createTrack()
 
-      track.symbols.foreach { symbol =>
+      track.mapSymbols { symbol =>
           for {
             pitch <- symbol.properties.collectFirst { case MidiPitch(p) => p }
             velocity <- symbol.properties.collectFirst { case MidiVelocity(v) => v }

@@ -28,7 +28,7 @@ class DisplayTrackCommand extends Command {
   }
 
   private def printSymbolTrack(symbolTrack: Track): String = {
-    symbolTrack.symbols.map { symbol =>
+    symbolTrack.mapSymbols { symbol =>
       for {
         idx <- symbol.properties.collectFirst { case NotePosition(pos, _) => pos }
         posString <- symbol.properties.collectFirst { case NotePosition(pos, nv) => s"@ ${nv * pos.toInt}" }
