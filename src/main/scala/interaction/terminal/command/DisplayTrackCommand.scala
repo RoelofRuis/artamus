@@ -44,17 +44,19 @@ class DisplayTrackCommand extends Command {
     }
       .collect { case Some(x) => x }
       .toArray
-      .sortBy { case (pos, _, _) => pos.n.toLong / pos.d }
       .groupBy { case (pos, _, _) => pos }
+
+    println(indexedData)
 
     val MIN_PITCH = 30
     val MAX_PITCH = 90
     val STEPS_PER_QUARTER = 8
     val GRID_STEP = Rational(1, STEPS_PER_QUARTER * 4)
+    val MEASURES = 1
 
     var active = Map[Int, Rational]()
 
-    Range.apply(0, 64).map { i =>
+    Range.apply(0, STEPS_PER_QUARTER * 4 * MEASURES).map { i =>
       indexedData
         .getOrElse(GRID_STEP * i, Array())
         .map { case (_, dur, pitch) => (pitch, dur) }
