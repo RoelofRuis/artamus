@@ -35,7 +35,7 @@ class DisplayTrackCommand extends Command {
   }
 
   private def printPianoRoll(symbolTrack: Track): String = {
-    val indexedData: Map[Rational, Array[(Rational, Rational, Int)]] = symbolTrack.mapSymbols { symbol =>
+    val indexedData: Map[Rational, Iterable[(Rational, Rational, Int)]] = symbolTrack.mapSymbols { symbol =>
       for {
         pos <- symbol.properties.collectFirst { case NotePosition(pos, nv) => nv * pos.toInt }
         dur <- symbol.properties.collectFirst { case NoteDuration(len, nv) => nv * len.toInt }
@@ -43,22 +43,19 @@ class DisplayTrackCommand extends Command {
       } yield (pos, dur, pitch)
     }
       .collect { case Some(x) => x }
-      .toArray
       .groupBy { case (pos, _, _) => pos }
-
-    println(indexedData)
 
     val MIN_PITCH = 30
     val MAX_PITCH = 90
     val STEPS_PER_QUARTER = 8
     val GRID_STEP = Rational(1, STEPS_PER_QUARTER * 4)
-    val MEASURES = 1
+    val MEASURES = 4
 
     var active = Map[Int, Rational]()
 
     Range.apply(0, STEPS_PER_QUARTER * 4 * MEASURES).map { i =>
       indexedData
-        .getOrElse(GRID_STEP * i, Array())
+        .getOrElse(GRID_STEP * i, Iterable())
         .map { case (_, dur, pitch) => (pitch, dur) }
         .foreach { case (pitch, dur) => active += (pitch -> dur)}
 
