@@ -70,7 +70,7 @@ class DisplayTrackCommand extends Command {
         }
         .mkString("")
 
-      active = active.mapValues(_ - GRID_STEP).filterNot { case (_, dur) => dur.toDouble <= 0 }
+      active = active.mapValues(_ - GRID_STEP).filterNot { case (_, dur) => dur <= Rational(0, 0) }
 
       s"$sidebar$activePitchString"
     }.mkString("\n")

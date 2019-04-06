@@ -1,6 +1,6 @@
 package application.util
 
-case class Rational private (n: Int, d: Int) {
+case class Rational private (n: Int, d: Int) extends Ordered[Rational] {
   def *(a: Int): Rational = Rational.apply(a * n, d)
 
   def /(a: Int): Rational = Rational.apply(n, d * a)
@@ -9,7 +9,7 @@ case class Rational private (n: Int, d: Int) {
 
   def +(that: Rational): Rational = Rational.apply(n * that.d + that.n * d, d * that.d)
 
-  def toDouble: Double = n.toDouble / d
+  override def compare(that: Rational): Int = (this - that).n.signum
 
   override def toString: String = {
     if (n == 0 || d == 0) "0"
@@ -19,13 +19,17 @@ case class Rational private (n: Int, d: Int) {
       if (i > 0) s"$i $rest" else s"$rest"
     }
   }
+
 }
 
 object Rational {
 
   def apply(n: Int, d: Int): Rational = {
-    val g = gcd(Math.abs(n), Math.abs(d))
-    new Rational(n / g, d / g)
+    if (n == 0) new Rational(0, 0)
+    else {
+      val g = gcd(Math.abs(n), Math.abs(d))
+      new Rational(n / g, d / g)
+    }
   }
 
   private def gcd(x: Int, y:Int): Int = {
