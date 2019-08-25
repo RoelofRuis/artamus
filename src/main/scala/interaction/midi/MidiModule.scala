@@ -11,7 +11,7 @@ class MidiModule extends ScalaModule {
 
     bind[DevicePool].to[MidiDevicePool]
     bind[MidiDeviceProvider].asEagerSingleton()
-    bind[RecordingDevice].to[MidiInputDevice].asEagerSingleton()
+//    bind[RecordingDevice].to[MidiInputDevice].asEagerSingleton()
   }
 
 }

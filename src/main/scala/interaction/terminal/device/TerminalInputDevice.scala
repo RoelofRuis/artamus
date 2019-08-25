@@ -44,6 +44,7 @@ class TerminalInputDevice @Inject() (prompt: Prompt) extends RecordingDevice {
     )
   }
 
+  // For example '64.4 66.4 67.4
   private def parseElements(input: List[String], ticksPerQuarter: Int, pos: Long, builder: TrackBuilder): TrackBuilder = {
     input match {
       case head :: tail =>

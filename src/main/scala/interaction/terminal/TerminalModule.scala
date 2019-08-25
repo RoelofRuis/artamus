@@ -23,8 +23,7 @@ class TerminalModule extends ScalaModule {
     commands.addBinding.to[DisplayTrackCommand]
     commands.addBinding.to[QuitCommand]
 
-    ScalaMapBinder.newMapBinder[String, RecordingDevice](binder)
-      .addBinding("terminal").to[TerminalInputDevice]
+    bind[RecordingDevice].to[TerminalInputDevice].asEagerSingleton()
   }
 
 }
