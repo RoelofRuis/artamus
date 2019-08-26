@@ -30,7 +30,7 @@ private[application] class Application @Inject() private (
       thread.start()
     }
 
-    logger.debug("Accepting messages on message bus...")
+    logger.debug("Accepting commands on command bus...")
 
     while (! commandBus.handleNext().isInstanceOf[CloseApplication.type]) {}
 

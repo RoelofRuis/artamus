@@ -14,7 +14,7 @@ object Main extends App {
   )
 
   import net.codingwell.scalaguice.InjectorExtensions._
-  val runner = injector.instance[ApplicationEntryPoint]
+  val application = injector.instance[ApplicationEntryPoint]
 
-  runner.run()
+  application.run()
 }

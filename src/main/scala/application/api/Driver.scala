@@ -10,7 +10,7 @@ trait Driver {
     *
     * Provides the required busses to communicate with the core.
     */
-  def run(messageBus: CommandBus, eventBus: EventBus): Unit
+  def run(commandBus: CommandBus, eventBus: EventBus): Unit
 
   /**
     * Called on application shutdown, before the driver thread is joined.

@@ -9,7 +9,6 @@ class StoreRecordingCommand extends Command {
 
   val name = "store"
   val helpText = "Store the currently running recording"
-  override val argsHelp = Some("[idea id: Int]")
 
   def execute(bus: CommandBus, args: Array[String]): CommandResponse = {
     val res: Try[(TrackID, Int)] = for {
