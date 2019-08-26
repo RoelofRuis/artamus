@@ -10,6 +10,7 @@ import javax.inject.{Inject, Named, Singleton}
 
 import scala.util.{Failure, Try}
 
+// TODO: move to driver logic
 @Singleton
 class RecordingManager @Inject() (
   @Named("TicksPerQuarter") resolution: Int,

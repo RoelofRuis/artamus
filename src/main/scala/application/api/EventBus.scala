@@ -4,6 +4,7 @@ import scala.reflect.runtime.universe._
 
 import application.api.Events.EventMessage
 
+// TODO: refactor to socket style
 trait EventBus {
 
   /**

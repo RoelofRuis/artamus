@@ -2,7 +2,7 @@ package application.handler
 
 import application.api.Commands._
 import application.api.Events.PlaybackRequest
-import application.interact.{ApplicationEventBus, SynchronousCommandBus}
+import application.interact.{ApplicationEventBus, SocketCommandBus}
 import application.model.Track
 import application.repository.TrackRepository
 import application.service.quantization.TrackQuantizer
@@ -14,7 +14,7 @@ import scala.util.{Success, Try}
 
 // TODO: see if TrackQuantizer and TicksPerQuarter can be moved to a separate service/controller
 class TrackCommandHandler @Inject() (
-  bus: SynchronousCommandBus,
+  bus: SocketCommandBus,
   trackRepository: TrackRepository,
   quantizer: TrackQuantizer,
   @Named("TicksPerQuarter") recordingResolution: Int,

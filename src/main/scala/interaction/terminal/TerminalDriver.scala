@@ -1,16 +1,17 @@
 package interaction.terminal
 
-import application.api.{Driver, EventBus, CommandBus}
 import application.api.Events.PlaybackRequest
+import application.api.{CommandBus, EventBus}
 import interaction.terminal.command.{Command, Continue, ResponseFactory}
 import javax.inject.Inject
 
 import scala.collection.immutable
 
+// TODO: refactor to become (configurable) Driver
 class TerminalDriver @Inject() (
   prompt: Prompt,
   unsortedCommands: immutable.Set[Command]
-) extends Driver with ResponseFactory {
+) extends ResponseFactory {
 
   implicit object CommandOrdering extends Ordering[Command] {
     def compare(command1: Command, command2: Command): Int = command2.name.compareTo(command1.name)

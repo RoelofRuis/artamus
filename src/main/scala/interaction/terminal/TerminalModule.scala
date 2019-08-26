@@ -1,16 +1,13 @@
 package interaction.terminal
 
-import application.api.{Driver, RecordingDevice}
+import application.api.RecordingDevice
 import interaction.terminal.command._
 import interaction.terminal.device.TerminalInputDevice
-import net.codingwell.scalaguice.{ScalaMapBinder, ScalaModule, ScalaMultibinder}
+import net.codingwell.scalaguice.{ScalaModule, ScalaMultibinder}
 
 class TerminalModule extends ScalaModule {
 
   override def configure(): Unit = {
-    ScalaMapBinder.newMapBinder[String, Driver](binder)
-      .addBinding("terminal").to[TerminalDriver]
-
     bind[Prompt].to[TerminalPrompt]
 
     val commands = ScalaMultibinder.newSetBinder[Command](binder)

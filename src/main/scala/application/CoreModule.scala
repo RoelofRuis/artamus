@@ -18,10 +18,10 @@ class CoreModule extends ScalaPrivateModule {
     bind[ApplicationEntryPoint].to[Application].asEagerSingleton()
     expose[ApplicationEntryPoint]
 
-    bind[SynchronousCommandBus].asEagerSingleton()
-    bind[ApplicationEventBus].asEagerSingleton()
+    bind[Logger].toInstance(new CmdLogger(true))
 
-    bind[Logger].toInstance(new CmdLogger(false))
+    bind[SocketCommandBus].asEagerSingleton()
+    bind[ApplicationEventBus].asEagerSingleton()
 
     requireBinding(new Key[KeyValueStorage[TrackID, Track]]() {})
 

@@ -1,7 +1,6 @@
-import com.google.inject.Guice
 import application.{ApplicationEntryPoint, CoreModule}
+import com.google.inject.Guice
 import interaction.midi.MidiModule
-import interaction.socket.SocketModule
 import interaction.terminal.TerminalModule
 import storage.StorageModule
 
@@ -12,7 +11,6 @@ object Main extends App {
     new TerminalModule,
     new MidiModule,
     new StorageModule,
-    new SocketModule
   )
 
   import net.codingwell.scalaguice.InjectorExtensions._

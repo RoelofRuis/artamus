@@ -5,6 +5,7 @@ import application.api.Commands.Command
 
 import scala.util.Try
 
+/** @deprecated remove */
 trait CommandBus {
 
   def execute[C <: Command: TypeTag](command: C): Try[C#Res]
