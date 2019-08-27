@@ -4,7 +4,7 @@ import java.io.{ObjectInputStream, ObjectOutputStream}
 import java.net.{ServerSocket, SocketException}
 
 import server.Logger
-import server.api.Actions.Action
+import server.api.Commands.Command
 import server.handler.Handler
 import server.interact.SocketCommandBus.{CommandMap, MissingHandlerException}
 import javax.inject.Inject
@@ -25,7 +25,7 @@ private[server] class SocketCommandBus @Inject() private (logger: Logger) {
         val socket = server.accept()
         val input = new ObjectInputStream(socket.getInputStream)
 
-        val command = input.readObject().asInstanceOf[Action]
+        val command = input.readObject().asInstanceOf[Command]
 
         logger.io("SOCKET COMMAND", "IN", s"$command")
 
@@ -44,7 +44,7 @@ private[server] class SocketCommandBus @Inject() private (logger: Logger) {
     }
   }
 
-  def execute[C <: Action: ClassTag](command: C): Try[C#Res] = {
+  def execute[C <: Command: ClassTag](command: C): Try[C#Res] = {
     handlers
       .get[C](command)
       .map(handler => handler.f(command))
@@ -52,7 +52,7 @@ private[server] class SocketCommandBus @Inject() private (logger: Logger) {
 
   }
 
-  def subscribeHandler[Cmd <: Action: ClassTag](h: Handler[Cmd]): Unit = {
+  def subscribeHandler[Cmd <: Command: ClassTag](h: Handler[Cmd]): Unit = {
     handlers = handlers.add[Cmd](h)
   }
 
@@ -65,13 +65,13 @@ object SocketCommandBus {
 
   import scala.language.higherKinds
 
-  class CommandMap[V[_ <: Action]](inner: Map[String, Any] = Map()) {
-    def add[A <: Action: ClassTag](value: V[A]): CommandMap[V] = {
+  class CommandMap[V[_ <: Command]](inner: Map[String, Any] = Map()) {
+    def add[A <: Command: ClassTag](value: V[A]): CommandMap[V] = {
       val realKey: String = classTag[A].runtimeClass.getCanonicalName
       new CommandMap(inner + ((realKey, value)))
     }
 
-    def get[A <: Action: ClassTag](command: A): Option[V[A]] = {
+    def get[A <: Command: ClassTag](command: A): Option[V[A]] = {
       val realKey: String = command.getClass.getCanonicalName
       inner.get(realKey).map(_.asInstanceOf[V[A]])
     }

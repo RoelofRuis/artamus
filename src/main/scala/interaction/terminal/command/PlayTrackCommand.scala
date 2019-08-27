@@ -1,6 +1,6 @@
 package interaction.terminal.command
 
-import server.api.Actions.{Play, TrackID}
+import server.api.Commands.{Play, TrackID}
 
 import scala.util.Try
 

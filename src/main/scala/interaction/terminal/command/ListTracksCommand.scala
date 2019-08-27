@@ -1,6 +1,6 @@
 package interaction.terminal.command
 
-import server.api.Actions.GetAll
+import server.api.Commands.GetAll
 
 class ListTracksCommand extends Command {
 

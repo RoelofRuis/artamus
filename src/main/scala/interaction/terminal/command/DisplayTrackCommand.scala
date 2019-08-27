@@ -1,6 +1,6 @@
 package interaction.terminal.command
 
-import server.api.Actions.{GetTrack, TrackID}
+import server.api.Commands.{GetTrack, TrackID}
 import server.model.SymbolProperties.{MidiPitch, NoteDuration, NotePosition}
 import server.model.Track
 import server.util.Rational

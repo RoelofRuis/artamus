@@ -1,6 +1,6 @@
 package interaction.terminal.command
 
-import server.api.Actions.{StoreRecorded, TrackID}
+import server.api.Commands.{StoreRecorded, TrackID}
 
 import scala.util.Try
 

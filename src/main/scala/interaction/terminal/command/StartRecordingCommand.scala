@@ -1,6 +1,6 @@
 package interaction.terminal.command
 
-import server.api.Actions.StartRecording
+import server.api.Commands.StartRecording
 
 class StartRecordingCommand extends Command {
 

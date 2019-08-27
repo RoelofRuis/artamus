@@ -1,6 +1,6 @@
 package interaction.terminal.command
 
-import server.api.Actions.{Quantize, TrackID}
+import server.api.Commands.{Quantize, TrackID}
 
 import scala.util.Try
 

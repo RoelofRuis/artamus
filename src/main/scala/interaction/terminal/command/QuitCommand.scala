@@ -1,6 +1,6 @@
 package interaction.terminal.command
 
-import server.api.Actions.CloseApplication
+import server.api.Commands.Exit
 
 class QuitCommand extends Command {
 
@@ -8,7 +8,7 @@ class QuitCommand extends Command {
   val helpText = "Exits the program."
 
   def execute(bus: BusStub, args: Array[String]): CommandResponse = {
-    bus.execute(CloseApplication)
+    bus.execute(Exit)
     halt
   }
 

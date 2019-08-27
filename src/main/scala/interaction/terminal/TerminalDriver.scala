@@ -1,7 +1,7 @@
 package interaction.terminal
 
 import server.api.Events.PlaybackRequest
-import server.api.{Actions, EventBus}
+import server.api.{Commands, EventBus}
 import interaction.terminal.command.{BusStub, Command, Continue, ResponseFactory}
 import javax.inject.Inject
 
@@ -21,7 +21,7 @@ class TerminalDriver @Inject() (
 
   // TODO: fill this out
   val stub = new BusStub {
-    override def execute[C <: Actions.Action : universe.TypeTag](command: C): Try[C#Res] = ???
+    override def execute[C <: Commands.Command : universe.TypeTag](command: C): Try[C#Res] = ???
   }
 
   private val commands = immutable.SortedSet[Command]() ++ unsortedCommands

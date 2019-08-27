@@ -2,14 +2,10 @@ package server
 
 import server.interact.SocketCommandBus
 import com.google.inject.Guice
-import storage.StorageModule
 
 object Server extends App {
 
-  val injector = Guice.createInjector(
-    new CoreModule,
-    new StorageModule,
-  )
+  val injector = Guice.createInjector(new CoreModule)
 
   import net.codingwell.scalaguice.InjectorExtensions._
   val logger = injector.instance[Logger]
