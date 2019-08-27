@@ -1,7 +1,7 @@
 package interaction.terminal.command
 
-import application.api.Commands.GetAll
-import application.api.CommandBus
+import server.api.Commands.GetAll
+import server.api.CommandBus
 
 class ListTracksCommand extends Command {
 

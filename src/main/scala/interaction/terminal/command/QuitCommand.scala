@@ -1,7 +1,7 @@
 package interaction.terminal.command
 
-import application.api.Commands.CloseApplication
-import application.api.CommandBus
+import server.api.Commands.CloseApplication
+import server.api.CommandBus
 
 class QuitCommand extends Command {
 

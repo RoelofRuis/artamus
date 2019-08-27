@@ -1,6 +1,6 @@
 package storage.memory
 
-import application.api.KeyValueStorage
+import server.api.KeyValueStorage
 
 import scala.collection.mutable
 

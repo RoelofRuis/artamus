@@ -1,8 +1,8 @@
 package storage
 
-import application.api.Commands.TrackID
-import application.api.KeyValueStorage
-import application.model.Track
+import server.api.Commands.TrackID
+import server.api.KeyValueStorage
+import server.model.Track
 import net.codingwell.scalaguice.ScalaModule
 import storage.memory.InMemoryKeyValueStorage
 

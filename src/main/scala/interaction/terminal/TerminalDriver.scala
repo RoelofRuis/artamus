@@ -1,7 +1,7 @@
 package interaction.terminal
 
-import application.api.Events.PlaybackRequest
-import application.api.{CommandBus, EventBus}
+import server.api.Events.PlaybackRequest
+import server.api.{CommandBus, EventBus}
 import interaction.terminal.command.{Command, Continue, ResponseFactory}
 import javax.inject.Inject
 

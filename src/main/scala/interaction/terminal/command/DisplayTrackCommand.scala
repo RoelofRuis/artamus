@@ -1,10 +1,10 @@
 package interaction.terminal.command
 
-import application.api.CommandBus
-import application.api.Commands.{GetTrack, TrackID}
-import application.model.SymbolProperties.{MidiPitch, NoteDuration, NotePosition}
-import application.model.Track
-import application.util.Rational
+import server.api.CommandBus
+import server.api.Commands.{GetTrack, TrackID}
+import server.model.SymbolProperties.{MidiPitch, NoteDuration, NotePosition}
+import server.model.Track
+import server.util.Rational
 
 import scala.util.Try
 

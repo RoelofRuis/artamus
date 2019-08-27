@@ -1,6 +1,5 @@
 package interaction.midi.device
 
-import application.api.DevicePool
 import javax.inject.Inject
 
 class MidiDevicePool @Inject() (midiDeviceProvider: MidiDeviceProvider) extends DevicePool {

@@ -1,6 +1,6 @@
 package interaction.terminal.command
 
-import application.api.CommandBus
+import server.api.CommandBus
 
 import scala.util.Try
 

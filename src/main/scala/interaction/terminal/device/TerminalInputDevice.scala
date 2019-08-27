@@ -1,10 +1,10 @@
 package interaction.terminal.device
 
-import application.api.RecordingDevice
-import application.model.SymbolProperties.{MidiPitch, MidiVelocity, TickDuration, TickPosition}
-import application.model.Track
-import application.model.Track.TrackBuilder
-import application.model.TrackProperties.TicksPerQuarter
+import server.model.SymbolProperties.{MidiPitch, MidiVelocity, TickDuration, TickPosition}
+import server.model.Track
+import server.model.Track.TrackBuilder
+import server.model.TrackProperties.TicksPerQuarter
+import interaction.midi.device.RecordingDevice
 import interaction.terminal.Prompt
 import javax.inject.Inject
 

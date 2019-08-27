@@ -1,8 +1,8 @@
 package interaction.terminal
 
-import application.model.SymbolProperties.{MidiPitch, MidiVelocity, TickDuration, TickPosition}
-import application.model.Track
-import application.model.TrackProperties.TicksPerQuarter
+import server.model.SymbolProperties.{MidiPitch, MidiVelocity, TickDuration, TickPosition}
+import server.model.Track
+import server.model.TrackProperties.TicksPerQuarter
 
 object TerminalPlayback {
 

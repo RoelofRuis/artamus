@@ -24,4 +24,4 @@ fork in run := true
 connectInput in run := true
 outputStrategy in run := Some(StdoutOutput)
 
-mainClass in (Compile, run) := Some("Main")
+mainClass in (Compile, run) := Some("server.Server")

@@ -1,8 +1,8 @@
 package interaction.midi.device
 
-import application.model
-import application.model.SymbolProperties.{MidiPitch, MidiVelocity, TickDuration, TickPosition}
-import application.model.TrackProperties.TicksPerQuarter
+import server.model
+import server.model.SymbolProperties.{MidiPitch, MidiVelocity, TickDuration, TickPosition}
+import server.model.TrackProperties.TicksPerQuarter
 import javax.inject.Inject
 import javax.sound.midi._
 

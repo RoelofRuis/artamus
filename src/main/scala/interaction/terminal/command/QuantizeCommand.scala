@@ -1,7 +1,7 @@
 package interaction.terminal.command
 
-import application.api.CommandBus
-import application.api.Commands.{Quantize, TrackID}
+import server.api.CommandBus
+import server.api.Commands.{Quantize, TrackID}
 
 import scala.util.Try
 

@@ -1,10 +1,9 @@
 package interaction.midi.device
 
-import application.api.RecordingDevice
-import application.model.SymbolProperties.{MidiPitch, MidiVelocity, TickDuration, TickPosition}
-import application.model.Track
-import application.model.Track.TrackBuilder
-import application.model.TrackProperties.TicksPerQuarter
+import server.model.SymbolProperties.{MidiPitch, MidiVelocity, TickDuration, TickPosition}
+import server.model.Track
+import server.model.Track.TrackBuilder
+import server.model.TrackProperties.TicksPerQuarter
 import javax.inject.Inject
 import javax.sound.midi.{Sequence, ShortMessage, Track => MidiTrack}
 
