@@ -1,4 +1,4 @@
-package server
+package server.core
 
 private[server] trait Logger {
 

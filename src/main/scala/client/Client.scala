@@ -3,7 +3,7 @@ package client
 import java.io.{ObjectInputStream, ObjectOutputStream}
 import java.net.{InetAddress, Socket}
 
-import server.api.Commands.Exit
+import server.api.commands.Application.StopServer
 
 object Client extends App {
 
@@ -13,7 +13,7 @@ object Client extends App {
 
 //  out.writeObject(StartRecording)
 //  out.writeObject(GetTrack(TrackID(1)))
-  out.writeObject(Exit)
+  out.writeObject(StopServer)
 
   lazy val in = new ObjectInputStream(socket.getInputStream)
 

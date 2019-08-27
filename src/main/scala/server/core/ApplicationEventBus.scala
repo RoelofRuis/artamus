@@ -1,9 +1,8 @@
-package server.interact
+package server.core
 
-import server.Logger
 import server.api.EventBus
 import server.api.Events.EventMessage
-import server.interact.ApplicationEventBus.{Channel, TypedMap}
+import server.core.ApplicationEventBus.{Channel, TypedMap}
 
 import scala.reflect.runtime.universe._
 import javax.inject.Inject

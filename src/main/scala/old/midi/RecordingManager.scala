@@ -11,7 +11,7 @@ import scala.util.{Failure, Try}
 @Singleton
 class RecordingManager @Inject() (
   @Named("TicksPerQuarter") resolution: Int,
-  device: RecordingDevice
+  device: MidiInputDevice
 ) {
 
   private val isRecording: AtomicBoolean = new AtomicBoolean(false)

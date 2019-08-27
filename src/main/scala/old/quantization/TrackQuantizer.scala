@@ -1,7 +1,7 @@
-package server.service.quantization
+package old.quantization
 
 import server.model.Track
-import server.service.quantization.TrackQuantizer.Params
+import old.quantization.TrackQuantizer.Params
 
 trait TrackQuantizer {
 

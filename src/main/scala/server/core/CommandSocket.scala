@@ -1,19 +1,17 @@
-package server.interact
+package server.core
 
 import java.io.{ObjectInputStream, ObjectOutputStream}
 import java.net.{ServerSocket, SocketException}
 
-import server.Logger
-import server.api.Commands.Command
-import server.handler.Handler
-import server.interact.SocketCommandBus.{CommandMap, MissingHandlerException}
+import server.core.CommandSocket.{CommandMap, MissingHandlerException}
 import javax.inject.Inject
+import server.api.commands.{Command, Handler}
 
 import scala.reflect.{ClassTag, classTag}
 import scala.util.{Failure, Try}
 
 // TODO: create nice coating for easy interaction inside application as well as driver interaction.
-private[server] class SocketCommandBus @Inject() private (logger: Logger) {
+private[server] class CommandSocket @Inject() private (logger: Logger) {
 
   lazy val server = new ServerSocket(9999)
 
@@ -61,7 +59,7 @@ private[server] class SocketCommandBus @Inject() private (logger: Logger) {
   }
 }
 
-object SocketCommandBus {
+object CommandSocket {
 
   import scala.language.higherKinds
 

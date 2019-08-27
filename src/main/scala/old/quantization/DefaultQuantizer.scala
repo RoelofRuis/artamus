@@ -1,8 +1,8 @@
-package server.service.quantization
+package old.quantization
 
 import server.model.SymbolProperties.{NoteDuration, NotePosition, TickDuration, TickPosition}
 import server.model.Track
-import server.service.quantization.TrackQuantizer.{End, Params, Quantizer, Start}
+import old.quantization.TrackQuantizer.{End, Params, Quantizer, Start}
 import server.util.Rational
 
 case class DefaultQuantizer() extends TrackQuantizer {
