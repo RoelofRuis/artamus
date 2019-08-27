@@ -5,22 +5,33 @@ import java.net.{InetAddress, Socket}
 
 import server.api.Application.StopServer
 import server.api.Track.{Print, SetKey, SetTimeSignature}
-import server.util.Rational
+import server.api.commands.Command
+
+import scala.util.Try
 
 object Client extends App {
 
-  val socket = new Socket(InetAddress.getByName("localhost"), 9999)
+  val c = new CommandClient(9999)
 
-  val out = new ObjectOutputStream(socket.getOutputStream)
+  c.send(SetTimeSignature(4, 4))
+  c.send(SetKey(0))
+  c.send(Print)
+  val x = c.send(StopServer)
 
-//  out.writeObject(Print)
-//  out.writeObject(SetTimeSignature(Rational(4, 4)))
-//  out.writeObject(SetKey(0))
-  out.writeObject(StopServer)
+}
 
-  lazy val in = new ObjectInputStream(socket.getInputStream)
+class CommandClient(port: Int) {
 
-  println("Received: " + in.readObject())
+  def send[A <: Command](command: A): Try[A#Res] = {
+    val socket = new Socket(InetAddress.getByName("localhost"), port)
+    val out = new ObjectOutputStream(socket.getOutputStream)
+    lazy val in = new ObjectInputStream(socket.getInputStream)
+    out.writeObject(command)
+    val response = in.readObject().asInstanceOf[Try[A#Res]]
+    out.close()
+    in.close()
+    socket.close()
+    response
+  }
 
-  socket.close()
 }
