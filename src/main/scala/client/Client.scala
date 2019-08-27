@@ -4,7 +4,8 @@ import java.io.{ObjectInputStream, ObjectOutputStream}
 import java.net.{InetAddress, Socket}
 
 import server.api.commands.Application.StopServer
-import server.api.commands.Track.SetKey
+import server.api.commands.Track.{Print, SetKey, SetTimeSignature}
+import server.util.Rational
 
 object Client extends App {
 
@@ -12,10 +13,10 @@ object Client extends App {
 
   val out = new ObjectOutputStream(socket.getOutputStream)
 
-//  out.writeObject(StartRecording)
-//  out.writeObject(GetTrack(TrackID(1)))
-  out.writeObject(StopServer)
+//  out.writeObject(Print)
+//  out.writeObject(SetTimeSignature(Rational(4, 4)))
 //  out.writeObject(SetKey(0))
+  out.writeObject(StopServer)
 
   lazy val in = new ObjectInputStream(socket.getInputStream)
 

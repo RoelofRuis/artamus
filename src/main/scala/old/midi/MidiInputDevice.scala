@@ -2,10 +2,9 @@ package old.midi
 
 import javax.inject.Inject
 import javax.sound.midi.{Sequence, ShortMessage, Track => MidiTrack}
-import server.model.SymbolProperties.{MidiPitch, MidiVelocity, TickDuration, TickPosition}
+import server.model.SymbolProperties.MidiPitch
 import server.model.Track
 import server.model.Track.TrackBuilder
-import server.model.TrackProperties.TicksPerQuarter
 
 import scala.util.{Failure, Success, Try}
 
@@ -35,7 +34,7 @@ class MidiInputDevice @Inject() (midiDevicePool: MidiDeviceProvider) {
 
       val builder = parseTrack(sequence.getTracks()(0))
 
-      builder.addTrackProperty(TicksPerQuarter(sequence.getResolution))
+//      builder.addTrackProperty(TicksPerQuarter(sequence.getResolution))
 
       builder.build
     }
@@ -66,10 +65,10 @@ class MidiInputDevice @Inject() (midiDevicePool: MidiDeviceProvider) {
             case Some((start, volume)) =>
               activeNotes - msg.getData1
               builder.addSymbolFromProps(
-                TickPosition(start - firstOnset.get),
-                TickDuration(midiEvent.getTick - start),
+//                TickPosition(start - firstOnset.get),
+//                TickDuration(midiEvent.getTick - start),
                 MidiPitch(msg.getData1),
-                MidiVelocity(volume)
+//                MidiVelocity(volume)
               )
             case None =>
           }

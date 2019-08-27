@@ -3,8 +3,7 @@ package old.midi
 import javax.inject.Inject
 import javax.sound.midi._
 import server.model
-import server.model.SymbolProperties.{MidiPitch, MidiVelocity, TickDuration, TickPosition}
-import server.model.TrackProperties.TicksPerQuarter
+import server.model.SymbolProperties.MidiPitch
 
 class MidiPlaybackDevice @Inject() (devicePool: MidiDeviceProvider) {
 
@@ -13,21 +12,17 @@ class MidiPlaybackDevice @Inject() (devicePool: MidiDeviceProvider) {
   def playback(track: model.Track): Unit = {
     for {
       sequencer <- devicePool.openOutSequencer(hash)
-      ticksPerQuarter <- track.getTrackProperty[TicksPerQuarter]
     } yield {
-      val sequence = new Sequence(Sequence.PPQ, ticksPerQuarter.ticks.toInt)
+      val sequence = new Sequence(Sequence.PPQ, 96)
 
       val midiTrack = sequence.createTrack()
 
       track.mapSymbols { symbol =>
           for {
             pitch <- symbol.properties.collectFirst { case MidiPitch(p) => p }
-            velocity <- symbol.properties.collectFirst { case MidiVelocity(v) => v }
-            tickPos <- symbol.properties.collectFirst { case TickPosition(p) => p }
-            tickDur <- symbol.properties.collectFirst { case TickDuration(d) => d }
           } yield {
-            midiTrack.add(new MidiEvent(new ShortMessage(ShortMessage.NOTE_ON, 0, pitch, velocity), tickPos))
-            midiTrack.add(new MidiEvent(new ShortMessage(ShortMessage.NOTE_OFF, 0, pitch, 0), tickPos + tickDur))
+            midiTrack.add(new MidiEvent(new ShortMessage(ShortMessage.NOTE_ON, 0, pitch, 32), 0))
+            midiTrack.add(new MidiEvent(new ShortMessage(ShortMessage.NOTE_OFF, 0, pitch, 0), 0))
           }
       }
 
