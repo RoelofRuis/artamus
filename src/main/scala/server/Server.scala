@@ -1,6 +1,7 @@
-package server.core
+package server
 
 import javax.inject.Inject
+import server.io.{CommandSocket, Logger}
 
 class Server @Inject() (logger: Logger, commandBus: CommandSocket) extends App {
 

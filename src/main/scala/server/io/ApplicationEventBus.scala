@@ -1,8 +1,8 @@
-package server.core
+package server.io
 
 import server.api.EventBus
 import server.api.Events.EventMessage
-import server.core.ApplicationEventBus.{Channel, TypedMap}
+import server.io.ApplicationEventBus.{Channel, TypedMap}
 
 import scala.reflect.runtime.universe._
 import javax.inject.Inject

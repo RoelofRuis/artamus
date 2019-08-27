@@ -1,7 +1,6 @@
 package server
 
 import com.google.inject.Guice
-import server.core.Server
 
 object Main extends App {
 

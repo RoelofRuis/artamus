@@ -1,9 +1,9 @@
-package server.core
+package server.io
 
 import java.io.{ObjectInputStream, ObjectOutputStream}
 import java.net.{ServerSocket, SocketException}
 
-import server.core.CommandSocket.{CommandMap, MissingHandlerException}
+import server.io.CommandSocket.{CommandMap, MissingHandlerException}
 import javax.inject.Inject
 import server.api.commands.{Command, Handler}
 

@@ -1,6 +1,6 @@
 package server.handler
 
-import server.core.CommandSocket
+import server.io.CommandSocket
 import com.google.inject.Inject
 import server.api.commands.Application.StopServer
 import server.api.commands.Handler

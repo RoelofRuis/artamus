@@ -40,6 +40,7 @@ object Track {
     properties: SymbolProperties
   )
 
+  // TODO: see if this is still used
   final class TrackBuilder () {
 
     private var trackProperties: TrackProperties = Seq()
