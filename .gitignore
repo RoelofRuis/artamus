@@ -4,3 +4,6 @@ target/
 
 # for local experiments in worksheets
 worksheets/
+
+# any worksheet higher up in the sources tree
+src/**/*.sc
