@@ -4,7 +4,6 @@ import java.util.concurrent.atomic.AtomicBoolean
 
 import server.model.Track
 import old.midi.RecordingManager.RecordingException
-import old.midi.device.RecordingDevice
 import javax.inject.{Inject, Named, Singleton}
 
 import scala.util.{Failure, Try}

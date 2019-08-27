@@ -1,15 +1,15 @@
-package old.midi.device
+package old.midi
 
+import javax.inject.Inject
+import javax.sound.midi.{Sequence, ShortMessage, Track => MidiTrack}
 import server.model.SymbolProperties.{MidiPitch, MidiVelocity, TickDuration, TickPosition}
 import server.model.Track
 import server.model.Track.TrackBuilder
 import server.model.TrackProperties.TicksPerQuarter
-import javax.inject.Inject
-import javax.sound.midi.{Sequence, ShortMessage, Track => MidiTrack}
 
 import scala.util.{Failure, Success, Try}
 
-class MidiInputDevice @Inject() (midiDevicePool: MidiDeviceProvider) extends RecordingDevice {
+class MidiInputDevice @Inject() (midiDevicePool: MidiDeviceProvider) {
 
   private val deviceHash = "658ef990" // TODO: load from config
 

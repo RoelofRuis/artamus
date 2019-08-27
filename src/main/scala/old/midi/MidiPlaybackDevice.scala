@@ -1,10 +1,10 @@
-package old.midi.device
+package old.midi
 
+import javax.inject.Inject
+import javax.sound.midi._
 import server.model
 import server.model.SymbolProperties.{MidiPitch, MidiVelocity, TickDuration, TickPosition}
 import server.model.TrackProperties.TicksPerQuarter
-import javax.inject.Inject
-import javax.sound.midi._
 
 class MidiPlaybackDevice @Inject() (devicePool: MidiDeviceProvider) {
 
