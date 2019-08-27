@@ -1,7 +1,6 @@
 package interaction.terminal.command
 
-import server.api.CommandBus
-import server.api.Commands.{Play, TrackID}
+import server.api.Actions.{Play, TrackID}
 
 import scala.util.Try
 
@@ -11,7 +10,7 @@ class PlayTrackCommand extends Command {
   val helpText = "Play a track"
   override val argsHelp = Some("[id: Int]")
 
-  def execute(bus: CommandBus, args: Array[String]): CommandResponse = {
+  def execute(bus: BusStub, args: Array[String]): CommandResponse = {
     val res = for {
       id <- Try(TrackID(args(0).toLong))
     } yield {

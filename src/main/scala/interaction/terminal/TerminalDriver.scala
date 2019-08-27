@@ -1,11 +1,13 @@
 package interaction.terminal
 
 import server.api.Events.PlaybackRequest
-import server.api.{CommandBus, EventBus}
-import interaction.terminal.command.{Command, Continue, ResponseFactory}
+import server.api.{Actions, EventBus}
+import interaction.terminal.command.{BusStub, Command, Continue, ResponseFactory}
 import javax.inject.Inject
 
 import scala.collection.immutable
+import scala.reflect.runtime.universe
+import scala.util.Try
 
 // TODO: refactor to become (configurable) Driver
 class TerminalDriver @Inject() (
@@ -17,18 +19,18 @@ class TerminalDriver @Inject() (
     def compare(command1: Command, command2: Command): Int = command2.name.compareTo(command1.name)
   }
 
-  private val commands = immutable.SortedSet[Command]() ++ unsortedCommands
-
-  def run(bus: CommandBus, eventBus: EventBus): Unit = {
-    setSubscriptions(eventBus)
-    runInternal(bus)
+  // TODO: fill this out
+  val stub = new BusStub {
+    override def execute[C <: Actions.Action : universe.TypeTag](command: C): Try[C#Res] = ???
   }
+
+  private val commands = immutable.SortedSet[Command]() ++ unsortedCommands
 
   private def setSubscriptions(eventBus: EventBus): Unit = {
     eventBus.subscribe[PlaybackRequest](r => TerminalPlayback.playback(prompt, r.track))
   }
 
-  private def runInternal(bus: CommandBus): Unit = {
+  private def run(): Unit = {
     val input: Array[String] = prompt.read("Enter command").split(" ")
 
     val commandName = input.headOption.getOrElse("")
@@ -36,13 +38,13 @@ class TerminalDriver @Inject() (
     val response = if (commandName == "help") display(helpText)
     else {
       commands.find(_.name == commandName) match {
-        case Some(command) => command.execute(bus, input.tail)
+        case Some(command) => command.execute(stub, input.tail)
         case None => display(s"unknown command [$commandName]\n$helpText")
       }
     }
 
     response.response.foreach(prompt.write)
-    if (response.action == Continue) runInternal(bus)
+    if (response.action == Continue) run()
   }
 
   private def helpText: String = commands.map(c => s"${(c.name +: c.argsHelp.toSeq).mkString(" ")}: ${c.helpText}").mkString("\n")

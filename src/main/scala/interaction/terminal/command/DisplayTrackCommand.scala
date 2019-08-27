@@ -1,7 +1,6 @@
 package interaction.terminal.command
 
-import server.api.CommandBus
-import server.api.Commands.{GetTrack, TrackID}
+import server.api.Actions.{GetTrack, TrackID}
 import server.model.SymbolProperties.{MidiPitch, NoteDuration, NotePosition}
 import server.model.Track
 import server.util.Rational
@@ -14,7 +13,7 @@ class DisplayTrackCommand extends Command {
   val helpText = "Display symbolic track representation"
   override val argsHelp = Some("[id: Int]")
 
-  def execute(bus: CommandBus, args: Array[String]): CommandResponse = {
+  def execute(bus: BusStub, args: Array[String]): CommandResponse = {
     val res: Try[CommandResponse] = for {
       id <- Try(TrackID(args(0).toLong))
       tpe <- Try(if (args.isDefinedAt(1)) args(1) else "")

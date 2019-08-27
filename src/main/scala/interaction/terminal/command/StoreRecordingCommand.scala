@@ -1,7 +1,6 @@
 package interaction.terminal.command
 
-import server.api.CommandBus
-import server.api.Commands.{StoreRecorded, TrackID}
+import server.api.Actions.{StoreRecorded, TrackID}
 
 import scala.util.Try
 
@@ -10,7 +9,7 @@ class StoreRecordingCommand extends Command {
   val name = "store"
   val helpText = "Store the currently running recording"
 
-  def execute(bus: CommandBus, args: Array[String]): CommandResponse = {
+  def execute(bus: BusStub, args: Array[String]): CommandResponse = {
     val res: Try[(TrackID, Int)] = for {
       (trackId, lenght) <- bus.execute(StoreRecorded())
     } yield (trackId, lenght)

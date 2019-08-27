@@ -1,14 +1,13 @@
 package interaction.terminal.command
 
-import server.api.Commands.GetAll
-import server.api.CommandBus
+import server.api.Actions.GetAll
 
 class ListTracksCommand extends Command {
 
   val name = "list"
   val helpText = "List the current tracks"
 
-  def execute(bus: CommandBus, args: Array[String]): CommandResponse = {
+  def execute(bus: BusStub, args: Array[String]): CommandResponse = {
     val res = for {
       trackData <- bus.execute(GetAll)
     } yield {

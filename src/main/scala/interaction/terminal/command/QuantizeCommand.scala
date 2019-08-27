@@ -1,7 +1,6 @@
 package interaction.terminal.command
 
-import server.api.CommandBus
-import server.api.Commands.{Quantize, TrackID}
+import server.api.Actions.{Quantize, TrackID}
 
 import scala.util.Try
 
@@ -11,7 +10,7 @@ class QuantizeCommand extends Command {
   val helpText = "Quantize an idea"
   override val argsHelp = Some("[id: Int] [subdiv: Int = 1] [errMul: Int = 10]")
 
-  def execute(bus: CommandBus, args: Array[String]): CommandResponse = {
+  def execute(bus: BusStub, args: Array[String]): CommandResponse = {
     val res: Try[CommandResponse] = for {
       id <- Try(TrackID(args(0).toLong))
       subdivision <- Try(args(1).toInt) recover { case _ => 1 }

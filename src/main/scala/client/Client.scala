@@ -3,7 +3,7 @@ package client
 import java.io.{ObjectInputStream, ObjectOutputStream}
 import java.net.{InetAddress, Socket}
 
-import server.api.Commands.CloseApplication
+import server.api.Actions.CloseApplication
 
 object Client extends App {
 

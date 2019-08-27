@@ -1,6 +1,6 @@
 package server.handler
 
-import server.api.Commands.CloseApplication
+import server.api.Actions.CloseApplication
 import server.interact.SocketCommandBus
 import com.google.inject.Inject
 
