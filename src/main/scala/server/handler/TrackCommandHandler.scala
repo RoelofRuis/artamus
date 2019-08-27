@@ -2,7 +2,7 @@ package server.handler
 
 import javax.inject.Inject
 import server.api.commands.Handler
-import server.api.commands.Track.{Print, SetKey, SetTimeSignature}
+import server.api.Track.{Print, SetKey, SetTimeSignature}
 import server.io.CommandSocket
 import server.model.Track
 import server.model.TrackProperties.{Key, TimeSignature}

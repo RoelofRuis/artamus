@@ -11,7 +11,6 @@ class ServerModule extends ScalaPrivateModule {
     bind[Logger].toInstance(new CmdLogger(true))
 
     bind[CommandSocket].asEagerSingleton()
-    bind[ApplicationEventBus].asEagerSingleton()
 
     bind[TrackCommandHandler].asEagerSingleton()
     bind[ApplicationCommandHandler].asEagerSingleton()

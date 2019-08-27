@@ -1,4 +1,6 @@
-package server.api.commands
+package server.api
+
+import server.api.commands.Command
 
 object Track {
 

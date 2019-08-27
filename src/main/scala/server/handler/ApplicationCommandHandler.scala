@@ -2,7 +2,7 @@ package server.handler
 
 import server.io.CommandSocket
 import com.google.inject.Inject
-import server.api.commands.Application.StopServer
+import server.api.Application.StopServer
 import server.api.commands.Handler
 
 import scala.util.Success

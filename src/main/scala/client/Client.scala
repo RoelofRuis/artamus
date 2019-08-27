@@ -3,8 +3,8 @@ package client
 import java.io.{ObjectInputStream, ObjectOutputStream}
 import java.net.{InetAddress, Socket}
 
-import server.api.commands.Application.StopServer
-import server.api.commands.Track.{Print, SetKey, SetTimeSignature}
+import server.api.Application.StopServer
+import server.api.Track.{Print, SetKey, SetTimeSignature}
 import server.util.Rational
 
 object Client extends App {
