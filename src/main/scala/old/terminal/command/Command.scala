@@ -1,4 +1,4 @@
-package interaction.terminal.command
+package old.terminal.command
 
 import scala.util.Try
 

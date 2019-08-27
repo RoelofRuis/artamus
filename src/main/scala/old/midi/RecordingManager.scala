@@ -1,10 +1,10 @@
-package interaction.midi
+package old.midi
 
 import java.util.concurrent.atomic.AtomicBoolean
 
 import server.model.Track
-import interaction.midi.RecordingManager.RecordingException
-import interaction.midi.device.RecordingDevice
+import old.midi.RecordingManager.RecordingException
+import old.midi.device.RecordingDevice
 import javax.inject.{Inject, Named, Singleton}
 
 import scala.util.{Failure, Try}

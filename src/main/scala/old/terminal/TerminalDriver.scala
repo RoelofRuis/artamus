@@ -1,8 +1,8 @@
-package interaction.terminal
+package old.terminal
 
 import server.api.Events.PlaybackRequest
 import server.api.{Commands, EventBus}
-import interaction.terminal.command.{BusStub, Command, Continue, ResponseFactory}
+import old.terminal.command.{BusStub, Command, Continue, ResponseFactory}
 import javax.inject.Inject
 
 import scala.collection.immutable

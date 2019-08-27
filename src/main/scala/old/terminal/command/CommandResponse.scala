@@ -1,4 +1,4 @@
-package interaction.terminal.command
+package old.terminal.command
 
 sealed trait ResponseAction
 case object Continue extends ResponseAction

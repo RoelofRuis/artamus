@@ -1,4 +1,4 @@
-package interaction.terminal
+package old.terminal
 
 import server.model.SymbolProperties.{MidiPitch, MidiVelocity, TickDuration, TickPosition}
 import server.model.Track

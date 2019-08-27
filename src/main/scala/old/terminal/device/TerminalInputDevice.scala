@@ -1,11 +1,11 @@
-package interaction.terminal.device
+package old.terminal.device
 
 import server.model.SymbolProperties.{MidiPitch, MidiVelocity, TickDuration, TickPosition}
 import server.model.Track
 import server.model.Track.TrackBuilder
 import server.model.TrackProperties.TicksPerQuarter
-import interaction.midi.device.RecordingDevice
-import interaction.terminal.Prompt
+import old.midi.device.RecordingDevice
+import old.terminal.Prompt
 import javax.inject.Inject
 
 import scala.util.{Success, Try}

@@ -1,6 +1,6 @@
-package interaction.midi
+package old.midi
 
-import interaction.midi.device.{DevicePool, _}
+import old.midi.device.{DevicePool, _}
 import net.codingwell.scalaguice.ScalaModule
 
 class MidiModule extends ScalaModule {

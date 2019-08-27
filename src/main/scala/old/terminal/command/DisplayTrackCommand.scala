@@ -1,4 +1,4 @@
-package interaction.terminal.command
+package old.terminal.command
 
 import server.api.Commands.{GetTrack, TrackID}
 import server.model.SymbolProperties.{MidiPitch, NoteDuration, NotePosition}

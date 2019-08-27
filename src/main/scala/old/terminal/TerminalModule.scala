@@ -1,8 +1,8 @@
-package interaction.terminal
+package old.terminal
 
-import interaction.midi.device.RecordingDevice
-import interaction.terminal.command._
-import interaction.terminal.device.TerminalInputDevice
+import old.midi.device.RecordingDevice
+import old.terminal.command._
+import old.terminal.device.TerminalInputDevice
 import net.codingwell.scalaguice.{ScalaModule, ScalaMultibinder}
 
 class TerminalModule extends ScalaModule {

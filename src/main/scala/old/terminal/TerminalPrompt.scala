@@ -1,4 +1,4 @@
-package interaction.terminal
+package old.terminal
 
 import scala.io.StdIn
 

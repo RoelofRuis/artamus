@@ -1,4 +1,4 @@
-package interaction.midi.device
+package old.midi.device
 
 import javax.sound.midi._
 

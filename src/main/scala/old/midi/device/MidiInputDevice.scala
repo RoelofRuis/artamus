@@ -1,4 +1,4 @@
-package interaction.midi.device
+package old.midi.device
 
 import server.model.SymbolProperties.{MidiPitch, MidiVelocity, TickDuration, TickPosition}
 import server.model.Track

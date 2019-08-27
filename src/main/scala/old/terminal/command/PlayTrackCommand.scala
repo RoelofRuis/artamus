@@ -1,4 +1,4 @@
-package interaction.terminal.command
+package old.terminal.command
 
 import server.api.Commands.{Play, TrackID}
 
