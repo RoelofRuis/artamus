@@ -7,9 +7,9 @@ import server.model.TrackProperties.TrackProperty
 import scala.language.existentials
 import scala.reflect.ClassTag
 
-final class Track private (
-  properties: Track.TrackProperties,
-  symbols: Seq[Track.TrackSymbol]
+final class Track (
+  var properties: Track.TrackProperties,
+  var symbols: Seq[Track.TrackSymbol]
 ) {
 
   def getTrackProperties: Track.TrackProperties = properties
@@ -23,6 +23,8 @@ final class Track private (
   def mapSymbols[A](f: TrackSymbol => A): Iterable[A] = symbols.map(f(_))
 
   def numSymbols: Int = symbols.size
+
+  def addTrackProperty(property: TrackProperty): Unit = properties +:= property
 
 }
 
@@ -39,6 +41,8 @@ object Track {
     id: SymbolID,
     properties: SymbolProperties
   )
+
+  def empty = new Track(Seq(), Seq())
 
   // TODO: see if this is still used
   final class TrackBuilder () {

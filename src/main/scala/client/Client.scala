@@ -4,6 +4,7 @@ import java.io.{ObjectInputStream, ObjectOutputStream}
 import java.net.{InetAddress, Socket}
 
 import server.api.commands.Application.StopServer
+import server.api.commands.Track.SetKey
 
 object Client extends App {
 
@@ -14,6 +15,7 @@ object Client extends App {
 //  out.writeObject(StartRecording)
 //  out.writeObject(GetTrack(TrackID(1)))
   out.writeObject(StopServer)
+//  out.writeObject(SetKey(0))
 
   lazy val in = new ObjectInputStream(socket.getInputStream)
 
