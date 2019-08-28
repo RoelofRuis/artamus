@@ -3,7 +3,7 @@ package server.handler
 import server.io.{CommandHandler, CommandSocket}
 import com.google.inject.Inject
 import server.api.Application.StopServer
-import server.api.commands.Handler
+import server.api.messages.Handler
 
 import scala.util.Success
 

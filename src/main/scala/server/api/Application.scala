@@ -1,6 +1,6 @@
 package server.api
 
-import server.api.commands.Command
+import server.api.messages.Command
 
 object Application {
 

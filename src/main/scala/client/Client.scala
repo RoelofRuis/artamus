@@ -5,7 +5,7 @@ import java.net.{InetAddress, Socket}
 
 import server.api.Application.StopServer
 import server.api.Track.{Print, SetKey, SetTimeSignature}
-import server.api.commands.Command
+import server.api.messages.{Command, CommandMessage}
 
 import scala.util.Try
 
@@ -26,6 +26,7 @@ class CommandClient(port: Int) {
     val socket = new Socket(InetAddress.getByName("localhost"), port)
     val out = new ObjectOutputStream(socket.getOutputStream)
     lazy val in = new ObjectInputStream(socket.getInputStream)
+    out.writeObject(CommandMessage)
     out.writeObject(command)
     val response = in.readObject().asInstanceOf[Try[A#Res]]
     out.close()

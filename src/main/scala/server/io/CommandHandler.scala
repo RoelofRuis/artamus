@@ -1,6 +1,6 @@
 package server.io
 
-import server.api.commands.{Command, Handler}
+import server.api.messages.{Command, Handler}
 import server.io.CommandHandler.CommandMap
 
 import scala.reflect.{ClassTag, classTag}

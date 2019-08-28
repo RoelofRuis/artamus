@@ -4,7 +4,7 @@ import java.io.{ObjectInputStream, ObjectOutputStream}
 import java.net.{ServerSocket, SocketException}
 
 import javax.inject.Inject
-import server.api.commands.Command
+import server.api.messages.{Command, CommandMessage, MessageType}
 
 import scala.util.{Failure, Try}
 
@@ -23,7 +23,13 @@ private[server] class CommandSocket @Inject() private (
         val input = new ObjectInputStream(socket.getInputStream)
         val output = new ObjectOutputStream(socket.getOutputStream)
 
-        val command = Try(input.readObject().asInstanceOf[Command])
+        val message = Try(input.readObject().asInstanceOf[MessageType])
+
+        // TODO: Invert protocol so we can have Event messages returing over the same socket interleaved with responses.
+        val command = message.flatMap {
+          case CommandMessage => Try(input.readObject().asInstanceOf[Command])
+        }
+
         logger.io("SERVER SOCKET", "IN", s"$command")
 
         val response = command.fold(
