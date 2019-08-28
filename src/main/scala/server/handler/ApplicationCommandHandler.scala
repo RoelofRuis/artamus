@@ -1,14 +1,17 @@
 package server.handler
 
-import server.io.CommandSocket
+import server.io.{CommandHandler, CommandSocket}
 import com.google.inject.Inject
 import server.api.Application.StopServer
 import server.api.commands.Handler
 
 import scala.util.Success
 
-private[server] class ApplicationCommandHandler @Inject() (bus: CommandSocket) {
+private[server] class ApplicationCommandHandler @Inject() (
+  handler: CommandHandler,
+  commandSocket: CommandSocket
+) {
 
-  bus.subscribeHandler(Handler[StopServer.type](_ => Success(bus.close())))
+  handler.subscribe(Handler[StopServer.type](_ => Success(commandSocket.close())))
 
 }

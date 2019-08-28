@@ -3,21 +3,19 @@ package server
 import javax.inject.Inject
 import server.io.{CommandSocket, Logger}
 
-class Server @Inject() (logger: Logger, commandBus: CommandSocket) extends App {
+class Server @Inject() (logger: Logger, commandSocket: CommandSocket) extends App {
 
   def run(): Unit = {
+    val serverThread = new Thread(() => commandSocket.run())
+
     logger.debug("Starting server...")
 
-    val commandBusThread = new Thread(() => commandBus.run())
-
-    logger.debug(s"Running command bus ...")
-
-    commandBusThread.start()
+    serverThread.start()
 
     logger.debug("Accepting commands on command bus...")
 
-    commandBusThread.join()
+    serverThread.join()
 
-    logger.debug("Shutting down, bye!")
+    logger.debug("Server shut down")
   }
 }

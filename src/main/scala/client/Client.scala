@@ -16,7 +16,7 @@ object Client extends App {
   c.send(SetTimeSignature(4, 4))
   c.send(SetKey(0))
   c.send(Print)
-  val x = c.send(StopServer)
+  c.send(StopServer)
 
 }
 
