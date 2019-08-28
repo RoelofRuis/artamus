@@ -6,35 +6,39 @@ import java.net.{ServerSocket, SocketException}
 import javax.inject.Inject
 import server.api.commands.Command
 
+import scala.util.{Failure, Try}
+
 private[server] class CommandSocket @Inject() private (
   commandHandler: CommandHandler,
   logger: Logger
 ) {
 
-  lazy val server = new ServerSocket(9999)
+  private lazy val server = new ServerSocket(9999)
 
   def run(): Unit = {
-    try {
-      while (! Thread.interrupted()) {
+    while (! server.isClosed) {
+      try {
         val socket = server.accept()
+
         val input = new ObjectInputStream(socket.getInputStream)
-
-        val command = input.readObject().asInstanceOf[Command]
-
-        logger.io("SOCKET COMMAND", "IN", s"$command")
-
-        val response = commandHandler.execute(command)
-
-        logger.io("SOCKET COMMAND", "OUT", s"$response")
-
         val output = new ObjectOutputStream(socket.getOutputStream)
+
+        val command = Try(input.readObject().asInstanceOf[Command])
+        logger.io("SERVER SOCKET", "IN", s"$command")
+
+        val response = command.fold(
+          _ => Failure(InvalidRequestException(s"Cannot parse [$input]")),
+          commandHandler.execute
+        )
+
+        logger.io("SERVER SOCKET", "OUT", s"$response")
 
         output.writeObject(response)
 
         socket.close()
+      } catch {
+        case ex: SocketException => if (! server.isClosed) logger.debug(s"Socket Exception [$ex]")
       }
-    } catch {
-      case _: SocketException => logger.debug("Socked closed unexpectedly")
     }
   }
 

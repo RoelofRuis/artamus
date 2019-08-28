@@ -1,7 +1,7 @@
 package server.io
 
 import server.api.commands.{Command, Handler}
-import server.io.CommandHandler.{CommandMap, MissingHandlerException}
+import server.io.CommandHandler.CommandMap
 
 import scala.reflect.{ClassTag, classTag}
 import scala.util.{Failure, Try}
@@ -36,9 +36,5 @@ object CommandHandler {
       val realKey: String = command.getClass.getCanonicalName
       inner.get(realKey).map(_.asInstanceOf[V[A]])
     }
-  }
-
-  case class MissingHandlerException(msg: String) extends RuntimeException {
-    override def toString: String = msg
   }
 }
