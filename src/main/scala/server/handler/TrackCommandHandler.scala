@@ -1,15 +1,19 @@
 package server.handler
 
 import javax.inject.Inject
-import server.api.Track.{SetKey, SetTimeSignature}
+import server.api.Track.{AddQuarterNote, SetKey, SetTimeSignature}
 import server.api.messages.Handler
 import server.io.CommandHandler
+import server.math.Rational
+import server.model.SymbolProperties.{MidiPitch, NoteDuration, NotePosition}
 import server.model.Track
 import server.model.TrackProperties.{Key, TimeSignature}
 
 import scala.util.Success
 
-private[server] class TrackCommandHandler @Inject() (handler: CommandHandler) {
+private[server] class TrackCommandHandler @Inject() (
+  handler: CommandHandler
+) {
 
   private val track = Track.empty
 
@@ -20,6 +24,15 @@ private[server] class TrackCommandHandler @Inject() (handler: CommandHandler) {
 
   handler.subscribe(Handler[SetKey] { command =>
     track.addTrackProperty(Key(command.k))
+    Success(())
+  })
+
+  handler.subscribe(Handler[AddQuarterNote] { command =>
+    track.addTrackSymbol(
+      MidiPitch(command.midiPitch),
+      NoteDuration(1, Rational(1, 4)),
+      NotePosition(0, Rational(1, 4))
+    )
     Success(())
   })
 

@@ -12,6 +12,8 @@ final class Track (
   var symbols: Seq[Track.TrackSymbol]
 ) {
 
+  private var symbolIndex: Long = 0
+
   def getTrackProperties: Track.TrackProperties = properties
 
   def getTrackProperty[A <: TrackProperty: ClassTag]: Option[A] = properties.collectFirst { case p: A => p }
@@ -26,6 +28,13 @@ final class Track (
 
   def addTrackProperty(property: TrackProperty): Unit = properties +:= property
 
+  def addTrackSymbol(symbolProperties: SymbolProperty*): Unit = symbols +:= nextTrackSymbol(symbolProperties: _*)
+
+  private def nextTrackSymbol(properties: SymbolProperty*): TrackSymbol = {
+    symbolIndex += 1
+    TrackSymbol(symbolIndex, properties)
+  }
+
 }
 
 object Track {
@@ -35,8 +44,6 @@ object Track {
   type TrackProperties = Seq[A forSome { type A <: TrackProperty }]
   type SymbolProperties = Seq[A forSome{ type A <: SymbolProperty }]
 
-  def builder: TrackBuilder = new TrackBuilder
-
   final case class TrackSymbol private (
     id: SymbolID,
     properties: SymbolProperties
@@ -44,7 +51,9 @@ object Track {
 
   def empty = new Track(Seq(), Seq())
 
-  // TODO: see if this is still used
+  def builder: TrackBuilder = new TrackBuilder // TODO: remove
+
+  /** @deprecated */
   final class TrackBuilder () {
 
     private var trackProperties: TrackProperties = Seq()

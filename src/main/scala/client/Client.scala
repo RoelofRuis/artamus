@@ -3,7 +3,7 @@ package client
 import java.io.{ObjectInputStream, ObjectOutputStream}
 import java.net.{InetAddress, Socket}
 
-import server.api.Track.{SetKey, SetTimeSignature, TrackChanged}
+import server.api.Track.{AddQuarterNote, SetKey, SetTimeSignature, TrackChanged}
 import server.api.messages._
 import util.SafeObjectInputStream
 
@@ -13,10 +13,11 @@ object Client extends App {
 
   val c = new StreamComposeClient(9999)
 
-  c.registerListener[TrackChanged.type] // TODO: expand on this
+//  c.registerListener[TrackChanged.type] // TODO: expand on this
 
   c.sendCommand(SetTimeSignature(4, 4))
   c.sendCommand(SetKey(0))
+  c.sendCommand(AddQuarterNote(64))
   c.sendControlMessage(Disconnect(true))
 
   c.close()

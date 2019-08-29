@@ -20,7 +20,7 @@ package object messages {
   case class Disconnect(shutdownServer: Boolean) extends Control
 
   trait Command {
-    type Res
+    type Res // TODO: evaluate whether command needs a return type
   }
 
   private[server] case class Handler[C <: Command](f: C => Try[C#Res])
