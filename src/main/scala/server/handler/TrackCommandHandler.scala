@@ -8,8 +8,6 @@ import server.model.SymbolProperties.{MidiPitch, NoteDuration, NotePosition}
 import server.model.Track
 import server.model.TrackProperties.{Key, TimeSignature}
 
-import scala.util.Success
-
 private[server] class TrackCommandHandler @Inject() (
   handler: CommandHandler,
   eventBus: EventBus,
@@ -19,12 +17,12 @@ private[server] class TrackCommandHandler @Inject() (
 
   handler.subscribe(Handler[SetTimeSignature]{ command =>
     track.addTrackProperty(TimeSignature(command.num, command.denom))
-    Success(())
+    true
   })
 
   handler.subscribe(Handler[SetKey] { command =>
     track.addTrackProperty(Key(command.k))
-    Success(())
+    true
   })
 
   handler.subscribe(Handler[AddQuarterNote] { command =>
@@ -34,7 +32,7 @@ private[server] class TrackCommandHandler @Inject() (
       NotePosition(0, Rational(1, 4))
     )
     eventBus.publish(TrackSymbolsUpdated)
-    Success(())
+    true
   })
 
 }

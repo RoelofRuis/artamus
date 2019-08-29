@@ -14,8 +14,7 @@ class ClientInputStream(in: ObjectInputStream) {
     readObject[ServerResponseMessage]()
   }
 
-  // TODO: Probably control and command can become the same
-  def expectControlResponse: Try[Boolean] = {
+  def expectResponseMessage: Try[Boolean] = {
     readResponseMessage
       .flatMap {
         case ResponseMessage =>
@@ -23,19 +22,7 @@ class ClientInputStream(in: ObjectInputStream) {
 
         case EventMessage =>
           // TODO: dispatch event!
-          expectControlResponse
-      }
-  }
-
-  def expectCommandResponse[A <: Command]: Try[A#Res] = {
-    readResponseMessage
-      .flatMap {
-        case ResponseMessage =>
-          readObject[Try[A#Res]]().flatten
-
-        case EventMessage =>
-          // TODO: dispatch event!
-          expectCommandResponse
+          expectResponseMessage
       }
   }
 

@@ -39,12 +39,12 @@ class StreamComposeClient(port: Int) {
   // TODO: Make sure this goes correctly: try now means either sending success or calculation success..!
   def sendControlMessage[A <: Control](message: A): Try[Boolean] = {
     out.sendControl(message)
-    in.expectControlResponse
+    in.expectResponseMessage
   }
 
-  def sendCommand[A <: Command](command: A): Try[A#Res] = {
+  def sendCommand[A <: Command](command: A): Try[Boolean] = {
     out.sendCommand(command)
-    in.expectCommandResponse[A]
+    in.expectResponseMessage
   }
 
   def registerListener[A <: Event](listener: => A): Unit = ???

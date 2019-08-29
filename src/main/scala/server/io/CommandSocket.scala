@@ -7,8 +7,6 @@ import javax.inject.Inject
 import protocol._
 import server.api.Server.Disconnect
 
-import scala.util.{Failure, Success}
-
 private[server] class CommandSocket @Inject() private (
   commandHandler: CommandHandler,
   eventBus: EventBus,
@@ -51,9 +49,12 @@ private[server] class CommandSocket @Inject() private (
           val response = input.readRequestMessage
             .flatMap {
               case CommandMessage => input.readObject[Command]().map(commandHandler.execute)
-              case ControlMessage => input.readObject[Control]().map(m => Success(executeControlMessage(m)))
+              case ControlMessage => input.readObject[Control]().map(m => executeControlMessage(m))
             }
-            .transform(identity, _ => Failure(InvalidRequestException(s"Received invalid message")))
+            .fold(
+              _ => false, // TODO: log error
+              identity
+            )
 
           output.sendResponse(response)
         }

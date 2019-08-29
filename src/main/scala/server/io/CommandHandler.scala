@@ -5,17 +5,15 @@ import server.handler.Handler
 import server.io.CommandHandler.CommandMap
 
 import scala.reflect.{ClassTag, classTag}
-import scala.util.{Failure, Try}
 
 private[server] class CommandHandler {
 
   private var handlers: CommandMap[Handler] = new CommandMap[Handler]()
 
-  def execute[C <: Command: ClassTag](command: C): Try[C#Res] = {
+  def execute[C <: Command: ClassTag](command: C): Boolean = {
     handlers
       .get[C](command)
-      .map(handler => handler.f(command))
-      .getOrElse(Failure(MissingHandlerException(s"No handler for command [$command]")))
+      .exists(handler => handler.f(command))
   }
 
   def subscribe[Cmd <: Command: ClassTag](h: Handler[Cmd]): Unit = {

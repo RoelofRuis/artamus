@@ -12,8 +12,10 @@ package object protocol {
 
   trait Control
 
-  trait Command {
-    type Res // TODO: evaluate whether command needs a return type
+  trait Command
+
+  trait Query {
+    type Res
   }
 
 }

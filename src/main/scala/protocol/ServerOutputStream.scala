@@ -4,9 +4,9 @@ import java.io.ObjectOutputStream
 
 class ServerOutputStream(out: ObjectOutputStream) {
 
-  def sendResponse(message: Any): Unit = { // TODO: can we make this more typesafe?
+  def sendResponse(success: Boolean): Unit = {
     out.writeObject(ResponseMessage)
-    out.writeObject(message)
+    out.writeObject(success)
   }
 
   def sendEvent(message: Event): Unit = {
