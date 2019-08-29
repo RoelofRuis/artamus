@@ -4,10 +4,10 @@ import java.io.{ObjectInputStream, ObjectOutputStream}
 import java.net.{ServerSocket, SocketException}
 
 import javax.inject.Inject
-import server.api.messages.{Command, ServerRequestMessage}
+import server.api.messages._
 import util.{Logger, SafeObjectInputStream}
 
-import scala.util.Failure
+import scala.util.{Failure, Success}
 
 private[server] class CommandSocket @Inject() private (
   commandHandler: CommandHandler,
@@ -17,27 +17,44 @@ private[server] class CommandSocket @Inject() private (
   private lazy val server = new ServerSocket(9999)
 
   def run(): Unit = {
-    while (! server.isClosed) {
+    var acceptNewConnections = true
+
+    while (acceptNewConnections) {
       try {
         val socket = server.accept()
-
+        var connectionOpen = true
         val input = new SafeObjectInputStream(new ObjectInputStream(socket.getInputStream), Some(logger))
         val output = new ObjectOutputStream(socket.getOutputStream)
 
-        val response = input.readObject[ServerRequestMessage]()
-          .flatMap(_ => input.readObject[Command]().map(commandHandler.execute))
-          .transform(identity, _ => Failure(InvalidRequestException(s"Received invalid message")))
+        // TODO: separate out the control actions
+        def executeControlMessage[A <: Control](msg: A): Boolean = {
+          msg match {
+            case Disconnect(false) =>
+              connectionOpen = false
 
-        output.writeObject(response)
+            case Disconnect(true) =>
+              connectionOpen = false
+              acceptNewConnections = false
+          }
+          true
+        }
+
+        while (connectionOpen) {
+          val response = input.readObject[ServerRequestMessage]()
+            .flatMap {
+              case CommandMessage => input.readObject[Command]().map(commandHandler.execute)
+              case ControlMessage => input.readObject[Control]().map(m => Success(executeControlMessage(m)))
+            }
+            .transform(identity, _ => Failure(InvalidRequestException(s"Received invalid message")))
+
+          output.writeObject(ResponseMessage)
+          output.writeObject(response)
+        }
 
         socket.close()
       } catch {
-        case ex: SocketException => if (! server.isClosed) logger.debug(s"Socket Exception [$ex]")
+        case ex: SocketException => logger.debug(s"Socket Exception [$ex]")
       }
     }
-  }
-
-  def close(): Unit = {
-    server.close()
   }
 }

@@ -14,7 +14,6 @@ class ServerModule extends ScalaPrivateModule {
     bind[CommandHandler].asEagerSingleton()
 
     bind[TrackCommandHandler].asEagerSingleton()
-    bind[ApplicationCommandHandler].asEagerSingleton()
 
     bind[Server].asEagerSingleton()
     expose[Server]
