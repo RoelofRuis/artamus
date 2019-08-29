@@ -46,15 +46,7 @@ private[server] class CommandSocket @Inject() private (
 
         // Receive messages
         while (connectionOpen) {
-          val response = input.readRequestMessage
-            .flatMap {
-              case CommandMessage => input.readObject[Command]().map(commandHandler.execute)
-              case ControlMessage => input.readObject[Control]().map(m => executeControlMessage(m))
-            }
-            .fold(
-              _ => false, // TODO: log error
-              identity
-            )
+          val response = input.readNext(commandHandler.execute, executeControlMessage)
 
           output.sendResponse(response)
         }
