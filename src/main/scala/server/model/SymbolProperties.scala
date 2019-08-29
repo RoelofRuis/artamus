@@ -1,6 +1,6 @@
 package server.model
 
-import util.Rational
+import server.util.Rational
 
 object SymbolProperties {
   sealed trait SymbolProperty
