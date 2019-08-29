@@ -4,9 +4,10 @@ import java.io.{ObjectInputStream, ObjectOutputStream}
 import java.net.{ServerSocket, SocketException}
 
 import javax.inject.Inject
-import server.api.messages.{Command, CommandMessage, MessageType}
+import server.api.messages.{Command, IncomingMessageType}
+import util.{Logger, SafeObjectInputStream}
 
-import scala.util.{Failure, Try}
+import scala.util.Failure
 
 private[server] class CommandSocket @Inject() private (
   commandHandler: CommandHandler,
@@ -20,24 +21,12 @@ private[server] class CommandSocket @Inject() private (
       try {
         val socket = server.accept()
 
-        val input = new ObjectInputStream(socket.getInputStream)
+        val input = new SafeObjectInputStream(new ObjectInputStream(socket.getInputStream), Some(logger))
         val output = new ObjectOutputStream(socket.getOutputStream)
 
-        val message = Try(input.readObject().asInstanceOf[MessageType])
-
-        // TODO: Invert protocol so we can have Event messages returing over the same socket interleaved with responses.
-        val command = message.flatMap {
-          case CommandMessage => Try(input.readObject().asInstanceOf[Command])
-        }
-
-        logger.io("SERVER SOCKET", "IN", s"$command")
-
-        val response = command.fold(
-          _ => Failure(InvalidRequestException(s"Cannot parse [$input]")),
-          commandHandler.execute
-        )
-
-        logger.io("SERVER SOCKET", "OUT", s"$response")
+        val response = input.readObject[IncomingMessageType]()
+          .flatMap(_ => input.readObject[Command]().map(commandHandler.execute))
+          .transform(identity, _ => Failure(InvalidRequestException(s"Received invalid message")))
 
         output.writeObject(response)
 

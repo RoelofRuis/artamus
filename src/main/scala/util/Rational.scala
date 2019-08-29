@@ -1,4 +1,4 @@
-package server.util
+package util
 
 case class Rational private (n: Int, d: Int) extends Ordered[Rational] {
   def *(a: Int): Rational = Rational.apply(a * n, d)

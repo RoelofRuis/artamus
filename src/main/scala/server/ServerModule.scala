@@ -1,9 +1,9 @@
 package server
 
 import net.codingwell.scalaguice.ScalaPrivateModule
-import server.io.Logger.CmdLogger
-import server.io._
 import server.handler._
+import server.io._
+import util.Logger
 
 class ServerModule extends ScalaPrivateModule {
 

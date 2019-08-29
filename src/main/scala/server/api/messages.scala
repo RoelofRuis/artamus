@@ -4,9 +4,13 @@ import scala.util.Try
 
 package object messages {
 
-  // TODO: create protocol for outgoing messages so they can be 'split' on the receiving side.
-  sealed trait MessageType
-  case object CommandMessage extends MessageType
+  sealed trait IncomingMessageType
+  case object CommandMessage extends IncomingMessageType
+
+  sealed trait OutgoingMessageType
+  case object ResponseMessage extends OutgoingMessageType
+  case object EventMessage extends OutgoingMessageType
+
 
   trait Command {
     type Res
