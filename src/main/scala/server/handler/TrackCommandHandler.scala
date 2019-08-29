@@ -2,7 +2,6 @@ package server.handler
 
 import javax.inject.Inject
 import server.api.Track.{AddQuarterNote, SetKey, SetTimeSignature, TrackSymbolsUpdated}
-import server.api.messages.Handler
 import server.io.{CommandHandler, EventBus}
 import server.math.Rational
 import server.model.SymbolProperties.{MidiPitch, NoteDuration, NotePosition}

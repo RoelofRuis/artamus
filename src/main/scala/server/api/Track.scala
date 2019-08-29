@@ -1,6 +1,6 @@
 package server.api
 
-import server.api.messages.{Command, Event}
+import protocol.{Command, Event}
 
 object Track {
 

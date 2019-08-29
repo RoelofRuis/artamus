@@ -2,8 +2,7 @@ package server
 
 import net.codingwell.scalaguice.ScalaPrivateModule
 import server.handler._
-import server.io._
-import util.Logger
+import server.io.{Logger, _}
 
 class ServerModule extends ScalaPrivateModule {
 

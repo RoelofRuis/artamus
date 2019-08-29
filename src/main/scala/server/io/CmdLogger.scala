@@ -1,7 +1,5 @@
 package server.io
 
-import util.Logger
-
 class CmdLogger(ioMessages: Boolean) extends Logger {
 
   def debug(text: String): Unit = println(s"[DEBUG] $text")

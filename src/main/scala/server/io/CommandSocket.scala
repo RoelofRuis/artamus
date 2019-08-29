@@ -4,8 +4,8 @@ import java.io.{ObjectInputStream, ObjectOutputStream}
 import java.net.{ServerSocket, SocketException}
 
 import javax.inject.Inject
-import server.api.messages._
-import util.{Logger, SafeObjectInputStream}
+import protocol._
+import server.api.Server.Disconnect
 
 import scala.util.{Failure, Success}
 
@@ -27,15 +27,12 @@ private[server] class CommandSocket @Inject() private (
         // Accept connection
         val socket = server.accept()
         var connectionOpen = true
-        val input = new SafeObjectInputStream(new ObjectInputStream(socket.getInputStream), Some(logger))
-        val output = new ObjectOutputStream(socket.getOutputStream)
+        val input = new ServerInputStream(new ObjectInputStream(socket.getInputStream))
+        val output = new ServerOutputStream(new ObjectOutputStream(socket.getOutputStream))
 
         val clientToken = "client"
 
-        eventBus.subscribe(clientToken, { event =>
-          output.writeObject(EventMessage)
-          output.writeObject(event)
-        })
+        eventBus.subscribe(clientToken, { event => output.sendEvent(event) })
 
         def executeControlMessage[A <: Control](msg: A): Boolean = {
           msg match {
@@ -51,15 +48,14 @@ private[server] class CommandSocket @Inject() private (
 
         // Receive messages
         while (connectionOpen) {
-          val response = input.readObject[ServerRequestMessage]()
+          val response = input.readRequestMessage
             .flatMap {
               case CommandMessage => input.readObject[Command]().map(commandHandler.execute)
               case ControlMessage => input.readObject[Control]().map(m => Success(executeControlMessage(m)))
             }
             .transform(identity, _ => Failure(InvalidRequestException(s"Received invalid message")))
 
-          output.writeObject(ResponseMessage)
-          output.writeObject(response)
+          output.sendResponse(response)
         }
 
         // Clean up

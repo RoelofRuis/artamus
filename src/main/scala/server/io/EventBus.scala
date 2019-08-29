@@ -1,6 +1,6 @@
 package server.io
 
-import server.api.messages.Event
+import protocol.Event
 
 class EventBus {
 

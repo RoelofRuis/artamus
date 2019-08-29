@@ -3,11 +3,11 @@ package client
 import java.io.{ObjectInputStream, ObjectOutputStream}
 import java.net.{InetAddress, Socket}
 
+import protocol._
+import server.api.Server.Disconnect
 import server.api.Track.{AddQuarterNote, SetKey, SetTimeSignature}
-import server.api.messages._
-import util.SafeObjectInputStream
 
-import scala.util.{Success, Try}
+import scala.util.Try
 
 object Client extends App {
 
@@ -26,57 +26,25 @@ object Client extends App {
 
 class StreamComposeClient(port: Int) {
 
-  private val (socket: Socket, in: SafeObjectInputStream, out: ObjectOutputStream) = connect()
+  private val (socket: Socket, in: ClientInputStream, out: ClientOutputStream) = connect()
 
-  private def connect(): (Socket, SafeObjectInputStream, ObjectOutputStream) = {
+  private def connect(): (Socket, ClientInputStream, ClientOutputStream) = {
     val socket = new Socket(InetAddress.getByName("localhost"), port)
 
-    // TODO: probably we can wrap both streams with a specific API for Server and Client basic interaction
-
-    val out = new ObjectOutputStream(socket.getOutputStream)
-    lazy val in = new SafeObjectInputStream(new ObjectInputStream(socket.getInputStream))
+    val out = new ClientOutputStream(new ObjectOutputStream(socket.getOutputStream))
+    lazy val in = new ClientInputStream(new ObjectInputStream(socket.getInputStream))
     (socket, in, out)
   }
 
-  def sendControlMessage[A <: Control](message: A): Boolean = {
-    out.writeObject(ControlMessage)
-    out.writeObject(message)
-
-    // TODO: combine and clean up these loops
-    def read: Boolean = {
-      in.readObject[ServerResponseMessage]()
-        .flatMap {
-          case ResponseMessage => in.readObject[Boolean]()
-          case EventMessage =>
-            println(s"Event: ${in.readObject[Event]()}")
-            Success(read)
-        }
-        .fold(_ => false, identity)
-    }
-
-    read
+  // TODO: Make sure this goes correctly: try now means either sending success or calculation success..!
+  def sendControlMessage[A <: Control](message: A): Try[Boolean] = {
+    out.sendControl(message)
+    in.expectControlResponse
   }
 
   def sendCommand[A <: Command](command: A): Try[A#Res] = {
-    out.writeObject(CommandMessage)
-    out.writeObject(command)
-
-    // TODO: combine and clean up these loops
-    def read: Try[Try[A#Res]] = {
-      in.readObject[ServerResponseMessage]()
-        .flatMap {
-          case ResponseMessage => in.readObject[Try[A#Res]]()
-          case EventMessage =>
-            println(s"Event: ${in.readObject[Event]()}")
-            read
-        }
-    }
-
-    val response = read
-
-    println(response)
-
-    response.flatMap(identity)
+    out.sendCommand(command)
+    in.expectCommandResponse[A]
   }
 
   def registerListener[A <: Event](listener: => A): Unit = ???
