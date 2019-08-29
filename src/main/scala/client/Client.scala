@@ -3,7 +3,7 @@ package client
 import java.io.{ObjectInputStream, ObjectOutputStream}
 import java.net.{InetAddress, Socket}
 
-import server.api.Track.{Print, SetKey, SetTimeSignature}
+import server.api.Track.{SetKey, SetTimeSignature, TrackChanged}
 import server.api.messages._
 import util.SafeObjectInputStream
 
@@ -15,7 +15,6 @@ object Client extends App {
 
   c.sendCommand(SetTimeSignature(4, 4))
   c.sendCommand(SetKey(0))
-  c.sendCommand(Print)
   c.sendControlMessage(Disconnect(true))
 
   c.close()
@@ -58,12 +57,12 @@ class StreamComposeClient(port: Int) {
     response.flatMap(identity)
   }
 
+  def registerListener[A <: Event](listener: => A): Unit = ???
+
   def close(): Unit = {
     out.close()
     in.close()
     socket.close()
   }
-
-  def registerListener[A <: Event](listener: => A): Unit = ???
 
 }

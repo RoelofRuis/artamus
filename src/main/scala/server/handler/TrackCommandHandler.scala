@@ -1,7 +1,7 @@
 package server.handler
 
 import javax.inject.Inject
-import server.api.Track.{Print, SetKey, SetTimeSignature}
+import server.api.Track.{SetKey, SetTimeSignature}
 import server.api.messages.Handler
 import server.io.CommandHandler
 import server.model.Track
@@ -20,12 +20,6 @@ private[server] class TrackCommandHandler @Inject() (handler: CommandHandler) {
 
   handler.subscribe(Handler[SetKey] { command =>
     track.addTrackProperty(Key(command.k))
-    Success(())
-  })
-
-  handler.subscribe(Handler[Print.type]{ _ =>
-    track.properties.foreach(println)
-    track.symbols.foreach(println)
     Success(())
   })
 
