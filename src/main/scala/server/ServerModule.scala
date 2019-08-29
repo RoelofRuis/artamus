@@ -13,6 +13,8 @@ class ServerModule extends ScalaPrivateModule {
     bind[CommandSocket].asEagerSingleton()
     bind[CommandHandler].asEagerSingleton()
 
+    bind[EventBus].asEagerSingleton()
+
     bind[TrackCommandHandler].asEagerSingleton()
 
     bind[Server].asEagerSingleton()

@@ -3,11 +3,12 @@ package client
 import java.io.{ObjectInputStream, ObjectOutputStream}
 import java.net.{InetAddress, Socket}
 
-import server.api.Track.{AddQuarterNote, SetKey, SetTimeSignature, TrackChanged}
+import server.api.Track.{AddQuarterNote, SetKey, SetTimeSignature}
 import server.api.messages._
+import sun.reflect.generics.reflectiveObjects.NotImplementedException
 import util.SafeObjectInputStream
 
-import scala.util.Try
+import scala.util.{Failure, Try}
 
 object Client extends App {
 
@@ -42,6 +43,9 @@ class StreamComposeClient(port: Int) {
     in.readObject[ServerResponseMessage]()
       .flatMap {
         case ResponseMessage => in.readObject[Boolean]()
+        case EventMessage =>
+          println(s"Event: ${in.readObject[Event]()}")
+          Failure(new NotImplementedException())
       }
       .fold(_ => false, identity)
   }
@@ -53,6 +57,9 @@ class StreamComposeClient(port: Int) {
     val response = in.readObject[ServerResponseMessage]()
       .flatMap {
         case ResponseMessage => in.readObject[Try[A#Res]]()
+        case EventMessage =>
+          println(s"Event: ${in.readObject[Event]()}")
+          Failure(new NotImplementedException())
       }
 
     println(response)

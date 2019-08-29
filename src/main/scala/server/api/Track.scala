@@ -10,6 +10,6 @@ object Track {
   // TODO: don't just restrict to quarter later on!
   case class AddQuarterNote(midiPitch: Int) extends Command { type Res = Unit }
 
-  case object TrackChanged extends Event
+  case object TrackSymbolsUpdated extends Event
 
 }

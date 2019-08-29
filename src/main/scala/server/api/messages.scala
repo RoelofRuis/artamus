@@ -11,7 +11,7 @@ package object messages {
 
   sealed trait ServerResponseMessage
   case object ResponseMessage extends ServerResponseMessage
-  // TODO: add EventMessage
+  case object EventMessage extends ServerResponseMessage
 
   trait Event
 

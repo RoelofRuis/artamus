@@ -11,6 +11,7 @@ import scala.util.{Failure, Success}
 
 private[server] class CommandSocket @Inject() private (
   commandHandler: CommandHandler,
+  eventBus: EventBus,
   logger: Logger
 ) {
 
@@ -21,14 +22,21 @@ private[server] class CommandSocket @Inject() private (
 
     while (acceptNewConnections) {
       try {
+        // TODO: clean up with better separation of concerns
+
+        // Accept connection
         val socket = server.accept()
         var connectionOpen = true
         val input = new SafeObjectInputStream(new ObjectInputStream(socket.getInputStream), Some(logger))
         val output = new ObjectOutputStream(socket.getOutputStream)
 
-        // TODO: make cleaner separation so it becomes easier to send callback events
+        val clientToken = "client"
 
-        // TODO: separate out the control actions
+        eventBus.subscribe(clientToken, { event =>
+          output.writeObject(EventMessage)
+          output.writeObject(event)
+        })
+
         def executeControlMessage[A <: Control](msg: A): Boolean = {
           msg match {
             case Disconnect(false) =>
@@ -41,6 +49,7 @@ private[server] class CommandSocket @Inject() private (
           true
         }
 
+        // Receive messages
         while (connectionOpen) {
           val response = input.readObject[ServerRequestMessage]()
             .flatMap {
@@ -53,6 +62,8 @@ private[server] class CommandSocket @Inject() private (
           output.writeObject(response)
         }
 
+        // Clean up
+        eventBus.unsubscribe(clientToken)
         socket.close()
       } catch {
         case ex: SocketException => logger.debug(s"Socket Exception [$ex]")
