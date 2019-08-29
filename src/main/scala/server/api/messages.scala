@@ -4,12 +4,13 @@ import scala.util.Try
 
 package object messages {
 
-  sealed trait IncomingMessageType
-  case object CommandMessage extends IncomingMessageType
+  // TODO: see if this needs to be moved to a shared protocol folder
+  sealed trait ServerRequestMessage
+  case object CommandMessage extends ServerRequestMessage
 
-  sealed trait OutgoingMessageType
-  case object ResponseMessage extends OutgoingMessageType
-  case object EventMessage extends OutgoingMessageType
+  sealed trait ServerResponseMessage
+  case object ResponseMessage extends ServerResponseMessage
+  case object EventMessage extends ServerResponseMessage
 
 
   trait Command {
