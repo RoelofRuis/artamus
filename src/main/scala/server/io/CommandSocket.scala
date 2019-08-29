@@ -26,6 +26,8 @@ private[server] class CommandSocket @Inject() private (
         val input = new SafeObjectInputStream(new ObjectInputStream(socket.getInputStream), Some(logger))
         val output = new ObjectOutputStream(socket.getOutputStream)
 
+        // TODO: make cleaner separation so it becomes easier to send callback events
+
         // TODO: separate out the control actions
         def executeControlMessage[A <: Control](msg: A): Boolean = {
           msg match {

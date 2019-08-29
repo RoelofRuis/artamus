@@ -13,6 +13,8 @@ object Client extends App {
 
   val c = new StreamComposeClient(9999)
 
+  c.registerListener[TrackChanged.type] // TODO: expand on this
+
   c.sendCommand(SetTimeSignature(4, 4))
   c.sendCommand(SetKey(0))
   c.sendControlMessage(Disconnect(true))
