@@ -7,7 +7,7 @@ private[protocol] class SingleConnectionServer private[protocol](port: Int) exte
   private lazy val server = new ServerSocket(port)
   private val eventRegistry = new ServerEventRegistry
 
-  private var isServerRunning = false
+  private var isServerRunning = true
   private var isConnectionOpen = false
 
   def acceptConnections(commandHandler: Command => Boolean, controlHandler: Control => Boolean): Unit = {
