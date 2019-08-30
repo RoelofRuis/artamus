@@ -1,30 +1,41 @@
 package client
 
-import protocol.EventListener
+import protocol.{Client, EventListener}
 import server.api.Server.Disconnect
 import server.api.Track._
 
 object ClientApp extends App {
 
-  val c = protocol.client(9999)
+  val client = protocol.client(9999)
 
-  c.subscribe(EventListener[TrackSymbolsUpdated.type](_ => println("Callback A")))
+  val writer = new MusicWriter(client)
 
-  c.sendCommand(SetTimeSignature(4, 4))
-  c.sendCommand(SetKey(0))
-  c.sendCommand(AddQuarterNote(64))
+  client.subscribe(EventListener[TrackSymbolsUpdated.type](_ => println("TrackSymbols are updated")))
 
-  c.subscribe(EventListener[TrackSymbolsUpdated.type](_ => println("Callback B")))
+  writer.writeTimeSignature(4, 4)
+  writer.writeKey(0)
+  writer.writeQuarterNote(64)
 
-  c.sendCommand(AddQuarterNote(66))
+  client.subscribe(EventListener[TrackSymbolsUpdated.type] { _ =>
+    // val notes = client.sendQuery(GetTrackMidiNotes) TODO: Allow this call!
+    // println(s"Notes are now [$notes]")
+  })
 
-  val queryRes = c.sendQuery(GetTrackMidiNotes)
-  print(queryRes)
+  writer.writeQuarterNote(66)
+  writer.writeQuarterNote(67)
 
-  c.sendControl(Disconnect(true))
+  client.sendControl(Disconnect(true))
 
-  c.closeConnection()
+  client.closeConnection()
 
 }
 
+class MusicWriter(client: Client) {
 
+  def writeTimeSignature(num: Int, denom: Int): Boolean = client.sendCommand(SetTimeSignature(num, denom)).getOrElse(false)
+
+  def writeQuarterNote(midiPitch: Int): Boolean = client.sendCommand(AddQuarterNote(midiPitch)).getOrElse(false)
+
+  def writeKey(key: Int): Boolean = client.sendCommand(SetKey(key)).getOrElse(false)
+
+}
