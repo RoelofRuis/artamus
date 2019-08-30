@@ -2,7 +2,6 @@ package client
 
 import java.io.{ObjectInputStream, ObjectOutputStream}
 import java.net.{InetAddress, Socket}
-import java.util.concurrent.{ArrayBlockingQueue, BlockingQueue, SynchronousQueue}
 
 import protocol._
 import server.api.Server.Disconnect
@@ -29,15 +28,16 @@ object Client extends App {
 
 class StreamComposeClient(port: Int) {
 
-  private val (socket: Socket, in: ClientInputStream, out: ClientOutputStream) = connect()
-  private val eventRegistry = new ClientEventRegistry()
+  private val (socket: Socket, in: ClientInputStream, out: ClientOutputStream, eventRegistry: ClientEventRegistry) = connect()
 
-  private def connect(): (Socket, ClientInputStream, ClientOutputStream) = {
+  // TODO: clean up creation logic
+  private def connect(): (Socket, ClientInputStream, ClientOutputStream, ClientEventRegistry) = {
     val socket = new Socket(InetAddress.getByName("localhost"), port)
+    val eventRegistry = new ClientEventRegistry()
 
     val out = new ClientOutputStream(new ObjectOutputStream(socket.getOutputStream))
     lazy val in = new ClientInputStream(new ObjectInputStream(socket.getInputStream), eventRegistry)
-    (socket, in, out)
+    (socket, in, out, eventRegistry)
   }
 
   def sendControlMessage[A <: Control](message: A): Try[Boolean] = {

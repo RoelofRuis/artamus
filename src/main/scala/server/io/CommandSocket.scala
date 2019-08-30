@@ -53,11 +53,10 @@ private[server] class CommandSocket @Inject() private (
 
         // Clean up
         eventBus.unsubscribe(clientToken)
-        input.close()
-        output.close()
         socket.close()
       } catch {
         case ex: SocketException => logger.debug(s"Socket Exception [$ex]")
+          ex.printStackTrace()
       }
     }
   }

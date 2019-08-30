@@ -7,9 +7,7 @@ import scala.util.Try
 class ClientInputStream(in: ObjectInputStream, eventRegistry: ClientEventRegistry) {
 
   def readObject[A](): Try[A] = {
-    val obj = Try(in.readObject().asInstanceOf[A])
-    println(obj)
-    obj
+    Try(in.readObject().asInstanceOf[A])
   }
 
   def expectResponseMessage: Try[Boolean] = {
@@ -19,7 +17,13 @@ class ClientInputStream(in: ObjectInputStream, eventRegistry: ClientEventRegistr
           readObject[Boolean]()
 
         case EventMessage =>
-          readObject[Event]().foreach(eventRegistry.publish) // TODO: deal with failures
+          // TODO: dispatch event to different thread
+          val x = readObject[Event]()
+            .flatMap { e =>
+            Try(eventRegistry.publish(e))
+          }
+          if (x.isFailure) x.failed.get.printStackTrace()
+
           expectResponseMessage
       }
   }
