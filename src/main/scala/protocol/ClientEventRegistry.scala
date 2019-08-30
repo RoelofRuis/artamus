@@ -27,15 +27,17 @@ object ClientEventRegistry {
 
   import scala.language.higherKinds
 
-  class CommandMap[V[_ <: Event]](inner: Map[String, Any] = Map()) {
+  class CommandMap[V[_ <: Event]](inner: Map[String, List[Any]] = Map()) {
     def add[A <: Event: ClassTag](value: V[A]): CommandMap[V] = {
-      val realKey: String = classTag[A].runtimeClass.getCanonicalName
-      new CommandMap(inner + ((realKey, value)))
+      val key: String = classTag[A].runtimeClass.getCanonicalName
+
+      val existingValues = inner.getOrElse(key, List[V[A]]())
+      new CommandMap(inner + ((key, existingValues :+ value)))
     }
 
-    def get[A <: Event: ClassTag](command: A): Option[V[A]] = {
-      val realKey: String = command.getClass.getCanonicalName
-      inner.get(realKey).map(_.asInstanceOf[V[A]])
+    def get[A <: Event: ClassTag](command: A): List[V[A]] = {
+      val key: String = command.getClass.getCanonicalName
+      inner.getOrElse(key, List[V[A]]()).map(_.asInstanceOf[V[A]])
     }
   }
 
