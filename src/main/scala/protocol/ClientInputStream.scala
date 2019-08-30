@@ -2,12 +2,14 @@ package protocol
 
 import java.io.ObjectInputStream
 
+import protocol.MessageTypes.{EventMessage, ResponseMessage, ServerResponse}
+
 import scala.util.Try
 
 private[protocol] class ClientInputStream(in: ObjectInputStream, eventRegistry: ClientEventRegistry) {
 
   def expectResponseMessage: Try[Boolean] = {
-    readObject[ServerResponseMessage]()
+    readObject[ServerResponse]()
       .flatMap {
         case ResponseMessage =>
           readObject[Boolean]()

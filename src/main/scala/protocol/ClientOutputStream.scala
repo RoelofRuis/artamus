@@ -2,6 +2,8 @@ package protocol
 
 import java.io.ObjectOutputStream
 
+import protocol.MessageTypes.{CommandMessage, ControlMessage}
+
 private[protocol] class ClientOutputStream(out: ObjectOutputStream) {
 
   def sendControl[A <: Control](message: A): Unit = {

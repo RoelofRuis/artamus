@@ -2,6 +2,8 @@ package protocol
 
 import java.io.ObjectOutputStream
 
+import protocol.MessageTypes.{EventMessage, ResponseMessage}
+
 private[protocol] class ServerOutputStream(out: ObjectOutputStream) {
 
   def sendResponse(success: Boolean): Unit = {
