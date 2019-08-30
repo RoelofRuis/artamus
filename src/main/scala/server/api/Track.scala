@@ -1,6 +1,6 @@
 package server.api
 
-import protocol.{Command, Event}
+import protocol.{Command, Event, Query}
 
 object Track {
 
@@ -11,5 +11,7 @@ object Track {
   case class AddQuarterNote(midiPitch: Int) extends Command
 
   case object TrackSymbolsUpdated extends Event
+
+  case object GetTrackMidiNotes extends Query { type Res = List[Int] }
 
 }

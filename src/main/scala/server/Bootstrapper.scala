@@ -2,22 +2,22 @@ package server
 
 import javax.inject.Inject
 import protocol.{Server, ServerBindings}
-import server.handler.{CommandHandlerImpl, ControlHandlerImpl, QueryHandlerImpl}
+import server.handler.{CommandDispatcherImpl, ControlDispatcherImpl, QueryDispatcherImpl}
 
 class Bootstrapper @Inject() (
   server: Server,
-  commandHandler: CommandHandlerImpl,
-  controlHandler: ControlHandlerImpl,
-  queryHandler: QueryHandlerImpl,
+  commandDispatcher: CommandDispatcherImpl,
+  controlDispatcher: ControlDispatcherImpl,
+  queryDispatcher: QueryDispatcherImpl,
 ) extends App {
 
   def run(): Unit = {
     val serverThread = new Thread(() =>
       server.acceptConnections(
         ServerBindings(
-          commandHandler,
-          controlHandler,
-          queryHandler
+          commandDispatcher,
+          controlDispatcher,
+          queryDispatcher
         )
       )
     )

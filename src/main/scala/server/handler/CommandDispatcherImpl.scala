@@ -1,13 +1,13 @@
 package server.handler
 
-import protocol.{Command, CommandHandler}
-import server.handler.CommandHandlerImpl.CommandMap
+import protocol.{Command, CommandDispatcher}
+import server.handler.CommandDispatcherImpl.CommandMap
 
 import scala.reflect.{ClassTag, classTag}
 
-private[server] class CommandHandlerImpl extends CommandHandler {
+private[server] class CommandDispatcherImpl extends CommandDispatcher {
 
-  private var handlers: CommandMap[Handler] = new CommandMap[Handler]()
+  private var handlers: CommandMap[CommandHandler] = new CommandMap[CommandHandler]()
 
   override def handle[C <: Command : ClassTag](command: C): Boolean = {
     handlers
@@ -15,13 +15,13 @@ private[server] class CommandHandlerImpl extends CommandHandler {
       .exists(handler => handler.f(command))
   }
 
-  def subscribe[Cmd <: Command: ClassTag](h: Handler[Cmd]): Unit = {
+  def subscribe[Cmd <: Command: ClassTag](h: CommandHandler[Cmd]): Unit = {
     handlers = handlers.add[Cmd](h)
   }
 
 }
 
-object CommandHandlerImpl {
+object CommandDispatcherImpl {
 
   import scala.language.higherKinds
 

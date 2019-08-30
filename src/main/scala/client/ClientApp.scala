@@ -2,7 +2,7 @@ package client
 
 import protocol.EventListener
 import server.api.Server.Disconnect
-import server.api.Track.{AddQuarterNote, SetKey, SetTimeSignature, TrackSymbolsUpdated}
+import server.api.Track._
 
 object ClientApp extends App {
 
@@ -17,6 +17,9 @@ object ClientApp extends App {
   c.subscribe(EventListener[TrackSymbolsUpdated.type](_ => println("Callback B")))
 
   c.sendCommand(AddQuarterNote(66))
+
+  val res = c.sendQuery(GetTrackMidiNotes)
+  println(res)
 
   c.sendControl(Disconnect(true))
 

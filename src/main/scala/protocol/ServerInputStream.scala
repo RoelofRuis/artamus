@@ -24,7 +24,11 @@ private[protocol] class ServerInputStream(in: ObjectInputStream) {
 
         case Right(QueryRequest) =>
           readObject[Query]().toEither match {
-            case Right(query) => Right(bindings.queryHandler.handle(query))
+            case Right(query) =>
+              bindings.queryHandler.handle(query) match {
+                case Some(res) => Right(res)
+                case None => Left(s"No handler defined for query [$query]")
+              }
             case Left(ex) => Left(s"Unable to decode query message. [$ex]")
           }
 

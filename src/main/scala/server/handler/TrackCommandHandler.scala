@@ -9,23 +9,23 @@ import server.model.Track
 import server.model.TrackProperties.{Key, TimeSignature}
 
 private[server] class TrackCommandHandler @Inject() (
-  handler: CommandHandlerImpl,
+  handler: CommandDispatcherImpl,
   server: Server
 ) {
 
   private val track = Track.empty
 
-  handler.subscribe(Handler[SetTimeSignature]{ command =>
+  handler.subscribe(CommandHandler[SetTimeSignature]{ command =>
     track.addTrackProperty(TimeSignature(command.num, command.denom))
     true
   })
 
-  handler.subscribe(Handler[SetKey] { command =>
+  handler.subscribe(CommandHandler[SetKey] { command =>
     track.addTrackProperty(Key(command.k))
     true
   })
 
-  handler.subscribe(Handler[AddQuarterNote] { command =>
+  handler.subscribe(CommandHandler[AddQuarterNote] { command =>
     track.addTrackSymbol(
       MidiPitch(command.midiPitch),
       NoteDuration(1, Rational(1, 4)),

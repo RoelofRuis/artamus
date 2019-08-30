@@ -10,22 +10,22 @@ package object protocol {
     type Res
   }
 
-  trait ControlHandler {
-    def handle[A <: Control](message: A): Boolean
+  trait ControlDispatcher {
+    def handle[C <: Control](control: C): Boolean
   }
 
-  trait CommandHandler {
-    def handle[A <: Command : ClassTag](command: A): Boolean
+  trait CommandDispatcher {
+    def handle[C <: Command : ClassTag](command: C): Boolean
   }
 
-  trait QueryHandler {
-    def handle[A <: Query : ClassTag](query: A): A#Res
+  trait QueryDispatcher {
+    def handle[Q <: Query : ClassTag](query: Q): Option[Q#Res]
   }
 
   final case class ServerBindings(
-    commandHandler: CommandHandler,
-    controlHandler: ControlHandler,
-    queryHandler: QueryHandler
+    commandHandler: CommandDispatcher,
+    controlHandler: ControlDispatcher,
+    queryHandler: QueryDispatcher
   )
 
   trait Event
