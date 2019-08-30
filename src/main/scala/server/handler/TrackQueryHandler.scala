@@ -10,7 +10,7 @@ private[server] class TrackQueryHandler @Inject() (
 ) {
 
   dispatcher.subscribe(QueryHandler[GetTrackMidiNotes.type]{ _ =>
-    state.midiNoteList
+    state.midiNoteList()
   })
 
 }

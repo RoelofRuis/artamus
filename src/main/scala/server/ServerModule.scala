@@ -16,6 +16,7 @@ class ServerModule extends ScalaPrivateModule {
     bind[TrackCommandHandler].asEagerSingleton()
 
     bind[QueryDispatcherImpl].asEagerSingleton()
+    bind[TrackQueryHandler].asEagerSingleton()
 
     bind[TrackState].asEagerSingleton()
 
