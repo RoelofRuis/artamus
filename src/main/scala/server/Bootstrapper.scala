@@ -1,7 +1,7 @@
 package server
 
 import javax.inject.Inject
-import protocol.Server
+import protocol.{Server, ServerBindings}
 import server.handler.{CommandHandler, ControlHandler}
 
 class Bootstrapper @Inject() (
@@ -11,7 +11,9 @@ class Bootstrapper @Inject() (
 ) extends App {
 
   def run(): Unit = {
-    val serverThread = new Thread(() => server.acceptConnections(commandHandler.execute, controlHandler.handle))
+    val serverThread = new Thread(() =>
+      server.acceptConnections(ServerBindings(commandHandler.execute, controlHandler.handle))
+    )
 
     println("Starting server...")
 

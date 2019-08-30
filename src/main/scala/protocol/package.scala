@@ -1,3 +1,5 @@
+import java.util.ResourceBundle.Control
+
 import scala.reflect.ClassTag
 import scala.util.Try
 
@@ -5,7 +7,7 @@ package object protocol {
 
   trait Event
 
-  case class EventListener[C <: Event](f: C => Unit)
+  final case class EventListener[C <: Event](f: C => Unit)
 
   trait Control
 
@@ -15,9 +17,14 @@ package object protocol {
     type Res
   }
 
+  final case class ServerBindings(
+    commandHandler: Command => Boolean,
+    controlHandler: Control => Boolean
+  )
+
   trait Server {
 
-    def acceptConnections(commandHandler: Command => Boolean, controlHandler: Control => Boolean): Unit
+    def acceptConnections(bindings: ServerBindings): Unit
 
     def publishEvent[A <: Event](event: A): Unit
 

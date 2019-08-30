@@ -10,7 +10,7 @@ private[protocol] class SingleConnectionServer private[protocol](port: Int) exte
   private var isServerRunning = true
   private var isConnectionOpen = false
 
-  def acceptConnections(commandHandler: Command => Boolean, controlHandler: Control => Boolean): Unit = {
+  def acceptConnections(bindings: ServerBindings): Unit = {
     while(isServerRunning) {
       try {
         val socket = server.accept()
@@ -20,7 +20,7 @@ private[protocol] class SingleConnectionServer private[protocol](port: Int) exte
         eventRegistry.subscribe { connection.sendEvent }
 
         while (isConnectionOpen) {
-          connection.handleNext(commandHandler, controlHandler)
+          connection.handleNext(bindings.commandHandler, bindings.controlHandler)
         }
 
         eventRegistry.unsubscribe()
