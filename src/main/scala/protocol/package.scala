@@ -1,3 +1,6 @@
+import scala.reflect.ClassTag
+import scala.util.Try
+
 package object protocol {
 
   private[protocol] sealed trait ServerRequestMessage
@@ -8,8 +11,10 @@ package object protocol {
   private[protocol] case object ResponseMessage extends ServerResponseMessage
   private[protocol] case object EventMessage extends ServerResponseMessage
 
-  // Public API
+  // Public API (move to separate file)
   trait Event
+
+  case class EventListener[C <: Event](f: C => Unit)
 
   trait Control
 
@@ -31,7 +36,19 @@ package object protocol {
 
   }
 
-  def client(port: Int): Client = new Client(port)
+  trait Client {
+
+    def sendControl[A <: Control](message: A): Try[Boolean]
+
+    def sendCommand[A <: Command](message: A): Try[Boolean]
+
+    def subscribe[A <: Event: ClassTag](listener: EventListener[A]): Unit
+
+    def closeConnection(): Unit
+
+  }
+
+  def client(port: Int): Client = new DefaultClient(port)
   def server(port: Int): Server = new SingleConnectionServer(port)
 
 }

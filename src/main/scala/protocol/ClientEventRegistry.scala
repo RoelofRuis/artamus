@@ -1,13 +1,13 @@
 package protocol
 
-import protocol.ClientEventRegistry.{Callback, EventMap}
+import protocol.ClientEventRegistry.EventMap
 
 import scala.language.existentials
 import scala.reflect.{ClassTag, classTag}
 
 private[protocol] class ClientEventRegistry {
 
-  private var recipients = new EventMap[Callback]()
+  private var recipients = new EventMap[EventListener]()
 
   def publish[A <: Event: ClassTag](event: A): Unit = {
     recipients
@@ -15,15 +15,13 @@ private[protocol] class ClientEventRegistry {
       .foreach(_.f(event))
   }
 
-  def subscribe[Cmd <: Event: ClassTag](h: Callback[Cmd]): Unit = {
+  def subscribe[Cmd <: Event: ClassTag](h: EventListener[Cmd]): Unit = {
     recipients = recipients.add[Cmd](h)
   }
 
 }
 
 object ClientEventRegistry {
-
-  case class Callback[C <: Event](f: C => Unit)
 
   import scala.language.higherKinds
 

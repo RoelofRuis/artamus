@@ -3,12 +3,10 @@ package protocol
 import java.io.{ObjectInputStream, ObjectOutputStream}
 import java.net.{InetAddress, Socket}
 
-import protocol.ClientEventRegistry.Callback
-
 import scala.reflect.ClassTag
 import scala.util.Try
 
-private[protocol] class Client private[protocol] (port: Int) {
+private[protocol] class DefaultClient private[protocol] (port: Int) extends Client {
 
   private val socket = new Socket(InetAddress.getByName("localhost"), port)
   private val eventRegistry = new ClientEventRegistry()
@@ -18,7 +16,7 @@ private[protocol] class Client private[protocol] (port: Int) {
   private val in = new ClientInputStream(objectIn, eventRegistry)
   private val out = new ClientOutputStream(objectOut)
 
-  def sendControlMessage[A <: Control](message: A): Try[Boolean] = {
+  def sendControl[A <: Control](message: A): Try[Boolean] = {
     out.sendControl(message)
     in.expectResponseMessage
   }
@@ -28,9 +26,9 @@ private[protocol] class Client private[protocol] (port: Int) {
     in.expectResponseMessage
   }
 
-  def subscribeToEvent[A <: Event: ClassTag](callback: Callback[A]): Unit = eventRegistry.subscribe(callback)
+  def subscribe[A <: Event: ClassTag](callback: EventListener[A]): Unit = eventRegistry.subscribe(callback)
 
-  def close(): Unit = {
+  def closeConnection(): Unit = {
     objectOut.close()
     objectIn.close()
     socket.close()
