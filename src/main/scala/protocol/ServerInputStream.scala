@@ -7,15 +7,13 @@ import scala.util.Try
 class ServerInputStream(in: ObjectInputStream) {
 
   def readObject[A](): Try[A] = {
-    Try(in.readObject().asInstanceOf[A])
-  }
-
-  def readRequestMessage: Try[ServerRequestMessage] = {
-    readObject[ServerRequestMessage]()
+    val obj = Try(in.readObject().asInstanceOf[A])
+    println(obj)
+    obj
   }
 
   def readNext(dispatchCommand: Command => Boolean, dispatchControl: Control => Boolean): Boolean = {
-    readRequestMessage
+    readObject[ServerRequestMessage]()
       .flatMap {
         case CommandMessage => readObject[Command]().map(dispatchCommand)
         case ControlMessage => readObject[Control]().map(dispatchControl)

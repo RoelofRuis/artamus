@@ -4,24 +4,22 @@ import java.io.ObjectInputStream
 
 import scala.util.Try
 
-class ClientInputStream(in: ObjectInputStream) {
+class ClientInputStream(in: ObjectInputStream, eventRegistry: ClientEventRegistry) {
 
   def readObject[A](): Try[A] = {
-    Try(in.readObject().asInstanceOf[A])
-  }
-
-  def readResponseMessage: Try[ServerResponseMessage] = {
-    readObject[ServerResponseMessage]()
+    val obj = Try(in.readObject().asInstanceOf[A])
+    println(obj)
+    obj
   }
 
   def expectResponseMessage: Try[Boolean] = {
-    readResponseMessage
+    readObject[ServerResponseMessage]()
       .flatMap {
         case ResponseMessage =>
           readObject[Boolean]()
 
         case EventMessage =>
-          // TODO: dispatch event!
+          readObject[Event]().foreach(eventRegistry.publish) // TODO: deal with failures
           expectResponseMessage
       }
   }

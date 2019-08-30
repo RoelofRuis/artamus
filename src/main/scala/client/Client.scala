@@ -2,10 +2,11 @@ package client
 
 import java.io.{ObjectInputStream, ObjectOutputStream}
 import java.net.{InetAddress, Socket}
+import java.util.concurrent.{ArrayBlockingQueue, BlockingQueue, SynchronousQueue}
 
 import protocol._
 import server.api.Server.Disconnect
-import server.api.Track.{AddQuarterNote, SetKey, SetTimeSignature}
+import server.api.Track.{AddQuarterNote, SetKey, SetTimeSignature, TrackSymbolsUpdated}
 
 import scala.util.Try
 
@@ -13,7 +14,9 @@ object Client extends App {
 
   val c = new StreamComposeClient(9999)
 
-//  c.registerListener[TrackChanged.type] // TODO: expand on this
+  c.subscribeToEventStream {
+    case TrackSymbolsUpdated => println("Track symbols updated!")
+  }
 
   c.sendCommand(SetTimeSignature(4, 4))
   c.sendCommand(SetKey(0))
@@ -27,16 +30,16 @@ object Client extends App {
 class StreamComposeClient(port: Int) {
 
   private val (socket: Socket, in: ClientInputStream, out: ClientOutputStream) = connect()
+  private val eventRegistry = new ClientEventRegistry()
 
   private def connect(): (Socket, ClientInputStream, ClientOutputStream) = {
     val socket = new Socket(InetAddress.getByName("localhost"), port)
 
     val out = new ClientOutputStream(new ObjectOutputStream(socket.getOutputStream))
-    lazy val in = new ClientInputStream(new ObjectInputStream(socket.getInputStream))
+    lazy val in = new ClientInputStream(new ObjectInputStream(socket.getInputStream), eventRegistry)
     (socket, in, out)
   }
 
-  // TODO: Make sure this goes correctly: try now means either sending success or calculation success..!
   def sendControlMessage[A <: Control](message: A): Try[Boolean] = {
     out.sendControl(message)
     in.expectResponseMessage
@@ -47,7 +50,7 @@ class StreamComposeClient(port: Int) {
     in.expectResponseMessage
   }
 
-  def registerListener[A <: Event](listener: => A): Unit = ???
+  def subscribeToEventStream(listener: Event => Unit): Unit = eventRegistry.subscribe(listener)
 
   def close(): Unit = {
     out.close()
