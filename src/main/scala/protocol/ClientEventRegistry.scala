@@ -1,13 +1,13 @@
 package protocol
 
-import protocol.ClientEventRegistry.{Callback, CommandMap}
+import protocol.ClientEventRegistry.{Callback, EventMap}
 
 import scala.language.existentials
 import scala.reflect.{ClassTag, classTag}
 
 class ClientEventRegistry {
 
-  private var recipients = new CommandMap[Callback]()
+  private var recipients = new EventMap[Callback]()
 
   def publish[A <: Event: ClassTag](event: A): Unit = {
     recipients
@@ -27,12 +27,12 @@ object ClientEventRegistry {
 
   import scala.language.higherKinds
 
-  class CommandMap[V[_ <: Event]](inner: Map[String, List[Any]] = Map()) {
-    def add[A <: Event: ClassTag](value: V[A]): CommandMap[V] = {
+  class EventMap[V[_ <: Event]](inner: Map[String, List[Any]] = Map()) {
+    def add[A <: Event: ClassTag](value: V[A]): EventMap[V] = {
       val key: String = classTag[A].runtimeClass.getCanonicalName
 
       val existingValues = inner.getOrElse(key, List[V[A]]())
-      new CommandMap(inner + ((key, existingValues :+ value)))
+      new EventMap(inner + ((key, existingValues :+ value)))
     }
 
     def get[A <: Event: ClassTag](command: A): List[V[A]] = {

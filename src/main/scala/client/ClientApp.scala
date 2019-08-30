@@ -53,7 +53,6 @@ class Client(port: Int) {
 
   def subscribeToEvent[A <: Event: ClassTag](callback: Callback[A]): Unit = eventRegistry.subscribe(callback)
 
-
   def close(): Unit = {
     objectOut.close()
     objectIn.close()
