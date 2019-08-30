@@ -1,0 +1,48 @@
+package protocol
+
+import java.net.{ServerSocket, SocketException}
+
+private[protocol] class SingleConnectionServer private[protocol](port: Int) extends Server {
+
+  private lazy val server = new ServerSocket(port)
+  private val eventRegistry = new ServerEventRegistry
+
+  private var isServerRunning = false
+  private var isConnectionOpen = false
+
+  def acceptConnections(commandHandler: Command => Boolean, controlHandler: Control => Boolean): Unit = {
+    while(isServerRunning) {
+      try {
+        val socket = server.accept()
+        val connection = new ServerConnection(socket)
+        isConnectionOpen = true
+
+        eventRegistry.subscribe { connection.sendEvent }
+
+        while (isConnectionOpen) {
+          connection.handleNext(commandHandler, controlHandler)
+        }
+
+        eventRegistry.unsubscribe()
+        connection.close()
+        socket.close()
+      } catch {
+        case ex: SocketException =>
+          ex.printStackTrace()
+          stopServer()
+      }
+    }
+
+    server.close()
+  }
+
+  def publishEvent[A <: Event](event: A): Unit = eventRegistry.publish(event)
+
+  def closeActiveConnection(): Unit = isConnectionOpen = false
+
+  def stopServer(): Unit = {
+    closeActiveConnection()
+    isServerRunning = false
+  }
+
+}

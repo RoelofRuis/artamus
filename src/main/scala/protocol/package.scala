@@ -1,5 +1,3 @@
-import java.net.Socket
-
 package object protocol {
 
   private[protocol] sealed trait ServerRequestMessage
@@ -21,7 +19,19 @@ package object protocol {
     type Res
   }
 
-  def clientConnection(port: Int): ClientConnection = new ClientConnection(port)
-  def serverConnection(socket: Socket) = new ServerConnection(socket)
+  trait Server {
+
+    def acceptConnections(commandHandler: Command => Boolean, controlHandler: Control => Boolean): Unit
+
+    def publishEvent[A <: Event](event: A): Unit
+
+    def closeActiveConnection(): Unit
+
+    def stopServer(): Unit
+
+  }
+
+  def client(port: Int): Client = new Client(port)
+  def server(port: Int): Server = new SingleConnectionServer(port)
 
 }

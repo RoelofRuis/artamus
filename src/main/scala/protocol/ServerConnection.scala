@@ -3,7 +3,7 @@ package protocol
 import java.io.{ObjectInputStream, ObjectOutputStream}
 import java.net.Socket
 
-private[protocol] class ServerConnection private[protocol] (socket: Socket) {
+private[protocol] class ServerConnection (socket: Socket) {
 
   private lazy val objectIn = new ObjectInputStream(socket.getInputStream)
   private val objectOut = new ObjectOutputStream(socket.getOutputStream)
@@ -17,7 +17,6 @@ private[protocol] class ServerConnection private[protocol] (socket: Socket) {
 
   def handleNext(commandHandler: Command => Boolean, controlHandler: Control => Boolean): Unit = {
     val response = in.readNext(commandHandler, controlHandler)
-
     out.sendResponse(response)
   }
 

@@ -1,23 +1,21 @@
 package server
 
 import net.codingwell.scalaguice.ScalaPrivateModule
+import protocol.Server
 import server.handler._
-import server.io.{Logger, _}
 
 class ServerModule extends ScalaPrivateModule {
 
   override def configure(): Unit = {
-    bind[Logger].toInstance(new CmdLogger(true))
+    bind[Server].toInstance(protocol.server(9999))
 
-    bind[CommandSocket].asEagerSingleton()
+    bind[ControlHandler].asEagerSingleton()
+
     bind[CommandHandler].asEagerSingleton()
-
-    bind[EventBus].asEagerSingleton()
-
     bind[TrackCommandHandler].asEagerSingleton()
 
-    bind[Server].asEagerSingleton()
-    expose[Server]
+    bind[Bootstrapper].asEagerSingleton()
+    expose[Bootstrapper]
   }
 
 }

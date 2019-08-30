@@ -6,7 +6,7 @@ import server.api.Track.{AddQuarterNote, SetKey, SetTimeSignature, TrackSymbolsU
 
 object ClientApp extends App {
 
-  val c = protocol.clientConnection(9999)
+  val c = protocol.client(9999)
 
   c.subscribeToEvent(Callback[TrackSymbolsUpdated.type](_ => println("Callback A")))
 

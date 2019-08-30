@@ -9,7 +9,7 @@ object Main extends App {
   )
 
   import net.codingwell.scalaguice.InjectorExtensions._
-  val server = injector.instance[Server]
+  val server = injector.instance[Bootstrapper]
 
   server.run()
 

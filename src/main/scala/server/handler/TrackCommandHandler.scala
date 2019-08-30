@@ -1,8 +1,8 @@
 package server.handler
 
 import javax.inject.Inject
+import protocol.Server
 import server.api.Track.{AddQuarterNote, SetKey, SetTimeSignature, TrackSymbolsUpdated}
-import server.io.{CommandHandler, EventBus}
 import server.math.Rational
 import server.model.SymbolProperties.{MidiPitch, NoteDuration, NotePosition}
 import server.model.Track
@@ -10,7 +10,7 @@ import server.model.TrackProperties.{Key, TimeSignature}
 
 private[server] class TrackCommandHandler @Inject() (
   handler: CommandHandler,
-  eventBus: EventBus,
+  server: Server
 ) {
 
   private val track = Track.empty
@@ -31,7 +31,7 @@ private[server] class TrackCommandHandler @Inject() (
       NoteDuration(1, Rational(1, 4)),
       NotePosition(0, Rational(1, 4))
     )
-    eventBus.publish(TrackSymbolsUpdated)
+    server.publishEvent(TrackSymbolsUpdated)
     true
   })
 
