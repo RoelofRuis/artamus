@@ -58,31 +58,4 @@ object Track {
 
   def empty = new Track(Seq(), Seq())
 
-
-
-  /** @deprecated */
-  def builder: TrackBuilder = new TrackBuilder
-
-  /** @deprecated */
-  final class TrackBuilder () {
-
-    private var trackProperties: TrackProperties = Seq()
-    private var symbolPropertyCollection: Seq[SymbolProperties] = Seq(Seq())
-
-    def addSymbolFromProps(properties: SymbolProperty*): Unit = symbolPropertyCollection +:= properties
-
-    def addTrackProperty(property: TrackProperty): Unit = trackProperties +:= property
-
-    def build: Track = {
-      val symbols = symbolPropertyCollection.zipWithIndex
-        .map {
-          case (properties, index) => TrackSymbol(index, properties)
-        }
-
-      new Track(
-        trackProperties,
-        symbols
-      )
-    }
-  }
 }
