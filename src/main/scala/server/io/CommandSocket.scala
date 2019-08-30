@@ -20,7 +20,7 @@ private[server] class CommandSocket @Inject() private (
 
     while (acceptNewConnections) {
       try {
-        // TODO: clean up with better separation of concerns
+        // TODO: clean up with better separation of concerns, then move to protocol
 
         // Accept connection
         val socket = server.accept()

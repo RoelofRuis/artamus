@@ -16,6 +16,4 @@ class ClientOutputStream(out: ObjectOutputStream) {
 
   // def sendQuery[A <: Query](message: A): Unit = ???
 
-  def close(): Unit = out.close() // TODO: maybe move this out of here
-
 }

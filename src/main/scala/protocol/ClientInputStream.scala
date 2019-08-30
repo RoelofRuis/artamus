@@ -28,6 +28,4 @@ class ClientInputStream(in: ObjectInputStream, eventRegistry: ClientEventRegistr
       }
   }
 
-  def close(): Unit = in.close() // TODO: maybe move this out of here
-
 }

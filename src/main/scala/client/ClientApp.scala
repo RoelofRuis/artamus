@@ -9,9 +9,9 @@ import server.api.Track.{AddQuarterNote, SetKey, SetTimeSignature, TrackSymbolsU
 
 import scala.util.Try
 
-object Client extends App {
+object ClientApp extends App {
 
-  val c = new StreamComposeClient(9999)
+  val c = new Client(9999)
 
   c.subscribeToEventStream {
     case TrackSymbolsUpdated => println("Track symbols updated!")
@@ -26,19 +26,15 @@ object Client extends App {
 
 }
 
-class StreamComposeClient(port: Int) {
+class Client(port: Int) {
 
-  private val (socket: Socket, in: ClientInputStream, out: ClientOutputStream, eventRegistry: ClientEventRegistry) = connect()
+  private val socket = new Socket(InetAddress.getByName("localhost"), port)
+  private val eventRegistry = new ClientEventRegistry()
+  private lazy val objectIn = new ObjectInputStream(socket.getInputStream)
+  private val objectOut = new ObjectOutputStream(socket.getOutputStream)
 
-  // TODO: clean up creation logic
-  private def connect(): (Socket, ClientInputStream, ClientOutputStream, ClientEventRegistry) = {
-    val socket = new Socket(InetAddress.getByName("localhost"), port)
-    val eventRegistry = new ClientEventRegistry()
-
-    val out = new ClientOutputStream(new ObjectOutputStream(socket.getOutputStream))
-    lazy val in = new ClientInputStream(new ObjectInputStream(socket.getInputStream), eventRegistry)
-    (socket, in, out, eventRegistry)
-  }
+  private lazy val in = new ClientInputStream(objectIn, eventRegistry)
+  private val out = new ClientOutputStream(objectOut)
 
   def sendControlMessage[A <: Control](message: A): Try[Boolean] = {
     out.sendControl(message)
@@ -53,8 +49,8 @@ class StreamComposeClient(port: Int) {
   def subscribeToEventStream(listener: Event => Unit): Unit = eventRegistry.subscribe(listener)
 
   def close(): Unit = {
-    out.close()
-    in.close()
+    objectOut.close()
+    objectIn.close()
     socket.close()
   }
 
