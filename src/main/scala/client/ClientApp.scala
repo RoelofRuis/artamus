@@ -18,7 +18,8 @@ object ClientApp extends App {
 
   c.sendCommand(AddQuarterNote(66))
 
-  println(c.sendQuery(GetTrackMidiNotes))
+  val queryRes = c.sendQuery(GetTrackMidiNotes)
+  print(queryRes)
 
   c.sendControl(Disconnect(true))
 

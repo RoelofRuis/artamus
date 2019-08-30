@@ -1,5 +1,6 @@
 import scala.reflect.ClassTag
 
+// TODO: split into classes required for Server and classes required for Client
 package object protocol {
 
   trait Control
