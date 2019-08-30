@@ -1,6 +1,5 @@
 package server.io
 
-import java.io.{ObjectInputStream, ObjectOutputStream}
 import java.net.{ServerSocket, SocketException}
 
 import javax.inject.Inject
@@ -24,13 +23,12 @@ private[server] class CommandSocket @Inject() private (
 
         // Accept connection
         val socket = server.accept()
+        val connection = new ServerConnection(socket)
         var connectionOpen = true
-        val input = new ServerInputStream(new ObjectInputStream(socket.getInputStream))
-        val output = new ServerOutputStream(new ObjectOutputStream(socket.getOutputStream))
 
         val clientToken = "client"
 
-        eventBus.subscribe(clientToken, { event => output.sendEvent(event) })
+        eventBus.subscribe(clientToken, { event => connection.sendEvent(event) })
 
         def executeControlMessage[A <: Control](msg: A): Boolean = {
           msg match {
@@ -46,9 +44,7 @@ private[server] class CommandSocket @Inject() private (
 
         // Receive messages
         while (connectionOpen) {
-          val response = input.readNext(commandHandler.execute, executeControlMessage)
-
-          output.sendResponse(response)
+          connection.handleNext(commandHandler.execute, executeControlMessage)
         }
 
         // Clean up

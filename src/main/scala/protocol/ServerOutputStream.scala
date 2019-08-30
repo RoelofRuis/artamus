@@ -14,6 +14,4 @@ class ServerOutputStream(out: ObjectOutputStream) {
     out.writeObject(message)
   }
 
-  def close(): Unit = out.close() // TODO: maybe move this out of here
-
 }

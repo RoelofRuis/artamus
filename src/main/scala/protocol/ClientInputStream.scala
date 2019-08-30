@@ -6,10 +6,6 @@ import scala.util.Try
 
 class ClientInputStream(in: ObjectInputStream, eventRegistry: ClientEventRegistry) {
 
-  def readObject[A](): Try[A] = {
-    Try(in.readObject().asInstanceOf[A])
-  }
-
   def expectResponseMessage: Try[Boolean] = {
     readObject[ServerResponseMessage]()
       .flatMap {
@@ -26,5 +22,7 @@ class ClientInputStream(in: ObjectInputStream, eventRegistry: ClientEventRegistr
           expectResponseMessage
       }
   }
+
+  private def readObject[A](): Try[A] = Try(in.readObject().asInstanceOf[A])
 
 }

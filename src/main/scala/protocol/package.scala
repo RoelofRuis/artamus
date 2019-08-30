@@ -19,4 +19,6 @@ package object protocol {
     type Res
   }
 
+  // TODO: implement creation functions for server and client!
+
 }
