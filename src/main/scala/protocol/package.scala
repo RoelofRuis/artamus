@@ -1,13 +1,6 @@
-import java.util.ResourceBundle.Control
-
 import scala.reflect.ClassTag
-import scala.util.Try
 
 package object protocol {
-
-  trait Event
-
-  final case class EventListener[C <: Event](f: C => Unit)
 
   trait Control
 
@@ -17,10 +10,27 @@ package object protocol {
     type Res
   }
 
+  trait ControlHandler {
+    def handle[A <: Control](message: A): Boolean
+  }
+
+  trait CommandHandler {
+    def handle[A <: Command : ClassTag](command: A): Boolean
+  }
+
+  trait QueryHandler {
+    def handle[A <: Query : ClassTag](query: A): A#Res
+  }
+
   final case class ServerBindings(
-    commandHandler: Command => Boolean,
-    controlHandler: Control => Boolean
+    commandHandler: CommandHandler,
+    controlHandler: ControlHandler,
+    queryHandler: QueryHandler
   )
+
+  trait Event
+
+  final case class EventListener[C <: Event](f: C => Unit)
 
   trait Server {
 
@@ -36,9 +46,11 @@ package object protocol {
 
   trait Client {
 
-    def sendControl[A <: Control](message: A): Try[Boolean]
+    def sendControl[A <: Control](message: A): Option[Boolean]
 
-    def sendCommand[A <: Command](message: A): Try[Boolean]
+    def sendCommand[A <: Command](message: A): Option[Boolean]
+
+    def sendQuery[A <: Query](message: A): Option[A#Res]
 
     def subscribe[A <: Event: ClassTag](listener: EventListener[A]): Unit
 

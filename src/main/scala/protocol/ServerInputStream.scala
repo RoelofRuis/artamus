@@ -2,22 +2,34 @@ package protocol
 
 import java.io.ObjectInputStream
 
-import protocol.MessageTypes.{CommandMessage, ControlMessage, ServerRequest}
+import protocol.MessageTypes._
 
 import scala.util.Try
 
 private[protocol] class ServerInputStream(in: ObjectInputStream) {
 
-  def readNext(dispatchCommand: Command => Boolean, dispatchControl: Control => Boolean): Boolean = {
-    readObject[ServerRequest]()
-      .flatMap {
-        case CommandMessage => readObject[Command]().map(dispatchCommand)
-        case ControlMessage => readObject[Control]().map(dispatchControl)
-      }
-      .fold(
-        _ => false, // TODO: Return an Either here, fold to boolean on the outside
-        identity
-      )
+  def readNext(bindings: ServerBindings): Either[StreamException, Any] = {
+    readObject[ServerRequest]().toEither match {
+        case Right(CommandRequest) =>
+          readObject[Command]().toEither match {
+            case Right(command) => Right(bindings.commandHandler.handle(command))
+            case Left(ex) => Left(s"Unable to decode Command message. [$ex]")
+          }
+
+        case Right(ControlRequest) =>
+          readObject[Control]().toEither match {
+            case Right(control) => Right(bindings.controlHandler.handle(control))
+            case Left(ex) => Left(s"Unable to decode control message. [$ex]")
+          }
+
+        case Right(QueryRequest) =>
+          readObject[Query]().toEither match {
+            case Right(query) => Right(bindings.queryHandler.handle(query))
+            case Left(ex) => Left(s"Unable to decode query message. [$ex]")
+          }
+
+        case Left(ex) => Left(s"Unable to determine message type. [$ex]")
+    }
   }
 
   private def readObject[A](): Try[A] = Try(in.readObject().asInstanceOf[A])

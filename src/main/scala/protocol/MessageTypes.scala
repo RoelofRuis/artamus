@@ -3,11 +3,15 @@ package protocol
 private[protocol] object MessageTypes {
 
   sealed trait ServerRequest
-  case object ControlMessage extends ServerRequest
-  case object CommandMessage extends ServerRequest
+  case object ControlRequest extends ServerRequest
+  case object CommandRequest extends ServerRequest
+  case object QueryRequest extends ServerRequest
 
   sealed trait ServerResponse
-  case object ResponseMessage extends ServerResponse
-  case object EventMessage extends ServerResponse
+  case object DataResponse extends ServerResponse
+  case object ErrorResponse extends ServerResponse
+  case object EventResponse extends ServerResponse
+
+  type StreamException = String
 
 }

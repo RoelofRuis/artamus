@@ -11,13 +11,13 @@ private[protocol] class ServerConnection (socket: Socket) {
   private val in = new ServerInputStream(objectIn)
   private val out = new ServerOutputStream(objectOut)
 
-  def sendEvent[A <: Event](message: A): Unit = {
-    out.sendEvent(message)
-  }
+  def sendEvent[A <: Event](message: A): Unit = out.sendEvent(message)
 
-  def handleNext(commandHandler: Command => Boolean, controlHandler: Control => Boolean): Unit = {
-    val response = in.readNext(commandHandler, controlHandler)
-    out.sendResponse(response)
+  def handleNext(bindings: ServerBindings): Unit = {
+    in.readNext(bindings) match {
+      case Right(response) => out.sendData(response)
+      case Left(error) => out.sendError(error)
+    }
   }
 
   def close(): Unit = {

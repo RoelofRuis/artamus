@@ -1,15 +1,15 @@
 package server.handler
 
-import protocol.Command
-import server.handler.CommandHandler.CommandMap
+import protocol.{Command, CommandHandler}
+import server.handler.CommandHandlerImpl.CommandMap
 
 import scala.reflect.{ClassTag, classTag}
 
-private[server] class CommandHandler {
+private[server] class CommandHandlerImpl extends CommandHandler {
 
   private var handlers: CommandMap[Handler] = new CommandMap[Handler]()
 
-  def execute[C <: Command: ClassTag](command: C): Boolean = {
+  override def handle[C <: Command : ClassTag](command: C): Boolean = {
     handlers
       .get[C](command)
       .exists(handler => handler.f(command))
@@ -18,9 +18,10 @@ private[server] class CommandHandler {
   def subscribe[Cmd <: Command: ClassTag](h: Handler[Cmd]): Unit = {
     handlers = handlers.add[Cmd](h)
   }
+
 }
 
-object CommandHandler {
+object CommandHandlerImpl {
 
   import scala.language.higherKinds
 

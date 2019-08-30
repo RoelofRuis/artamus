@@ -9,10 +9,12 @@ class ServerModule extends ScalaPrivateModule {
   override def configure(): Unit = {
     bind[Server].toInstance(protocol.server(9999))
 
-    bind[ControlHandler].asEagerSingleton()
+    bind[ControlHandlerImpl].asEagerSingleton()
 
-    bind[CommandHandler].asEagerSingleton()
+    bind[CommandHandlerImpl].asEagerSingleton()
     bind[TrackCommandHandler].asEagerSingleton()
+
+    bind[QueryHandlerImpl].asEagerSingleton()
 
     bind[Bootstrapper].asEagerSingleton()
     expose[Bootstrapper]

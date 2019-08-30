@@ -20,7 +20,7 @@ private[protocol] class SingleConnectionServer private[protocol](port: Int) exte
         eventRegistry.subscribe { connection.sendEvent }
 
         while (isConnectionOpen) {
-          connection.handleNext(bindings.commandHandler, bindings.controlHandler)
+          connection.handleNext(bindings)
         }
 
         eventRegistry.unsubscribe()

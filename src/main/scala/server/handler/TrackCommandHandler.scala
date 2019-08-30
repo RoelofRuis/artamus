@@ -9,7 +9,7 @@ import server.model.Track
 import server.model.TrackProperties.{Key, TimeSignature}
 
 private[server] class TrackCommandHandler @Inject() (
-  handler: CommandHandler,
+  handler: CommandHandlerImpl,
   server: Server
 ) {
 
