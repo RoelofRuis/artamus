@@ -1,12 +1,13 @@
 package client
 
-import protocol.{Client, EventListener}
+import protocol.ClientInterface
+import protocol.ClientInterface.EventListener
 import server.api.Server.Disconnect
 import server.api.Track._
 
 object ClientApp extends App {
 
-  val client = protocol.client(9999)
+  val client = protocol.createClient(9999)
 
   val writer = new MusicWriter(client)
 
@@ -30,7 +31,7 @@ object ClientApp extends App {
 
 }
 
-class MusicWriter(client: Client) {
+class MusicWriter(client: ClientInterface) {
 
   def writeTimeSignature(num: Int, denom: Int): Boolean = client.sendCommand(SetTimeSignature(num, denom)).getOrElse(false)
 

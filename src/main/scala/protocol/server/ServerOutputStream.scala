@@ -1,7 +1,8 @@
-package protocol
+package protocol.server
 
 import java.io.ObjectOutputStream
 
+import protocol.Event
 import protocol.MessageTypes.{DataResponse, EventResponse}
 
 private[protocol] class ServerOutputStream(out: ObjectOutputStream) {

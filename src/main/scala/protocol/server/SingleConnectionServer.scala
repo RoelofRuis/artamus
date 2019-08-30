@@ -1,8 +1,11 @@
-package protocol
+package protocol.server
 
 import java.net.{ServerSocket, SocketException}
 
-private[protocol] class SingleConnectionServer private[protocol](port: Int) extends Server {
+import protocol.ServerInterface.ServerBindings
+import protocol._
+
+private[protocol] class SingleConnectionServer private[protocol](port: Int) extends ServerInterface {
 
   private lazy val server = new ServerSocket(port)
   private val eventRegistry = new ServerEventRegistry

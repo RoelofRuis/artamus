@@ -1,8 +1,9 @@
-package protocol
+package protocol.client
 
 import java.io.ObjectOutputStream
 
 import protocol.MessageTypes.{CommandRequest, ControlRequest, QueryRequest}
+import protocol.{Command, Control, Query}
 
 private[protocol] class ClientOutputStream(out: ObjectOutputStream) {
 

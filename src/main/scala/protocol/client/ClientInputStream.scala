@@ -1,7 +1,8 @@
-package protocol
+package protocol.client
 
 import java.io.ObjectInputStream
 
+import protocol.Event
 import protocol.MessageTypes._
 
 import scala.util.{Failure, Success, Try}

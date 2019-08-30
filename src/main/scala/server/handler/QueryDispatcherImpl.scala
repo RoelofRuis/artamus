@@ -1,6 +1,7 @@
 package server.handler
 
-import protocol.{Query, QueryDispatcher}
+import protocol.Query
+import protocol.ServerInterface.QueryDispatcher
 import server.handler.QueryDispatcherImpl.QueryMap
 
 import scala.reflect.{ClassTag, classTag}

@@ -1,6 +1,8 @@
-package protocol
+package protocol.client
 
-import protocol.ClientEventRegistry.EventMap
+import protocol.ClientInterface.EventListener
+import protocol.Event
+import protocol.client.ClientEventRegistry.EventMap
 
 import scala.language.existentials
 import scala.reflect.{ClassTag, classTag}

@@ -1,6 +1,7 @@
 package server.handler
 
-import protocol.{Command, CommandDispatcher}
+import protocol.Command
+import protocol.ServerInterface.CommandDispatcher
 import server.handler.CommandDispatcherImpl.CommandMap
 
 import scala.reflect.{ClassTag, classTag}

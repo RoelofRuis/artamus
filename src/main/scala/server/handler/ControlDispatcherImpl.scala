@@ -1,10 +1,11 @@
 package server.handler
 
 import javax.inject.Inject
-import protocol.{Control, ControlDispatcher, Server}
+import protocol.ServerInterface.ControlDispatcher
+import protocol.{Control, ServerInterface}
 import server.api.Server.Disconnect
 
-private[server] class ControlDispatcherImpl @Inject() (server: Server) extends ControlDispatcher {
+private[server] class ControlDispatcherImpl @Inject() (server: ServerInterface) extends ControlDispatcher {
 
   def handle[A <: Control](message: A): Boolean = {
     message match {

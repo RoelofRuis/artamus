@@ -1,14 +1,14 @@
 package server
 
 import net.codingwell.scalaguice.ScalaPrivateModule
-import protocol.Server
+import protocol.ServerInterface
 import server.domain.TrackState
 import server.handler._
 
 class ServerModule extends ScalaPrivateModule {
 
   override def configure(): Unit = {
-    bind[Server].toInstance(protocol.server(9999))
+    bind[ServerInterface].toInstance(protocol.createServer(9999))
 
     bind[ControlDispatcherImpl].asEagerSingleton()
 

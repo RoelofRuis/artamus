@@ -1,4 +1,6 @@
-package protocol
+package protocol.server
+
+import protocol.Event
 
 class ServerEventRegistry {
 

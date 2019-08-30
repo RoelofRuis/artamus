@@ -1,11 +1,14 @@
-package protocol
+package protocol.client
 
 import java.io.{ObjectInputStream, ObjectOutputStream}
 import java.net.{InetAddress, Socket}
 
+import protocol.ClientInterface.EventListener
+import protocol._
+
 import scala.reflect.ClassTag
 
-private[protocol] class DefaultClient private[protocol] (port: Int) extends Client {
+private[protocol] class DefaultClient private[protocol] (port: Int) extends ClientInterface {
 
   private val socket = new Socket(InetAddress.getByName("localhost"), port)
   private val eventRegistry = new ClientEventRegistry()

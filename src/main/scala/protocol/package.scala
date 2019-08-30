@@ -1,65 +1,32 @@
-import scala.reflect.ClassTag
+import protocol.client.DefaultClient
+import protocol.server.SingleConnectionServer
 
-// TODO: split into classes required for Server and classes required for Client
 package object protocol {
+
+  def createClient(port: Int): ClientInterface = new DefaultClient(port)
+  def createServer(port: Int): ServerInterface = new SingleConnectionServer(port)
 
   trait Control
 
   trait Command
 
-  trait Query {
-    type Res
-  }
-
-  trait ControlDispatcher {
-    def handle[C <: Control](control: C): Boolean
-  }
-
-  trait CommandDispatcher {
-    def handle[C <: Command : ClassTag](command: C): Boolean
-  }
-
-  trait QueryDispatcher {
-    def handle[Q <: Query : ClassTag](query: Q): Option[Q#Res]
-  }
-
-  final case class ServerBindings(
-    commandHandler: CommandDispatcher,
-    controlHandler: ControlDispatcher,
-    queryHandler: QueryDispatcher
-  )
+  trait Query { type Res }
 
   trait Event
 
-  final case class EventListener[C <: Event](f: C => Unit)
+  private[protocol] object MessageTypes {
 
-  trait Server {
+    sealed trait ServerRequest
+    case object ControlRequest extends ServerRequest
+    case object CommandRequest extends ServerRequest
+    case object QueryRequest extends ServerRequest
 
-    def acceptConnections(bindings: ServerBindings): Unit
+    sealed trait ServerResponse
+    case object DataResponse extends ServerResponse
+    case object EventResponse extends ServerResponse
 
-    def publishEvent[A <: Event](event: A): Unit
-
-    def closeActiveConnection(): Unit
-
-    def stopServer(): Unit
-
-  }
-
-  trait Client {
-
-    def sendControl[A <: Control](message: A): Option[Boolean]
-
-    def sendCommand[A <: Command](message: A): Option[Boolean]
-
-    def sendQuery[A <: Query](message: A): Option[A#Res]
-
-    def subscribe[A <: Event: ClassTag](listener: EventListener[A]): Unit
-
-    def closeConnection(): Unit
+    type StreamException = String
 
   }
-
-  def client(port: Int): Client = new DefaultClient(port)
-  def server(port: Int): Server = new SingleConnectionServer(port)
 
 }

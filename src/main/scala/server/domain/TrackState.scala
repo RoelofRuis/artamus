@@ -1,13 +1,13 @@
 package server.domain
 
 import javax.inject.Inject
-import protocol.Server
+import protocol.ServerInterface
 import server.api.Track.TrackSymbolsUpdated
 import server.model.SymbolProperties.{MidiPitch, SymbolProperty}
 import server.model.Track
 import server.model.TrackProperties.TrackProperty
 
-class TrackState @Inject() (server: Server) {
+class TrackState @Inject() (server: ServerInterface) {
 
   private val track = Track.empty
 
