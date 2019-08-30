@@ -24,6 +24,8 @@ final class Track (
 
   def mapSymbols[A](f: TrackSymbol => A): Iterable[A] = symbols.map(f(_))
 
+  def flatMapSymbols[A](f: TrackSymbol => Option[A]): Iterable[A] = symbols.flatMap(f(_))
+
   def numSymbols: Int = symbols.size
 
   def addTrackProperty(property: TrackProperty): Unit = properties +:= property
@@ -47,11 +49,19 @@ object Track {
   final case class TrackSymbol private (
     id: SymbolID,
     properties: SymbolProperties
-  )
+  ) {
+    def collectFirst[A <: SymbolProperty](): Option[A] = {
+      // TODO: make this typesafe somehow!
+      properties.collectFirst { case x: A => x }
+    }
+  }
 
   def empty = new Track(Seq(), Seq())
 
-  def builder: TrackBuilder = new TrackBuilder // TODO: remove
+
+
+  /** @deprecated */
+  def builder: TrackBuilder = new TrackBuilder
 
   /** @deprecated */
   final class TrackBuilder () {

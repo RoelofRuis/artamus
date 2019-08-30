@@ -2,6 +2,7 @@ package server
 
 import net.codingwell.scalaguice.ScalaPrivateModule
 import protocol.Server
+import server.domain.TrackState
 import server.handler._
 
 class ServerModule extends ScalaPrivateModule {
@@ -15,6 +16,8 @@ class ServerModule extends ScalaPrivateModule {
     bind[TrackCommandHandler].asEagerSingleton()
 
     bind[QueryDispatcherImpl].asEagerSingleton()
+
+    bind[TrackState].asEagerSingleton()
 
     bind[Bootstrapper].asEagerSingleton()
     expose[Bootstrapper]

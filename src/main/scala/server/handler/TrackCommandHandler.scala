@@ -1,37 +1,33 @@
 package server.handler
 
 import javax.inject.Inject
-import protocol.Server
-import server.api.Track.{AddQuarterNote, SetKey, SetTimeSignature, TrackSymbolsUpdated}
+import server.api.Track.{AddQuarterNote, SetKey, SetTimeSignature}
+import server.domain.TrackState
 import server.math.Rational
 import server.model.SymbolProperties.{MidiPitch, NoteDuration, NotePosition}
-import server.model.Track
 import server.model.TrackProperties.{Key, TimeSignature}
 
 private[server] class TrackCommandHandler @Inject() (
-  handler: CommandDispatcherImpl,
-  server: Server
+  dispatcher: CommandDispatcherImpl,
+  state: TrackState
 ) {
 
-  private val track = Track.empty
-
-  handler.subscribe(CommandHandler[SetTimeSignature]{ command =>
-    track.addTrackProperty(TimeSignature(command.num, command.denom))
+  dispatcher.subscribe(CommandHandler[SetTimeSignature]{ command =>
+    state.addTrackProperty(TimeSignature(command.num, command.denom))
     true
   })
 
-  handler.subscribe(CommandHandler[SetKey] { command =>
-    track.addTrackProperty(Key(command.k))
+  dispatcher.subscribe(CommandHandler[SetKey] { command =>
+    state.addTrackProperty(Key(command.k))
     true
   })
 
-  handler.subscribe(CommandHandler[AddQuarterNote] { command =>
-    track.addTrackSymbol(
+  dispatcher.subscribe(CommandHandler[AddQuarterNote] { command =>
+    state.addTrackSymbol(
       MidiPitch(command.midiPitch),
       NoteDuration(1, Rational(1, 4)),
       NotePosition(0, Rational(1, 4))
     )
-    server.publishEvent(TrackSymbolsUpdated)
     true
   })
 

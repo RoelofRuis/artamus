@@ -9,10 +9,14 @@ class QueryDispatcherImpl extends QueryDispatcher {
 
   private var handlers: QueryMap[QueryHandler] = new QueryMap[QueryHandler]()
 
-  override def handle[Q <: protocol.Query : ClassTag](query: Q): Option[Q#Res] = {
+  override def handle[Q <: Query : ClassTag](query: Q): Option[Q#Res] = {
     handlers
       .get[Q](query)
       .map(handler => handler.f(query))
+  }
+
+  def subscribe[A <: Query: ClassTag](h: QueryHandler[A]): Unit = {
+    handlers = handlers.add[A](h)
   }
 
 }
