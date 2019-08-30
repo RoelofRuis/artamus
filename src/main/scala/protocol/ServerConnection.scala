@@ -3,7 +3,7 @@ package protocol
 import java.io.{ObjectInputStream, ObjectOutputStream}
 import java.net.Socket
 
-class ServerConnection(socket: Socket) {
+private[protocol] class ServerConnection private[protocol] (socket: Socket) {
 
   private lazy val objectIn = new ObjectInputStream(socket.getInputStream)
   private val objectOut = new ObjectOutputStream(socket.getOutputStream)

@@ -5,7 +5,7 @@ import protocol.ClientEventRegistry.{Callback, EventMap}
 import scala.language.existentials
 import scala.reflect.{ClassTag, classTag}
 
-class ClientEventRegistry {
+private[protocol] class ClientEventRegistry {
 
   private var recipients = new EventMap[Callback]()
 

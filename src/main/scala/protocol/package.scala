@@ -1,3 +1,5 @@
+import java.net.Socket
+
 package object protocol {
 
   private[protocol] sealed trait ServerRequestMessage
@@ -19,6 +21,7 @@ package object protocol {
     type Res
   }
 
-  // TODO: implement creation functions for server and client!
+  def clientConnection(port: Int): ClientConnection = new ClientConnection(port)
+  def serverConnection(socket: Socket) = new ServerConnection(socket)
 
 }

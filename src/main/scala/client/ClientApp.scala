@@ -1,13 +1,12 @@
 package client
 
 import protocol.ClientEventRegistry.Callback
-import protocol._
 import server.api.Server.Disconnect
 import server.api.Track.{AddQuarterNote, SetKey, SetTimeSignature, TrackSymbolsUpdated}
 
 object ClientApp extends App {
 
-  val c = new ClientSocket(9999)
+  val c = protocol.clientConnection(9999)
 
   c.subscribeToEvent(Callback[TrackSymbolsUpdated.type](_ => println("Callback A")))
 

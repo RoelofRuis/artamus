@@ -23,7 +23,7 @@ private[server] class CommandSocket @Inject() private (
 
         // Accept connection
         val socket = server.accept()
-        val connection = new ServerConnection(socket)
+        val connection = protocol.serverConnection(socket)
         var connectionOpen = true
 
         val clientToken = "client"

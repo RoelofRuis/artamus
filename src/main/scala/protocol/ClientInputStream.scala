@@ -4,7 +4,7 @@ import java.io.ObjectInputStream
 
 import scala.util.Try
 
-class ClientInputStream(in: ObjectInputStream, eventRegistry: ClientEventRegistry) {
+private[protocol] class ClientInputStream(in: ObjectInputStream, eventRegistry: ClientEventRegistry) {
 
   def expectResponseMessage: Try[Boolean] = {
     readObject[ServerResponseMessage]()

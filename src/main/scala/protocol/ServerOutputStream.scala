@@ -2,7 +2,7 @@ package protocol
 
 import java.io.ObjectOutputStream
 
-class ServerOutputStream(out: ObjectOutputStream) {
+private[protocol] class ServerOutputStream(out: ObjectOutputStream) {
 
   def sendResponse(success: Boolean): Unit = {
     out.writeObject(ResponseMessage)

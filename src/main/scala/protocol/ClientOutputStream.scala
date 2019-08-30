@@ -2,7 +2,7 @@ package protocol
 
 import java.io.ObjectOutputStream
 
-class ClientOutputStream(out: ObjectOutputStream) {
+private[protocol] class ClientOutputStream(out: ObjectOutputStream) {
 
   def sendControl[A <: Control](message: A): Unit = {
     out.writeObject(ControlMessage)

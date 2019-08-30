@@ -4,7 +4,7 @@ import java.io.ObjectInputStream
 
 import scala.util.Try
 
-class ServerInputStream(in: ObjectInputStream) {
+private[protocol] class ServerInputStream(in: ObjectInputStream) {
 
   def readNext(dispatchCommand: Command => Boolean, dispatchControl: Control => Boolean): Boolean = {
     readObject[ServerRequestMessage]()

@@ -8,7 +8,7 @@ import protocol.ClientEventRegistry.Callback
 import scala.reflect.ClassTag
 import scala.util.Try
 
-class ClientSocket(port: Int) {
+private[protocol] class ClientConnection private[protocol] (port: Int) {
 
   private val socket = new Socket(InetAddress.getByName("localhost"), port)
   private val eventRegistry = new ClientEventRegistry()
