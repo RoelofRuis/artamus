@@ -3,24 +3,29 @@ package client
 import java.io.{ObjectInputStream, ObjectOutputStream}
 import java.net.{InetAddress, Socket}
 
+import protocol.ClientEventRegistry.Callback
 import protocol._
 import server.api.Server.Disconnect
 import server.api.Track.{AddQuarterNote, SetKey, SetTimeSignature, TrackSymbolsUpdated}
 
+import scala.reflect.ClassTag
 import scala.util.Try
 
 object ClientApp extends App {
 
   val c = new Client(9999)
 
-  c.subscribeToEventStream {
-    case TrackSymbolsUpdated => println("Track symbols updated!")
-  }
+  c.subscribeToEvent(Callback[TrackSymbolsUpdated.type](_ => println("Callback A")))
 
   c.sendCommand(SetTimeSignature(4, 4))
   c.sendCommand(SetKey(0))
   c.sendCommand(AddQuarterNote(64))
-  c.sendControlMessage(Disconnect(true))
+
+  c.subscribeToEvent(Callback[TrackSymbolsUpdated.type](_ => println("Callback B")))
+
+  c.sendCommand(AddQuarterNote(66))
+
+  c.sendControlMessage(Disconnect(false))
 
   c.close()
 
@@ -46,7 +51,8 @@ class Client(port: Int) {
     in.expectResponseMessage
   }
 
-  def subscribeToEventStream(listener: Event => Unit): Unit = eventRegistry.subscribe(listener)
+  def subscribeToEvent[A <: Event: ClassTag](callback: Callback[A]): Unit = eventRegistry.subscribe(callback)
+
 
   def close(): Unit = {
     objectOut.close()

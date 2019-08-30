@@ -19,9 +19,8 @@ class ClientInputStream(in: ObjectInputStream, eventRegistry: ClientEventRegistr
         case EventMessage =>
           // TODO: dispatch event to different thread
           val x = readObject[Event]()
-            .flatMap { e =>
-            Try(eventRegistry.publish(e))
-          }
+            .flatMap(e => Try(eventRegistry.publish(e)))
+
           if (x.isFailure) x.failed.get.printStackTrace()
 
           expectResponseMessage
