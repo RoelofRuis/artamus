@@ -9,7 +9,6 @@ private[protocol] object MessageTypes {
 
   sealed trait ServerResponse
   case object DataResponse extends ServerResponse
-  case object ErrorResponse extends ServerResponse
   case object EventResponse extends ServerResponse
 
   type StreamException = String

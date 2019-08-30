@@ -2,18 +2,18 @@ package protocol
 
 import java.io.ObjectOutputStream
 
-import protocol.MessageTypes.{DataResponse, ErrorResponse, EventResponse}
+import protocol.MessageTypes.{DataResponse, EventResponse}
 
 private[protocol] class ServerOutputStream(out: ObjectOutputStream) {
 
   def sendData(message: Any): Unit = {
     out.writeObject(DataResponse)
-    out.writeObject(message)
+    out.writeObject(Right(message))
   }
 
   def sendError(message: String): Unit = {
-    out.writeObject(ErrorResponse)
-    out.writeObject(message)
+    out.writeObject(DataResponse)
+    out.writeObject(Left(message))
   }
 
   def sendEvent(message: Event): Unit = {

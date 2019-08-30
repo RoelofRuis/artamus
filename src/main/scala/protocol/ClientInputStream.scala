@@ -4,22 +4,17 @@ import java.io.ObjectInputStream
 
 import protocol.MessageTypes._
 
-import scala.util.Try
+import scala.util.{Failure, Success, Try}
 
 private[protocol] class ClientInputStream(in: ObjectInputStream, eventRegistry: ClientEventRegistry) {
 
   def expectResponseMessage[A]: Either[StreamException, A] = {
     readObject[ServerResponse]().toEither match {
       case Right(DataResponse) =>
-        readObject[A]().toEither match {
-          case Right(obj) => Right(obj)
-          case Left(ex) => Left(s"Unable to decode Data message. [$ex]")
-        }
-
-      case Right(ErrorResponse) =>
-        readObject[String]().toEither match {
-          case Right(serverError) => Left(s"Server Error: $serverError")
-          case Left(ex) => Left(s"Unable to decode Error message. [$ex]")
+        readObject[Either[String,A]]() match {
+          case Success(Right(obj)) => Right(obj)
+          case Success(Left(serverError)) => Left(s"Server Error: $serverError")
+          case Failure(ex) => Left(s"Unable to decode Data message. [$ex]")
         }
 
       case Right(EventResponse) =>
