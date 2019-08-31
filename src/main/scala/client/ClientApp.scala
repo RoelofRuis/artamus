@@ -1,11 +1,15 @@
 package client
 
+import client.midi.{MidiDevices, MyDevices, TransmittingDevice}
 import protocol.ClientInterface
 import protocol.ClientInterface.EventListener
 import server.api.Server.Disconnect
 import server.api.Track._
 
 object ClientApp extends App {
+
+  val device = MidiDevices.loadDevice(MyDevices.FocusriteUSBMIDI_OUT).get
+  val transmittingDevice = new TransmittingDevice(device)
 
   val client = protocol.createClient(9999)
 
@@ -18,8 +22,11 @@ object ClientApp extends App {
   writer.writeQuarterNote(64)
 
   client.subscribe(EventListener[TrackSymbolsUpdated.type] { _ =>
-     val notes = client.sendQuery(GetTrackMidiNotes)
-     println(s"Notes are now [$notes]")
+    val notes = client.sendQuery(GetTrackMidiNotes)
+    println(s"Received Track Notes [$notes]")
+    notes.foreach { notes =>
+      transmittingDevice.sendQuarterNotes(notes)
+    }
   })
 
   writer.writeQuarterNote(66)
@@ -28,6 +35,9 @@ object ClientApp extends App {
   client.sendControl(Disconnect(true))
 
   client.closeConnection()
+
+  transmittingDevice.close()
+  device.close()
 
 }
 
