@@ -1,7 +1,10 @@
 package server
 
+import com.google.inject.Provides
+import javax.inject.Singleton
 import net.codingwell.scalaguice.ScalaPrivateModule
 import protocol.ServerInterface
+import protocol.ServerInterface.EventBus
 import server.domain.TrackState
 import server.handler._
 
@@ -23,5 +26,8 @@ class ServerModule extends ScalaPrivateModule {
     bind[Bootstrapper].asEagerSingleton()
     expose[Bootstrapper]
   }
+
+  @Provides @Singleton
+  def eventBus(serverInterface: ServerInterface): EventBus = serverInterface.getEventBus
 
 }

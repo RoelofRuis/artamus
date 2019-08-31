@@ -9,6 +9,7 @@ private[protocol] class SingleConnectionServer private[protocol](port: Int) exte
 
   private lazy val server = new ServerSocket(port)
   private val eventRegistry = new ServerEventRegistry
+  private val eventBus = new ServerEventBus(eventRegistry)
 
   private var isServerRunning = true
   private var isConnectionOpen = false
@@ -39,7 +40,7 @@ private[protocol] class SingleConnectionServer private[protocol](port: Int) exte
     server.close()
   }
 
-  def publishEvent[A <: Event](event: A): Unit = eventRegistry.publish(event)
+  override def getEventBus: ServerEventBus = eventBus
 
   def closeActiveConnection(): Unit = isConnectionOpen = false
 

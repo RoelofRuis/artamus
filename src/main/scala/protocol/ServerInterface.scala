@@ -1,6 +1,6 @@
 package protocol
 
-import protocol.ServerInterface.ServerBindings
+import protocol.ServerInterface.{EventBus, ServerBindings}
 
 import scala.reflect.ClassTag
 
@@ -8,7 +8,7 @@ trait ServerInterface {
 
   def acceptConnections(bindings: ServerBindings): Unit
 
-  def publishEvent[A <: Event](event: A): Unit
+  def getEventBus: EventBus
 
   def closeActiveConnection(): Unit
 
@@ -17,6 +17,10 @@ trait ServerInterface {
 }
 
 object ServerInterface {
+
+  trait EventBus {
+    def publishEvent[A <: Event](event: A): Unit
+  }
 
   trait ControlDispatcher {
     def handle[C <: Control](control: C): Boolean

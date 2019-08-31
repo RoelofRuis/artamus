@@ -1,13 +1,13 @@
 package server.domain
 
 import javax.inject.Inject
-import protocol.ServerInterface
+import protocol.ServerInterface.EventBus
 import server.api.Track.TrackSymbolsUpdated
 import server.model.SymbolProperties.{MidiPitch, SymbolProperty}
 import server.model.Track
 import server.model.TrackProperties.TrackProperty
 
-class TrackState @Inject() (server: ServerInterface) {
+class TrackState @Inject() (eventBus: EventBus) {
 
   private val track = Track.empty
 
@@ -15,7 +15,7 @@ class TrackState @Inject() (server: ServerInterface) {
 
   def addTrackSymbol(symbolProperties: SymbolProperty*): Unit = {
     track.addTrackSymbol(symbolProperties: _*)
-    server.publishEvent(TrackSymbolsUpdated)
+    eventBus.publishEvent(TrackSymbolsUpdated)
   }
 
   def midiNoteList(): List[Int] = {
