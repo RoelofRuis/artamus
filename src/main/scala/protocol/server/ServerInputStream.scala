@@ -14,13 +14,21 @@ private[protocol] class ServerInputStream(in: ObjectInputStream) {
     readObject[ServerRequest]().toEither match {
         case Right(CommandRequest) =>
           readObject[Command]().toEither match {
-            case Right(command) => Right(bindings.commandHandler.handle(command))
+            case Right(command) =>
+              bindings.commandHandler.handle(command) match {
+                case Some(res) => Right(res)
+                case None => Left(s"No handler defined for command [$command]")
+              }
             case Left(ex) => Left(s"Unable to decode Command message. [$ex]")
           }
 
         case Right(ControlRequest) =>
           readObject[Control]().toEither match {
-            case Right(control) => Right(bindings.controlHandler.handle(control))
+            case Right(control) =>
+              bindings.controlHandler.handle(control) match {
+                case Some(res) => Right(res)
+                case None => Left(s"No handler defined for control [$control]")
+              }
             case Left(ex) => Left(s"Unable to decode control message. [$ex]")
           }
 

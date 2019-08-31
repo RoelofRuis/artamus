@@ -10,10 +10,10 @@ private[server] class CommandDispatcherImpl extends CommandDispatcher {
 
   private var handlers: CommandMap[CommandHandler] = new CommandMap[CommandHandler]()
 
-  override def handle[C <: Command : ClassTag](command: C): Boolean = {
+  override def handle[C <: Command : ClassTag](command: C): Option[Boolean] = {
     handlers
       .get[C](command)
-      .exists(handler => handler.f(command))
+      .map(handler => handler.f(command))
   }
 
   def subscribe[Cmd <: Command: ClassTag](h: CommandHandler[Cmd]): Unit = {

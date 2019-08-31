@@ -23,11 +23,11 @@ object ServerInterface {
   }
 
   trait ControlDispatcher {
-    def handle[C <: Control](control: C): Boolean
+    def handle[C <: Control](control: C): Option[Boolean]
   }
 
   trait CommandDispatcher {
-    def handle[C <: Command : ClassTag](command: C): Boolean
+    def handle[C <: Command : ClassTag](command: C): Option[Boolean]
   }
 
   trait QueryDispatcher {
