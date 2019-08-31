@@ -7,6 +7,7 @@ import protocol.ClientInterface.EventListener
 import protocol._
 
 import scala.reflect.ClassTag
+import scala.util.Try
 
 private[protocol] class DefaultClient private[protocol] (port: Int) extends ClientInterface {
 
@@ -15,23 +16,37 @@ private[protocol] class DefaultClient private[protocol] (port: Int) extends Clie
   private lazy val objectIn = new ObjectInputStream(socket.getInputStream)
   private val objectOut = new ObjectOutputStream(socket.getOutputStream)
 
-  private val in = new ClientInputStream(objectIn, eventRegistry)
+  private val in = new ClientInputStream(objectIn)
   private val out = new ClientOutputStream(objectOut)
 
   def sendControl[A <: Control](message: A): Option[Boolean] = {
     out.sendControl(message)
-    in.expectResponseMessage[Boolean].toOption
+    val (response, events) = in.expectResponseMessage[Boolean]
+
+    handleEvents(events)
+
+    response.toOption
   }
 
   def sendCommand[A <: Command](message: A): Option[Boolean] = {
     out.sendCommand(message)
-    in.expectResponseMessage[Boolean].toOption
+    val (response, events) = in.expectResponseMessage[Boolean]
+
+    handleEvents(events)
+
+    response.toOption
   }
 
   def sendQuery[A <: Query](message: A): Option[A#Res] = {
     out.sendQuery(message)
-    in.expectResponseMessage[A#Res].toOption
+    val (response, events) = in.expectResponseMessage[A#Res]
+
+    handleEvents(events)
+
+    response.toOption
   }
+
+  private def handleEvents(events: List[Try[Event]]): Unit = events.foreach(_.foreach(eventRegistry.publish))
 
   def subscribe[A <: Event: ClassTag](callback: EventListener[A]): Unit = eventRegistry.subscribe(callback)
 

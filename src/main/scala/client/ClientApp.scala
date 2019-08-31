@@ -18,8 +18,8 @@ object ClientApp extends App {
   writer.writeQuarterNote(64)
 
   client.subscribe(EventListener[TrackSymbolsUpdated.type] { _ =>
-    // val notes = client.sendQuery(GetTrackMidiNotes) TODO: Allow this call!
-    // println(s"Notes are now [$notes]")
+     val notes = client.sendQuery(GetTrackMidiNotes)
+     println(s"Notes are now [$notes]")
   })
 
   writer.writeQuarterNote(66)
