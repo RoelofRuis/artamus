@@ -18,4 +18,9 @@ class MidiMessageReader private[midi] (device: MidiDevice) extends BlockingQueue
 
   def read[L[_]](readMethod: BlockingQueueReadMethod[MidiMessage, L]): L[MidiMessage] = reader.read(readMethod)
 
+  override def close(): Unit = {
+    transmitter.close()
+    device.close()
+  }
+
 }

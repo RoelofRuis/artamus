@@ -2,6 +2,7 @@ package client
 
 import client.midi.MyDevices
 import client.midi.in.ReadMidiMessage
+import client.midi.util.BlockingReadList
 import javax.sound.midi.ShortMessage
 import protocol.ClientInterface.EventListener
 import server.api.Server.Disconnect
@@ -17,8 +18,6 @@ object ClientApp extends App {
 
     val writer = new MusicWriter(client)
 
-    client.subscribe(EventListener[TrackSymbolsUpdated.type](_ => println("TrackSymbols are updated")))
-
     writer.writeTimeSignature(4, 4)
     writer.writeKey(0)
 
@@ -33,6 +32,8 @@ object ClientApp extends App {
     midiReader.read(ReadMidiMessage.noteOn(4))
       .map { case msg: ShortMessage => msg.getData1 }
       .foreach { writer.writeQuarterNote }
+
+    midiReader.read(BlockingReadList.untilEnter)
 
     client.sendControl(Disconnect(true))
 
