@@ -6,7 +6,7 @@ import client.midi.util.BlockingQueueReader.BlockingQueueReadMethod
 
 import scala.language.higherKinds
 
-final class BlockingQueueReadWrite[A]() extends BlockingQueueReader[A] {
+final class TimedBlockingQueueReader[A]() extends BlockingQueueReader[A] {
 
   private var queue: Option[LinkedBlockingQueue[A]] = None
 
