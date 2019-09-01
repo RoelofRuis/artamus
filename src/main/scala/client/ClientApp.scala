@@ -1,15 +1,13 @@
 package client
 
-import client.midi.{MidiDevices, MyDevices, TransmittingDevice}
-import protocol.ClientInterface
+import client.midi.MyDevices
 import protocol.ClientInterface.EventListener
 import server.api.Server.Disconnect
 import server.api.Track._
 
 object ClientApp extends App {
 
-  val device = MidiDevices.loadDevice(MyDevices.FocusriteUSBMIDI_OUT).get
-  val transmittingDevice = new TransmittingDevice(device)
+  val transmittingDevice = midi.loadTransmitter(MyDevices.FocusriteUSBMIDI_OUT).get
 
   val client = protocol.createClient(9999)
 
@@ -37,16 +35,6 @@ object ClientApp extends App {
   client.closeConnection()
 
   transmittingDevice.close()
-  device.close()
 
 }
 
-class MusicWriter(client: ClientInterface) {
-
-  def writeTimeSignature(num: Int, denom: Int): Boolean = client.sendCommand(SetTimeSignature(num, denom)).getOrElse(false)
-
-  def writeQuarterNote(midiPitch: Int): Boolean = client.sendCommand(AddQuarterNote(midiPitch)).getOrElse(false)
-
-  def writeKey(key: Int): Boolean = client.sendCommand(SetKey(key)).getOrElse(false)
-
-}
