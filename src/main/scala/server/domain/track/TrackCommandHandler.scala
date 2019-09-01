@@ -1,10 +1,9 @@
 package server.domain.track
 
 import javax.inject.Inject
-import server.api.Track.{AddQuarterNote, SetKey, SetTimeSignature}
+import server.api.Track.{AddNote, SetKey, SetTimeSignature}
 import server.dispatchers.CommandDispatcherImpl
 import server.dispatchers.CommandDispatcherImpl.CommandHandler
-import server.math.Rational
 import server.model.SymbolProperties.{MidiPitch, NoteDuration, NotePosition}
 import server.model.TrackProperties.{Key, TimeSignature}
 
@@ -23,11 +22,11 @@ private[server] class TrackCommandHandler @Inject() (
     true
   })
 
-  dispatcher.subscribe(CommandHandler[AddQuarterNote] { command =>
+  dispatcher.subscribe(CommandHandler[AddNote] { command =>
     state.addTrackSymbol(
       MidiPitch(command.midiPitch),
-      NoteDuration(1, Rational(1, 4)),
-      NotePosition(0, Rational(1, 4))
+      NoteDuration(command.duration),
+      NotePosition(command.position)
     )
     true
   })

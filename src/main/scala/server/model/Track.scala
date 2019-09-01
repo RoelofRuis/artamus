@@ -5,7 +5,6 @@ import server.model.Track.TrackSymbol
 import server.model.TrackProperties.TrackProperty
 
 import scala.language.existentials
-import scala.reflect.ClassTag
 
 final class Track (
   var properties: Track.TrackProperties,
@@ -14,19 +13,7 @@ final class Track (
 
   private var symbolIndex: Long = 0
 
-  def getTrackProperties: Track.TrackProperties = properties
-
-  def getTrackProperty[A <: TrackProperty: ClassTag]: Option[A] = properties.collectFirst { case p: A => p }
-
-  def mapSymbolProperties[A <: SymbolProperty: ClassTag, B](f: A => B): Iterable[B] = {
-    symbols.flatMap(_.properties.collectFirst { case v: A => f(v) })
-  }
-
-  def mapSymbols[A](f: TrackSymbol => A): Iterable[A] = symbols.map(f(_))
-
   def flatMapSymbols[A](f: TrackSymbol => Option[A]): Iterable[A] = symbols.flatMap(f(_))
-
-  def numSymbols: Int = symbols.size
 
   def addTrackProperty(property: TrackProperty): Unit = properties :+= property
 
