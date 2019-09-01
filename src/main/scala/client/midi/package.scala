@@ -6,8 +6,11 @@ package object midi {
 
   type DeviceHash = String
 
-  def loadTransmitter(deviceHash: DeviceHash): Option[TransmittingDevice] =
-    loadDevice(deviceHash).map(new TransmittingDevice(_))
+  def loadPlaybackDevice(deviceHash: DeviceHash): Option[PlaybackDevice] =
+    loadDevice(deviceHash).map(new PlaybackDevice(_))
+
+  def loadRecordingDevice(deviceHash: DeviceHash): Option[RecordingDevice] =
+    loadDevice(deviceHash).map(new RecordingDevice(_))
 
   def loadDevice(deviceHash: DeviceHash): Option[MidiDevice] =
     allDescriptions

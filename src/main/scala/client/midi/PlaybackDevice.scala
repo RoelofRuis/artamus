@@ -2,12 +2,12 @@ package client.midi
 
 import javax.sound.midi._
 
-class TransmittingDevice private[midi] (val device: MidiDevice) {
+class PlaybackDevice private[midi] (val device: MidiDevice) {
 
   private val sequencer: Sequencer = MidiSystem.getSequencer(false)
   private val receiver: Receiver = device.getReceiver
 
-  private val TICKS_PER_QUARTER = 4
+  private val TICKS_PER_QUARTER = 4 // TODO: pull this out
 
   sequencer.open()
   sequencer.getTransmitter.setReceiver(receiver)
@@ -15,7 +15,7 @@ class TransmittingDevice private[midi] (val device: MidiDevice) {
   if (! device.isOpen) device.open()
 
   def sendQuarterNotes(notes: List[Int]): Unit = {
-    val sequence = new Sequence(Sequence.PPQ, TICKS_PER_QUARTER)
+    val sequence = new Sequence(Sequence.PPQ, TICKS_PER_QUARTER, 1)
 
     val midiTrack = sequence.createTrack()
 

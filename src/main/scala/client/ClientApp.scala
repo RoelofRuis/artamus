@@ -7,7 +7,7 @@ import server.api.Track._
 
 object ClientApp extends App {
 
-  val transmittingDevice = midi.loadTransmitter(MyDevices.FocusriteUSBMIDI_OUT).get
+  val transmittingDevice = midi.loadPlaybackDevice(MyDevices.FocusriteUSBMIDI_OUT).get
 
   protocol.createClient(9999).map { client =>
 
