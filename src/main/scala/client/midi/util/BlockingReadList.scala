@@ -1,6 +1,6 @@
-package client.util
+package client.midi.util
 
-import client.util.BlockingQueueReader.BlockingQueueReadMethod
+import client.midi.util.BlockingQueueReader.BlockingQueueReadMethod
 
 import scala.collection.JavaConverters._
 import scala.collection.mutable.ListBuffer

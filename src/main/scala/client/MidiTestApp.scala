@@ -1,8 +1,8 @@
 package client
 
 import client.midi.MyDevices
-import client.util.BlockingQueueReader.BlockingQueueReadMethod
-import client.util.BlockingReadList
+import client.midi.util.BlockingQueueReader.BlockingQueueReadMethod
+import client.midi.util.BlockingReadList
 import javax.sound.midi.{MidiMessage, ShortMessage}
 
 object MidiTestApp extends App {

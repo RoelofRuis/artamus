@@ -1,6 +1,6 @@
 package client.midi.in
 
-import client.util.BlockingQueueReadWrite
+import client.midi.util.BlockingQueueReadWrite
 import javax.sound.midi.{MidiMessage, Receiver}
 
 import scala.language.higherKinds

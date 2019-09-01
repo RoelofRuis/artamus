@@ -2,7 +2,7 @@ package client
 
 import client.midi.in.{MidiMessageReader, SequencerRecordingDevice}
 import client.midi.out.PlaybackDevice
-import client.util.BlockingQueueReader
+import client.midi.util.BlockingQueueReader
 import javax.sound.midi.{MidiDevice, MidiMessage, MidiSystem}
 
 package object midi {

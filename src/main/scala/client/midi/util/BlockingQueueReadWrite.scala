@@ -1,8 +1,8 @@
-package client.util
+package client.midi.util
 
 import java.util.concurrent.LinkedBlockingQueue
 
-import client.util.BlockingQueueReader.BlockingQueueReadMethod
+import client.midi.util.BlockingQueueReader.BlockingQueueReadMethod
 
 import scala.language.higherKinds
 
