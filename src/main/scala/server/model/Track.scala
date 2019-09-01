@@ -28,9 +28,9 @@ final class Track (
 
   def numSymbols: Int = symbols.size
 
-  def addTrackProperty(property: TrackProperty): Unit = properties +:= property
+  def addTrackProperty(property: TrackProperty): Unit = properties :+= property
 
-  def addTrackSymbol(symbolProperties: SymbolProperty*): Unit = symbols +:= nextTrackSymbol(symbolProperties: _*)
+  def addTrackSymbol(symbolProperties: SymbolProperty*): Unit = symbols :+= nextTrackSymbol(symbolProperties: _*)
 
   private def nextTrackSymbol(properties: SymbolProperty*): TrackSymbol = {
     symbolIndex += 1
