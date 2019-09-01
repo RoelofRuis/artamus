@@ -1,5 +1,7 @@
 package util.math
 
+import scala.annotation.tailrec
+
 case class Rational private (n: Int, d: Int) extends Ordered[Rational] {
   def *(a: Int): Rational = Rational.apply(a * n, d)
 
@@ -28,7 +30,10 @@ case class Rational private (n: Int, d: Int) extends Ordered[Rational] {
     else {
       val i = n / d
       val rest = if ((n - i) != 0) s"${n - (i * d)}/$d" else ""
-      if (i != 0) s"$i $rest" else s"$rest"
+      if (i != 0) {
+        if (rest.nonEmpty) s"$i $rest"
+        else s"$i"
+      } else s"$rest"
     }
   }
 
@@ -44,6 +49,7 @@ object Rational {
     }
   }
 
+  @tailrec
   private def gcd(x: Int, y:Int): Int = {
     if (x == 0) y
     else if (y == 0) x
