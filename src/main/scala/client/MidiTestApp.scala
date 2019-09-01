@@ -9,18 +9,14 @@ object MidiTestApp extends App {
 
   val reader = new BatchMidiMessageReader(device)
 
-  reader.startReading()
-  println("Reading, press <enter>")
-  System.in.read()
+  val messages = reader.readBatch { queue =>
+    Range(0, 4).map(_ => queue.take())
+  }
 
-  val messages = reader.stopReading()
-
-  println(messages)
+  messages.foreach(println)
 
   reader.close()
 
-
-
-
 }
+
 
