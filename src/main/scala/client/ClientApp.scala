@@ -9,6 +9,7 @@ import server.api.Track._
 
 object ClientApp extends App {
 
+  val formatter = midi.sequenceFormatter()
   val transmittingDevice = midi.loadPlaybackDevice(MyDevices.FocusriteUSBMIDI_OUT).get
   val midiReader = midi.loadReader(MyDevices.iRigUSBMIDI_IN).get
 
@@ -25,7 +26,7 @@ object ClientApp extends App {
       val notes = client.sendQuery(GetTrackMidiNotes)
       println(s"Received Track Notes [$notes]")
       notes.foreach { notes =>
-        transmittingDevice.sendQuarterNotes(notes)
+        transmittingDevice.playSequence(formatter.formatAsQuarterNotes(notes))
       }
     })
 

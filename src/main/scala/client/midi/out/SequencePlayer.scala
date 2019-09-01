@@ -2,7 +2,7 @@ package client.midi.out
 
 import javax.sound.midi._
 
-class PlaybackDevice private[midi] (val device: MidiDevice, resolution: Int) {
+class SequencePlayer private[midi] (val device: MidiDevice) {
 
   private val sequencer: Sequencer = MidiSystem.getSequencer(false)
   private val receiver: Receiver = device.getReceiver
@@ -12,18 +12,7 @@ class PlaybackDevice private[midi] (val device: MidiDevice, resolution: Int) {
 
   if (! device.isOpen) device.open()
 
-  def sendQuarterNotes(notes: List[Int]): Unit = {
-    val sequence = new Sequence(Sequence.PPQ, resolution, 1)
-
-    val midiTrack = sequence.createTrack()
-
-    notes
-      .zipWithIndex
-      .foreach { case (pitch, index) =>
-        midiTrack.add(new MidiEvent(new ShortMessage(ShortMessage.NOTE_ON, 0, pitch, 32), index * resolution))
-        midiTrack.add(new MidiEvent(new ShortMessage(ShortMessage.NOTE_OFF, 0, pitch, 0), (index + 1) * resolution))
-      }
-
+  def playSequence(sequence: Sequence): Unit = {
     sequencer.setSequence(sequence)
     sequencer.setTempoInBPM(120)
 
