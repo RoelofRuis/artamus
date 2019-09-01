@@ -1,16 +1,16 @@
 package client.util
 
-import java.util.concurrent.{BlockingQueue, LinkedBlockingQueue}
+import java.util.concurrent.LinkedBlockingQueue
 
-import client.util.BlockingReader.ReadMethod
+import client.util.BlockingQueueReader.BlockingQueueReadMethod
 
 import scala.language.higherKinds
 
-final class BlockingReader[A]() {
+final class BlockingQueueReadWrite[A]() extends BlockingQueueReader[A] {
 
   private var queue: Option[LinkedBlockingQueue[A]] = None
 
-  def read[L[_]](readMethod: ReadMethod[A, L]): L[A] = {
+  def read[L[_]](readMethod: BlockingQueueReadMethod[A, L]): L[A] = {
     val currentQueue = new LinkedBlockingQueue[A]()
     queue = Some(currentQueue)
     val result = readMethod(currentQueue)
@@ -21,10 +21,7 @@ final class BlockingReader[A]() {
   // TODO: investigate whether this is truly thread safe
   def write(elem: A): Unit = queue.map(_.offer(elem))
 
-}
-
-object BlockingReader {
-
-  type ReadMethod[A, L[_]] = BlockingQueue[A] => L[A]
+  override def close(): Unit = ()
 
 }
+

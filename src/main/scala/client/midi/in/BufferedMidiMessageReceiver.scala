@@ -1,11 +1,11 @@
-package client.midi
+package client.midi.in
 
-import client.util.BlockingReader
+import client.util.BlockingQueueReadWrite
 import javax.sound.midi.{MidiMessage, Receiver}
 
 import scala.language.higherKinds
 
-class BufferedMidiMessageReceiver(reader: BlockingReader[MidiMessage]) extends Receiver {
+class BufferedMidiMessageReceiver(reader: BlockingQueueReadWrite[MidiMessage]) extends Receiver {
 
   override def send(message: MidiMessage, timeStamp: Long): Unit = reader.write(message)
 

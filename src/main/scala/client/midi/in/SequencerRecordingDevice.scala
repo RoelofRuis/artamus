@@ -1,4 +1,4 @@
-package client.midi
+package client.midi.in
 
 import javax.sound.midi._
 
