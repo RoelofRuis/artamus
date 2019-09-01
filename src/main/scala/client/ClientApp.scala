@@ -1,6 +1,8 @@
 package client
 
 import client.midi.MyDevices
+import client.midi.in.ReadMidiMessage
+import javax.sound.midi.ShortMessage
 import protocol.ClientInterface.EventListener
 import server.api.Server.Disconnect
 import server.api.Track._
@@ -8,7 +10,7 @@ import server.api.Track._
 object ClientApp extends App {
 
   val transmittingDevice = midi.loadPlaybackDevice(MyDevices.FocusriteUSBMIDI_OUT).get
-  val recordingDevice = midi.loadRecordingDevice(MyDevices.iRigUSBMIDI_IN).get
+  val midiReader = midi.loadReader(MyDevices.iRigUSBMIDI_IN).get
 
   protocol.createClient(9999).map { client =>
 
@@ -18,7 +20,6 @@ object ClientApp extends App {
 
     writer.writeTimeSignature(4, 4)
     writer.writeKey(0)
-    writer.writeQuarterNote(64)
 
     client.subscribe(EventListener[TrackSymbolsUpdated.type] { _ =>
       val notes = client.sendQuery(GetTrackMidiNotes)
@@ -28,8 +29,9 @@ object ClientApp extends App {
       }
     })
 
-    writer.writeQuarterNote(66)
-    writer.writeQuarterNote(67)
+    midiReader.read(ReadMidiMessage.noteOn(4))
+      .map { case msg: ShortMessage => msg.getData1 }
+      .foreach { writer.writeQuarterNote }
 
     client.sendControl(Disconnect(true))
 
@@ -37,6 +39,7 @@ object ClientApp extends App {
 
   }
 
+  midiReader.close()
   transmittingDevice.close()
 
 }
