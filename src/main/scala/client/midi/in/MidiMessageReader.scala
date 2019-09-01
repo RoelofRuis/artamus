@@ -10,7 +10,7 @@ class MidiMessageReader private[midi] (device: MidiDevice) extends BlockingQueue
 
   private val transmitter = device.getTransmitter
   private val reader = new BlockingQueueReadWrite[MidiMessage]
-  private val receiver = new BufferedMidiMessageReceiver(reader)
+  private val receiver = new QueuedReceiver(reader)
 
   transmitter.setReceiver(receiver)
 
