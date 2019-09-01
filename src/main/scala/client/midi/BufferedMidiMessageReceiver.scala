@@ -9,12 +9,12 @@ class BufferedMidiMessageReceiver extends Receiver {
   private val messageBuffer: ListBuffer[MidiMessage] = ListBuffer[MidiMessage]()
   private var isListening = false
 
-  def startListening(): Unit = {
+  def startReading(): Unit = {
     messageBuffer.clear()
     isListening = true
   }
 
-  def stopListening(): List[MidiMessage] = {
+  def stopReading(): List[MidiMessage] = {
     isListening = false
     messageBuffer.toList
   }

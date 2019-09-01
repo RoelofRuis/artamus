@@ -1,26 +1,25 @@
 package client
 
-import client.midi.{BufferedMidiMessageReceiver, MyDevices}
+import client.midi.{BatchMidiMessageReader, MyDevices}
 import javax.sound.midi.MidiDevice
 
 object MidiTestApp extends App {
 
   val device: MidiDevice = midi.loadDevice(MyDevices.iRigUSBMIDI_IN).get
 
-  val transmitter = device.getTransmitter
-  val receiver = new BufferedMidiMessageReceiver
+  val reader = new BatchMidiMessageReader(device)
 
-  transmitter.setReceiver(receiver)
-
-  device.open()
-  receiver.startListening()
-
-  println("Listening, press any key")
+  reader.startReading()
+  println("Reading, press <enter>")
   System.in.read()
 
-  println(receiver.stopListening())
+  val messages = reader.stopReading()
 
-  device.close()
+  println(messages)
+
+  reader.close()
+
+
 
 
 }
