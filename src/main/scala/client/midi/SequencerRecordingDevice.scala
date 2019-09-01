@@ -2,7 +2,7 @@ package client.midi
 
 import javax.sound.midi._
 
-class RecordingDevice private[midi] (val device: MidiDevice, resolution: Int) {
+class SequencerRecordingDevice private[midi] (val device: MidiDevice, resolution: Int) {
 
   private val sequencer: Sequencer = MidiSystem.getSequencer(false)
   private val transmitter: Transmitter = device.getTransmitter

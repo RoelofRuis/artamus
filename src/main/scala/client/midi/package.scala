@@ -11,8 +11,8 @@ package object midi {
   def loadPlaybackDevice(deviceHash: DeviceHash): Option[PlaybackDevice] =
     loadDevice(deviceHash).map(new PlaybackDevice(_, TICKS_PER_QUARTER))
 
-  def loadRecordingDevice(deviceHash: DeviceHash): Option[RecordingDevice] =
-    loadDevice(deviceHash).map(new RecordingDevice(_, TICKS_PER_QUARTER))
+  def loadRecordingDevice(deviceHash: DeviceHash): Option[SequencerRecordingDevice] =
+    loadDevice(deviceHash).map(new SequencerRecordingDevice(_, TICKS_PER_QUARTER))
 
   def loadDevice(deviceHash: DeviceHash): Option[MidiDevice] =
     allDescriptions
