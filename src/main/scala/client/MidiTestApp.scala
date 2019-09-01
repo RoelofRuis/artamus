@@ -1,7 +1,8 @@
 package client
 
 import client.midi.{MidiMessageReader, MyDevices}
-import javax.sound.midi.MidiDevice
+import client.util.Read
+import javax.sound.midi.{MidiDevice, MidiMessage}
 
 object MidiTestApp extends App {
 
@@ -9,9 +10,7 @@ object MidiTestApp extends App {
 
   val reader = new MidiMessageReader(device)
 
-  val messages = reader.read { queue =>
-    Range(0, 4).map(_ => queue.take())
-  }
+  val messages: List[MidiMessage] = reader.read(Read.numElements(4))
 
   messages.foreach(println)
 
