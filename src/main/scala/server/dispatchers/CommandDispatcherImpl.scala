@@ -1,8 +1,8 @@
-package server.handler
+package server.dispatchers
 
 import protocol.Command
 import protocol.ServerInterface.CommandDispatcher
-import server.handler.CommandDispatcherImpl.CommandMap
+import server.dispatchers.CommandDispatcherImpl.{CommandHandler, CommandMap}
 
 import scala.reflect.{ClassTag, classTag}
 
@@ -23,6 +23,8 @@ private[server] class CommandDispatcherImpl extends CommandDispatcher {
 }
 
 object CommandDispatcherImpl {
+
+  final case class CommandHandler[C <: Command](f: C => Boolean)
 
   import scala.language.higherKinds
 

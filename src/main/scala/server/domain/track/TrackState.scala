@@ -1,4 +1,4 @@
-package server.domain
+package server.domain.track
 
 import javax.inject.Inject
 import protocol.ServerInterface.EventBus

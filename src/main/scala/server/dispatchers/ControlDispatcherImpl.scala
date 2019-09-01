@@ -1,4 +1,4 @@
-package server.handler
+package server.dispatchers
 
 import javax.inject.Inject
 import protocol.ServerInterface.ControlDispatcher

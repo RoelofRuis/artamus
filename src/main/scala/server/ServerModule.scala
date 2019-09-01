@@ -5,8 +5,8 @@ import javax.inject.Singleton
 import net.codingwell.scalaguice.ScalaPrivateModule
 import protocol.ServerInterface
 import protocol.ServerInterface.EventBus
-import server.domain.TrackState
-import server.handler._
+import server.dispatchers.{CommandDispatcherImpl, ControlDispatcherImpl, QueryDispatcherImpl}
+import server.domain.track.{TrackCommandHandler, TrackQueryHandler, TrackState}
 
 class ServerModule extends ScalaPrivateModule {
 

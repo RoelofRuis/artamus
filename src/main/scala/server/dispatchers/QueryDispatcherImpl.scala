@@ -1,8 +1,8 @@
-package server.handler
+package server.dispatchers
 
 import protocol.Query
 import protocol.ServerInterface.QueryDispatcher
-import server.handler.QueryDispatcherImpl.QueryMap
+import server.dispatchers.QueryDispatcherImpl.{QueryHandler, QueryMap}
 
 import scala.reflect.{ClassTag, classTag}
 
@@ -23,6 +23,8 @@ class QueryDispatcherImpl extends QueryDispatcher {
 }
 
 object QueryDispatcherImpl {
+
+  final case class QueryHandler[Q <: Query](f: Q => Q#Res)
 
   import scala.language.higherKinds
 

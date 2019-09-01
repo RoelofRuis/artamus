@@ -1,8 +1,9 @@
-package server.handler
+package server.domain.track
 
 import javax.inject.Inject
 import server.api.Track.{AddQuarterNote, SetKey, SetTimeSignature}
-import server.domain.TrackState
+import server.dispatchers.CommandDispatcherImpl
+import server.dispatchers.CommandDispatcherImpl.CommandHandler
 import server.math.Rational
 import server.model.SymbolProperties.{MidiPitch, NoteDuration, NotePosition}
 import server.model.TrackProperties.{Key, TimeSignature}

@@ -3,7 +3,7 @@ package server
 import javax.inject.Inject
 import protocol.ServerInterface
 import protocol.ServerInterface.ServerBindings
-import server.handler.{CommandDispatcherImpl, ControlDispatcherImpl, QueryDispatcherImpl}
+import server.dispatchers.{CommandDispatcherImpl, ControlDispatcherImpl, QueryDispatcherImpl}
 
 class Bootstrapper @Inject() (
   server: ServerInterface,
