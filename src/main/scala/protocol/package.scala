@@ -1,9 +1,11 @@
 import protocol.client.DefaultClient
 import protocol.server.SingleConnectionServer
 
+import scala.util.Try
+
 package object protocol {
 
-  def createClient(port: Int): ClientInterface = new DefaultClient(port)
+  def createClient(port: Int): Try[ClientInterface] = Try(new DefaultClient(port))
   def createServer(port: Int): ServerInterface = new SingleConnectionServer(port)
 
   trait Control

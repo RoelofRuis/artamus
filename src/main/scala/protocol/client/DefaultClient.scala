@@ -12,7 +12,9 @@ import scala.util.Try
 private[protocol] class DefaultClient private[protocol] (port: Int) extends ClientInterface {
 
   private val socket = new Socket(InetAddress.getByName("localhost"), port)
+
   private val eventRegistry = new ClientEventRegistry()
+
   private lazy val objectIn = new ObjectInputStream(socket.getInputStream)
   private val objectOut = new ObjectOutputStream(socket.getOutputStream)
 
@@ -46,6 +48,7 @@ private[protocol] class DefaultClient private[protocol] (port: Int) extends Clie
     response.toOption
   }
 
+  // TODO: improve error handling on Failure case
   private def handleEvents(events: List[Try[Event]]): Unit = events.foreach(_.foreach(eventRegistry.publish))
 
   def subscribe[A <: Event: ClassTag](callback: EventListener[A]): Unit = eventRegistry.subscribe(callback)

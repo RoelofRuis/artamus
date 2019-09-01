@@ -9,30 +9,32 @@ object ClientApp extends App {
 
   val transmittingDevice = midi.loadTransmitter(MyDevices.FocusriteUSBMIDI_OUT).get
 
-  val client = protocol.createClient(9999)
+  protocol.createClient(9999).map { client =>
 
-  val writer = new MusicWriter(client)
+    val writer = new MusicWriter(client)
 
-  client.subscribe(EventListener[TrackSymbolsUpdated.type](_ => println("TrackSymbols are updated")))
+    client.subscribe(EventListener[TrackSymbolsUpdated.type](_ => println("TrackSymbols are updated")))
 
-  writer.writeTimeSignature(4, 4)
-  writer.writeKey(0)
-  writer.writeQuarterNote(64)
+    writer.writeTimeSignature(4, 4)
+    writer.writeKey(0)
+    writer.writeQuarterNote(64)
 
-  client.subscribe(EventListener[TrackSymbolsUpdated.type] { _ =>
-    val notes = client.sendQuery(GetTrackMidiNotes)
-    println(s"Received Track Notes [$notes]")
-    notes.foreach { notes =>
-      transmittingDevice.sendQuarterNotes(notes)
-    }
-  })
+    client.subscribe(EventListener[TrackSymbolsUpdated.type] { _ =>
+      val notes = client.sendQuery(GetTrackMidiNotes)
+      println(s"Received Track Notes [$notes]")
+      notes.foreach { notes =>
+        transmittingDevice.sendQuarterNotes(notes)
+      }
+    })
 
-  writer.writeQuarterNote(66)
-  writer.writeQuarterNote(67)
+    writer.writeQuarterNote(66)
+    writer.writeQuarterNote(67)
 
-  client.sendControl(Disconnect(true))
+    client.sendControl(Disconnect(true))
 
-  client.closeConnection()
+    client.closeConnection()
+
+  }
 
   transmittingDevice.close()
 
