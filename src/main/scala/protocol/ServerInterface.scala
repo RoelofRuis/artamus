@@ -35,9 +35,9 @@ object ServerInterface {
   }
 
   final case class ServerBindings(
-    commandHandler: CommandDispatcher,
-    controlHandler: ControlDispatcher,
-    queryHandler: QueryDispatcher
+    commandDispatcher: CommandDispatcher,
+    controlDispatcher: ControlDispatcher,
+    queryDispatcher: QueryDispatcher
   )
 
 }

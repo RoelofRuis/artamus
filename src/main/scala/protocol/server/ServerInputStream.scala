@@ -15,7 +15,7 @@ private[protocol] class ServerInputStream(in: ObjectInputStream) {
         case Right(CommandRequest) =>
           readObject[Command]().toEither match {
             case Right(command) =>
-              bindings.commandHandler.handle(command) match {
+              bindings.commandDispatcher.handle(command) match {
                 case Some(res) => Right(res)
                 case None => Left(s"No handler defined for command [$command]")
               }
@@ -25,7 +25,7 @@ private[protocol] class ServerInputStream(in: ObjectInputStream) {
         case Right(ControlRequest) =>
           readObject[Control]().toEither match {
             case Right(control) =>
-              bindings.controlHandler.handle(control) match {
+              bindings.controlDispatcher.handle(control) match {
                 case Some(res) => Right(res)
                 case None => Left(s"No handler defined for control [$control]")
               }
@@ -35,7 +35,7 @@ private[protocol] class ServerInputStream(in: ObjectInputStream) {
         case Right(QueryRequest) =>
           readObject[Query]().toEither match {
             case Right(query) =>
-              bindings.queryHandler.handle(query) match {
+              bindings.queryDispatcher.handle(query) match {
                 case Some(res) => Right(res)
                 case None => Left(s"No handler defined for query [$query]")
               }
