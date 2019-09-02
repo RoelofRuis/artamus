@@ -4,6 +4,7 @@ import client.midi.MyDevices
 import client.midi.in.ReadMidiMessage
 import client.midi.util.BlockingReadList
 import javax.sound.midi.ShortMessage
+import music.TimeSignature
 import protocol.ClientInterface.EventListener
 import server.api.Server.Disconnect
 import server.api.Track._
@@ -18,7 +19,7 @@ object ClientApp extends App {
 
     val writer = new MusicWriter(client)
 
-    writer.writeTimeSignature(4, 4)
+    writer.writeTimeSignature(TimeSignature.`4/4`)
     writer.writeKey(0)
 
     client.subscribe(EventListener[TrackSymbolsUpdated.type] { _ =>

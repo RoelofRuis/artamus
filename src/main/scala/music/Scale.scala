@@ -1,8 +1,6 @@
 package music
 
-final case class Scale(steps: Seq[Int]) {
-  def reverse: Seq[Int] = steps.reverse
-}
+final case class Scale(steps: Seq[Int])
 
 object Scale {
 
@@ -17,7 +15,7 @@ object Scale {
       }
 
       if (pc.value >= 0) find(pc.value, scale.steps).map(Step)
-      else find(-pc.value, scale.reverse).map(steps => Step(numberOfSteps - steps))
+      else find(-pc.value, scale.steps.reverse).map(steps => Step(numberOfSteps - steps))
     }
 
     def stepToPitchClass(step: Step): PitchClass = {
@@ -27,7 +25,7 @@ object Scale {
       }
 
       if (step.value >= 0) PitchClass(loop(step.value, 0, scale.steps))
-      else PitchClass(-loop(Math.abs(step.value), 0, scale.reverse))
+      else PitchClass(-loop(Math.abs(step.value), 0, scale.steps.reverse))
     }
 
   }

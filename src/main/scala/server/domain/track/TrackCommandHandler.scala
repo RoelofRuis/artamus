@@ -5,7 +5,7 @@ import server.api.Track.{AddNote, SetKey, SetTimeSignature}
 import server.dispatchers.CommandDispatcherImpl
 import server.dispatchers.CommandDispatcherImpl.CommandHandler
 import server.model.SymbolProperties.{MidiPitch, NoteDuration, NotePosition}
-import server.model.TrackProperties.{Key, TimeSignature}
+import server.model.TrackProperties.{Key, TimeSignatureProp}
 
 private[server] class TrackCommandHandler @Inject() (
   dispatcher: CommandDispatcherImpl,
@@ -13,7 +13,7 @@ private[server] class TrackCommandHandler @Inject() (
 ) {
 
   dispatcher.subscribe(CommandHandler[SetTimeSignature]{ command =>
-    state.addTrackProperty(TimeSignature(command.num, command.denom))
+    state.addTrackProperty(TimeSignatureProp(command.t))
     true
   })
 
