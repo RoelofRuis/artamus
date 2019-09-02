@@ -1,7 +1,7 @@
 package server.domain.track
 
 import javax.inject.Inject
-import server.api.Track.GetTrackMidiNotes
+import Track.GetTrackMidiNotes
 import server.dispatchers.QueryDispatcherImpl
 import server.dispatchers.QueryDispatcherImpl.QueryHandler
 

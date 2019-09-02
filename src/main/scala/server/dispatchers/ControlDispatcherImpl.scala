@@ -3,7 +3,7 @@ package server.dispatchers
 import javax.inject.Inject
 import protocol.ServerInterface.ControlDispatcher
 import protocol.{Control, ServerInterface}
-import server.api.Server.Disconnect
+import server.control.Server.Disconnect
 
 private[server] class ControlDispatcherImpl @Inject() (server: ServerInterface) extends ControlDispatcher {
 

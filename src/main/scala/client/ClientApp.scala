@@ -6,8 +6,8 @@ import client.midi.util.BlockingReadList
 import javax.sound.midi.ShortMessage
 import music.{Key, TimeSignature}
 import protocol.ClientInterface.EventListener
-import server.api.Server.Disconnect
-import server.api.Track._
+import server.control.Disconnect
+import server.domain.track.{GetTrackMidiNotes, TrackSymbolsUpdated}
 
 object ClientApp extends App {
 

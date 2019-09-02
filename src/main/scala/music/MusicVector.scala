@@ -16,7 +16,7 @@ final case class MusicVector private(step: Step, acc: Accidental) extends Compar
 
 object MusicVector {
 
-  // TODO: check whether more checks might have to be done
+  // TODO: see whether more initialization checks might have to be done
   def apply(step: Int, acc: Int): MusicVector = MusicVector(Step(step), Accidental(acc))
 
   implicit class MusicVectorMath(vector: MusicVector)(implicit scale: ScaleMath) {

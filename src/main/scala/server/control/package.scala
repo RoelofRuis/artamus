@@ -1,8 +1,8 @@
-package server.api
+package server
 
 import protocol.Control
 
-object Server {
+package object control {
 
   case class Disconnect(shutdownServer: Boolean) extends Control
 
