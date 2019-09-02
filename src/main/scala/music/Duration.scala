@@ -10,6 +10,6 @@ final case class Duration(value: Rational) {
 
 object Duration {
 
-  val QUARTER_NOTE = Duration(Rational(1, 4))
+  val QUARTER = Duration(Rational(1, 4))
 
 }

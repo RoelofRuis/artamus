@@ -1,8 +1,7 @@
 package server.domain
 
-import music.{Duration, Key, MidiPitch, TimeSignature}
+import music._
 import protocol.{Command, Event, Query}
-import util.math.Rational
 
 package object track {
 
@@ -10,7 +9,7 @@ package object track {
   case class SetTimeSignature(t: TimeSignature) extends Command
   case class SetKey(k: Key) extends Command
 
-  case class AddNote(position: Rational, duration: Duration, midiPitch: MidiPitch) extends Command
+  case class AddNote(position: Position, duration: Duration, midiPitch: MidiPitch) extends Command
 
   // Events
   case object TrackSymbolsUpdated extends Event

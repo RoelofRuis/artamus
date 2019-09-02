@@ -1,9 +1,8 @@
 package client
 
-import music.{Duration, Key, MidiPitch, TimeSignature}
+import music._
 import protocol.ClientInterface
 import server.domain.track.{AddNote, SetKey, SetTimeSignature}
-import util.math.Rational
 
 /*
  * For now just an outline of what the higher level layer could look like
@@ -14,8 +13,8 @@ class MusicWriter(client: ClientInterface) {
 
   def writeQuarterNote(midiPitch: Int): Boolean = client.sendCommand(
     AddNote(
-      Rational(0),
-      Duration.QUARTER_NOTE,
+      Position.apply(Duration.QUARTER, 0),
+      Duration.QUARTER,
       MidiPitch.fromMidiPitchNumber(midiPitch)
     )).getOrElse(false)
 

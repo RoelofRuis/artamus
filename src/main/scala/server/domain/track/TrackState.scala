@@ -2,7 +2,6 @@ package server.domain.track
 
 import javax.inject.Inject
 import protocol.ServerInterface.EventBus
-import Track.TrackSymbolsUpdated
 import server.model.SymbolProperties.{MidiPitchProperty, SymbolProperty}
 import server.model.Track
 import server.model.TrackProperties.TrackProperty

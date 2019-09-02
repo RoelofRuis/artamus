@@ -12,7 +12,7 @@ import music.Scale.ScaleMath
   * Sharp Four: [[MusicVector(4, 1)]]
   * Flat Five: [[MusicVector(5, -1)]]
   */
-final case class MusicVector private(step: Step, acc: Accidental) extends Comparable[MusicVector] {
+final case class MusicVector private (step: Step, acc: Accidental) extends Comparable[MusicVector] {
 
   override def compareTo(other: MusicVector): Int = {
     val stepCompare = step.value.compare(other.step.value)
@@ -26,8 +26,7 @@ final case class MusicVector private(step: Step, acc: Accidental) extends Compar
 
 object MusicVector {
 
-  // TODO: see whether more initialization checks might have to be done
-  def apply(step: Int, acc: Int): MusicVector = MusicVector(Step(step), Accidental(acc))
+  lazy val zero = MusicVector(Step(0), Accidental(0))
 
   /** Allows several mathematical operations on MusicVectors when the scale to be used is in scope */
   implicit class MusicVectorMath(vector: MusicVector)(implicit scale: ScaleMath) {
