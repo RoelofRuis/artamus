@@ -4,6 +4,7 @@ import scala.annotation.tailrec
 
 case class Rational private (n: Int, d: Int) extends Ordered[Rational] {
   def *(a: Int): Rational = Rational.apply(a * n, d)
+  def *(that: Rational): Rational = Rational.apply(n * that.n, d * that.d)
 
   def /(a: Int): Rational = Rational.apply(n, d * a)
 
@@ -40,6 +41,8 @@ case class Rational private (n: Int, d: Int) extends Ordered[Rational] {
 }
 
 object Rational {
+
+  def apply(n: Int): Rational = Rational(n, 1)
 
   def apply(n: Int, d: Int): Rational = {
     if (n == 0) new Rational(0, 0)
