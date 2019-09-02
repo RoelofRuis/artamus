@@ -1,6 +1,6 @@
 package music
 
-case class Key private(v: MusicVector)
+final case class Key private(v: MusicVector)
 
 object Key {
 

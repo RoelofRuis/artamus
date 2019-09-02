@@ -2,6 +2,16 @@ package music
 
 import music.Scale.ScaleMath
 
+/**
+  * Data structure that is pointing (like a mathematical vector) to a note from a given scale step.
+  *
+  * In this way, a distinction can be made between for instance a sharp four and a flat five, while still resolving to
+  * the same midi pitch (or piano key)
+  *
+  * Example:
+  * Sharp Four: [[MusicVector(4, 1)]]
+  * Flat Five: [[MusicVector(5, -1)]]
+  */
 final case class MusicVector private(step: Step, acc: Accidental) extends Comparable[MusicVector] {
 
   override def compareTo(other: MusicVector): Int = {
@@ -19,6 +29,7 @@ object MusicVector {
   // TODO: see whether more initialization checks might have to be done
   def apply(step: Int, acc: Int): MusicVector = MusicVector(Step(step), Accidental(acc))
 
+  /** Allows several mathematical operations on MusicVectors when the scale to be used is in scope */
   implicit class MusicVectorMath(vector: MusicVector)(implicit scale: ScaleMath) {
 
     def +(other: MusicVector): MusicVector = {

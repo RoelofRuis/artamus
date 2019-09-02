@@ -1,6 +1,6 @@
 package music
 
-case class TimeSignature private(num: Int, denom: Int)
+final case class TimeSignature private (num: Int, denom: Int)
 
 object TimeSignature {
 

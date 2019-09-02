@@ -1,3 +1,3 @@
 package music
 
-case class PitchClass(value: Int) extends AnyVal
+final case class PitchClass(value: Int) extends AnyVal

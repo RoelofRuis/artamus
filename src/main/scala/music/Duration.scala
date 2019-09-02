@@ -2,7 +2,11 @@ package music
 
 import util.math.Rational
 
-case class Duration(value: Rational)
+final case class Duration(value: Rational) {
+
+  def dotted: Duration = Duration(value * Rational(3, 2))
+
+}
 
 object Duration {
 

@@ -1,3 +1,3 @@
 package music
 
-case class Octave(value: Int) extends AnyVal
+final case class Octave(value: Int) extends AnyVal

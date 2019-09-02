@@ -1,6 +1,6 @@
 package music
 
-case class MidiPitch private (pitchClass: PitchClass, octave: Octave) {
+final case class MidiPitch private (pitchClass: PitchClass, octave: Octave) {
   def toMidiPitchNumber: Int = ((octave.value + 1) * 12) + pitchClass.value
 }
 
