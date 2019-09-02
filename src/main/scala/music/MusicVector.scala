@@ -2,7 +2,7 @@ package music
 
 import music.Scale.ScaleMath
 
-final case class MusicVector(step: Step, acc: Accidental) extends Comparable[MusicVector] {
+final case class MusicVector private(step: Step, acc: Accidental) extends Comparable[MusicVector] {
 
   override def compareTo(other: MusicVector): Int = {
     val stepCompare = step.value.compare(other.step.value)
@@ -15,6 +15,9 @@ final case class MusicVector(step: Step, acc: Accidental) extends Comparable[Mus
 }
 
 object MusicVector {
+
+  // TODO: check whether more checks might have to be done
+  def apply(step: Int, acc: Int): MusicVector = MusicVector(Step(step), Accidental(acc))
 
   implicit class MusicVectorMath(vector: MusicVector)(implicit scale: ScaleMath) {
 

@@ -1,6 +1,6 @@
 package client
 
-import music.{Duration, TimeSignature}
+import music.{Duration, Key, TimeSignature}
 import protocol.ClientInterface
 import server.api.Track.{AddNote, SetKey, SetTimeSignature}
 
@@ -13,6 +13,6 @@ class MusicWriter(client: ClientInterface) {
 
   def writeQuarterNote(midiPitch: Int): Boolean = client.sendCommand(AddNote(Duration.QUARTER_NOTE * 0, Duration.QUARTER_NOTE, midiPitch)).getOrElse(false)
 
-  def writeKey(key: Int): Boolean = client.sendCommand(SetKey(key)).getOrElse(false)
+  def writeKey(key: Key): Boolean = client.sendCommand(SetKey(key)).getOrElse(false)
 
 }
