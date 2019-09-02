@@ -7,7 +7,9 @@ scalaVersion := "2.12.8"
 val scalaGuiceVersion = "4.2.2"
 val typesafeConfigVersion = "1.3.3"
 
-libraryDependencies += "net.codingwell" %% "scala-guice" % scalaGuiceVersion
+libraryDependencies += Seq(
+  "net.codingwell" %% "scala-guice" % scalaGuiceVersion
+)
 
 scalacOptions ++= Seq(
   "-encoding", "UTF-8",
@@ -16,7 +18,6 @@ scalacOptions ++= Seq(
   "-Ywarn-dead-code",
   "-feature",
   "-language:implicitConversions",
-
 )
 
 // Make sure (midi) libraries can get loaded in the correct way
