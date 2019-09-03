@@ -12,7 +12,10 @@ class TrackState @Inject() (eventBus: EventBus) {
 
   def addTrackProperty[A](a: A)(implicit ev: TrackProperty[A]): Unit = track.addProperty(a)
 
-  def addTrackSymbol[A](pos: Position, symbol: A)(implicit ev: TrackSymbol[A]): Unit = track.addSymbol(pos, symbol)
+  def addTrackSymbol[A](pos: Position, symbol: A)(implicit ev: TrackSymbol[A]): Unit = {
+    track.addSymbol(pos, symbol)
+    eventBus.publishEvent(TrackSymbolsUpdated)
+  }
 
   def getTrack: Track = track
 
