@@ -1,48 +1,36 @@
 package server.model
 
-import server.model.SymbolProperties.SymbolProperty
-import server.model.Track.TrackSymbol
-import server.model.TrackProperties.TrackProperty
+import music.Position
+import server.model.Track.{TrackProperty, TrackSymbol}
 
+import scala.collection.SortedMap
 import scala.language.existentials
 
-final class Track (
-  var properties: Track.TrackProperties,
-  var symbols: Seq[Track.TrackSymbol]
-) {
+// TODO: move to music?
+final class Track private () {
 
-  private var symbolIndex: Long = 0
+  private var symbols: SortedMap[Position, Map[TrackSymbol[_], Any]] = SortedMap[Position, Map[TrackSymbol[_], Any]]()
+  private var properties: Map[TrackProperty[_], Any] = Map[TrackProperty[_], Any]()
 
-  def flatMapSymbols[A](f: TrackSymbol => Option[A]): Iterable[A] = symbols.flatMap(f(_))
+  def addProperty[A](a: A)(implicit ev: TrackProperty[A]): Unit = properties = properties.updated(ev, a)
 
-  def addTrackProperty(property: TrackProperty): Unit = properties :+= property
+  def getProperty[A](implicit ev: TrackProperty[A]): Option[A] = properties.get(ev).map(_.asInstanceOf[A])
 
-  def addTrackSymbol(symbolProperties: SymbolProperty*): Unit = symbols :+= nextTrackSymbol(symbolProperties: _*)
+  def addSymbol[A](pos: Position, a: A)(implicit ev: TrackSymbol[A]): Unit = {
+    symbols = symbols.updated(pos, symbols.getOrElse(pos, Map[TrackSymbol[_], Any]()).updated(ev, a))
+  }
 
-  private def nextTrackSymbol(properties: SymbolProperty*): TrackSymbol = {
-    symbolIndex += 1
-    TrackSymbol(symbolIndex, properties)
+  def getSymbols[A](implicit ev: TrackSymbol[A]): Iterable[A] = {
+    symbols.values.map(_.get(ev)).collect { case Some(s) => s.asInstanceOf[A] }
   }
 
 }
 
 object Track {
 
-  type SymbolID = Long
+  def apply(): Track = new Track()
 
-  type TrackProperties = Seq[A forSome { type A <: TrackProperty }]
-  type SymbolProperties = Seq[A forSome{ type A <: SymbolProperty }]
-
-  final case class TrackSymbol private (
-    id: SymbolID,
-    properties: SymbolProperties
-  ) {
-    def collectFirst[A <: SymbolProperty](): Option[A] = {
-      // TODO: make this typesafe somehow!
-      properties.collectFirst { case x: A => x }
-    }
-  }
-
-  def empty = new Track(Seq(), Seq())
+  trait TrackProperty[A]
+  trait TrackSymbol[A]
 
 }

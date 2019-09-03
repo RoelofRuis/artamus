@@ -1,12 +1,11 @@
 package server.model
 
 import music.{Key, TimeSignature}
+import server.model.Track.TrackProperty
 
 object TrackProperties {
-  sealed trait TrackProperty
 
-  // TODO: make it so that objects can be a type of `TrackProperty`
-  case class TimeSignatureProp(t: TimeSignature) extends TrackProperty
-  case class KeyProp(key: Key) extends TrackProperty
+  implicit object TimeSignatureProperty extends TrackProperty[TimeSignature]
+  implicit object KeyProperty extends TrackProperty[Key]
 
 }
