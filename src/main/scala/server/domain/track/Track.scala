@@ -1,8 +1,8 @@
 package server.domain.track
 
 import music.Position
-import server.domain.track.Track.{TrackProperty, TrackSymbol}
-import server.domain.util.{MultiPropertyMap, SinglePropertyMap}
+import server.domain.track.Track.TrackSymbol
+import server.domain.util.MultiPropertyMap
 
 import scala.collection.SortedMap
 import scala.language.existentials
@@ -12,11 +12,12 @@ final class Track private () {
 
   private var symbols: SortedMap[Position, MultiPropertyMap[TrackSymbol]] = SortedMap[Position, MultiPropertyMap[TrackSymbol]]()
 
-  private var properties: SinglePropertyMap[TrackProperty] = SinglePropertyMap[TrackProperty]()
-
-  def addProperty[A](a: A)(implicit ev: TrackProperty[A]): Unit = properties = properties.add(a)
-
-  def getProperty[A](implicit ev: TrackProperty[A]): Option[A] = properties.get(ev)
+  def setSymbol[A](pos: Position, a: A)(implicit ev: TrackSymbol[A]): Unit = {
+    symbols = symbols.updated(
+      pos,
+      symbols.getOrElse(pos, MultiPropertyMap[TrackSymbol]()).set(a)
+    )
+  }
 
   def addSymbol[A](pos: Position, a: A)(implicit ev: TrackSymbol[A]): Unit = {
     symbols = symbols.updated(
@@ -29,13 +30,10 @@ final class Track private () {
 
 }
 
-
-
 object Track {
 
   def apply(): Track = new Track()
 
-  trait TrackProperty[A]
   trait TrackSymbol[A]
 
 }

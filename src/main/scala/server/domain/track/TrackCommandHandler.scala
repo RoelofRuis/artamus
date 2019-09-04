@@ -1,6 +1,7 @@
 package server.domain.track
 
 import javax.inject.Inject
+import music.{Duration, Position}
 import protocol.{Command, Dispatcher}
 
 private[server] class TrackCommandHandler @Inject() (
@@ -8,16 +9,15 @@ private[server] class TrackCommandHandler @Inject() (
   state: TrackState
 ) {
 
-  import TrackProperties._
   import TrackSymbols._
 
   dispatcher.subscribe[SetTimeSignature]{ command =>
-    state.addTrackProperty(command.t)
+    state.setTrackSymbol(Position(Duration.QUARTER, 0), command.t) // TODO: move explicit position away from here
     true
   }
 
   dispatcher.subscribe[SetKey] { command =>
-    state.addTrackProperty(command.k)
+    state.setTrackSymbol(Position(Duration.QUARTER, 0), command.k) // TODO: move explicit position away from here
     true
   }
 

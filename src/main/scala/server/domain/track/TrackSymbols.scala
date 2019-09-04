@@ -1,10 +1,13 @@
 package server.domain.track
 
-import music.Note
+import music.{Key, Note, TimeSignature}
 import server.domain.track.Track.TrackSymbol
 
 object TrackSymbols {
 
-  implicit object NoteProperty extends TrackSymbol[Note] // TODO: Move 'Note' concept to music
+  implicit object TimeSignatureSymbol extends TrackSymbol[TimeSignature]
+  implicit object KeySymbol extends TrackSymbol[Key]
+
+  implicit object NoteSymbol extends TrackSymbol[Note]
 
 }
