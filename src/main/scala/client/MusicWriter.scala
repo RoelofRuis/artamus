@@ -1,7 +1,7 @@
 package client
 
 import music._
-import protocol.ClientInterface
+import protocol.client.ClientInterface
 import server.domain.track.{AddNote, SetKey, SetTimeSignature}
 
 /*

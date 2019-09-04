@@ -1,8 +1,7 @@
 package server.domain.track
 
 import javax.inject.Inject
-import protocol.Command
-import protocol.ServerInterface.Dispatcher
+import protocol.{Command, Dispatcher}
 
 private[server] class TrackCommandHandler @Inject() (
   dispatcher: Dispatcher[Command],

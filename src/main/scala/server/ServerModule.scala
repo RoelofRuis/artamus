@@ -1,12 +1,12 @@
 package server
 
+import _root_.server.control.ControlHandler
+import _root_.server.domain.track.{TrackCommandHandler, TrackQueryHandler, TrackState}
 import com.google.inject.Provides
 import javax.inject.Singleton
 import net.codingwell.scalaguice.ScalaPrivateModule
-import protocol.ServerInterface.{Dispatcher, EventBus}
-import protocol.{Command, Control, Query, ServerInterface}
-import server.control.ControlHandler
-import server.domain.track.{TrackCommandHandler, TrackQueryHandler, TrackState}
+import protocol._
+import protocol.server.{EventBus, ServerInterface}
 
 class ServerModule extends ScalaPrivateModule {
 

@@ -2,8 +2,7 @@ package server.domain.track
 
 import javax.inject.Inject
 import music.Note
-import protocol.Query
-import protocol.ServerInterface.Dispatcher
+import protocol.{Dispatcher, Query}
 
 private[server] class TrackQueryHandler @Inject() (
   dispatcher: Dispatcher[Query],

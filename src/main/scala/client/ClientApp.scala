@@ -5,7 +5,6 @@ import client.midi.in.ReadMidiMessage
 import client.midi.util.BlockingReadList
 import javax.sound.midi.ShortMessage
 import music.{Key, TimeSignature}
-import protocol.ClientInterface.EventListener
 import server.control.Disconnect
 import server.domain.track.{GetTrackMidiNotes, TrackSymbolsUpdated}
 
@@ -22,13 +21,13 @@ object ClientApp extends App {
     writer.writeTimeSignature(TimeSignature.`4/4`)
     writer.writeKey(Key.`C-Major`)
 
-    client.subscribe(EventListener[TrackSymbolsUpdated.type] { _ =>
+    client.subscribe[TrackSymbolsUpdated.type] { _ =>
       val notes = client.sendQuery(GetTrackMidiNotes)
       println(s"Received Track Notes [$notes]")
       notes.foreach { notes =>
         transmittingDevice.playSequence(formatter.formatAsQuarterNotes(notes))
       }
-    })
+    }
 
     midiReader.read(ReadMidiMessage.noteOn(4))
       .map { case msg: ShortMessage => msg.getData1 }

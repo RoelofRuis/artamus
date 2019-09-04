@@ -4,7 +4,6 @@ import java.io.{ObjectInputStream, ObjectOutputStream}
 import java.net.Socket
 
 import protocol.Event
-import protocol.ServerInterface.ServerBindings
 
 private[protocol] class ServerConnection (socket: Socket) {
 

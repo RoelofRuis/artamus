@@ -1,7 +1,8 @@
-import protocol.ServerInterface.Dispatcher
-import protocol.client.DefaultClient
-import protocol.server.{SimpleDispatcher, SingleConnectionServer}
+import protocol.client.{ClientInterface, DefaultClient}
+import protocol.server.{ServerInterface, SingleConnectionServer}
 
+import scala.language.reflectiveCalls
+import scala.reflect.ClassTag
 import scala.util.Try
 
 package object protocol {
@@ -9,7 +10,8 @@ package object protocol {
   def createClient(port: Int): Try[ClientInterface] = Try(new DefaultClient(port))
 
   def createServer(port: Int): ServerInterface = new SingleConnectionServer(port)
-  def createDispatcher[A <: { type Res }](): Dispatcher[A] = new SimpleDispatcher[A]
+
+  def createDispatcher[A <: { type Res }](): Dispatcher[A] = new Dispatchers.SimpleDispatcher[A]
 
   trait Control { final type Res = Boolean }
 
@@ -17,7 +19,17 @@ package object protocol {
 
   trait Query { type Res }
 
-  trait Event
+  trait Event { type Res = Unit }
+
+  trait Dispatcher[A <: { type Res }] {
+
+    def handle[B <: A : ClassTag](msg: B): Option[B#Res]
+
+    def subscribe[B <: A : ClassTag](f: B => B#Res): Unit
+
+    def getSubscriptions: List[String]
+
+  }
 
   private[protocol] object MessageTypes {
 

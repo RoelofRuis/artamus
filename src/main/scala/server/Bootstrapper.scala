@@ -1,8 +1,8 @@
 package server
 
 import javax.inject.Inject
-import protocol.ServerInterface.{Dispatcher, ServerBindings}
-import protocol.{Command, Control, Query, ServerInterface}
+import protocol._
+import protocol.server.{ServerBindings, ServerInterface}
 
 class Bootstrapper @Inject() (
   server: ServerInterface,

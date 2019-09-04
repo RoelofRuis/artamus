@@ -2,9 +2,6 @@ package protocol.server
 
 import java.net.{ServerSocket, SocketException}
 
-import protocol.ServerInterface.ServerBindings
-import protocol._
-
 private[protocol] class SingleConnectionServer private[protocol](port: Int) extends ServerInterface {
 
   private lazy val server = new ServerSocket(port)

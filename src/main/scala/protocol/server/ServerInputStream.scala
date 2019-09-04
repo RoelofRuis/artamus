@@ -3,7 +3,6 @@ package protocol.server
 import java.io.ObjectInputStream
 
 import protocol.MessageTypes._
-import protocol.ServerInterface.ServerBindings
 import protocol.{Command, Control, Query}
 
 import scala.util.Try

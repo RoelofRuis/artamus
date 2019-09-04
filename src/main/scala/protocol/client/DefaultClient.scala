@@ -4,7 +4,6 @@ import java.io.{ObjectInputStream, ObjectOutputStream}
 import java.net.{InetAddress, Socket}
 
 import com.typesafe.scalalogging.LazyLogging
-import protocol.ClientInterface.EventListener
 import protocol._
 
 import scala.reflect.ClassTag
@@ -14,7 +13,7 @@ private[protocol] class DefaultClient private[protocol] (port: Int) extends Clie
 
   private val socket = new Socket(InetAddress.getByName("localhost"), port)
 
-  private val eventRegistry = new ClientEventRegistry()
+  private val eventDispatcher = protocol.createDispatcher[Event]() // TODO: maybe pull out and pass via constructor?
 
   private lazy val objectIn = new ObjectInputStream(socket.getInputStream)
   private val objectOut = new ObjectOutputStream(socket.getOutputStream)
@@ -56,9 +55,9 @@ private[protocol] class DefaultClient private[protocol] (port: Int) extends Clie
   }
 
   // TODO: improve error handling on Failure case
-  private def handleEvents(events: List[Try[Event]]): Unit = events.foreach(_.foreach(eventRegistry.publish))
+  private def handleEvents(events: List[Try[Event]]): Unit = events.foreach(_.foreach(eventDispatcher.handle))
 
-  def subscribe[A <: Event: ClassTag](callback: EventListener[A]): Unit = eventRegistry.subscribe(callback)
+  def subscribe[A <: Event: ClassTag](callback: A => A#Res): Unit = eventDispatcher.subscribe[A](callback)
 
   def closeConnection(): Unit = {
     objectOut.close()
