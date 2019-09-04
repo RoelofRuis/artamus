@@ -1,7 +1,7 @@
-package server.model
+package server.domain.track
 
 import music.{Duration, MidiPitch}
-import server.model.Track.TrackSymbol
+import server.domain.track.Track.TrackSymbol
 
 object TrackSymbols {
 

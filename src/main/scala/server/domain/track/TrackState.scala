@@ -3,8 +3,7 @@ package server.domain.track
 import javax.inject.Inject
 import music.Position
 import protocol.ServerInterface.EventBus
-import server.model.Track
-import server.model.Track.{TrackProperty, TrackSymbol}
+import server.domain.track.Track.{TrackProperty, TrackSymbol}
 
 class TrackState @Inject() (eventBus: EventBus) {
 

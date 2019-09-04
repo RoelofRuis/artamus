@@ -1,7 +1,7 @@
-package server.model
+package server.domain.track
 
 import music.{Key, TimeSignature}
-import server.model.Track.TrackProperty
+import server.domain.track.Track.TrackProperty
 
 object TrackProperties {
 

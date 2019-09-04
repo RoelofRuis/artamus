@@ -9,8 +9,8 @@ private[server] class TrackCommandHandler @Inject() (
   state: TrackState
 ) {
 
-  import server.model.TrackProperties._
-  import server.model.TrackSymbols._
+  import TrackProperties._
+  import TrackSymbols._
 
   dispatcher.subscribe[SetTimeSignature]{ command =>
     state.addTrackProperty(command.t)

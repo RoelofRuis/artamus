@@ -10,7 +10,7 @@ private[server] class TrackQueryHandler @Inject() (
   state: TrackState
 ) {
 
-  import server.model.TrackSymbols._
+  import TrackSymbols._
 
   dispatcher.subscribe[GetTrackMidiNotes.type]{ _ =>
     state.getTrack.getSymbols[(Duration, MidiPitch)]

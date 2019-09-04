@@ -1,7 +1,7 @@
-package server.model
+package server.domain.track
 
 import music.Position
-import server.model.Track.{TrackProperty, TrackSymbol}
+import server.domain.track.Track.{TrackProperty, TrackSymbol}
 
 import scala.collection.SortedMap
 import scala.language.existentials
