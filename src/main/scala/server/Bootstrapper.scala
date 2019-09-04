@@ -1,15 +1,14 @@
 package server
 
 import javax.inject.Inject
-import protocol.ServerInterface
-import protocol.ServerInterface.ServerBindings
-import server.dispatchers.{CommandDispatcherImpl, ControlDispatcherImpl, QueryDispatcherImpl}
+import protocol.ServerInterface.{Dispatcher, ServerBindings}
+import protocol.{Command, Control, Query, ServerInterface}
 
 class Bootstrapper @Inject() (
   server: ServerInterface,
-  commandDispatcher: CommandDispatcherImpl,
-  controlDispatcher: ControlDispatcherImpl,
-  queryDispatcher: QueryDispatcherImpl,
+  commandDispatcher: Dispatcher[Command],
+  controlDispatcher: Dispatcher[Control],
+  queryDispatcher: Dispatcher[Query],
 ) extends App {
 
   def run(): Unit = {

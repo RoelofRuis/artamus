@@ -18,26 +18,24 @@ trait ServerInterface {
 
 object ServerInterface {
 
+  trait Dispatcher[A <: { type Res }] {
+
+    def handle[B <: A : ClassTag](msg: B): Option[B#Res]
+
+    def subscribe[B <: A : ClassTag](f: B => B#Res): Unit
+
+    def getSubscriptions: List[String]
+
+  }
+
   trait EventBus {
     def publishEvent[A <: Event](event: A): Unit
   }
 
-  trait ControlDispatcher {
-    def handle[C <: Control](control: C): Option[Boolean]
-  }
-
-  trait CommandDispatcher {
-    def handle[C <: Command : ClassTag](command: C): Option[Boolean]
-  }
-
-  trait QueryDispatcher {
-    def handle[Q <: Query : ClassTag](query: Q): Option[Q#Res]
-  }
-
   final case class ServerBindings(
-    commandDispatcher: CommandDispatcher,
-    controlDispatcher: ControlDispatcher,
-    queryDispatcher: QueryDispatcher
+    commandDispatcher: Dispatcher[Command],
+    controlDispatcher: Dispatcher[Control],
+    queryDispatcher: Dispatcher[Query]
   )
 
 }

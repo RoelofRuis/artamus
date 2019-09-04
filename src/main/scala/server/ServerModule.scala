@@ -3,9 +3,9 @@ package server
 import com.google.inject.Provides
 import javax.inject.Singleton
 import net.codingwell.scalaguice.ScalaPrivateModule
-import protocol.ServerInterface
-import protocol.ServerInterface.EventBus
-import server.dispatchers.{CommandDispatcherImpl, ControlDispatcherImpl, QueryDispatcherImpl}
+import protocol.ServerInterface.{Dispatcher, EventBus}
+import protocol.{Command, Control, Query, ServerInterface}
+import server.control.ControlHandler
 import server.domain.track.{TrackCommandHandler, TrackQueryHandler, TrackState}
 
 class ServerModule extends ScalaPrivateModule {
@@ -13,12 +13,13 @@ class ServerModule extends ScalaPrivateModule {
   override def configure(): Unit = {
     bind[ServerInterface].toInstance(protocol.createServer(9999))
 
-    bind[ControlDispatcherImpl].asEagerSingleton()
+    bind[Dispatcher[Control]].toInstance(protocol.createDispatcher[Control]())
+    bind[ControlHandler].asEagerSingleton()
 
-    bind[CommandDispatcherImpl].asEagerSingleton()
+    bind[Dispatcher[Command]].toInstance(protocol.createDispatcher[Command]())
     bind[TrackCommandHandler].asEagerSingleton()
 
-    bind[QueryDispatcherImpl].asEagerSingleton()
+    bind[Dispatcher[Query]].toInstance(protocol.createDispatcher[Query]())
     bind[TrackQueryHandler].asEagerSingleton()
 
     bind[TrackState].asEagerSingleton()
