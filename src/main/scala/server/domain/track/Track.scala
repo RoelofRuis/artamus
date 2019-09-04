@@ -2,6 +2,7 @@ package server.domain.track
 
 import music.Position
 import server.domain.track.Track.{TrackProperty, TrackSymbol}
+import server.domain.util.{MultiPropertyMap, SinglePropertyMap}
 
 import scala.collection.SortedMap
 import scala.language.existentials
@@ -9,18 +10,18 @@ import scala.language.existentials
 // TODO: move to music?
 final class Track private () {
 
-  private var symbols: SortedMap[Position, PropertyMap[TrackSymbol]] = SortedMap[Position, PropertyMap[TrackSymbol]]()
+  private var symbols: SortedMap[Position, MultiPropertyMap[TrackSymbol]] = SortedMap[Position, MultiPropertyMap[TrackSymbol]]()
 
-  private var properties: PropertyMap[TrackProperty] = PropertyMap[TrackProperty]()
+  private var properties: SinglePropertyMap[TrackProperty] = SinglePropertyMap[TrackProperty]()
 
   def addProperty[A](a: A)(implicit ev: TrackProperty[A]): Unit = properties = properties.add(a)
 
-  def getProperty[A](implicit ev: TrackProperty[A]): Option[A] = properties.get(ev).headOption
+  def getProperty[A](implicit ev: TrackProperty[A]): Option[A] = properties.get(ev)
 
   def addSymbol[A](pos: Position, a: A)(implicit ev: TrackSymbol[A]): Unit = {
     symbols = symbols.updated(
       pos,
-      symbols.getOrElse(pos, PropertyMap[TrackSymbol]()).add(a)
+      symbols.getOrElse(pos, MultiPropertyMap[TrackSymbol]()).add(a)
     )
   }
 
@@ -28,15 +29,7 @@ final class Track private () {
 
 }
 
-import scala.language.higherKinds
 
-case class PropertyMap[V[_]](map: Map[V[_], List[Any]] = Map[V[_], List[Any]]()) {
-
-  def add[A](a: A)(implicit ev: V[A]): PropertyMap[V] = PropertyMap[V](map.updated(ev, map.getOrElse(ev, List()) :+ a))
-
-  def get[A](implicit ev: V[A]): List[A] = map.getOrElse(ev, List()).map(_.asInstanceOf[A])
-
-}
 
 object Track {
 
