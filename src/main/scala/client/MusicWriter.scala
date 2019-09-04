@@ -14,8 +14,7 @@ class MusicWriter(client: ClientInterface) {
   def writeQuarterNote(midiPitch: Int): Boolean = client.sendCommand(
     AddNote(
       Position.apply(Duration.QUARTER, 0),
-      Duration.QUARTER,
-      MidiPitch.fromMidiPitchNumber(midiPitch)
+      Note(Duration.QUARTER, MidiPitch.fromMidiPitchNumber(midiPitch))
     )).getOrElse(false)
 
   def writeKey(key: Key): Boolean = client.sendCommand(SetKey(key)).getOrElse(false)

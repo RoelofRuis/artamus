@@ -25,7 +25,7 @@ private[server] class TrackCommandHandler @Inject() (
   dispatcher.subscribe[AddNote] { command =>
     state.addTrackSymbol(
       command.position,
-      (command.duration, command.midiPitch)
+      command.note
     )
     true
   }
