@@ -1,4 +1,4 @@
-package client
+package client.components
 
 import music._
 import protocol.client.ClientInterface

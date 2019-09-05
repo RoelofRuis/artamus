@@ -1,5 +1,6 @@
 package client
 
+import client.components.MusicWriter
 import client.midi.MyDevices
 import client.midi.in.ReadMidiMessage
 import client.midi.util.BlockingReadList

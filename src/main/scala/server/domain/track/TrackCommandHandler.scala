@@ -12,12 +12,14 @@ private[server] class TrackCommandHandler @Inject() (
   import TrackSymbols._
 
   dispatcher.subscribe[SetTimeSignature]{ command =>
-    state.setTrackSymbol(Position(Duration.QUARTER, 0), command.t) // TODO: move explicit position away from here
+    // TODO: move explicit position away from here
+    state.setTrackSymbol(Position(Duration.QUARTER, 0), command.t)
     true
   }
 
   dispatcher.subscribe[SetKey] { command =>
-    state.setTrackSymbol(Position(Duration.QUARTER, 0), command.k) // TODO: move explicit position away from here
+    // TODO: move explicit position away from here
+    state.setTrackSymbol(Position(Duration.QUARTER, 0), command.k)
     true
   }
 
