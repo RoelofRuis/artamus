@@ -3,11 +3,10 @@ import protocol.server.{ServerInterface, SingleConnectionServer}
 
 import scala.language.reflectiveCalls
 import scala.reflect.ClassTag
-import scala.util.Try
 
 package object protocol {
 
-  def createClient(port: Int): Try[ClientInterface] = Try(new DefaultClient(port))
+  def createClient(port: Int): ClientInterface = new DefaultClient(port)
 
   def createServer(port: Int): ServerInterface = new SingleConnectionServer(port)
 

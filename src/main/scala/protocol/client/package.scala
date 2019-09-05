@@ -1,24 +1,25 @@
 package protocol
 
-import scala.reflect.ClassTag
-
 package object client {
 
   trait ClientInterface {
 
-    // TODO: Maybe move these 3 to control bus?
-    def sendControl[A <: Control](message: A): Option[Boolean]
+    def open(bindings: ClientBindings): MessageBus
 
-    def sendCommand[A <: Command](message: A): Option[Boolean]
-
-    def sendQuery[A <: Query](message: A): Option[A#Res]
-
-
-    // TODO: Maybe move this to initialization
-    def subscribe[A <: Event: ClassTag](callback: A => A#Res): Unit
-
-    def closeConnection(): Unit
+    def close(): Unit
 
   }
+
+  trait MessageBus {
+    def sendControl[A <: Control](message: A): Option[Control#Res]
+
+    def sendCommand[A <: Command](message: A): Option[Command#Res]
+
+    def sendQuery[A <: Query](message: A): Option[A#Res]
+  }
+
+  final case class ClientBindings(
+    eventDispatcher: Dispatcher[Event]
+  )
 
 }

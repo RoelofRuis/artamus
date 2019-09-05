@@ -9,7 +9,7 @@ class Bootstrapper @Inject() (
   commandDispatcher: Dispatcher[Command],
   controlDispatcher: Dispatcher[Control],
   queryDispatcher: Dispatcher[Query],
-) extends App {
+) {
 
   def run(): Unit = {
     val serverThread = new Thread(() =>
