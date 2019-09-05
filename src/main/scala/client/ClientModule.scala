@@ -22,8 +22,8 @@ class ClientModule extends ScalaPrivateModule {
     bind[Dispatcher[Event]].toInstance(protocol.createDispatcher[Event]())
     bind[TrackEventHandler].asEagerSingleton()
 
-    expose[ClientInterface]
-    expose[BlockingQueueReader[MidiMessage]] // TODO: do not expose!
+    bind[Bootstrapper].asEagerSingleton()
+    expose[Bootstrapper]
   }
 
   @Provides @Singleton
