@@ -2,7 +2,7 @@ package client.midi.in
 
 import javax.sound.midi._
 
-// TODO: update this class to use managed resources!
+/** @deprecated Leaks resources, do not use, keep this implementation only for reference */
 class SequencerRecordingDevice private[midi] (val device: MidiDevice, resolution: Int) {
 
   private val sequencer: Sequencer = MidiSystem.getSequencer(false) // TODO: remove this call!
