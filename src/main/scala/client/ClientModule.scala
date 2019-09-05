@@ -4,7 +4,7 @@ import client.events.TrackEventHandler
 import client.midi.DeviceHash
 import client.midi.out.{SequenceFormatter, SequencePlayer}
 import client.midi.util.BlockingQueueReader
-import client.operations.{ClientOperationRegistry, OperationRegistry, SystemOperations, TrackOperations}
+import client.operations._
 import com.google.inject.Provides
 import javax.inject.Singleton
 import javax.sound.midi.MidiMessage
@@ -22,6 +22,7 @@ class ClientModule extends ScalaPrivateModule {
     bind[OperationRegistry].toInstance(new ClientOperationRegistry())
     bind[SystemOperations].asEagerSingleton()
     bind[TrackOperations].asEagerSingleton()
+    bind[DevOperations].asEagerSingleton()
 
     bind[SequenceFormatter].toInstance(new SequenceFormatter(TICKS_PER_QUARTER))
 
