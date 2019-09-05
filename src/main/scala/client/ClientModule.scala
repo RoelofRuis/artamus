@@ -1,8 +1,10 @@
 package client
 
+import client.events.TrackEventHandler
 import client.midi.DeviceHash
 import client.midi.out.{SequenceFormatter, SequencePlayer}
 import client.midi.util.BlockingQueueReader
+import client.operations.{ClientOperationRegistry, OperationRegistry, SystemOperations, TrackOperations}
 import com.google.inject.Provides
 import javax.inject.Singleton
 import javax.sound.midi.MidiMessage
@@ -16,6 +18,10 @@ class ClientModule extends ScalaPrivateModule {
     // TODO: Remove '.get', wrap with resource management!
     bind[SequencePlayer].toInstance(midi.loadPlaybackDevice(MyDevices.FocusriteUSBMIDI_OUT).get)
     bind[BlockingQueueReader[MidiMessage]].toInstance(midi.loadReader(MyDevices.iRigUSBMIDI_IN).get)
+
+    bind[OperationRegistry].toInstance(new ClientOperationRegistry())
+    bind[SystemOperations].asEagerSingleton()
+    bind[TrackOperations].asEagerSingleton()
 
     bind[SequenceFormatter].toInstance(new SequenceFormatter(TICKS_PER_QUARTER))
 

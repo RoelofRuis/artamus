@@ -1,4 +1,4 @@
-package client
+package client.events
 
 import client.midi.out.{SequenceFormatter, SequencePlayer}
 import javax.inject.Inject

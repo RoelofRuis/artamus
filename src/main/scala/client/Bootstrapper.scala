@@ -1,45 +1,43 @@
 package client
 
-import client.operations.{ClientOperationRegistry, Operation, Quit}
+import client.operations.{Operation, OperationRegistry}
 import javax.inject.Inject
 import protocol.client.ClientInterface
+import protocol.{Command, Control}
 
 class Bootstrapper @Inject() (
   client: ClientInterface,
-  registry: ClientOperationRegistry
+  registry: OperationRegistry
 ) {
-
-  def nextOperation: Operation = {
-    println("Input next command:")
-    val input = scala.io.StdIn.readLine()
-    registry.getOperation(input) match {
-      case Some(op) => op
-      case None => nextOperation
-    }
-  }
 
   def run(): Unit = {
     var isRunning = true
 
-    // TODO: refine much further
     while(isRunning) {
       // TODO: wrap in controll thread
-      val op = nextOperation
+      val (input, op) = nextOperation
 
-      op
-        .getControl
-        .map { control => (control, client.sendControl(control)) }
-        .foreach { case (control, res) => println(s"$control -> $res") }
+      op().foreach {
+        case command: Command => client.sendCommand(command).foreach(res => println(s"$command -> $res"))
+        case control: Control => client.sendControl(control).foreach(res => println(s"$control -> $res"))
+        case _ =>
+      }
 
-      op
-        .getCommands
-        .map { command => (command, client.sendCommand(command)) }
-        .foreach { case (command, res) => println(s"$command -> $res") }
-
-      if (op.isInstanceOf[Quit.type]) isRunning = false
+      if (input == "quit") isRunning = false
     }
 
     client.close()
+  }
+
+  def nextOperation: (String, Operation) = {
+    println("Input next command:")
+    val input = scala.io.StdIn.readLine()
+    registry.getOperation(input) match {
+      case Some(op) => (input, op)
+      case None =>
+        println(s"Unknown command [$input]")
+        nextOperation
+    }
   }
 
 }

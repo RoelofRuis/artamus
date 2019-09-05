@@ -1,17 +1,15 @@
 package client
 
-import protocol.{Command, Control}
+import protocol.Message
 
+// TODO: see if it can be moved to protocol
 package object operations {
 
-  // TODO: rethink this completely
-  trait Operation {
-    def getControl: List[Control]
-    def getCommands: List[Command]
-  }
+  type Operation = () => List[Message]
 
   trait OperationRegistry {
     def getOperation(token: String): Option[Operation]
+    def registerOperation(token: String, operation: Operation): Unit
   }
 
 }

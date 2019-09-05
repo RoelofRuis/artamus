@@ -12,12 +12,10 @@ package object protocol {
 
   def createDispatcher[A <: { type Res }](): Dispatcher[A] = new Dispatchers.SimpleDispatcher[A]
 
-  trait Control { final type Res = Boolean }
-
-  trait Command { final type Res = Boolean }
-
-  trait Query { type Res }
-
+  trait Message { type Res }
+  trait Control extends Message { final type Res = Boolean }
+  trait Command extends Message { final type Res = Boolean }
+  trait Query extends Message
   trait Event { type Res = Unit }
 
   trait Dispatcher[A <: { type Res }] {
