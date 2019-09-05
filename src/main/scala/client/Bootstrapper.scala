@@ -1,38 +1,45 @@
 package client
 
-import client.components.MusicWriter
-import client.midi.in.ReadMidiMessage
-import client.midi.util.{BlockingQueueReader, BlockingReadList}
+import client.operations.{ClientOperationRegistry, Operation, Quit}
 import javax.inject.Inject
-import javax.sound.midi.{MidiMessage, ShortMessage}
-import music.{Key, TimeSignature}
 import protocol.client.ClientInterface
-import server.control.Disconnect
 
 class Bootstrapper @Inject() (
   client: ClientInterface,
-  reader: BlockingQueueReader[MidiMessage]
+  registry: ClientOperationRegistry
 ) {
 
+  def nextOperation: Operation = {
+    println("Input next command:")
+    val input = scala.io.StdIn.readLine()
+    registry.getOperation(input) match {
+      case Some(op) => op
+      case None => nextOperation
+    }
+  }
+
   def run(): Unit = {
+    var isRunning = true
 
-    val writer = new MusicWriter(client)
+    // TODO: refine much further
+    while(isRunning) {
+      // TODO: wrap in controll thread
+      val op = nextOperation
 
-    writer.writeTimeSignature(TimeSignature.`4/4`)
-    writer.writeKey(Key.`C-Major`)
+      op
+        .getControl
+        .map { control => (control, client.sendControl(control)) }
+        .foreach { case (control, res) => println(s"$control -> $res") }
 
-    reader.read(ReadMidiMessage.noteOn(4))
-      .map { case msg: ShortMessage => msg.getData1 }
-      .foreach { writer.writeQuarterNote }
+      op
+        .getCommands
+        .map { command => (command, client.sendCommand(command)) }
+        .foreach { case (command, res) => println(s"$command -> $res") }
 
-    reader.read(BlockingReadList.untilEnter)
+      if (op.isInstanceOf[Quit.type]) isRunning = false
+    }
 
-    client.sendControl(Disconnect(false))
     client.close()
-
-    midi.resourceManager.closeAll()
-
-
   }
 
 }
