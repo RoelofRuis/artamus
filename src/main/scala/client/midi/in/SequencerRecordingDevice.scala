@@ -2,15 +2,14 @@ package client.midi.in
 
 import javax.sound.midi._
 
-class SequencerRecordingDevice private[midi] (val device: MidiDevice, resolution: Int) extends AutoCloseable {
+// TODO: update this class to use managed resources!
+class SequencerRecordingDevice private[midi] (val device: MidiDevice, resolution: Int) {
 
-  private val sequencer: Sequencer = MidiSystem.getSequencer(false)
+  private val sequencer: Sequencer = MidiSystem.getSequencer(false) // TODO: remove this call!
   private val transmitter: Transmitter = device.getTransmitter
 
   sequencer.open()
   transmitter.setReceiver(sequencer.getReceiver)
-
-  if (! device.isOpen) device.open()
 
   def readQuarterNotes(): List[Int] = {
     val sequence = new Sequence(Sequence.PPQ, resolution, 1)

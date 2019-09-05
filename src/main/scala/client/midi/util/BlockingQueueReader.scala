@@ -10,8 +10,6 @@ trait BlockingQueueReader[A] {
 
   def read[L[_]](readMethod: BlockingQueueReadMethod[A, L]): L[A]
 
-  def close(): Unit = ()
-
 }
 
 object BlockingQueueReader {

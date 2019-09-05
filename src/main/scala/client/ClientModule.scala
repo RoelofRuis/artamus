@@ -20,7 +20,7 @@ class ClientModule extends ScalaPrivateModule {
     bind[SequenceFormatter].toInstance(new SequenceFormatter(TICKS_PER_QUARTER))
 
     bind[Dispatcher[Event]].toInstance(protocol.createDispatcher[Event]())
-    bind[TrackEventHandler]
+    bind[TrackEventHandler].asEagerSingleton()
 
     expose[ClientInterface]
     expose[BlockingQueueReader[MidiMessage]] // TODO: do not expose!

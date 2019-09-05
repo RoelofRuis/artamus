@@ -33,7 +33,7 @@ object ClientApp extends App {
   client.sendControl(Disconnect(true))
   client.close()
 
-  midi.close() // TODO: rethink resource management...
+  midi.resourceManager.closeAll()
 
 }
 
