@@ -2,7 +2,7 @@ package client.midi.out
 
 import javax.sound.midi._
 
-class SequencePlayer private[midi] (val device: MidiDevice) {
+class SequencePlayer private[midi] (val device: MidiDevice) extends AutoCloseable {
 
   private val END_OF_TRACK = 47
 

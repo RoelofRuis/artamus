@@ -1,7 +1,7 @@
 package client
 
 import com.google.inject.Guice
-import protocol.client.MessageBus
+import protocol.client.ClientInterface
 import server.control.Disconnect
 
 object ClientApp extends App {
@@ -11,11 +11,13 @@ object ClientApp extends App {
   )
 
   import net.codingwell.scalaguice.InjectorExtensions._
-  val messageBus = injector.instance[MessageBus]
+  val client = injector.instance[ClientInterface]
 
+  client.sendControl(Disconnect(true))
 
+  client.close()
 
-  messageBus.sendControl(Disconnect(true))
+  midi.close() // UGLY AS FUCK!
 
 }
 

@@ -6,7 +6,7 @@ import javax.sound.midi.{MidiDevice, MidiMessage}
 
 import scala.language.higherKinds
 
-class MidiMessageReader private[midi] (device: MidiDevice) extends BlockingQueueReader[MidiMessage] {
+class MidiMessageReader private[midi] (device: MidiDevice) extends BlockingQueueReader[MidiMessage] with AutoCloseable {
 
   private val transmitter = device.getTransmitter
   private val reader = new TimedBlockingQueueReader[MidiMessage]

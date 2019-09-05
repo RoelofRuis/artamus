@@ -5,14 +5,12 @@ import client.midi.out.{SequenceFormatter, SequencePlayer}
 import com.google.inject.Provides
 import javax.inject.Singleton
 import net.codingwell.scalaguice.ScalaPrivateModule
-import protocol.client.{ClientBindings, ClientInterface, MessageBus}
+import protocol.client.{ClientBindings, ClientInterface}
 import protocol.{Dispatcher, Event}
 
 class ClientModule extends ScalaPrivateModule {
 
   override def configure(): Unit = {
-    bind[ClientInterface].toInstance(protocol.createClient(9999))
-
     // TODO: guard against .get!
     bind[SequencePlayer].toInstance(midi.loadPlaybackDevice(MyDevices.FocusriteUSBMIDI_OUT).get)
     bind[SequenceFormatter].toInstance(new SequenceFormatter(TICKS_PER_QUARTER))
@@ -20,12 +18,12 @@ class ClientModule extends ScalaPrivateModule {
     bind[Dispatcher[Event]].toInstance(protocol.createDispatcher[Event]())
     bind[TrackEventHandler]
 
-    expose[MessageBus]
+    expose[ClientInterface]
   }
 
   @Provides @Singleton
-  def messageBus(clientInterface: ClientInterface, eventDispatcher: Dispatcher[Event]): MessageBus =
-    clientInterface.open(ClientBindings(eventDispatcher))
+  def messageBus(eventDispatcher: Dispatcher[Event]): ClientInterface =
+    protocol.createClient(9999, ClientBindings(eventDispatcher))
 
 
 

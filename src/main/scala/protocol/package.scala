@@ -1,4 +1,4 @@
-import protocol.client.{ClientInterface, DefaultClient}
+import protocol.client.{ClientBindings, ClientInterface, DefaultClient}
 import protocol.server.{ServerInterface, SingleConnectionServer}
 
 import scala.language.reflectiveCalls
@@ -6,7 +6,7 @@ import scala.reflect.ClassTag
 
 package object protocol {
 
-  def createClient(port: Int): ClientInterface = new DefaultClient(port)
+  def createClient(port: Int, bindings: ClientBindings): ClientInterface = new DefaultClient(port, bindings)
 
   def createServer(port: Int): ServerInterface = new SingleConnectionServer(port)
 

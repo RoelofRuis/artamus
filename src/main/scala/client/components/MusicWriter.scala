@@ -1,22 +1,22 @@
 package client.components
 
 import music._
-import protocol.client.MessageBus
+import protocol.client.ClientInterface
 import server.domain.track.{AddNote, SetKey, SetTimeSignature}
 
 /*
  * For now just an outline of what the higher level layer could look like
  */
-class MusicWriter(messageBus: MessageBus) {
+class MusicWriter(client: ClientInterface) {
 
-  def writeTimeSignature(t: TimeSignature): Boolean = messageBus.sendCommand(SetTimeSignature(t)).getOrElse(false)
+  def writeTimeSignature(t: TimeSignature): Boolean = client.sendCommand(SetTimeSignature(t)).getOrElse(false)
 
-  def writeQuarterNote(midiPitch: Int): Boolean = messageBus.sendCommand(
+  def writeQuarterNote(midiPitch: Int): Boolean = client.sendCommand(
     AddNote(
       Position.apply(Duration.QUARTER, 0),
       Note(Duration.QUARTER, MidiPitch.fromMidiPitchNumber(midiPitch))
     )).getOrElse(false)
 
-  def writeKey(key: Key): Boolean = messageBus.sendCommand(SetKey(key)).getOrElse(false)
+  def writeKey(key: Key): Boolean = client.sendCommand(SetKey(key)).getOrElse(false)
 
 }

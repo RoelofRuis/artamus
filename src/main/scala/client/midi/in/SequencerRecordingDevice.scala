@@ -2,7 +2,7 @@ package client.midi.in
 
 import javax.sound.midi._
 
-class SequencerRecordingDevice private[midi] (val device: MidiDevice, resolution: Int) {
+class SequencerRecordingDevice private[midi] (val device: MidiDevice, resolution: Int) extends AutoCloseable {
 
   private val sequencer: Sequencer = MidiSystem.getSequencer(false)
   private val transmitter: Transmitter = device.getTransmitter
@@ -37,6 +37,12 @@ class SequencerRecordingDevice private[midi] (val device: MidiDevice, resolution
     }.collect {
       case Some(i) => i
     }.toList
+  }
+
+  def close(): Unit = {
+    sequencer.stop()
+    sequencer.close()
+    device.close()
   }
 
 }
