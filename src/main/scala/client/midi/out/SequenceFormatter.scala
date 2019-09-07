@@ -2,6 +2,7 @@ package client.midi.out
 
 import javax.sound.midi.{MidiEvent, Sequence, ShortMessage}
 
+// TODO: split into parts, all midi logic should be kept inside midi package.
 class SequenceFormatter(resolution: Int) {
 
   def formatAsQuarterNotes(notes: List[Int]): Sequence = {

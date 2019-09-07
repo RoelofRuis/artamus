@@ -1,7 +1,7 @@
 package client
 
 import client.midi.in.{MidiMessageReader, QueuedMidiMessageReceiver}
-import client.midi.out.SequencePlayer
+import client.midi.out.{SequenceWriter, SimpleSequenceWriter}
 import javax.sound.midi._
 
 package object midi {
@@ -30,11 +30,11 @@ package object midi {
   def loadReader(deviceHash: DeviceHash): Option[MidiMessageReader] =
     resourceManager.loadTransmitter(deviceHash).map(new QueuedMidiMessageReceiver(_))
 
-  def loadPlaybackDevice(deviceHash: DeviceHash): Option[SequencePlayer] = {
+  def loadSequenceWriter(deviceHash: DeviceHash): Option[SequenceWriter] = {
     for {
       receiver <- resourceManager.loadReceiver(deviceHash)
       sequencer <- resourceManager.loadSequencer
-    } yield new SequencePlayer(receiver, sequencer)
+    } yield new SimpleSequenceWriter(receiver, sequencer)
   }
 
 }

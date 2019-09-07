@@ -1,8 +1,11 @@
 package client.midi.out
 
-import javax.sound.midi._
+import javax.sound.midi.{MetaMessage, Receiver, Sequence, Sequencer}
 
-class SequencePlayer private[midi] (val receiver: Receiver, sequencer: Sequencer) {
+private[midi] class SimpleSequenceWriter (
+  val receiver: Receiver,
+  val sequencer: Sequencer
+) extends SequenceWriter {
 
   private val END_OF_TRACK = 47
 
@@ -15,7 +18,7 @@ class SequencePlayer private[midi] (val receiver: Receiver, sequencer: Sequencer
 
   sequencer.getTransmitter.setReceiver(receiver)
 
-  def playSequence(sequence: Sequence): Unit = {
+  def writeSequence(sequence: Sequence): Unit = {
     if (sequencer.isRunning) sequencer.stop()
     sequencer.setSequence(sequence)
     sequencer.setTickPosition(0)
