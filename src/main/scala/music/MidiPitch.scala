@@ -6,6 +6,8 @@ final case class MidiPitch private (pitchClass: PitchClass, octave: Octave) {
 
 object MidiPitch {
 
-  def fromMidiPitchNumber(i: Int): MidiPitch = MidiPitch(PitchClass(i % 12), Octave((i / 12) - 1))
+  type MidiPitchNumber = Int
+
+  def apply(i: MidiPitchNumber): MidiPitch = MidiPitch(PitchClass(i % 12), Octave((i / 12) - 1))
 
 }

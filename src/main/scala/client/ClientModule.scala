@@ -6,6 +6,7 @@ import midi.in.MidiMessageReader
 import midi.out.SequenceWriter
 import client.operations._
 import com.google.inject.Provides
+import com.google.inject.internal.SingletonScope
 import javax.inject.Singleton
 import net.codingwell.scalaguice.ScalaPrivateModule
 import protocol.client.{ClientBindings, ClientInterface}
@@ -17,6 +18,8 @@ class ClientModule extends ScalaPrivateModule {
     // TODO: Remove '.get', wrap with resource management!
     bind[SequenceWriter].toInstance(midi.loadSequenceWriter(MyDevices.FocusriteUSBMIDI_OUT, TICKS_PER_QUARTER).get)
     bind[MidiMessageReader].toInstance(midi.loadReader(MyDevices.iRigUSBMIDI_IN).get)
+
+    bind[MusicReader].in(new SingletonScope)
 
     bind[OperationRegistry].toInstance(new ClientOperationRegistry())
     bind[SystemOperations].asEagerSingleton()

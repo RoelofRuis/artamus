@@ -1,30 +1,33 @@
 package client.operations
 
-import midi.in.MidiMessageReader
 import com.google.inject.Inject
-import javax.sound.midi.ShortMessage
 import music._
 import server.domain.track.{AddNote, SetKey, SetTimeSignature}
 
 class TrackOperations @Inject() (
   registry: OperationRegistry,
-  reader: MidiMessageReader
+  reader: MusicReader
 ) {
-
-  import midi.in.Reading._
 
   registry.registerOperation("ts", () => List(SetTimeSignature(TimeSignature.`4/4`)))
 
-  registry.registerOperation("key", () => List(SetKey(Key.`C-Major`)))
+  registry.registerOperation("read-mvec", () => {
+    println(reader.readMusicVector)
+
+    List()
+  })
+
+  registry.registerOperation("key", () => {
+    List(SetKey(Key.`C-Major`))
+  })
 
   registry.registerOperation("notes", () => {
-    reader.noteOn(4)
-      .map { case msg: ShortMessage =>
-        AddNote(
-          Position.apply(Duration.QUARTER, 0),
-          Note(Duration.QUARTER, MidiPitch.fromMidiPitchNumber(msg.getData1))
-        )
-      }
+    reader
+      .readMidiPitch(4)
+      .map{ pitch => AddNote(
+        Position.apply(Duration.QUARTER, 0),
+        Note(Duration.QUARTER, MidiPitch(pitch))
+      )}
   })
 
 }

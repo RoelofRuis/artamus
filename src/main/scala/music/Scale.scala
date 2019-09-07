@@ -4,6 +4,9 @@ final case class Scale(stepSizes: Seq[Int])
 
 object Scale {
 
+  final val MAJOR_SCALE = Scale(Seq(2, 2, 1, 2, 2, 2, 1))
+  final val MAJOR_SCALE_MATH = ScaleMath(MAJOR_SCALE)
+
   implicit class ScaleMath(scale: Scale) {
 
     val numberOfSteps: Int = scale.stepSizes.length
