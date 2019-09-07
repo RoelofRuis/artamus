@@ -1,4 +1,4 @@
-package client.operations
+package client.read
 
 import javax.inject.Inject
 import midi.in.MidiMessageReader

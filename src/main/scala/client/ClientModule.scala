@@ -5,6 +5,7 @@ import midi.DeviceHash
 import midi.in.MidiMessageReader
 import midi.out.SequenceWriter
 import client.operations._
+import client.read.MusicReader
 import com.google.inject.Provides
 import com.google.inject.internal.SingletonScope
 import javax.inject.Singleton

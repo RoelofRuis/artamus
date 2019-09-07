@@ -1,5 +1,6 @@
 package client.operations
 
+import client.read.MusicReader
 import com.google.inject.Inject
 import music._
 import server.domain.track.{AddNote, SetKey, SetTimeSignature}
@@ -9,16 +10,12 @@ class TrackOperations @Inject() (
   reader: MusicReader
 ) {
 
-  registry.registerOperation("ts", () => List(SetTimeSignature(TimeSignature.`4/4`)))
-
-  registry.registerOperation("read-mvec", () => {
-    println(reader.readMusicVector)
-
-    List()
+  registry.registerOperation("ts", () => {
+    List(SetTimeSignature(TimeSignature.`4/4`))
   })
 
   registry.registerOperation("key", () => {
-    List(SetKey(Key.`C-Major`))
+    List(SetKey(Key(reader.readMusicVector)))
   })
 
   registry.registerOperation("notes", () => {
