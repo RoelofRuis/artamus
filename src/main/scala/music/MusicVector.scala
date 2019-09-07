@@ -8,9 +8,9 @@ import music.Scale.ScaleMath
   * In this way, a distinction can be made between for instance a sharp four and a flat five, while still resolving to
   * the same midi pitch (or piano key)
   *
-  * Example:
-  * Sharp Four: [[MusicVector(4, 1)]]
-  * Flat Five: [[MusicVector(5, -1)]]
+  * Example (steps are zero-indexed):
+  * Sharp Four: [[MusicVector(3, 1)]]
+  * Flat Five: [[MusicVector(4, -1)]]
   */
 final case class MusicVector private (step: Step, acc: Accidental) extends Comparable[MusicVector] {
 

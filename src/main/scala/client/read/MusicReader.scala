@@ -2,7 +2,7 @@ package client.read
 
 import javax.inject.Inject
 import midi.in.MidiMessageReader
-import music.{Accidental, MidiPitch, MusicVector, Scale}
+import music._
 
 class MusicReader @Inject() (reader: MidiMessageReader) {
 
@@ -16,6 +16,17 @@ class MusicReader @Inject() (reader: MidiMessageReader) {
     else {
       val diff = midiPitches.last - midiPitches.head
       MusicVector(firstStep.get, Accidental(diff))
+    }
+  }
+
+  def readTimeSignature: TimeSignature = {
+    readMidiPitch(2).map{MidiPitch(_).pitchClass} match {
+      case num :: denom :: Nil =>
+        TimeSignature(num.value + 1, denom.value + 1) match {
+          case Some(t) => t
+          case _ => readTimeSignature
+        }
+      case _ => readTimeSignature
     }
   }
 

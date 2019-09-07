@@ -11,7 +11,7 @@ class TrackOperations @Inject() (
 ) {
 
   registry.registerOperation("ts", () => {
-    List(SetTimeSignature(TimeSignature.`4/4`))
+    List(SetTimeSignature(reader.readTimeSignature))
   })
 
   registry.registerOperation("key", () => {
