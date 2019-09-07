@@ -14,7 +14,6 @@ class Bootstrapper @Inject() (
     var isRunning = true
 
     while(isRunning) {
-      // TODO: wrap in controll thread
       val (input, op) = nextOperation
 
       op().foreach {
