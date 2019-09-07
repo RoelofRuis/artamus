@@ -1,6 +1,6 @@
 package client.midi.in
 
-import client.midi.util.BlockingQueueReader.BlockingQueueReadMethod
+import client.midi.util.TemporalReadableBlockingQueue.BlockingQueueReadMethod
 import javax.sound.midi.MidiMessage
 
 import scala.language.higherKinds

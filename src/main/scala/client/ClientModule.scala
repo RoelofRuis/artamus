@@ -4,11 +4,9 @@ import client.events.TrackEventHandler
 import client.midi.DeviceHash
 import client.midi.in.MidiMessageReader
 import client.midi.out.{SequenceFormatter, SequencePlayer}
-import client.midi.util.BlockingQueueReader
 import client.operations._
 import com.google.inject.Provides
 import javax.inject.Singleton
-import javax.sound.midi.MidiMessage
 import net.codingwell.scalaguice.ScalaPrivateModule
 import protocol.client.{ClientBindings, ClientInterface}
 import protocol.{Dispatcher, Event}

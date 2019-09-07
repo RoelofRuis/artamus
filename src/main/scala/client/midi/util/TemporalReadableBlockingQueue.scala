@@ -1,12 +1,12 @@
 package client.midi.util
 
-import java.util.concurrent.LinkedBlockingQueue
+import java.util.concurrent.{BlockingQueue, LinkedBlockingQueue}
 
-import client.midi.util.BlockingQueueReader.BlockingQueueReadMethod
+import client.midi.util.TemporalReadableBlockingQueue.BlockingQueueReadMethod
 
 import scala.language.higherKinds
 
-final class TimedBlockingQueueReader[A]() extends BlockingQueueReader[A] {
+final class TemporalReadableBlockingQueue[A]() {
 
   private var queue: Option[LinkedBlockingQueue[A]] = None
 
@@ -19,7 +19,12 @@ final class TimedBlockingQueueReader[A]() extends BlockingQueueReader[A] {
   }
 
   // TODO: investigate whether this is truly thread safe
-  def write(elem: A): Unit = queue.map(_.offer(elem))
+  def offer(elem: A): Unit = queue.map(_.offer(elem))
 
 }
 
+object TemporalReadableBlockingQueue {
+
+  type BlockingQueueReadMethod[A, L[_]] = BlockingQueue[A] => L[A]
+
+}

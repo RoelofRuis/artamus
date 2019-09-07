@@ -1,11 +1,11 @@
 package client.midi.util
 
-import client.midi.util.BlockingQueueReader.BlockingQueueReadMethod
+import client.midi.util.TemporalReadableBlockingQueue.BlockingQueueReadMethod
 
 import scala.collection.JavaConverters._
 import scala.collection.mutable.ListBuffer
 
-object BlockingReadList {
+object ReadIntoList {
 
   def untilEnter[A]: BlockingQueueReadMethod[A, List] = { queue =>
     System.in.read()
