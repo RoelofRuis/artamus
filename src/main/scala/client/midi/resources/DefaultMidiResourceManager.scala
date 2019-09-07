@@ -1,8 +1,10 @@
-package client.midi
+package client.midi.resources
+
+import client.midi.{DeviceHash, MidiDeviceDescription}
 import com.typesafe.scalalogging.LazyLogging
 import javax.sound.midi._
 
-private[midi] class DefaultMidiResourceManager extends MidiResourceManager with LazyLogging {
+private[midi] class DefaultMidiResourceManager private[midi] () extends MidiResourceManager with LazyLogging {
 
   private var managedDevices: Map[DeviceHash, MidiDevice] = Map[DeviceHash, MidiDevice]()
   private var managedTransmitters: Map[DeviceHash, Transmitter] = Map[DeviceHash, Transmitter]()

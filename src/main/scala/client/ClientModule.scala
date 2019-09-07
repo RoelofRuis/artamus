@@ -44,7 +44,6 @@ class ClientModule extends ScalaPrivateModule {
     val FocusriteUSBMIDI_IN: DeviceHash = "658ef990"
     val FocusriteUSBMIDI_OUT: DeviceHash = "c7797746"
     val iRigUSBMIDI_IN: DeviceHash = "e98b95f2"
-
   }
 
 }
