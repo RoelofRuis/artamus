@@ -1,6 +1,6 @@
-package client.midi.util
+package midi.util
 
-import client.midi.util.TemporalReadableBlockingQueue.BlockingQueueReadMethod
+import midi.util.TemporalReadableBlockingQueue.BlockingQueueReadMethod
 
 import scala.collection.JavaConverters._
 import scala.collection.mutable.ListBuffer

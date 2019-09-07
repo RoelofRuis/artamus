@@ -1,4 +1,4 @@
-package client.midi
+package midi.resources
 
 import javax.sound.midi.{MidiDevice, MidiSystem}
 

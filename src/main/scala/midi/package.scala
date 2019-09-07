@@ -1,8 +1,6 @@
-package client
-
-import client.midi.in.{MidiMessageReader, QueuedMidiMessageReceiver}
-import client.midi.out.{SequenceWriter, SimpleSequenceWriter}
-import client.midi.resources.{DefaultMidiResourceManager, MidiResourceManager}
+import midi.in.{MidiMessageReader, QueuedMidiMessageReceiver}
+import midi.out.{SequenceWriter, SimpleSequenceWriter}
+import midi.resources.{DefaultMidiResourceManager, MidiResourceManager}
 
 package object midi {
 

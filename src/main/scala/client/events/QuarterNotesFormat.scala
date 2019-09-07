@@ -1,6 +1,6 @@
 package client.events
 
-import client.midi.out.{SequenceBuilder, SequenceFormat}
+import midi.out.{SequenceBuilder, SequenceFormat}
 
 case class QuarterNotesFormat(notes: List[Int]) extends SequenceFormat {
   def modify(builder: SequenceBuilder): Unit = {

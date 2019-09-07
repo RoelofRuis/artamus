@@ -1,6 +1,6 @@
 package client.events
 
-import client.midi.out.SequenceWriter
+import midi.out.SequenceWriter
 import javax.inject.Inject
 import protocol.client.ClientInterface
 import protocol.{Dispatcher, Event}

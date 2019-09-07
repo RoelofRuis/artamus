@@ -1,6 +1,6 @@
 package client.operations
 
-import client.midi.in.MidiMessageReader
+import midi.in.MidiMessageReader
 import com.google.inject.Inject
 import javax.sound.midi.ShortMessage
 
@@ -9,7 +9,7 @@ class DevOperations @Inject() (
   reader: MidiMessageReader
 ) {
 
-  import client.midi.in.Reading._
+  import midi.in.Reading._
 
   registry.registerOperation("print-midi", () => {
     reader.noteOn(1)

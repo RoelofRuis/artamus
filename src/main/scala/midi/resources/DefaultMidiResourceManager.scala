@@ -1,6 +1,6 @@
-package client.midi.resources
+package midi.resources
 
-import client.midi.{DeviceHash, MidiDeviceDescription}
+import midi.DeviceHash
 import com.typesafe.scalalogging.LazyLogging
 import javax.sound.midi._
 

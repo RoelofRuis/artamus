@@ -1,9 +1,9 @@
 package client
 
 import client.events.TrackEventHandler
-import client.midi.DeviceHash
-import client.midi.in.MidiMessageReader
-import client.midi.out.SequenceWriter
+import midi.DeviceHash
+import midi.in.MidiMessageReader
+import midi.out.SequenceWriter
 import client.operations._
 import com.google.inject.Provides
 import javax.inject.Singleton

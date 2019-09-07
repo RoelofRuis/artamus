@@ -1,6 +1,6 @@
-package client.midi.in
+package midi.in
 
-import client.midi.util.ReadIntoList
+import midi.util.ReadIntoList
 import javax.sound.midi.{MidiMessage, ShortMessage}
 
 object Reading {

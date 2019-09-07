@@ -1,6 +1,6 @@
-package client.midi.resources
+package midi.resources
 
-import client.midi.{DeviceHash, MidiDeviceDescription}
+import midi.DeviceHash
 import javax.sound.midi.{MidiDevice, Receiver, Sequencer, Transmitter}
 
 trait MidiResourceManager {

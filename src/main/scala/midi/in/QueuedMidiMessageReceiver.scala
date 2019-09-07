@@ -1,7 +1,7 @@
-package client.midi.in
+package midi.in
 
-import client.midi.util.TemporalReadableBlockingQueue.BlockingQueueReadMethod
-import client.midi.util.TemporalReadableBlockingQueue
+import midi.util.TemporalReadableBlockingQueue.BlockingQueueReadMethod
+import midi.util.TemporalReadableBlockingQueue
 import javax.sound.midi.{MidiMessage, Receiver, Transmitter}
 
 import scala.language.higherKinds

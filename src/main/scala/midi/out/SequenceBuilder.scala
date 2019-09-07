@@ -1,4 +1,4 @@
-package client.midi.out
+package midi.out
 
 trait SequenceBuilder {
 

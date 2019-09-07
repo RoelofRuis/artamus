@@ -1,4 +1,4 @@
-package client.midi.out
+package midi.out
 
 import javax.sound.midi.{MidiEvent, Sequence, ShortMessage}
 

@@ -1,8 +1,8 @@
-package client.midi.util
+package midi.util
 
 import java.util.concurrent.{BlockingQueue, LinkedBlockingQueue}
 
-import client.midi.util.TemporalReadableBlockingQueue.BlockingQueueReadMethod
+import midi.util.TemporalReadableBlockingQueue.BlockingQueueReadMethod
 
 import scala.language.higherKinds
 
