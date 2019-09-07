@@ -19,8 +19,15 @@ class TrackOperations @Inject() (
   })
 
   registry.registerOperation("notes", () => {
+    def getInt: Int = {
+      println("how many?")
+       try { scala.io.StdIn.readInt() }
+       catch { case _: NumberFormatException => getInt }
+    }
+    val numNotes = getInt
+
     reader
-      .readMidiPitch(4)
+      .readMidiPitch(numNotes)
       .map{ pitch => AddNote(
         Position.apply(Duration.QUARTER, 0),
         Note(Duration.QUARTER, MidiPitch(pitch))
