@@ -3,13 +3,10 @@ Storing small musical ideas and playing around with modularization using Guice.
 Project structure overview
 ```
 Without dependencies:
-util        - Contains utilities for general use
+music.util  - Contains the musical 'Business logic'
 protocol    - Contains an abstract client-server protocol
 
-Dependent on 'util':
-music       - Contains the musical 'Business logic'
-
-Dependent on 'music', 'protocol' and 'util':
+Dependent on 'music' and 'protocol':
 client      - Contains the input and viewing logic
 server      - Contains the application state
 ```
