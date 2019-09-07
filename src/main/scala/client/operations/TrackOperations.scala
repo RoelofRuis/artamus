@@ -1,23 +1,24 @@
 package client.operations
 
-import client.midi.in.ReadMidiMessage
-import client.midi.util.BlockingQueueReader
+import client.midi.in.MidiMessageReader
 import com.google.inject.Inject
-import javax.sound.midi.{MidiMessage, ShortMessage}
+import javax.sound.midi.ShortMessage
 import music._
 import server.domain.track.{AddNote, SetKey, SetTimeSignature}
 
 class TrackOperations @Inject() (
   registry: OperationRegistry,
-  reader: BlockingQueueReader[MidiMessage]
+  reader: MidiMessageReader
 ) {
+
+  import client.midi.in.Reading._
 
   registry.registerOperation("ts", () => List(SetTimeSignature(TimeSignature.`4/4`)))
 
   registry.registerOperation("key", () => List(SetKey(Key.`C-Major`)))
 
   registry.registerOperation("notes", () => {
-    reader.read(ReadMidiMessage.noteOn(4))
+    reader.noteOn(4)
       .map { case msg: ShortMessage =>
         AddNote(
           Position.apply(Duration.QUARTER, 0),

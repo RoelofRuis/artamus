@@ -6,6 +6,7 @@ import client.midi.util.BlockingQueueReader.BlockingQueueReadMethod
 
 import scala.language.higherKinds
 
+// TODO: determine all dependencies on this class!!
 trait BlockingQueueReader[A] {
 
   def read[L[_]](readMethod: BlockingQueueReadMethod[A, L]): L[A]

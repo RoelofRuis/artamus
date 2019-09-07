@@ -1,8 +1,7 @@
 package client
 
-import client.midi.in.MidiMessageReader
+import client.midi.in.{MidiMessageReader, QueuedMidiMessageReceiver}
 import client.midi.out.SequencePlayer
-import client.midi.util.BlockingQueueReader
 import javax.sound.midi._
 
 package object midi {
@@ -28,8 +27,8 @@ package object midi {
   }
 
   // TODO: clean up even more!
-  def loadReader(deviceHash: DeviceHash): Option[BlockingQueueReader[MidiMessage]] =
-    resourceManager.loadTransmitter(deviceHash).map(new MidiMessageReader(_))
+  def loadReader(deviceHash: DeviceHash): Option[MidiMessageReader] =
+    resourceManager.loadTransmitter(deviceHash).map(new QueuedMidiMessageReceiver(_))
 
   def loadPlaybackDevice(deviceHash: DeviceHash): Option[SequencePlayer] = {
     for {

@@ -2,6 +2,7 @@ package client
 
 import client.events.TrackEventHandler
 import client.midi.DeviceHash
+import client.midi.in.MidiMessageReader
 import client.midi.out.{SequenceFormatter, SequencePlayer}
 import client.midi.util.BlockingQueueReader
 import client.operations._
@@ -17,7 +18,7 @@ class ClientModule extends ScalaPrivateModule {
   override def configure(): Unit = {
     // TODO: Remove '.get', wrap with resource management!
     bind[SequencePlayer].toInstance(midi.loadPlaybackDevice(MyDevices.FocusriteUSBMIDI_OUT).get)
-    bind[BlockingQueueReader[MidiMessage]].toInstance(midi.loadReader(MyDevices.iRigUSBMIDI_IN).get)
+    bind[MidiMessageReader].toInstance(midi.loadReader(MyDevices.iRigUSBMIDI_IN).get)
 
     bind[OperationRegistry].toInstance(new ClientOperationRegistry())
     bind[SystemOperations].asEagerSingleton()
