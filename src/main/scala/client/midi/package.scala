@@ -30,11 +30,11 @@ package object midi {
   def loadReader(deviceHash: DeviceHash): Option[MidiMessageReader] =
     resourceManager.loadTransmitter(deviceHash).map(new QueuedMidiMessageReceiver(_))
 
-  def loadSequenceWriter(deviceHash: DeviceHash): Option[SequenceWriter] = {
+  def loadSequenceWriter(deviceHash: DeviceHash, resolution: Int): Option[SequenceWriter] = {
     for {
       receiver <- resourceManager.loadReceiver(deviceHash)
       sequencer <- resourceManager.loadSequencer
-    } yield new SimpleSequenceWriter(receiver, sequencer)
+    } yield new SimpleSequenceWriter(receiver, sequencer, resolution)
   }
 
 }

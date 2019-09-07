@@ -3,7 +3,7 @@ package client
 import client.events.TrackEventHandler
 import client.midi.DeviceHash
 import client.midi.in.MidiMessageReader
-import client.midi.out.{SequenceFormatter, SequenceWriter}
+import client.midi.out.SequenceWriter
 import client.operations._
 import com.google.inject.Provides
 import javax.inject.Singleton
@@ -15,15 +15,13 @@ class ClientModule extends ScalaPrivateModule {
 
   override def configure(): Unit = {
     // TODO: Remove '.get', wrap with resource management!
-    bind[SequenceWriter].toInstance(midi.loadSequenceWriter(MyDevices.FocusriteUSBMIDI_OUT).get)
+    bind[SequenceWriter].toInstance(midi.loadSequenceWriter(MyDevices.FocusriteUSBMIDI_OUT, TICKS_PER_QUARTER).get)
     bind[MidiMessageReader].toInstance(midi.loadReader(MyDevices.iRigUSBMIDI_IN).get)
 
     bind[OperationRegistry].toInstance(new ClientOperationRegistry())
     bind[SystemOperations].asEagerSingleton()
     bind[TrackOperations].asEagerSingleton()
     bind[DevOperations].asEagerSingleton()
-
-    bind[SequenceFormatter].toInstance(new SequenceFormatter(TICKS_PER_QUARTER))
 
     bind[Dispatcher[Event]].toInstance(protocol.createDispatcher[Event]())
     bind[TrackEventHandler].asEagerSingleton()
