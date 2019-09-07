@@ -9,6 +9,7 @@ package object operations {
 
   trait OperationRegistry {
     def getOperation(token: String): Option[Operation]
+    def getAllOperations: Iterable[String]
     def registerOperation(token: String, operation: Operation): Unit
   }
 

@@ -6,6 +6,8 @@ class ClientOperationRegistry extends OperationRegistry {
 
   override def registerOperation(token: String, operation: Operation): Unit = operations += (token -> operation)
 
+  override def getAllOperations: Iterable[String] = operations.keys
+
   override def getOperation(token: String): Option[Operation] = operations.get(token)
 
 }
