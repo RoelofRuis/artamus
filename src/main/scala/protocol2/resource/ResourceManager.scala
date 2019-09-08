@@ -5,32 +5,34 @@ import protocol2.resource.ResourceManager.{Closed, ResourceClosedException}
 import scala.language.reflectiveCalls
 import scala.util.{Failure, Success, Try}
 
-class ResourceManager[A](
-  factory: ResourceFactory[A],
-  reopenable: Boolean
-) {
+class ResourceManager[A](factory: ResourceFactory[A]) {
 
   private var resource: Either[Closed.type, Option[A]] = Right(None)
 
   def get: Try[A] = {
     resource match {
-      case Left(_) =>
-        if ( ! reopenable) Failure(ResourceClosedException("Resource is not reopenable"))
-        else openNew
+      case Left(_) => Failure(ResourceClosedException("Resource manager is closed"))
       case Right(Some(r)) => Success(r)
       case Right(None) => openNew
     }
   }
 
-  def close(): Iterable[Throwable] = {
-    resource match {
-      case Right(Some(r)) =>
-        val closeResult = factory.close(r)
-        resource = Left(Closed)
-        closeResult
-
+  def discard: Iterable[Throwable] = {
+    val result = resource match {
+      case Right(Some(r)) => factory.close(r)
       case _ => List()
     }
+    resource = Right(None)
+    result
+  }
+
+  def close: Iterable[Throwable] = {
+    val result = resource match {
+      case Right(Some(r)) => factory.close(r)
+      case _ => List()
+    }
+    resource = Left(Closed)
+    result
   }
 
   def isClosed: Boolean = resource match {

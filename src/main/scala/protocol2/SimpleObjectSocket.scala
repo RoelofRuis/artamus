@@ -1,5 +1,7 @@
 package protocol2
 
+import java.net.InetAddress
+
 import protocol2.resource.ResourceManager
 
 import scala.language.reflectiveCalls
@@ -11,7 +13,7 @@ class SimpleObjectSocket(connection: ResourceManager[ObjectSocketConnection]) ex
     connection.get match {
       case Success(conn) => conn.write(message) match {
         case Success(_) => Right(())
-        case Failure(ex) => Left(connection.close().toList :+ ex)
+        case Failure(ex) => Left(connection.discard.toList :+ ex)
       }
       case Failure(ex) => Left(List(ex))
     }
@@ -21,7 +23,7 @@ class SimpleObjectSocket(connection: ResourceManager[ObjectSocketConnection]) ex
     connection.get match {
       case Success(conn) => conn.read[A] match {
         case Success(r) => Right(r)
-        case Failure(ex) => Left(connection.close().toList :+ ex)
+        case Failure(ex) => Left(connection.discard.toList :+ ex)
       }
       case Failure(ex) => Left(List(ex))
     }
@@ -29,6 +31,17 @@ class SimpleObjectSocket(connection: ResourceManager[ObjectSocketConnection]) ex
 
   def isClosed: Boolean = connection.isClosed
 
-  def close: Iterable[Throwable] = connection.close()
+  def close: Iterable[Throwable] = connection.close
+
+}
+
+object SimpleObjectSocket {
+
+  def apply(inetAddress: InetAddress, port: Int): SimpleObjectSocket =
+    new SimpleObjectSocket(
+      new ResourceManager[ObjectSocketConnection](
+        new ClientObjectSocketFactory(inetAddress,port)
+      )
+    )
 
 }
