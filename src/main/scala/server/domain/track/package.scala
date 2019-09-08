@@ -15,6 +15,6 @@ package object track {
   case object TrackSymbolsUpdated extends Event
 
   // Queries
-  case object GetTrackMidiNotes extends Query { type Res = List[Int] }
+  case object GetMidiPitches extends Query { type Res = List[Int] }
 
 }

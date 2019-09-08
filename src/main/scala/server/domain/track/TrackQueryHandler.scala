@@ -11,7 +11,7 @@ private[server] class TrackQueryHandler @Inject() (
 
   import TrackSymbols._
 
-  dispatcher.subscribe[GetTrackMidiNotes.type]{ _ =>
+  dispatcher.subscribe[GetMidiPitches.type]{ _ =>
     state.getTrack.getSymbols[Note]
       .map(_.midiPitch.toMidiPitchNumber)
       .toList
