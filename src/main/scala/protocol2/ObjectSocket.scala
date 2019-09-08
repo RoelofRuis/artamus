@@ -1,8 +1,6 @@
-package protocol.client2
+package protocol2
 
-import scala.language.reflectiveCalls
-
-trait Client {
+trait ObjectSocket {
 
   def send[A](message: A): Option[String]
 

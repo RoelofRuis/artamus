@@ -1,13 +1,13 @@
-package protocol.client2
+package protocol2
 
 import com.typesafe.scalalogging.LazyLogging
 
 class RetryConnection (
-  inner: ClientConnectionFactory,
+  inner: ObjectSocketFactory,
   retrySleep: Int
-) extends ClientConnectionFactory with LazyLogging {
+) extends ObjectSocketFactory with LazyLogging {
 
-  def connect(): Either[String, ClientConnection] = {
+  def connect(): Either[String, ObjectSocketConnection] = {
     inner.connect() match {
       case Right(conn) => Right(conn)
       case Left(err) =>

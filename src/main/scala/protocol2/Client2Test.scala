@@ -1,4 +1,4 @@
-package protocol.client2
+package protocol2
 
 import java.net.InetAddress
 
@@ -6,9 +6,9 @@ object Client2Test extends App {
 
   case class X(s: String) { type Res = Boolean }
 
-  val c = new SimpleClient(
+  val c = new SimpleObjectSocket(
     new ConnectionManager(
-      new SimpleConnectionFactory(
+      new ClientObjectSocketFactory(
         InetAddress.getByName("localhost"),
         9999
       )

@@ -1,11 +1,11 @@
-package protocol.client2
+package protocol2
 
 import com.typesafe.scalalogging.LazyLogging
 
 import scala.language.reflectiveCalls
 import scala.util.{Failure, Success}
 
-private[protocol] class SimpleClient(manager: ConnectionManager) extends Client with LazyLogging {
+private[protocol] class SimpleObjectSocket(manager: ConnectionManager) extends ObjectSocket with LazyLogging {
 
   def send[A](message: A): Option[String] = {
     val res = manager.getConnection.flatMap { conn =>

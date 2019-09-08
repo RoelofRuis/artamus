@@ -1,12 +1,12 @@
-package protocol.client2
+package protocol2
 
 import com.typesafe.scalalogging.LazyLogging
 
-class ConnectionManager(factory: ClientConnectionFactory) extends LazyLogging {
+class ConnectionManager(factory: ObjectSocketFactory) extends LazyLogging {
 
-  private var currentConnection: Option[ClientConnection] = None
+  private var currentConnection: Option[ObjectSocketConnection] = None
 
-  def getConnection: Either[String, ClientConnection] = {
+  def getConnection: Either[String, ObjectSocketConnection] = {
     currentConnection match {
       case Some(conn) => Right(conn)
       case None =>
