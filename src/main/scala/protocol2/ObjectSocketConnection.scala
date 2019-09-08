@@ -10,8 +10,8 @@ import scala.util.{Failure, Try}
 
 final class ObjectSocketConnection private (socket: Socket) {
 
-  val inputStream = new ResourceManager[ObjectInputStream](new ObjectInputStreamFactory(socket))
-  val outputStream = new ResourceManager[ObjectOutputStream](new ObjectOutputStreamFactory(socket))
+  val inputStream = new ResourceManager[ObjectInputStream](new ObjectInputStreamFactory(socket), reopenable = false)
+  val outputStream = new ResourceManager[ObjectOutputStream](new ObjectOutputStreamFactory(socket), reopenable = false)
 
   def write[A](obj: A): Try[Unit] = outputStream.get.flatMap(stream => Try { stream.writeObject(obj) })
 

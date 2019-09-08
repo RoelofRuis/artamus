@@ -2,38 +2,38 @@ package protocol2
 
 import java.net.{InetAddress, ServerSocket}
 
-import protocol2.resource.ResourceManager
-
 object Client2Test extends App {
 
   case class X(s: String) { type Res = Boolean }
 
   val serverThread = new Thread(() => {
     val ss = new ServerSocket(9999)
-    println("before accept")
-    val conn = ss.accept()
 
-    val s = new SimpleObjectSocket(
-      new ResourceManager[ObjectSocketConnection](
-        new ServerObjectSocketFactory(conn)
-      )
-    )
+    val serverConnection = new ServerConnection(ss.accept())
 
-    println("receiving" + s.receive[X])
+    var connOpen = true
+
+    while(connOpen) {
+      serverConnection.receive[X] match {
+        case Right(x) => println(s"Receiving [$x]")
+        case Left(err) =>
+          println(s"Cannot receive [$err]")
+          connOpen = false
+      }
+    }
+
+    ss.close()
   })
 
   serverThread.start()
 
-  val c = new SimpleObjectSocket(
-    new ResourceManager[ObjectSocketConnection](
-      new ClientObjectSocketFactory(
-        InetAddress.getByName("localhost"),
-        9999
-      )
-    )
-  )
+  val client = new ClientConnection(InetAddress.getByName("localhost"), 9999)
 
-  println("sending" + c.send(X("question")))
+  println("sending: " + client.send(X("question")))
+
+  client.close
+
+  println("sending: " + client.send(X("question 2")))
 
   serverThread.join()
 
