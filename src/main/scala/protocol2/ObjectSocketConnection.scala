@@ -3,37 +3,44 @@ package protocol2
 import java.io.{ObjectInputStream, ObjectOutputStream}
 import java.net.{InetAddress, Socket}
 
-import scala.util.{Failure, Success, Try}
+import protocol2.ObjectSocketConnection.{ObjectInputStreamFactory, ObjectOutputStreamFactory}
+import protocol2.resource.{ResourceFactory, ResourceManager}
 
-private[protocol] final case class ObjectSocketConnection private (socket: Socket, in: ObjectInputStream, out: ObjectOutputStream) {
+import scala.util.{Failure, Try}
 
-  def write[A](obj: A): Try[Unit] = Try { out.writeObject(obj) }
+final class ObjectSocketConnection private (socket: Socket) {
 
-  def read[A]: Try[A] = Try { in.readObject().asInstanceOf[A] }
+  val inputStream = new ResourceManager[ObjectInputStream](new ObjectInputStreamFactory(socket))
+  val outputStream = new ResourceManager[ObjectOutputStream](new ObjectOutputStreamFactory(socket))
 
-  def close(): Option[Throwable] = {
-    Try {
-      socket.close()
-      in.close()
-      out.close()
-    } match {
-      case Failure(ex) => Some(ex)
-      case Success(_) => None
-    }
+  def write[A](obj: A): Try[Unit] = outputStream.get.flatMap(stream => Try { stream.writeObject(obj) })
+
+  def read[A]: Try[A] = inputStream.get.flatMap(stream => Try { stream.readObject().asInstanceOf[A] })
+
+  def close(): Iterable[Throwable] = List(closeSocket, inputStream.close(), outputStream.close()).flatten
+
+  private def closeSocket: Iterable[Throwable] = Try { socket.close() } match {
+    case Failure(ex) => List(ex)
+    case _ => List()
   }
 }
 
 object ObjectSocketConnection {
 
-  def apply(socket: Socket): Try[ObjectSocketConnection] = for {
-    input <- Try { new ObjectInputStream(socket.getInputStream) }
-    output <- Try { new ObjectOutputStream(socket.getOutputStream) }
-  } yield ObjectSocketConnection(socket, input, output)
+  def apply(socket: Socket): ObjectSocketConnection = new ObjectSocketConnection(socket)
 
-  def apply(inetAddress: InetAddress, port: Int): Try[ObjectSocketConnection] = for {
-    socket <- Try { new Socket(inetAddress, port) }
-    input <- Try { new ObjectInputStream(socket.getInputStream) }
-    output <- Try { new ObjectOutputStream(socket.getOutputStream) }
-  } yield ObjectSocketConnection(socket, input, output)
+  def apply(inetAddress: InetAddress, port: Int): Try[ObjectSocketConnection] = {
+    Try { new Socket(inetAddress, port) }.map(new ObjectSocketConnection(_))
+  }
+
+  class ObjectInputStreamFactory(socket: Socket) extends ResourceFactory[ObjectInputStream] {
+    override def create: Try[ObjectInputStream] = Try { new ObjectInputStream(socket.getInputStream) }
+    override def close(s: ObjectInputStream): Iterable[Throwable] = Try { s.close() }.fold(List(_), _ => List())
+  }
+
+  class ObjectOutputStreamFactory(socket: Socket) extends ResourceFactory[ObjectOutputStream] {
+    override def create: Try[ObjectOutputStream] = Try { new ObjectOutputStream(socket.getOutputStream) }
+    override def close(s: ObjectOutputStream): Iterable[Throwable] = Try { s.close() }.fold(List(_), _ => List())
+  }
 
 }

@@ -2,16 +2,14 @@ package protocol2
 
 import java.net.Socket
 
-import scala.util.{Failure, Success}
+import protocol2.resource.ResourceFactory
 
-class ServerObjectSocketFactory (socket: Socket) extends ObjectSocketFactory {
+import scala.util.{Success, Try}
 
-  def connect(): Either[String, ObjectSocketConnection] = {
-    ObjectSocketConnection(socket) match {
-      case Success(con) => Right(con)
-      case Failure(err) => Left(s"Unable to open connection [$err]")
-    }
-  }
+class ServerObjectSocketFactory (socket: Socket) extends ResourceFactory[ObjectSocketConnection] {
 
+  def create: Try[ObjectSocketConnection] = Success(ObjectSocketConnection(socket))
+
+  override def close(a: ObjectSocketConnection): Iterable[Throwable] = a.close()
 }
 
