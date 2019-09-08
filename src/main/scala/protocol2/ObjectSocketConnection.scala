@@ -13,9 +13,9 @@ final class ObjectSocketConnection private (socket: Socket) {
   val inputStream = new ResourceManager[ObjectInputStream](new ObjectInputStreamFactory(socket))
   val outputStream = new ResourceManager[ObjectOutputStream](new ObjectOutputStreamFactory(socket))
 
-  def write[A](obj: A): Try[Unit] = outputStream.get.flatMap(stream => Try { stream.writeObject(obj) })
+  def write(obj: Any): Try[Unit] = outputStream.get.flatMap(stream => Try { stream.writeObject(obj) })
 
-  def read[A]: Try[A] = inputStream.get.flatMap(stream => Try { stream.readObject().asInstanceOf[A] })
+  def read: Try[Object] = inputStream.get.flatMap(stream => Try { stream.readObject() })
 
   def close(): Iterable[Throwable] = List(closeSocket, inputStream.close, outputStream.close).flatten
 

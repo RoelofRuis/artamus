@@ -1,4 +1,4 @@
-package protocol2
+package protocol2.server
 
 import java.net.ServerSocket
 

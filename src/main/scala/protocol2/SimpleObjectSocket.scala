@@ -9,7 +9,7 @@ import scala.util.{Failure, Success}
 
 class SimpleObjectSocket(connection: ResourceManager[ObjectSocketConnection]) extends ObjectSocket {
 
-  def send[A](message: A): Either[Iterable[Throwable], Unit] = {
+  def send(message: Any): Either[Iterable[Throwable], Unit] = {
     connection.get match {
       case Success(conn) => conn.write(message) match {
         case Success(_) => Right(())
@@ -19,9 +19,9 @@ class SimpleObjectSocket(connection: ResourceManager[ObjectSocketConnection]) ex
     }
   }
 
-  def receive[A]: Either[Iterable[Throwable], A] = {
+  def receive: Either[Iterable[Throwable], Object] = {
     connection.get match {
-      case Success(conn) => conn.read[A] match {
+      case Success(conn) => conn.read match {
         case Success(r) => Right(r)
         case Failure(ex) => Left(connection.discard.toList :+ ex)
       }

@@ -1,7 +1,8 @@
-package protocol2
+package protocol2.server
 
 import java.net.Socket
 
+import protocol2.ObjectSocketConnection
 import protocol2.resource.ResourceFactory
 
 import scala.util.{Success, Try}

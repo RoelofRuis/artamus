@@ -1,8 +1,9 @@
-package protocol2
+package protocol2.server
 
 import java.net.Socket
 
 import protocol2.resource.ResourceManager
+import protocol2.{ObjectSocketConnection, SimpleObjectSocket}
 
 class ServerConnection(s: Socket) {
 
@@ -12,14 +13,14 @@ class ServerConnection(s: Socket) {
     )
   )
 
-  def send[A](message: A): Either[Iterable[Throwable], Unit] =
+  def send(message: Any): Either[Iterable[Throwable], Unit] =
     socket.send(message) match {
       case Left(ex) => Left(socket.close ++ ex)
       case r: Right[_, _] => r
     }
 
-  def receive[A]: Either[Iterable[Throwable], A] =
-    socket.receive[A] match {
+  def receive: Either[Iterable[Throwable], Object] =
+    socket.receive match {
       case Left(ex) => Left(socket.close ++ ex)
       case r: Right[_, _] => r
     }
