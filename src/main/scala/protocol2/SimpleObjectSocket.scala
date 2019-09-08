@@ -40,7 +40,7 @@ object SimpleObjectSocket {
   def apply(inetAddress: InetAddress, port: Int): SimpleObjectSocket =
     new SimpleObjectSocket(
       new ResourceManager[ObjectSocketConnection](
-        new ClientObjectSocketFactory(inetAddress,port)
+        new ObjectSocketConnectionFactory(inetAddress,port)
       )
     )
 

@@ -7,10 +7,10 @@ import scala.util.{Failure, Success, Try}
 
 class ResourceManager[A](factory: ResourceFactory[A]) {
 
-  private var resource: Either[Closed.type, Option[A]] = Right(None)
+  private var state: Either[Closed.type, Option[A]] = Right(None)
 
   def get: Try[A] = {
-    resource match {
+    state match {
       case Left(_) => Failure(ResourceClosedException("Resource manager is closed"))
       case Right(Some(r)) => Success(r)
       case Right(None) => openNew
@@ -18,24 +18,30 @@ class ResourceManager[A](factory: ResourceFactory[A]) {
   }
 
   def discard: Iterable[Throwable] = {
-    val result = resource match {
-      case Right(Some(r)) => factory.close(r)
-      case _ => List()
+    state match {
+      case Left(_) => List(ResourceClosedException("Resource manager is closed"))
+      case Right(None) => List()
+      case Right(Some(r)) =>
+        val result = closeCurrent
+        state = Right(None)
+        result
     }
-    resource = Right(None)
-    result
   }
 
   def close: Iterable[Throwable] = {
-    val result = resource match {
-      case Right(Some(r)) => factory.close(r)
-      case _ => List()
-    }
-    resource = Left(Closed)
+    val result = closeCurrent
+    state = Left(Closed)
     result
   }
 
-  def isClosed: Boolean = resource match {
+  private def closeCurrent: Iterable[Throwable] = {
+    state match {
+      case Right(Some(r)) => factory.close(r)
+      case _ => List()
+    }
+  }
+
+  def isClosed: Boolean = state match {
     case Left(_) => true
     case _ => false
   }
@@ -43,7 +49,7 @@ class ResourceManager[A](factory: ResourceFactory[A]) {
   private def openNew: Try[A] = {
     factory.create match {
       case Success(r) =>
-        resource = Right(Some(r))
+        state = Right(Some(r))
         Success(r)
 
       case ex: Failure[_] => ex

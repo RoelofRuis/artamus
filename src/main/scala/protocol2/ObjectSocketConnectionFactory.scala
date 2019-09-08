@@ -6,7 +6,7 @@ import protocol2.resource.ResourceFactory
 
 import scala.util.Try
 
-class ClientObjectSocketFactory (inetAddress: InetAddress, port: Int) extends ResourceFactory[ObjectSocketConnection] {
+class ObjectSocketConnectionFactory (inetAddress: InetAddress, port: Int) extends ResourceFactory[ObjectSocketConnection] {
 
   def create: Try[ObjectSocketConnection] = ObjectSocketConnection(inetAddress, port)
 
