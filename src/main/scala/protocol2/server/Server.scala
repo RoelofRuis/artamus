@@ -7,7 +7,7 @@ import protocol2.resource.ResourceManager
 
 import scala.util.{Failure, Success}
 
-class Server(port: Int, messageHandler: MessageHandler) extends LazyLogging {
+class Server(port: Int, messageHandler: MessageHandler) extends ServerInterface with LazyLogging {
 
   val serverManager = new ResourceManager[ServerSocket](new ServerSocketFactory(port))
   val connectionManager = new ResourceManager[ServerConnection](new ServerConnectionFactory(serverManager))
@@ -28,16 +28,20 @@ class Server(port: Int, messageHandler: MessageHandler) extends LazyLogging {
     serverManager.close
   }
 
+  def publish(msg: Any): Unit = {
+    connectionManager.get match {
+      case Success(conn) => send(conn, msg)
+      case Failure(ex) => logger.warn(s"No connection to publish to [$ex]")
+    }
+  }
+
   private def receive(conn: ServerConnection): Unit = {
-    while (!conn.isClosed) {
+    while ( ! conn.isClosed) {
       conn.receive match {
         case Right(a) =>
           logger.info(s"Server received [$a]")
           messageHandler.handle(a) match {
-            case Right(obj) => conn.send(obj) match {
-              case Right(_) => logger.info(s"Server sent [$obj]")
-              case Left(ex) => logger.warn(s"Error when sending a message [$ex]")
-            }
+            case Right(obj) => send(conn, obj)
             case Left(ex) => logger.warn(s"Error when handling message [$ex]")
           }
         case Left(ex) => logger.warn(s"Error when receiving a message [$ex]")
@@ -45,7 +49,14 @@ class Server(port: Int, messageHandler: MessageHandler) extends LazyLogging {
     }
   }
 
-  def close: Iterable[Throwable] = connectionManager.close
+  private def send(conn: ServerConnection, msg: Any): Unit = {
+    conn.send(msg) match {
+      case Right(_) => logger.info(s"Server sent [$msg]")
+      case Left(ex) => logger.warn(s"Error when sending a message [$ex]")
+    }
+  }
+
+  def close(): Unit = connectionManager.close.foreach(ex => logger.warn(s"Error when closing server [$ex]"))
 
 }
 

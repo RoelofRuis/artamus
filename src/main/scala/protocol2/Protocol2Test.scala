@@ -4,7 +4,7 @@ import java.net.InetAddress
 
 import protocol2.server.{MessageHandler, Server}
 
-object Client2Test extends App {
+object Protocol2Test extends App {
 
   case class X(s: String) { type Res = Boolean }
   case class Y(s: Double) { type Res = Boolean }
@@ -35,7 +35,7 @@ object Client2Test extends App {
 
   Thread.sleep(2000)
 
-  server.close
+  server.close()
   serverThread.join()
 
 }
