@@ -6,6 +6,4 @@ trait ObjectSocket {
 
   def receive[A]: Either[Iterable[Throwable], A]
 
-  def close: Iterable[Throwable]
-
 }

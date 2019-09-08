@@ -17,6 +17,8 @@ class ServerConnection(s: Socket) {
 
   def receive[A]: Either[Iterable[Throwable], A] = socket.receive[A]
 
+  def isClosed: Boolean = socket.isClosed
+
   def close: Iterable[Throwable] = socket.close
 
 }

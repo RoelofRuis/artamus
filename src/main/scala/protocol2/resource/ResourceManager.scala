@@ -22,16 +22,6 @@ class ResourceManager[A](
     }
   }
 
-  private def openNew: Try[A] = {
-    factory.create match {
-      case Success(r) =>
-        resource = Right(Some(r))
-        Success(r)
-
-      case ex: Failure[_] => ex
-    }
-  }
-
   def close(): Iterable[Throwable] = {
     resource match {
       case Right(Some(r)) =>
@@ -40,6 +30,21 @@ class ResourceManager[A](
         closeResult
 
       case _ => List()
+    }
+  }
+
+  def isClosed: Boolean = resource match {
+    case Left(_) => true
+    case _ => false
+  }
+
+  private def openNew: Try[A] = {
+    factory.create match {
+      case Success(r) =>
+        resource = Right(Some(r))
+        Success(r)
+
+      case ex: Failure[_] => ex
     }
   }
 

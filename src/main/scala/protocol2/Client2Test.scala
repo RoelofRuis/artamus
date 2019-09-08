@@ -7,22 +7,24 @@ object Client2Test extends App {
   case class X(s: String) { type Res = Boolean }
 
   val serverThread = new Thread(() => {
-    val ss = new ServerSocket(9999)
+    val server = new ServerSocket(9999)
+    val acceptNewConnections = true
 
-    val serverConnection = new ServerConnection(ss.accept())
+    while (acceptNewConnections) {
+      val socket = server.accept // can throw!
+      println("Accepting new!")
 
-    var connOpen = true
+      val serverConnection = new ServerConnection(socket)
 
-    while(connOpen) {
-      serverConnection.receive[X] match {
-        case Right(x) => println(s"Receiving [$x]")
-        case Left(err) =>
-          println(s"Cannot receive [$err]")
-          connOpen = false
+      while(! serverConnection.isClosed) {
+        serverConnection.receive[X] match {
+          case Right(x) => println(s"Receiving [$x]")
+          case Left(err) => println(s"Cannot receive [$err]")
+        }
       }
     }
 
-    ss.close()
+    server.close()
   })
 
   serverThread.start()

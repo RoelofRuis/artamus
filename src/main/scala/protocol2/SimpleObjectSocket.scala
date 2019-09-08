@@ -27,6 +27,8 @@ class SimpleObjectSocket(connection: ResourceManager[ObjectSocketConnection]) ex
     }
   }
 
+  def isClosed: Boolean = connection.isClosed
+
   def close: Iterable[Throwable] = connection.close()
 
 }
