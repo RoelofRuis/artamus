@@ -9,7 +9,7 @@ package object track {
   case class SetTimeSignature(t: TimeSignature) extends Command
   case class SetKey(k: Key) extends Command
 
-  case class AddNote(position: Position, note: Note) extends Command
+  case class AddNote(position: Position, note: Note[MidiPitch]) extends Command
 
   // Events
   case object TrackSymbolsUpdated extends Event

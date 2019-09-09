@@ -9,7 +9,7 @@ private[server] class TrackCommandHandler @Inject() (
   state: TrackState
 ) {
 
-  import TrackSymbols._
+  import music.properties.Symbols._
 
   dispatcher.subscribe[SetTimeSignature]{ command =>
     // TODO: move explicit position away from here

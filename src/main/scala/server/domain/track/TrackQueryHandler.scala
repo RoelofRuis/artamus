@@ -1,7 +1,7 @@
 package server.domain.track
 
 import javax.inject.Inject
-import music.Note
+import music.{MidiPitch, Note}
 import protocol.{Dispatcher, Query}
 
 private[server] class TrackQueryHandler @Inject() (
@@ -9,11 +9,11 @@ private[server] class TrackQueryHandler @Inject() (
   state: TrackState
 ) {
 
-  import TrackSymbols._
+  import music.properties.Symbols._
 
   dispatcher.subscribe[GetMidiPitches.type]{ _ =>
-    state.getTrack.getSymbols[Note]
-      .map(_.midiPitch.toMidiPitchNumber)
+    state.getTrack.getSymbols[Note[MidiPitch]]
+      .map(_.pitch.getMidiPitchNumber)
       .toList
   }
 
