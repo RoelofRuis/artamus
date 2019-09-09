@@ -24,14 +24,18 @@ class TrackOperations @Inject() (
        try { scala.io.StdIn.readInt() }
        catch { case _: NumberFormatException => getInt }
     }
+
     val numNotes = getInt
+
+    println(s"reading $numNotes notes:")
 
     reader
       .readMidiNoteNumbers(numNotes)
-      .map{ pitch => AddNote(
-        Position.apply(Duration.QUARTER, 0),
-        Note(Duration.QUARTER, MidiPitch(pitch))
-      )}
+      .map{ midiNoteNumber =>
+        AddNote(
+          Position.apply(Duration.QUARTER, 0),
+          Note(Duration.QUARTER, MidiPitch(midiNoteNumber))
+        )}
   })
 
 }
