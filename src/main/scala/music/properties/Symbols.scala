@@ -1,6 +1,6 @@
 package music.properties
 
-import music.{Key, MidiPitch, Note, TimeSignature}
+import music._
 
 object Symbols {
 

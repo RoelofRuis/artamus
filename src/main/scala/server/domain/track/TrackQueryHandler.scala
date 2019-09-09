@@ -10,10 +10,11 @@ private[server] class TrackQueryHandler @Inject() (
 ) {
 
   import music.properties.Symbols._
+  import music.properties.Pitch._
 
   dispatcher.subscribe[GetMidiPitches.type]{ _ =>
     state.getTrack.getSymbols[Note[MidiPitch]]
-      .map(_.pitch.getMidiPitchNumber)
+      .map(_.pitch.getMidiNoteNumber.value)
       .toList
   }
 

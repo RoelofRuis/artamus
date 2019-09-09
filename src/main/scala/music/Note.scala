@@ -1,8 +1,8 @@
 package music
 
-import music.properties.Pitch.IsPitched
+import music.properties.Pitch.HasExactPitch
 
-final case class Note[A : IsPitched](duration: Duration, pitch: A)
+final case class Note[A : HasExactPitch](duration: Duration, pitch: A)
 
 object Note {
 

@@ -14,13 +14,12 @@ class MusicReader @Inject() (reader: MidiMessageReader) {
 
     if (firstStep.isEmpty) readMusicVector
     else {
-      val diff = midiPitches.last - midiPitches.head
-      MusicVector(firstStep.get, Accidental(diff))
+      MusicVector(firstStep.get, midiPitches.last diff midiPitches.head)
     }
   }
 
   def readTimeSignature: TimeSignature = {
-    readMidiPitch(2).map{MidiPitch(_).pitchClass} match {
+    readMidiPitch(2).map{ MidiPitch(_).pitchClass } match {
       case num :: denom :: Nil =>
         TimeSignature(num.value + 1, denom.value + 1) match {
           case Some(t) => t
@@ -30,6 +29,6 @@ class MusicReader @Inject() (reader: MidiMessageReader) {
     }
   }
 
-  def readMidiPitch(n: Int): List[Int] = reader.noteOn(n).map(_.getData1)
+  def readMidiPitch(n: Int): List[MidiNoteNumber] = reader.noteOn(n).map(s => MidiNoteNumber(s.getData1))
 
 }
