@@ -27,7 +27,7 @@ class TrackOperations @Inject() (
     val numNotes = getInt
 
     reader
-      .readMidiPitch(numNotes)
+      .readMidiNoteNumbers(numNotes)
       .map{ pitch => AddNote(
         Position.apply(Duration.QUARTER, 0),
         Note(Duration.QUARTER, MidiPitch(pitch))

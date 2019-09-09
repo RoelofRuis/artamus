@@ -10,11 +10,11 @@ private[server] class TrackQueryHandler @Inject() (
 ) {
 
   import music.properties.Symbols._
-  import music.properties.Pitch._
+  import music.properties.Pitch.midiPitchHasExactPitch
 
   dispatcher.subscribe[GetMidiPitches.type]{ _ =>
     state.getTrack.getSymbols[Note[MidiPitch]]
-      .map(_.pitch.getMidiNoteNumber.value)
+      .map(note => midiPitchHasExactPitch.getMidiNoteNumber(note.pitch).value)
       .toList
   }
 
