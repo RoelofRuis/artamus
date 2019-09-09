@@ -1,9 +1,10 @@
 package server.domain.track
 
 import javax.inject.Inject
-import music.{Position, Track}
+import music.Position
+import music.containers.Track
 import protocol.server.EventBus
-import music.properties.Symbols.{Symbol, StackableSymbol}
+import music.properties.Symbols.{StackableSymbol, Symbol}
 
 class TrackState @Inject() (eventBus: EventBus) {
 
