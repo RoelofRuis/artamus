@@ -1,6 +1,6 @@
-package protocol2.resource
+package resource
 
-import protocol2.resource.ManagedResource._
+import resource.ManagedResource._
 
 final class ManagedResource[A](res: Resource[A]) {
 

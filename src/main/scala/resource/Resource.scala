@@ -1,4 +1,4 @@
-package protocol2.resource
+package resource
 
 trait Resource[A] {
 
