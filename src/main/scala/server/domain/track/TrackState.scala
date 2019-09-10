@@ -2,19 +2,22 @@ package server.domain.track
 
 import javax.inject.Inject
 import music.Position
+import music.containers.{ImmutableTrack, Track}
 import protocol.server.EventBus
-import server.domain.track.Track.{StackableTrackSymbol, TrackSymbol}
+import music.properties.Symbols.{StackableSymbol, Symbol}
 
 class TrackState @Inject() (eventBus: EventBus) {
 
-  private val track = new Track()
+  // TODO: thread safety waarborgen
 
-  def setTrackSymbol[A](pos: Position, symbol: A)(implicit ev: TrackSymbol[A]): Unit = {
-    track.setSymbol(pos, symbol)
+  private var track: Track = ImmutableTrack.empty
+
+  def setTrackSymbol[A](pos: Position, symbol: A)(implicit ev: Symbol[A]): Unit = {
+    track = track.setSymbolAt(pos, symbol)
   }
 
-  def addTrackSymbol[A](pos: Position, symbol: A)(implicit ev: StackableTrackSymbol[A]): Unit = {
-    track.addSymbol(pos, symbol)
+  def addTrackSymbol[A](pos: Position, symbol: A)(implicit ev: StackableSymbol[A]): Unit = {
+    track = track.addSymbolAt(pos, symbol)
     eventBus.publishEvent(TrackSymbolsUpdated)
   }
 

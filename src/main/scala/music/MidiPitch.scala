@@ -1,15 +1,9 @@
 package music
 
-import music.MidiPitch.MidiPitchNumber
-
-final case class MidiPitch private (pitchClass: PitchClass, octave: Octave) {
-  def toMidiPitchNumber: MidiPitchNumber = ((octave.value + 1) * 12) + pitchClass.value
-}
+final case class MidiPitch private (octave: Octave, pitchClass: PitchClass)
 
 object MidiPitch {
 
-  type MidiPitchNumber = Int
-
-  def apply(i: MidiPitchNumber): MidiPitch = MidiPitch(PitchClass(i % 12), Octave((i / 12) - 1))
+  def apply(i: MidiNoteNumber): MidiPitch = MidiPitch(Octave(i), PitchClass(i))
 
 }

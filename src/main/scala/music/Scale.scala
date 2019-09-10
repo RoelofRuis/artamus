@@ -31,6 +31,14 @@ object Scale {
       else PitchClass(-loop(Math.abs(step.value), 0, scale.stepSizes.reverse))
     }
 
+    def musicVectorToPitchClass(mvec: MusicVector): PitchClass = {
+      // Fixme: This won't work for accidentals with values larger than `scale.numberOfSteps`
+      val newPc = scale.stepToPitchClass(mvec.step).value + mvec.acc.value
+      if (newPc < 0) PitchClass(scale.numberOfSteps - newPc)
+      else if (newPc > scale.numberOfSteps) PitchClass(newPc - scale.numberOfSteps)
+      else PitchClass(newPc)
+    }
+
   }
 
 }
