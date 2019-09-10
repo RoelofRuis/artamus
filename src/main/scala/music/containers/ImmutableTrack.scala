@@ -26,12 +26,13 @@ final case class ImmutableTrack private (
   /* StackableSymbol[A] methods */
   def addSymbolAt[A](pos: Position, a: A)(implicit ev: StackableSymbol[A]): Track = updateSymbols[A](_.addSymbolAt(pos, a))
 
-  def getSymbolsAt[A](pos: Position)(implicit ev: StackableSymbol[A]): Iterable[A] = getSymbolTrack[A].getSymbolsAt(pos)
+  def getStackedSymbolsAt[A](pos: Position)(implicit ev: StackableSymbol[A]): Iterable[A] = getSymbolTrack[A].getStackedSymbolsAt(pos)
 
-  def getSymbolsRange[A](from: Position, until: Position)(implicit ev: StackableSymbol[A]): Iterable[(Position, Iterable[A])] = getSymbolTrack[A].getSymbolsRange(from, until)
+  def getStackedSymbolRange[A](from: Position, until: Position)(implicit ev: StackableSymbol[A]): Iterable[(Position, Iterable[A])] = getSymbolTrack[A].getStackedSymbolRange(from, until)
 
-  def getAllSymbols[A](implicit ev: StackableSymbol[A]): Iterable[(Position, Iterable[A])] = getSymbolTrack[A].getAllSymbols
+  def getAllStackedSymbols[A](implicit ev: StackableSymbol[A]): Iterable[(Position, Iterable[A])] = getSymbolTrack[A].getAllStackedSymbols
 
+  // Convenience functions
   private def getSymbolTrack[A](implicit ev: Symbol[A]): OrderedSymbols[A] =
     symbolTracks.getOrElse(ev, OrderedSymbols[A]()).asInstanceOf[OrderedSymbols[A]]
 
@@ -64,11 +65,11 @@ object ImmutableTrack {
     def addSymbolAt(pos: Position, a: A)(implicit ev: StackableSymbol[A]): OrderedSymbols[A] =
       OrderedSymbols(symbolData.updated(pos, symbolData.getOrElse(pos, List[A]()) :+ a))
 
-    def getSymbolsAt(pos: Position)(implicit ev: StackableSymbol[A]): Iterable[A] = symbolData.getOrElse(pos, List())
+    def getStackedSymbolsAt(pos: Position)(implicit ev: StackableSymbol[A]): Iterable[A] = symbolData.getOrElse(pos, List())
 
-    def getSymbolsRange(from: Position, until: Position)(implicit ev: StackableSymbol[A]): Iterable[(Position, Iterable[A])] = symbolData.range(from, until)
+    def getStackedSymbolRange(from: Position, until: Position)(implicit ev: StackableSymbol[A]): Iterable[(Position, Iterable[A])] = symbolData.range(from, until)
 
-    def getAllSymbols(implicit ev: StackableSymbol[A]): Iterable[(Position, Iterable[A])] = symbolData
+    def getAllStackedSymbols(implicit ev: StackableSymbol[A]): Iterable[(Position, Iterable[A])] = symbolData
 
   }
 

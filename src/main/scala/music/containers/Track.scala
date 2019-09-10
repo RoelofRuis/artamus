@@ -23,10 +23,10 @@ trait Track {
   /* StackableSymbol[A] methods */
   def addSymbolAt[A](pos: Position, a: A)(implicit ev: StackableSymbol[A]): Track
 
-  def getSymbolsAt[A](pos: Position)(implicit ev: StackableSymbol[A]): Iterable[A]
+  def getStackedSymbolsAt[A](pos: Position)(implicit ev: StackableSymbol[A]): Iterable[A]
 
-  def getSymbolsRange[A](from: Position, until: Position)(implicit ev: StackableSymbol[A]): Iterable[(Position, Iterable[A])]
+  def getStackedSymbolRange[A](from: Position, until: Position)(implicit ev: StackableSymbol[A]): Iterable[(Position, Iterable[A])]
 
-  def getAllSymbols[A](implicit ev: StackableSymbol[A]): Iterable[(Position, Iterable[A])]
+  def getAllStackedSymbols[A](implicit ev: StackableSymbol[A]): Iterable[(Position, Iterable[A])]
 
 }

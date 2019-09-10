@@ -10,6 +10,8 @@ final case class Position(value: Rational) extends Comparable[Position] {
 
 object Position {
 
+  def zero: Position = Position(Rational(0))
+
   def apply(duration: Duration, offset: Int): Position = Position(duration.value * offset)
 
 }
