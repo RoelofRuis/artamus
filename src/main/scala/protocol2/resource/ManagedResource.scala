@@ -7,7 +7,10 @@ final class ManagedResource[A](res: Resource[A]) {
   private var state: State[A] = Empty()
 
   /**
-    * Acquire an instance of this resource
+    * Acquire an instance of this resource.
+    *
+    * If there is a problem acquiring the resource, returns Left[ResourceAcquirementException]
+    * If this managed resource is closed, returns Left[ResourceClosedException]
     */
   def acquire: Either[ResourceException, A] = state match {
     case Empty()    =>
@@ -33,7 +36,8 @@ final class ManagedResource[A](res: Resource[A]) {
 
   /**
     * Close this manager, and release the currently held instance of this resource.
-    * After this call, acquire will throw a [[ResourceClosedException]]
+    *
+    * If [[acquire]] is called after this managed resource is closed, it will return Some([[ResourceClosedException]])
     */
   def close: Option[ResourceReleaseException] = state match {
     case Empty()    =>
