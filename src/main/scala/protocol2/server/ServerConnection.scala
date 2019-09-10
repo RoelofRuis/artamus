@@ -2,14 +2,14 @@ package protocol2.server
 
 import java.net.Socket
 
-import protocol2.resource.ResourceManager
+import protocol2.resource.ManagedResource
 import protocol2.{ObjectSocketConnection, SimpleObjectSocket}
 
 class ServerConnection(s: Socket) {
 
   private val socket = new SimpleObjectSocket(
-    new ResourceManager[ObjectSocketConnection](
-      new ServerObjectSocketFactory(s)
+    new ManagedResource[ObjectSocketConnection](
+      new ServerObjectSocketResource(s)
     )
   )
 

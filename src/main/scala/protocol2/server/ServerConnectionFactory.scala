@@ -2,14 +2,18 @@ package protocol2.server
 
 import java.net.ServerSocket
 
-import protocol2.resource.{ResourceFactory, ResourceManager}
+import protocol2.resource.{ManagedResource, Resource}
 
-import scala.util.Try
+import scala.util.{Failure, Success, Try}
 
-class ServerConnectionFactory(manager: ResourceManager[ServerSocket]) extends ResourceFactory[ServerConnection] {
+class ServerConnectionFactory(resource: ManagedResource[ServerSocket]) extends Resource[ServerConnection] {
 
-  override def create: Try[ServerConnection] = manager.get.flatMap(server => Try { new ServerConnection(server.accept()) })
+  override def acquire: Either[Throwable, ServerConnection] = {
+    resource.acquire.flatMap(server => Try { new ServerConnection(server.accept()) } match {
+      case Success(connection) => Right(connection)
+      case Failure(exception) => Left(exception)
+    })
+  }
 
-  override def close(a: ServerConnection): Iterable[Throwable] = a.close
-
+  override def release(a: ServerConnection): Option[Throwable] = a.close.headOption // TODO: ensure proper implementation
 }

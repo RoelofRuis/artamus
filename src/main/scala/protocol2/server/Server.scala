@@ -3,35 +3,33 @@ package protocol2.server
 import java.net.ServerSocket
 
 import com.typesafe.scalalogging.LazyLogging
-import protocol2.resource.ResourceManager
-
-import scala.util.{Failure, Success}
+import protocol2.resource.{ManagedResource, SafeResource}
 
 class Server(port: Int, messageHandler: MessageHandler) extends ServerInterface with LazyLogging {
 
-  val serverManager = new ResourceManager[ServerSocket](new ServerSocketFactory(port))
-  val connectionManager = new ResourceManager[ServerConnection](new ServerConnectionFactory(serverManager))
+  val serverSocket = new ManagedResource[ServerSocket](new SafeResource[ServerSocket](new ServerSocket(port), _.close()))
+  val serverConnection = new ManagedResource[ServerConnection](new ServerConnectionFactory(serverSocket))
 
   def accept(): Unit = {
-    while (! connectionManager.isClosed) {
+    while (! serverConnection.isClosed) {
       logger.info("Accepting new connection")
 
-      connectionManager.get match {
-        case Success(conn) => receive(conn)
-        case Failure(ex) => logger.warn(s"Failed to accept connection [$ex]")
+      serverConnection.acquire match {
+        case Right(conn) => receive(conn)
+        case Left(ex) => logger.warn(s"Failed to accept connection [$ex]")
       }
 
-      connectionManager.discard
+      serverConnection.release
     }
 
     logger.info("Closing server")
-    serverManager.close
+    serverSocket.close
   }
 
   def publish(msg: Any): Unit = {
-    connectionManager.get match {
-      case Success(conn) => send(conn, msg)
-      case Failure(ex) => logger.warn(s"No connection to publish to [$ex]")
+    serverConnection.acquire match {
+      case Right(conn) => send(conn, msg)
+      case Left(ex) => logger.warn(s"No connection to publish to [$ex]")
     }
   }
 
@@ -56,7 +54,7 @@ class Server(port: Int, messageHandler: MessageHandler) extends ServerInterface 
     }
   }
 
-  def close(): Unit = connectionManager.close.foreach(ex => logger.warn(s"Error when closing server [$ex]"))
+  def close(): Unit = serverConnection.close.foreach(ex => logger.warn(s"Error when closing server [$ex]"))
 
 }
 

@@ -2,30 +2,30 @@ package protocol2
 
 import java.net.InetAddress
 
-import protocol2.resource.ResourceManager
+import protocol2.resource.ManagedResource
 
 import scala.language.reflectiveCalls
 import scala.util.{Failure, Success}
 
-class SimpleObjectSocket(connection: ResourceManager[ObjectSocketConnection]) extends ObjectSocket {
+class SimpleObjectSocket(connection: ManagedResource[ObjectSocketConnection]) extends ObjectSocket {
 
   def send(message: Any): Either[Iterable[Throwable], Unit] = {
-    connection.get match {
-      case Success(conn) => conn.write(message) match {
+    connection.acquire match {
+      case Right(conn) => conn.write(message) match {
         case Success(_) => Right(())
-        case Failure(ex) => Left(connection.discard.toList :+ ex)
+        case Failure(ex) => Left(connection.release.toList :+ ex)
       }
-      case Failure(ex) => Left(List(ex))
+      case Left(ex) => Left(List(ex))
     }
   }
 
   def receive: Either[Iterable[Throwable], Object] = {
-    connection.get match {
-      case Success(conn) => conn.read match {
+    connection.acquire match {
+      case Right(conn) => conn.read match {
         case Success(r) => Right(r)
-        case Failure(ex) => Left(connection.discard.toList :+ ex)
+        case Failure(ex) => Left(connection.release.toList :+ ex)
       }
-      case Failure(ex) => Left(List(ex))
+      case Left(ex) => Left(List(ex))
     }
   }
 
@@ -39,7 +39,7 @@ object SimpleObjectSocket {
 
   def apply(inetAddress: InetAddress, port: Int): SimpleObjectSocket =
     new SimpleObjectSocket(
-      new ResourceManager[ObjectSocketConnection](
+      new ManagedResource[ObjectSocketConnection](
         new ObjectSocketConnectionFactory(inetAddress,port)
       )
     )
