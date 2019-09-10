@@ -2,7 +2,7 @@ package resource
 
 import resource.ManagedResource._
 
-final class ManagedResource[A](res: Resource[A]) {
+final class ManagedResource[A] private (res: Resource[A]) {
 
   private var state: State[A] = Empty()
 
@@ -64,6 +64,8 @@ final class ManagedResource[A](res: Resource[A]) {
 }
 
 object ManagedResource {
+
+  def managed[A](implicit rec: Resource[A]): ManagedResource[A] = new ManagedResource[A](rec)
 
   sealed trait ResourceException extends Exception
   final case class ResourceAcquirementException(ex: Throwable) extends ResourceException
