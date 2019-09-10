@@ -3,7 +3,7 @@ package protocol2.server
 import java.net.ServerSocket
 
 import com.typesafe.scalalogging.LazyLogging
-import protocol2.resource.{ManagedResource, SafeResource}
+import resource.{ManagedResource, SafeResource}
 
 class Server(port: Int, messageHandler: MessageHandler) extends ServerInterface with LazyLogging {
 

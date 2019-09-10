@@ -2,8 +2,8 @@ package protocol2.server
 
 import java.net.Socket
 
-import protocol2.resource.ManagedResource
 import protocol2.{ObjectSocketConnection, SimpleObjectSocket}
+import resource.ManagedResource
 
 class ServerConnection(s: Socket) {
 

@@ -3,7 +3,7 @@ package protocol2
 import java.io.{ObjectInputStream, ObjectOutputStream}
 import java.net.{InetAddress, Socket}
 
-import protocol2.resource.{ManagedResource, SafeResource}
+import resource.{ManagedResource, SafeResource}
 
 import scala.util.{Failure, Try}
 

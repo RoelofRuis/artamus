@@ -2,7 +2,7 @@ package protocol2.server
 
 import java.net.ServerSocket
 
-import protocol2.resource.{ManagedResource, Resource}
+import resource.{ManagedResource, Resource}
 
 import scala.util.{Failure, Success, Try}
 

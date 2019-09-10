@@ -3,7 +3,7 @@ package protocol2.server
 import java.net.Socket
 
 import protocol2.ObjectSocketConnection
-import protocol2.resource.Resource
+import resource.Resource
 
 class ServerObjectSocketResource (socket: Socket) extends Resource[ObjectSocketConnection] {
 

@@ -2,7 +2,7 @@ package protocol2
 
 import java.net.InetAddress
 
-import protocol2.resource.Resource
+import resource.Resource
 
 import scala.util.{Failure, Success}
 
