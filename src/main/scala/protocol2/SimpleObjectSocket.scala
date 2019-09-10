@@ -3,6 +3,7 @@ package protocol2
 import java.net.InetAddress
 
 import resource.ManagedResource
+import resource.ManagedResource.managed
 
 import scala.language.reflectiveCalls
 import scala.util.{Failure, Success}
@@ -39,9 +40,7 @@ object SimpleObjectSocket {
 
   def apply(inetAddress: InetAddress, port: Int): SimpleObjectSocket =
     new SimpleObjectSocket(
-      new ManagedResource[ObjectSocketConnection](
-        new ObjectSocketConnectionFactory(inetAddress,port)
-      )
+      managed(new ObjectSocketConnectionFactory(inetAddress,port))
     )
 
 }

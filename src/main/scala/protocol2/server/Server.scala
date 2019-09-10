@@ -3,12 +3,14 @@ package protocol2.server
 import java.net.ServerSocket
 
 import com.typesafe.scalalogging.LazyLogging
-import resource.{ManagedResource, SafeResource}
+import resource.ManagedResource
+import resource.ManagedResource.managed
+import resource.Resource.safe
 
 class Server(port: Int, messageHandler: MessageHandler) extends ServerInterface with LazyLogging {
 
-  val serverSocket = new ManagedResource[ServerSocket](new SafeResource[ServerSocket](new ServerSocket(port), _.close()))
-  val serverConnection = new ManagedResource[ServerConnection](new ServerConnectionFactory(serverSocket))
+  val serverSocket: ManagedResource[ServerSocket] = managed(safe[ServerSocket](new ServerSocket(port), _.close()))
+  val serverConnection: ManagedResource[ServerConnection] = managed[ServerConnection](new ServerConnectionFactory(serverSocket))
 
   def accept(): Unit = {
     while (! serverConnection.isClosed) {
