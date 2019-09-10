@@ -1,7 +1,7 @@
 package server.domain.track
 
 import javax.inject.Inject
-import music.{MidiPitch, Note}
+import music.{Duration, MidiPitch, Note, Position}
 import protocol.{Dispatcher, Query}
 
 private[server] class TrackQueryHandler @Inject() (
@@ -13,7 +13,7 @@ private[server] class TrackQueryHandler @Inject() (
   import music.properties.Pitch.midiPitchHasExactPitch
 
   dispatcher.subscribe[GetMidiPitches.type]{ _ =>
-    state.getTrack.getSymbols[Note[MidiPitch]]
+    state.getTrack.getSymbolsAt[Note[MidiPitch]](Position(Duration.QUARTER, 0))
       .map(note => midiPitchHasExactPitch.getMidiNoteNumber(note.pitch).value)
       .toList
   }
