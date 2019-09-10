@@ -1,6 +1,7 @@
 package midi.resources
 
 import javax.sound.midi.{MidiDevice, MidiSystem}
+import midi.DeviceHash
 
 // TODO: see where this needs to go and whether it is still needed
 case class MidiDeviceDescription private (
@@ -16,6 +17,14 @@ case class MidiDeviceDescription private (
 }
 
 object MidiDeviceDescription {
+
+  def allDescriptions: Array[MidiDeviceDescription] = MidiSystem.getMidiDeviceInfo.map { MidiDeviceDescription(_) }
+
+  def findDeviceInfo(deviceHash: DeviceHash): Option[MidiDevice.Info] = {
+    allDescriptions
+      .collectFirst { case descr: MidiDeviceDescription if descr.hash == deviceHash => descr.info }
+  }
+
   def apply(info: MidiDevice.Info): MidiDeviceDescription = {
     val device = MidiSystem.getMidiDevice(info)
     val deviceHash = (info.getName + device.getClass.getSimpleName).hashCode.toHexString.padTo(8, '0')
@@ -27,4 +36,5 @@ object MidiDeviceDescription {
       device.getMaxReceivers
     )
   }
+
 }
