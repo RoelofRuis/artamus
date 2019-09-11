@@ -2,7 +2,6 @@ package resource
 
 import scala.util.{Failure, Success, Try}
 
-// TODO: try to make monadic?
 trait Resource[A] {
 
   def acquire: Either[Throwable, A]
@@ -14,15 +13,17 @@ trait Resource[A] {
 object Resource {
 
   /** Makes unsafe acquire and release calls safe to use as resources */
-  def safe[A](unsafeAcquire: => A, unsafeRelease: A => Unit): Resource[A] = new SafeResource[A](unsafeAcquire, unsafeRelease)
+  def wrapUnsafe[A](unsafeAcquire: => A, unsafeRelease: A => Unit): Resource[A] = new TryResource[A](Try(unsafeAcquire), Try(unsafeRelease))
 
-  private[Resource] final class SafeResource[A](unsafeAcquire: => A, unsafeRelease: A => Unit) extends Resource[A] {
-    def acquire: Either[Throwable, A] = Try(unsafeAcquire) match {
+  /** Wraps try calls to allow them to be used as Resource[A] */
+  def wrapTry[A](tryAcquire: Try[A], tryRelease: Try[Unit]): Resource[A] = new TryResource[A](tryAcquire, tryRelease)
+
+  private[Resource] final class TryResource[A](tryAcquire: Try[A], tryRelease: Try[Unit]) extends Resource[A] {
+    def acquire: Either[Throwable, A] = tryAcquire match {
       case Success(resource) => Right(resource)
       case Failure(ex) => Left(ex)
     }
-
-    def release(a: A): Option[Throwable] = Try {unsafeRelease(a)} match {
+    def release(a: A): Option[Throwable] = tryRelease match {
       case Success(_) => None
       case Failure(ex) => Some(ex)
     }
