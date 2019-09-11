@@ -10,10 +10,11 @@ import scala.util.Try
 class Server(port: Int, messageHandler: MessageHandler) extends ServerInterface with LazyLogging {
 
   val serverSocket: ManagedResource[ServerSocket] = ManagedResource.wrapUnsafe[ServerSocket](new ServerSocket(port), _.close())
-  val serverConnection: ManagedResource[ServerConnection] = serverSocket.transform(
-    server => Try { new ServerConnection(server.accept()) },
-    (s: ServerConnection) => s.close.toSeq
-  )
+  val serverConnection: ManagedResource[ServerConnection] =
+    serverSocket.transform(
+      server => Try { new ServerConnection(server.accept()) },
+      (s: ServerConnection) => s.close.toSeq
+    )
 
   def accept(): Unit = {
     while (! serverConnection.isClosed) {
