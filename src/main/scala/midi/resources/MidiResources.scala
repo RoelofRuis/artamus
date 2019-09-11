@@ -78,7 +78,7 @@ class MidiResources extends LazyLogging {
 
 object MidiResources {
 
-  def deviceResource(info: MidiDevice.Info): Resource[MidiDevice] = Resource.safe[MidiDevice]({
+  def deviceResource(info: MidiDevice.Info): Resource[MidiDevice] = Resource.wrapUnsafe[MidiDevice]({
       val device = MidiSystem.getMidiDevice(info)
       device.open()
       device
@@ -86,10 +86,10 @@ object MidiResources {
     _.close()
   )
 
-  def transmitterResource(device: MidiDevice): Resource[Transmitter] = Resource.safe[Transmitter](device.getTransmitter,_.close())
+  def transmitterResource(device: MidiDevice): Resource[Transmitter] = Resource.wrapUnsafe[Transmitter](device.getTransmitter,_.close())
 
-  def receiverResource(device: MidiDevice): Resource[Receiver] = Resource.safe[Receiver](device.getReceiver, _.close())
+  def receiverResource(device: MidiDevice): Resource[Receiver] = Resource.wrapUnsafe[Receiver](device.getReceiver, _.close())
 
-  def sequencerResource: Resource[Sequencer] = Resource.safe[Sequencer](MidiSystem.getSequencer(false), _.close())
+  def sequencerResource: Resource[Sequencer] = Resource.wrapUnsafe[Sequencer](MidiSystem.getSequencer(false), _.close())
 
 }
