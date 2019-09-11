@@ -2,7 +2,9 @@ package resource
 
 import resource.ManagedResource._
 
-final class ManagedResource[A] private (res: Resource[A]) {
+import scala.util.Try
+
+final class ManagedResource[A] private (res: Resource[A]) extends ManagedResourceTransformers[A] {
 
   private var state: State[A] = Empty()
 
@@ -59,17 +61,34 @@ final class ManagedResource[A] private (res: Resource[A]) {
       case Left(ex) => (Empty(), Left(ResourceAcquirementException(ex)))
     }
 
-  private def closeAcquired(a: A): Option[ResourceReleaseException] = res.release(a).map(ResourceReleaseException)
-
+  private def closeAcquired(a: A): Option[ResourceReleaseException] =
+    res.release(a) match {
+      case err: Iterable[Throwable] => Some(ResourceReleaseException(err.toSeq))
+      case _ => None
+    }
 }
 
 object ManagedResource {
 
-  def managed[A](implicit rec: Resource[A]): ManagedResource[A] = new ManagedResource[A](rec)
+  def apply[A](implicit rec: Resource[A]): ManagedResource[A] = new ManagedResource[A](rec)
+
+  /** Makes unsafe acquire and release calls safe to use as resources */
+  def wrapUnsafe[A](unsafeAcquire: => A, unsafeRelease: A => Unit): ManagedResource[A] = {
+    apply(Resource.wrapUnsafe(unsafeAcquire, unsafeRelease))
+  }
+
+  /** Wraps try calls to allow them to be used as Resource[A] */
+  def wrapTry[A](tryAcquire: Try[A], tryRelease: A => Try[Unit]): ManagedResource[A] = {
+    apply(Resource.wrapTry(tryAcquire, tryRelease))
+  }
+
+  def wrap[A](acquireRes: => Either[Throwable, A], releaseRes: A => Iterable[Throwable]): ManagedResource[A] = {
+    apply(Resource[A](acquireRes, releaseRes))
+  }
 
   sealed trait ResourceException extends Exception
   final case class ResourceAcquirementException(ex: Throwable) extends ResourceException
-  final case class ResourceReleaseException(ex: Throwable) extends ResourceException
+  final case class ResourceReleaseException(errors: Seq[Throwable]) extends ResourceException
   final case object ResourceClosedException extends ResourceException
 
   private[ManagedResource] sealed trait State[A]

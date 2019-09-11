@@ -3,10 +3,9 @@ package protocol2
 import java.net.InetAddress
 
 import resource.ManagedResource
-import resource.ManagedResource.managed
 
 import scala.language.reflectiveCalls
-import scala.util.{Failure, Success}
+import scala.util.{Failure, Success, Try}
 
 class SimpleObjectSocket(connection: ManagedResource[ObjectSocketConnection]) extends ObjectSocket {
 
@@ -40,7 +39,5 @@ object SimpleObjectSocket {
 
   def apply(inetAddress: InetAddress, port: Int): SimpleObjectSocket =
     new SimpleObjectSocket(
-      managed(new ObjectSocketConnectionFactory(inetAddress,port))
-    )
-
+      ManagedResource.wrapTry[ObjectSocketConnection](ObjectSocketConnection(inetAddress, port), res => Try(res.close())))
 }

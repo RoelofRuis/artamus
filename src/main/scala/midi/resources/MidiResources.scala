@@ -1,7 +1,6 @@
 package midi.resources
 import com.typesafe.scalalogging.LazyLogging
 import javax.sound.midi._
-import resource.ManagedResource.managed
 import resource.{ManagedResource, Resource}
 
 class MidiResources extends LazyLogging {
@@ -9,12 +8,12 @@ class MidiResources extends LazyLogging {
   private var managedDevices: Map[MidiDevice.Info, ManagedResource[MidiDevice]] = Map()
   private var managedTransmitters: Map[MidiDevice.Info, ManagedResource[Transmitter]] = Map()
   private var managedReceivers: Map[MidiDevice.Info, ManagedResource[Receiver]] = Map()
-  private val managedSequencer: ManagedResource[Sequencer] = managed(MidiResources.sequencerResource)
+  private val managedSequencer: ManagedResource[Sequencer] = ManagedResource(MidiResources.sequencerResource)
 
   def loadSequencer: Option[Sequencer] = getManagedResource(managedSequencer)
 
   def loadDevice(deviceInfo: MidiDevice.Info): Option[MidiDevice] = {
-    val managedDevice = managedDevices.getOrElse(deviceInfo, managed(MidiResources.deviceResource(deviceInfo)))
+    val managedDevice = managedDevices.getOrElse(deviceInfo, ManagedResource(MidiResources.deviceResource(deviceInfo)))
     managedDevices = managedDevices.updated(deviceInfo, managedDevice)
     getManagedResource(managedDevice)
   }
@@ -25,7 +24,7 @@ class MidiResources extends LazyLogging {
       case None =>
         loadDevice(deviceInfo) match {
           case Some(device) =>
-            val managedTransmitter = managedTransmitters.getOrElse(deviceInfo, managed(MidiResources.transmitterResource(device)))
+            val managedTransmitter = managedTransmitters.getOrElse(deviceInfo, ManagedResource(MidiResources.transmitterResource(device)))
             managedTransmitters = managedTransmitters.updated(deviceInfo, managedTransmitter)
             getManagedResource(managedTransmitter)
           case None => None
@@ -39,7 +38,7 @@ class MidiResources extends LazyLogging {
       case None =>
         loadDevice(deviceInfo) match {
           case Some(device) =>
-            val managedTransmitter = managedReceivers.getOrElse(deviceInfo, managed(MidiResources.receiverResource(device)))
+            val managedTransmitter = managedReceivers.getOrElse(deviceInfo, ManagedResource(MidiResources.receiverResource(device)))
             managedReceivers = managedReceivers.updated(deviceInfo, managedTransmitter)
             getManagedResource(managedTransmitter)
           case None => None

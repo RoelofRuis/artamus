@@ -2,13 +2,13 @@ package protocol2.server
 
 import java.net.Socket
 
-import protocol2.SimpleObjectSocket
-import resource.ManagedResource.managed
+import protocol2.{ObjectSocketConnection, SimpleObjectSocket}
+import resource.ManagedResource
 
 class ServerConnection(s: Socket) {
 
   private val socket = new SimpleObjectSocket(
-    managed(new ServerObjectSocketResource(s))
+    ManagedResource.wrap(Right(ObjectSocketConnection(s)), _.close())
   )
 
   def send(message: Any): Either[Iterable[Throwable], Unit] =

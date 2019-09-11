@@ -4,13 +4,16 @@ import java.net.ServerSocket
 
 import com.typesafe.scalalogging.LazyLogging
 import resource.ManagedResource
-import resource.ManagedResource.managed
-import resource.Resource.safe
+
+import scala.util.Try
 
 class Server(port: Int, messageHandler: MessageHandler) extends ServerInterface with LazyLogging {
 
-  val serverSocket: ManagedResource[ServerSocket] = managed(safe[ServerSocket](new ServerSocket(port), _.close()))
-  val serverConnection: ManagedResource[ServerConnection] = managed[ServerConnection](new ServerConnectionFactory(serverSocket))
+  val serverSocket: ManagedResource[ServerSocket] = ManagedResource.wrapUnsafe[ServerSocket](new ServerSocket(port), _.close())
+  val serverConnection: ManagedResource[ServerConnection] = serverSocket.transform(
+    server => Try { new ServerConnection(server.accept()) },
+    (s: ServerConnection) => s.close.toSeq
+  )
 
   def accept(): Unit = {
     while (! serverConnection.isClosed) {
