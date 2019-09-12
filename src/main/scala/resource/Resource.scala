@@ -61,11 +61,14 @@ final class Resource[A] private (acquireRes: => Either[Throwable, A], releaseRes
       case Left(ex) => (Empty(), Left(ResourceAcquirementException(ex)))
     }
 
-  private def releaseInternally(a: A): Option[ResourceReleaseException] =
-    releaseRes(a) match {
-      case err: Iterable[Throwable] => Some(ResourceReleaseException(err.toSeq))
-      case _ => None
-    }
+  private def releaseInternally(a: A): Option[ResourceReleaseException] = {
+    val errors: Iterable[Throwable] = releaseRes(a)
+
+    if (errors.isEmpty) None
+    else Some(ResourceReleaseException(errors.toSeq))
+
+  }
+
 }
 
 object Resource {
