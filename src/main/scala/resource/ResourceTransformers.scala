@@ -2,11 +2,11 @@ package resource
 
 import scala.util.{Failure, Success, Try}
 
-trait ManagedResourceTransformers[A] {
-  this: ManagedResource[A] =>
+trait ResourceTransformers[A] {
+  this: Resource[A] =>
 
-  def transform[B](acquireB: A => Try[B], releaseB: B => Seq[Throwable]): ManagedResource[B] = {
-    ManagedResource.wrap[B](
+  def transform[B](acquireB: A => Try[B], releaseB: B => Seq[Throwable]): Resource[B] = {
+    Resource(
       acquire match {
         case Right(a) => acquireB(a) match {
           case Failure(ex) => Left(ex)

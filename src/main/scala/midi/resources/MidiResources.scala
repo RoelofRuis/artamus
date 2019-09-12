@@ -1,53 +1,53 @@
 package midi.resources
 import com.typesafe.scalalogging.LazyLogging
 import javax.sound.midi._
-import resource.{ManagedResource, Resource}
+import resource.Resource
 
 class MidiResources extends LazyLogging {
 
-  private var managedDevices: Map[MidiDevice.Info, ManagedResource[MidiDevice]] = Map()
-  private var managedTransmitters: Map[MidiDevice.Info, ManagedResource[Transmitter]] = Map()
-  private var managedReceivers: Map[MidiDevice.Info, ManagedResource[Receiver]] = Map()
-  private val managedSequencer: ManagedResource[Sequencer] = ManagedResource(MidiResources.sequencerResource)
+  private var devices: Map[MidiDevice.Info, Resource[MidiDevice]] = Map()
+  private var transmitters: Map[MidiDevice.Info, Resource[Transmitter]] = Map()
+  private var receivers: Map[MidiDevice.Info, Resource[Receiver]] = Map()
+  private val sequencers: Resource[Sequencer] = MidiResources.sequencerResource
 
-  def loadSequencer: Option[Sequencer] = getManagedResource(managedSequencer)
+  def loadSequencer: Option[Sequencer] = useResource(sequencers)
 
   def loadDevice(deviceInfo: MidiDevice.Info): Option[MidiDevice] = {
-    val managedDevice = managedDevices.getOrElse(deviceInfo, ManagedResource(MidiResources.deviceResource(deviceInfo)))
-    managedDevices = managedDevices.updated(deviceInfo, managedDevice)
-    getManagedResource(managedDevice)
+    val managedDevice = devices.getOrElse(deviceInfo, MidiResources.deviceResource(deviceInfo))
+    devices = devices.updated(deviceInfo, managedDevice)
+    useResource(managedDevice)
   }
 
   def loadTransmitter(deviceInfo: MidiDevice.Info): Option[Transmitter] = {
-    managedTransmitters.get(deviceInfo) match {
-      case Some(managedTransmitter) => getManagedResource(managedTransmitter)
+    transmitters.get(deviceInfo) match {
+      case Some(managedTransmitter) => useResource(managedTransmitter)
       case None =>
         loadDevice(deviceInfo) match {
           case Some(device) =>
-            val managedTransmitter = managedTransmitters.getOrElse(deviceInfo, ManagedResource(MidiResources.transmitterResource(device)))
-            managedTransmitters = managedTransmitters.updated(deviceInfo, managedTransmitter)
-            getManagedResource(managedTransmitter)
+            val managedTransmitter = transmitters.getOrElse(deviceInfo, MidiResources.transmitterResource(device))
+            transmitters = transmitters.updated(deviceInfo, managedTransmitter)
+            useResource(managedTransmitter)
           case None => None
         }
     }
   }
 
   def loadReceiver(deviceInfo: MidiDevice.Info): Option[Receiver] = {
-    managedReceivers.get(deviceInfo) match {
-      case Some(managedTransmitter) => getManagedResource(managedTransmitter)
+    receivers.get(deviceInfo) match {
+      case Some(managedTransmitter) => useResource(managedTransmitter)
       case None =>
         loadDevice(deviceInfo) match {
           case Some(device) =>
-            val managedTransmitter = managedReceivers.getOrElse(deviceInfo, ManagedResource(MidiResources.receiverResource(device)))
-            managedReceivers = managedReceivers.updated(deviceInfo, managedTransmitter)
-            getManagedResource(managedTransmitter)
+            val managedTransmitter = receivers.getOrElse(deviceInfo, MidiResources.receiverResource(device))
+            receivers = receivers.updated(deviceInfo, managedTransmitter)
+            useResource(managedTransmitter)
           case None => None
         }
     }
   }
 
-  private def getManagedResource[A](managedResource: ManagedResource[A]): Option[A] = {
-    managedResource.acquire match {
+  private def useResource[A](resource: Resource[A]): Option[A] = {
+    resource.acquire match {
       case Right(res) =>
         logger.info(s"Loaded midi device [$res]")
         Some(res)
@@ -57,20 +57,20 @@ class MidiResources extends LazyLogging {
   }
 
   def closeAll(): Unit = {
-    managedReceivers.values.foreach { receiver =>
+    receivers.values.foreach { receiver =>
       val ex = receiver.close
       logger.info(s"Closing receiver [$receiver][$ex]")
     }
-    managedTransmitters.values.foreach { transmitter =>
+    transmitters.values.foreach { transmitter =>
       val ex = transmitter.close
       logger.info(s"Closing transmitter [$transmitter][$ex]")
     }
-    managedDevices.values.foreach { device =>
+    devices.values.foreach { device =>
       val ex = device.close
       logger.info(s"Closing device [$device][$ex]")
     }
-    val ex = managedSequencer.close
-    logger.info(s"Closing sequencer [$managedSequencer][$ex]")
+    val ex = sequencers.close
+    logger.info(s"Closing sequencer [$sequencers][$ex]")
   }
 
 }

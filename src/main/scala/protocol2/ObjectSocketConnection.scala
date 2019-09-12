@@ -3,17 +3,17 @@ package protocol2
 import java.io.{ObjectInputStream, ObjectOutputStream}
 import java.net.{InetAddress, Socket}
 
-import resource.ManagedResource
+import resource.Resource
 
 import scala.util.{Failure, Try}
 
 final class ObjectSocketConnection private (socket: Socket) {
 
-  val inputStream: ManagedResource[ObjectInputStream] =
-    ManagedResource.wrapUnsafe[ObjectInputStream](new ObjectInputStream(socket.getInputStream), _.close())
+  val inputStream: Resource[ObjectInputStream] =
+    Resource.wrapUnsafe[ObjectInputStream](new ObjectInputStream(socket.getInputStream), _.close())
 
-  val outputStream: ManagedResource[ObjectOutputStream] =
-    ManagedResource.wrapUnsafe[ObjectOutputStream](new ObjectOutputStream(socket.getOutputStream), _.close())
+  val outputStream: Resource[ObjectOutputStream] =
+    Resource.wrapUnsafe[ObjectOutputStream](new ObjectOutputStream(socket.getOutputStream), _.close())
 
   def write(obj: Any): Try[Unit] = outputStream.acquire match {
     case Right(stream) => Try { stream.writeObject(obj) }
