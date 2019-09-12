@@ -78,7 +78,7 @@ object Resource {
   }
 
   /** Wraps try calls to allow them to be used as Resource[A] */
-  def wrapTry[A](tryAcquire: Try[A], tryRelease: A => Try[Unit]): Resource[A] = {
+  def wrapTry[A](tryAcquire: => Try[A], tryRelease: A => Try[Unit]): Resource[A] = {
     apply(
       tryAcquire match {
         case Success(resource) => Right(resource)
