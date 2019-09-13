@@ -1,6 +1,4 @@
-package server
-
-import protocol.server.{Publisher, Subscriber}
+package pubsub
 
 /* @NonThreadSafe */
 class EventBus[A] extends Publisher[A] with Subscriber[A] {

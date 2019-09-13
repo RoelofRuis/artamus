@@ -5,6 +5,7 @@ import _root_.server.domain.track.{TrackCommandHandler, TrackQueryHandler, Track
 import net.codingwell.scalaguice.ScalaPrivateModule
 import protocol._
 import protocol.server.ServerInterface
+import pubsub.EventBus
 
 class ServerModule extends ScalaPrivateModule {
 

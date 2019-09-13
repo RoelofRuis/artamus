@@ -5,7 +5,7 @@ import music.Position
 import music.containers.{ImmutableTrack, Track}
 import music.properties.Symbols.{StackableSymbol, Symbol}
 import protocol.Event
-import server.EventBus
+import pubsub.EventBus
 
 /* @NotThreadSafe: synchronize acces on `track` */
 class TrackState @Inject() (eventBus: EventBus[Event]) {

@@ -1,5 +1,7 @@
 package protocol
 
+import pubsub.Subscriber
+
 package object server {
 
   trait ServerInterface {
@@ -9,20 +11,6 @@ package object server {
     def closeActiveConnection(): Unit
 
     def stopServer(): Unit
-
-  }
-
-  trait Publisher[A] {
-
-    def publish(a: A): Unit
-
-  }
-
-  trait Subscriber[A] {
-
-    def subscribe(name: String, f: A => Unit): Unit
-
-    def unsubscribe(name: String): Unit
 
   }
 
