@@ -3,6 +3,7 @@ package protocol
 import scala.reflect.{ClassTag, classTag}
 import scala.language.reflectiveCalls
 
+// TODO: move to pubsub?
 private[protocol] object Dispatchers {
 
   class SimpleDispatcher[A <: Object { type Res }] extends Dispatcher[A] {

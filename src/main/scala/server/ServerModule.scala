@@ -2,6 +2,7 @@ package server
 
 import _root_.server.control.ControlHandler
 import _root_.server.domain.track.{TrackCommandHandler, TrackQueryHandler, TrackState}
+import _root_.server.view.TrackView
 import net.codingwell.scalaguice.ScalaPrivateModule
 import protocol._
 import protocol.server.ServerInterface
@@ -24,6 +25,8 @@ class ServerModule extends ScalaPrivateModule {
     bind[TrackState].asEagerSingleton()
 
     bind[EventBus[Event]].toInstance(new EventBus[Event])
+
+    bind[TrackView].asEagerSingleton()
 
     bind[Bootstrapper].asEagerSingleton()
     expose[Bootstrapper]
