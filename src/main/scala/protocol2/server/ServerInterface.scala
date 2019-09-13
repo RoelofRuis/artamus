@@ -4,6 +4,6 @@ trait ServerInterface {
 
   def accept(): Unit
 
-  def publish(msg: Any)
+  def close(): Unit
 
 }

@@ -1,66 +1,44 @@
 package protocol2.server
 
-import java.net.ServerSocket
+import java.net.{ServerSocket, Socket}
 
 import com.typesafe.scalalogging.LazyLogging
 import resource.Resource
 
-import scala.util.Try
-
-class Server(port: Int, messageHandler: MessageHandler) extends ServerInterface with LazyLogging {
-
-  val serverSocket: Resource[ServerSocket] = Resource.wrapUnsafe[ServerSocket](new ServerSocket(port), _.close())
-  val serverConnection: Resource[ServerConnection] =
-    serverSocket.transform(
-      server => Try { new ServerConnection(server.accept()) },
-      (s: ServerConnection) => s.close.toSeq
-    )
+class Server(serverSocket: Resource[ServerSocket]) extends ServerInterface with LazyLogging {
 
   def accept(): Unit = {
-    while (! serverConnection.isClosed) {
-      logger.info("Accepting new connection")
-
-      serverConnection.acquire match {
-        case Right(conn) => receive(conn)
-        case Left(ex) => logger.warn(s"Failed to accept connection [$ex]")
+    while ( ! serverSocket.isClosed) {
+      serverSocket.acquire match {
+        case Right(ss) => openNewConnection(ss)
+        case Left(ex) => logger.error(s"Unable to start server [$ex]")
       }
 
-      serverConnection.release
+      serverSocket.release
     }
+  }
 
+  private def openNewConnection(serverSocket: ServerSocket): Unit = {
+    Resource.wrapUnsafe[Socket](serverSocket.accept(), _.close()).acquire match {
+      case Right(connection) =>
+        println(connection)
+
+      case Left(ex) => logger.error(s"Unable to accept new connection [$ex]")
+    }
+  }
+
+  def close(): Unit = {
     logger.info("Closing server")
-    serverSocket.close
-  }
-
-  def publish(msg: Any): Unit = {
-    serverConnection.acquire match {
-      case Right(conn) => send(conn, msg)
-      case Left(ex) => logger.warn(s"No connection to publish to [$ex]")
+    serverSocket.close match {
+      case Some(ex) => logger.error(s"Error when closing server [$ex]")
+      case _ => logger.info("Server closed")
     }
   }
-
-  private def receive(conn: ServerConnection): Unit = {
-    while ( ! conn.isClosed) {
-      conn.receive match {
-        case Right(a) =>
-          logger.info(s"Server received [$a]")
-          messageHandler.handle(a) match {
-            case Right(obj) => send(conn, obj)
-            case Left(ex) => logger.warn(s"Error when handling message [$ex]")
-          }
-        case Left(ex) => logger.warn(s"Error when receiving a message [$ex]")
-      }
-    }
-  }
-
-  private def send(conn: ServerConnection, msg: Any): Unit = {
-    conn.send(msg) match {
-      case Right(_) => logger.info(s"Server sent [$msg]")
-      case Left(ex) => logger.warn(s"Error when sending a message [$ex]")
-    }
-  }
-
-  def close(): Unit = serverConnection.close.foreach(ex => logger.warn(s"Error when closing server [$ex]"))
 
 }
 
+object Server {
+
+  def apply(port: Int): Server = new Server(Resource.wrapUnsafe[ServerSocket](new ServerSocket(port), _.close()))
+
+}
