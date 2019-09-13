@@ -14,7 +14,7 @@ class MusicReader @Inject() (reader: MidiMessageReader) {
 
     if (firstStep.isEmpty) readMusicVector
     else {
-      MusicVector(firstStep.get, midiNoteNumbers.last diff midiNoteNumbers.head)
+      MusicVector(firstStep.get, midiNoteNumbers.head diff midiNoteNumbers.last)
     }
   }
 
