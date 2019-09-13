@@ -1,4 +1,4 @@
-package protocol2
+package transport
 
 import java.io.{ObjectInputStream, ObjectOutputStream}
 import java.net.Socket

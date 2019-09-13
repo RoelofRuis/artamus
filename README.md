@@ -7,9 +7,10 @@ client          Contains the input and viewing logic        [midi, music, protoc
 midi            Contains midi interaction logic             [resource]
 music           Contains the musical Business Logic         []
 protocol        Contains an abstract client-server protocol [pubsub]
-protocol-v2     Contains new protocol with better resource  [resource]
-                management from the ground up
 pubsub          Contains publish-subscribe logic            []
 resource        Contains resource management wrappers       []
 server          Contains the application state              [pubsub, music, protocol]
+
+WIP
+transport       Contains transport layer logic              [resource]
 ```
