@@ -3,9 +3,9 @@ package music.write
 import music._
 
 // TODO: improve this once Transformation to ScientificPitch is further completed
-object LilpondFormatDemo {
+object LilypondFormatDummy {
 
-  def notesToLilypond(notes: Seq[Note[ScientificPitch]]): String = {
+  def notesToLilypond(notes: Iterable[Note[ScientificPitch]]): String = {
     notes.map { note =>
       musicVectorToLily(note.pitch.musicVector) + durationToLily(note.duration)
     }.mkString(" ")
