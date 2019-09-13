@@ -2,6 +2,8 @@ package music
 
 import music.Scale.ScaleMath
 
+//TODO: figure out: is this the same as a spelled pitch?
+
 /**
   * Data structure that is pointing (like a mathematical vector) to a note from a given scale step.
   *
