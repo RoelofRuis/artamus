@@ -3,8 +3,6 @@ package pubsub
 /* @NonThreadSafe */
 class EventBus[A] extends Publisher[A] with Subscriber[A] {
 
-  // TODO: move to more general place!
-
   private var subscribers: Map[String, A => Unit] = Map[String, A => Unit]()
 
   override def subscribe(name: String, f: A => Unit): Unit = subscribers += (name -> f)

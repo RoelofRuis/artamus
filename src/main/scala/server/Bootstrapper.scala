@@ -3,6 +3,7 @@ package server
 import javax.inject.Inject
 import protocol._
 import protocol.server.{ServerBindings, ServerInterface}
+import pubsub.EventBus
 
 class Bootstrapper @Inject() (
   server: ServerInterface,
