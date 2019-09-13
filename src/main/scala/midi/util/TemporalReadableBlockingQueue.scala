@@ -6,6 +6,7 @@ import midi.util.TemporalReadableBlockingQueue.BlockingQueueReadMethod
 
 import scala.language.higherKinds
 
+/* @NotThreadSafe: requires proper synchronization */
 final class TemporalReadableBlockingQueue[A]() {
 
   private var queue: Option[LinkedBlockingQueue[A]] = None
@@ -18,7 +19,6 @@ final class TemporalReadableBlockingQueue[A]() {
     result
   }
 
-  // TODO: investigate whether this is truly thread safe
   def offer(elem: A): Unit = queue.map(_.offer(elem))
 
 }

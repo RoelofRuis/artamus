@@ -6,9 +6,8 @@ import music.containers.{ImmutableTrack, Track}
 import protocol.server.EventBus
 import music.properties.Symbols.{StackableSymbol, Symbol}
 
+/* @NotThreadSafe: synchronize acces on `track` */
 class TrackState @Inject() (eventBus: EventBus) {
-
-  // TODO: thread safety waarborgen
 
   private var track: Track = ImmutableTrack.empty
 
