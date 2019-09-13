@@ -98,9 +98,15 @@ object Resource {
   }
 
   sealed trait ResourceException extends Exception
-  final case class ResourceAcquirementException(ex: Throwable) extends ResourceException
-  final case class ResourceReleaseException(errors: Seq[Throwable]) extends ResourceException
-  final case object ResourceClosedException extends ResourceException
+  final case class ResourceAcquirementException(ex: Throwable) extends ResourceException {
+    override def toString: String = ex.toString
+  }
+  final case class ResourceReleaseException(errors: Seq[Throwable]) extends ResourceException {
+    override def toString: String = s"Multiple errors [${errors.map(_.toString).mkString("\n")}"
+  }
+  final case object ResourceClosedException extends ResourceException {
+    override def toString: String = s"ResourceClosedException. Unable to acquire explicitly closed resource"
+  }
 
   private[Resource] sealed trait State[A]
   private[Resource] case class Empty[A]() extends State[A]
