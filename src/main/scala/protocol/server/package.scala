@@ -6,22 +6,31 @@ package object server {
 
     def acceptConnections(bindings: ServerBindings): Unit
 
-    def getEventBus: EventBus
-
     def closeActiveConnection(): Unit
 
     def stopServer(): Unit
 
   }
 
-  trait EventBus {
-    def publishEvent[A <: Event](event: A): Unit
+  trait Publisher[A] {
+
+    def publish(a: A): Unit
+
+  }
+
+  trait Subscriber[A] {
+
+    def subscribe(name: String, f: A => Unit): Unit
+
+    def unsubscribe(name: String): Unit
+
   }
 
   final case class ServerBindings(
     commandDispatcher: Dispatcher[Command],
     controlDispatcher: Dispatcher[Control],
-    queryDispatcher: Dispatcher[Query]
+    queryDispatcher: Dispatcher[Query],
+    eventSubscriber: Subscriber[Event]
   )
 
 }

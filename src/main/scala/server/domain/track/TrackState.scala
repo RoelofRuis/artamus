@@ -3,11 +3,12 @@ package server.domain.track
 import javax.inject.Inject
 import music.Position
 import music.containers.{ImmutableTrack, Track}
-import protocol.server.EventBus
 import music.properties.Symbols.{StackableSymbol, Symbol}
+import protocol.Event
+import server.EventBus
 
 /* @NotThreadSafe: synchronize acces on `track` */
-class TrackState @Inject() (eventBus: EventBus) {
+class TrackState @Inject() (eventBus: EventBus[Event]) {
 
   private var track: Track = ImmutableTrack.empty
 
@@ -17,7 +18,7 @@ class TrackState @Inject() (eventBus: EventBus) {
 
   def addTrackSymbol[A](pos: Position, symbol: A)(implicit ev: StackableSymbol[A]): Unit = {
     track = track.addSymbolAt(pos, symbol)
-    eventBus.publishEvent(TrackSymbolsUpdated)
+    eventBus.publish(TrackSymbolsUpdated)
   }
 
   def getTrack: Track = track

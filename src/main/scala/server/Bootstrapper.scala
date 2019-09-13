@@ -9,6 +9,7 @@ class Bootstrapper @Inject() (
   commandDispatcher: Dispatcher[Command],
   controlDispatcher: Dispatcher[Control],
   queryDispatcher: Dispatcher[Query],
+  eventBus: EventBus[Event]
 ) {
 
   def run(): Unit = {
@@ -17,7 +18,8 @@ class Bootstrapper @Inject() (
         ServerBindings(
           commandDispatcher,
           controlDispatcher,
-          queryDispatcher
+          queryDispatcher,
+          eventBus
         )
       )
     )

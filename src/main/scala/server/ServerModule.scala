@@ -2,11 +2,9 @@ package server
 
 import _root_.server.control.ControlHandler
 import _root_.server.domain.track.{TrackCommandHandler, TrackQueryHandler, TrackState}
-import com.google.inject.Provides
-import javax.inject.Singleton
 import net.codingwell.scalaguice.ScalaPrivateModule
 import protocol._
-import protocol.server.{EventBus, ServerInterface}
+import protocol.server.ServerInterface
 
 class ServerModule extends ScalaPrivateModule {
 
@@ -24,11 +22,10 @@ class ServerModule extends ScalaPrivateModule {
 
     bind[TrackState].asEagerSingleton()
 
+    bind[EventBus[Event]].toInstance(new EventBus[Event])
+
     bind[Bootstrapper].asEagerSingleton()
     expose[Bootstrapper]
   }
-
-  @Provides @Singleton
-  def eventBus(serverInterface: ServerInterface): EventBus = serverInterface.getEventBus
 
 }
