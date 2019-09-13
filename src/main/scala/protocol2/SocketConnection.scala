@@ -1,21 +1,21 @@
 package protocol2
 
 import java.io.{ObjectInputStream, ObjectOutputStream}
-import java.net.{InetAddress, Socket}
+import java.net.Socket
 
 import resource.Resource
 
 import scala.language.reflectiveCalls
 import scala.util.{Failure, Success, Try}
 
-class SocketConnection private (socket: Resource[Socket]) extends Connection {
+final class SocketConnection (socket: Resource[Socket]) extends Connection {
 
-  val inputStream: Resource[ObjectInputStream] = socket.transformUnsafe(
+  private val inputStream: Resource[ObjectInputStream] = socket.transformUnsafe(
     s => new ObjectInputStream(s.getInputStream),
     _.close()
   )
 
-  val outputStream: Resource[ObjectOutputStream] = socket.transformUnsafe(
+  private val outputStream: Resource[ObjectOutputStream] = socket.transformUnsafe(
     s => new ObjectOutputStream(s.getOutputStream),
     _.close()
   )
@@ -43,17 +43,5 @@ class SocketConnection private (socket: Resource[Socket]) extends Connection {
   def isClosed: Boolean = socket.isClosed
 
   def close: List[Throwable] = List(socket.close, inputStream.close, outputStream.close).flatten
-
-}
-
-object SocketConnection {
-
-  def apply(socket: Socket): SocketConnection = {
-    new SocketConnection(Resource.wrapUnsafe[Socket](socket, _.close()))
-  }
-
-  def apply(inetAddress: InetAddress, port: Int): SocketConnection = {
-    new SocketConnection(Resource.wrapUnsafe[Socket](new Socket(inetAddress, port), _.close()))
-  }
 
 }
