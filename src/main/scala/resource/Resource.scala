@@ -11,8 +11,8 @@ final class Resource[A] private (acquireRes: => Either[Throwable, A], releaseRes
   /**
     * Acquire an instance of this resource.
     *
-    * If there is a problem acquiring the resource, returns Left[ResourceAcquirementException]
-    * If this managed resource is closed, returns Left[ResourceClosedException]
+    * If there is a problem acquiring the resource, returns Left([[ResourceAcquirementException]])
+    * If this resource instance is closed, returns Left([[ResourceClosedException]])
     */
   def acquire: Either[ResourceException, A] = state match {
     case Empty()    =>
@@ -25,7 +25,7 @@ final class Resource[A] private (acquireRes: => Either[Throwable, A], releaseRes
   }
 
   /**
-    * Release the currently held instance of this resource
+    * Release the currently held resource.
     */
   def release: Option[ResourceReleaseException] = state match {
     case Empty()    => None
@@ -37,9 +37,9 @@ final class Resource[A] private (acquireRes: => Either[Throwable, A], releaseRes
   }
 
   /**
-    * Close this manager, and release the currently held instance of this resource.
+    * Close this resource instance, and release the currently held resource.
     *
-    * If [[acquire]] is called after this managed resource is closed, it will return Some([[ResourceClosedException]])
+    * If [[acquire]] is called after this resource is closed, it will return Some([[ResourceClosedException]])
     */
   def close: Option[ResourceReleaseException] = state match {
     case Empty()    =>
@@ -73,14 +73,16 @@ final class Resource[A] private (acquireRes: => Either[Throwable, A], releaseRes
 
 object Resource {
 
-  def apply[A](acquireRes: => Either[Throwable, A], releaseRes: A => Iterable[Throwable]): Resource[A] = new Resource[A](acquireRes, releaseRes)
+  def apply[A](acquireRes: => Either[Throwable, A], releaseRes: A => Iterable[Throwable]): Resource[A] = {
+    new Resource[A](acquireRes, releaseRes)
+  }
 
-  /** Makes unsafe acquire and release calls safe to use as resources */
+  /** Makes unsafe acquire and release calls safe to use */
   def wrapUnsafe[A](unsafeAcquire: => A, unsafeRelease: A => Unit): Resource[A] = {
     wrapTry(Try(unsafeAcquire), a => Try(unsafeRelease(a)))
   }
 
-  /** Wraps try calls to allow them to be used as Resource[A] */
+  /** Makes Try acquire and release calls safe to use */
   def wrapTry[A](tryAcquire: => Try[A], tryRelease: A => Try[Unit]): Resource[A] = {
     apply(
       tryAcquire match {
