@@ -2,7 +2,7 @@ package music.interpret
 
 import music._
 
-object NaivePitchInterpreter extends PitchInterpreter {
+object NaivePitchSpelling extends PitchSpelling {
 
   override def interpret(midiPitches: Seq[MidiPitch]): Seq[ScientificPitch] = {
     midiPitches.map(interpretOne)
