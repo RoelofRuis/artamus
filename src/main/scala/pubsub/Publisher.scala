@@ -1,7 +1,7 @@
 package pubsub
 
-trait Publisher[A] {
+trait Publisher[A, B] {
 
-  def publish(a: A): Unit
+  def publish(a: A): B
 
 }

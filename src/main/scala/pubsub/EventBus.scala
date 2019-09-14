@@ -1,7 +1,7 @@
 package pubsub
 
 /* @NonThreadSafe */
-class EventBus[A] extends Publisher[A] with Subscriber[A] {
+class EventBus[A] extends Publisher[A, Unit] with Subscriber[String, A, Unit] {
 
   private var subscribers: Map[String, A => Unit] = Map[String, A => Unit]()
 

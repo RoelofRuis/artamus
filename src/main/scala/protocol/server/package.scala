@@ -1,6 +1,6 @@
 package protocol
 
-import pubsub.Subscriber
+import pubsub.{Dispatcher, Subscriber}
 
 package object server {
 
@@ -18,7 +18,7 @@ package object server {
     commandDispatcher: Dispatcher[Command],
     controlDispatcher: Dispatcher[Control],
     queryDispatcher: Dispatcher[Query],
-    eventSubscriber: Subscriber[Event]
+    eventSubscriber: Subscriber[String, Event, Unit]
   )
 
 }

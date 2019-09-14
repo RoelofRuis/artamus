@@ -1,17 +1,18 @@
 package client
 
 import client.events.TrackEventHandler
-import midi.DeviceHash
-import midi.in.MidiMessageReader
-import midi.out.SequenceWriter
 import client.operations._
 import client.read.MusicReader
 import com.google.inject.Provides
 import com.google.inject.internal.SingletonScope
 import javax.inject.Singleton
+import midi.DeviceHash
+import midi.in.MidiMessageReader
+import midi.out.SequenceWriter
 import net.codingwell.scalaguice.ScalaPrivateModule
+import protocol.Event
 import protocol.client.{ClientBindings, ClientInterface}
-import protocol.{Dispatcher, Event}
+import pubsub.Dispatcher
 
 class ClientModule extends ScalaPrivateModule {
 

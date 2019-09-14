@@ -1,9 +1,10 @@
 package client.events
 
-import midi.out.SequenceWriter
 import javax.inject.Inject
+import midi.out.SequenceWriter
+import protocol.Event
 import protocol.client.ClientInterface
-import protocol.{Dispatcher, Event}
+import pubsub.Dispatcher
 import server.domain.track.{GetMidiPitches, TrackSymbolsUpdated}
 
 class TrackEventHandler @Inject() (

@@ -1,10 +1,9 @@
 package pubsub
 
-trait Subscriber[A] {
+trait Subscriber[K, A, B] {
 
-  def subscribe(name: String, f: A => Unit): Unit
+  def subscribe(key: K, f: A => B): B
 
-  def unsubscribe(name: String): Unit
+  def unsubscribe(key: K): B
 
 }
-

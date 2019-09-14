@@ -1,8 +1,9 @@
 package server.control
 
 import javax.inject.Inject
+import protocol.Control
 import protocol.server.ServerInterface
-import protocol.{Control, Dispatcher}
+import pubsub.Dispatcher
 
 private[server] class ControlHandler @Inject() (
   dispatcher: Dispatcher[Control],

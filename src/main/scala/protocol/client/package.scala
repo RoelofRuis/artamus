@@ -1,5 +1,7 @@
 package protocol
 
+import pubsub.Dispatcher
+
 package object client {
 
   trait ClientInterface {

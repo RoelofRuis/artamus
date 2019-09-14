@@ -6,7 +6,7 @@ import _root_.server.view.TrackView
 import net.codingwell.scalaguice.ScalaPrivateModule
 import protocol._
 import protocol.server.ServerInterface
-import pubsub.EventBus
+import pubsub.{Dispatcher, EventBus}
 
 class ServerModule extends ScalaPrivateModule {
 

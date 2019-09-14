@@ -2,7 +2,8 @@ package server.domain.track
 
 import javax.inject.Inject
 import music.{Duration, Position}
-import protocol.{Command, Dispatcher}
+import protocol.Command
+import pubsub.Dispatcher
 
 private[server] class TrackCommandHandler @Inject() (
   dispatcher: Dispatcher[Command],
