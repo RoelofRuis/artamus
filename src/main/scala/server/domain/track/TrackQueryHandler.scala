@@ -14,7 +14,7 @@ private[server] class TrackQueryHandler @Inject() (
 
   dispatcher.subscribe[GetMidiPitches.type]{ _ =>
     state.getTrack.getAllStackedSymbols.map {
-      case (_, notes) => midiPitchHasExactPitch.getMidiNoteNumber(notes.head.pitch).value
+      case (_, notes) => notes.map(note => midiPitchHasExactPitch.getMidiNoteNumber(note.pitch).value).toList
     }.toList
   }
 
