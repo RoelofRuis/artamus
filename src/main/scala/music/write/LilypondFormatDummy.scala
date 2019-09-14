@@ -7,7 +7,11 @@ object LilypondFormatDummy {
 
   def notesToLilypond(notes: Iterable[Note[ScientificPitch]]): String = {
     notes.map { note =>
-      musicVectorToLily(note.pitch.musicVector) + durationToLily(note.duration)
+      Seq(
+        musicVectorToLily(note.pitch.musicVector),
+        octaveToLily(note.pitch.octave),
+        durationToLily(note.duration)
+      ).mkString("")
     }.mkString(" ")
   }
 
@@ -30,6 +34,15 @@ object LilypondFormatDummy {
       }
     }
     name + accidentalText(mvec.acc, suppressE = stepValue == 2 || stepValue == 5)
+  }
+
+  def octaveToLily(octave: Octave): String = {
+    // 3th midi octave is unaltered in lilypond notation
+    octave.value - 3 match {
+      case i if i == 0 => ""
+      case i if i < 0 => "," * i
+      case i if i > 0 => "'" * i
+    }
   }
 
   def durationToLily(duration: Duration): String = s"${duration.value.d}"
