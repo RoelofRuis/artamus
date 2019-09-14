@@ -34,4 +34,12 @@ object LilypondFormatDummy {
 
   def durationToLily(duration: Duration): String = s"${duration.value.d}"
 
+  def compileFile(noteInput: String): String =
+    s"""\\version "2.18"
+      |
+      |{
+      |  $noteInput
+      |}
+      |""".stripMargin
+
 }
