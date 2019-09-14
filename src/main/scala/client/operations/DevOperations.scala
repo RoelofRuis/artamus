@@ -11,7 +11,7 @@ class DevOperations @Inject() (
 
   import midi.in.Reading._
 
-  registry.registerOperation("print-midi", () => {
+  registry.registerOperation(OperationToken("print-midi", "dev"), () => {
     reader.noteOn(1)
       .foreach { case msg: ShortMessage =>
         print(s"COMMAND:${msg.getCommand}\nCHANNEL:${msg.getChannel}\nDATA1:${msg.getData1}\nDATA2:${msg.getData2}\n")

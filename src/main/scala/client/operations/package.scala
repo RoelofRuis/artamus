@@ -5,12 +5,14 @@ import protocol.Message
 // TODO: see if it can be moved to protocol
 package object operations {
 
+  case class OperationToken(command: String, registrar: String)
+
   type Operation = () => List[Message]
 
   trait OperationRegistry {
     def getOperation(token: String): Option[Operation]
-    def getAllOperations: Iterable[String]
-    def registerOperation(token: String, operation: Operation): Unit
+    def getRegisteredTokens: Iterable[OperationToken]
+    def registerOperation(token: OperationToken, operation: Operation): Unit
   }
 
 }

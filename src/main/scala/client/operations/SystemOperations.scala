@@ -9,15 +9,18 @@ class SystemOperations @Inject() (
   client: ClientInterface,
 ) {
 
-  registry.registerOperation("help", () => {
+  registry.registerOperation(OperationToken("help", "system"), () => {
     println("Available operations:")
-    registry.getAllOperations.foreach { op =>
-      println(op)
+    val tokens = registry.getRegisteredTokens
+
+    tokens.toList.sortBy(t => t.registrar + t.command).foreach{ token =>
+      println(s"[${token.registrar}] ${token.command}")
     }
+
     List()
   })
 
-  registry.registerOperation("quit", () => {
+  registry.registerOperation(OperationToken("quit", "system"), () => {
     println("Shutdown server? (y/n)")
     scala.io.StdIn.readLine() match {
       case "y" => List(Disconnect(true))
@@ -25,7 +28,7 @@ class SystemOperations @Inject() (
     }
   })
 
-  registry.registerOperation("views", () => {
+  registry.registerOperation(OperationToken("views", "system"), () => {
     println("Active views:")
     client.sendQuery(GetViews).foreach(_.foreach(println))
 

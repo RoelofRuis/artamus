@@ -12,19 +12,19 @@ class TrackOperations @Inject() (
   reader: MusicReader
 ) {
 
-  registry.registerOperation("new", () => {
+  registry.registerOperation(OperationToken("new", "track"), () => {
     List(NewTrack)
   })
 
-  registry.registerOperation("ts", () => {
+  registry.registerOperation(OperationToken("time-signature", "track"), () => {
     List(SetTimeSignature(reader.readTimeSignature))
   })
 
-  registry.registerOperation("key", () => {
+  registry.registerOperation(OperationToken("key", "track"), () => {
     List(SetKey(Key(reader.readMusicVector)))
   })
 
-  registry.registerOperation("note-seq", () => {
+  registry.registerOperation(OperationToken("note-seq", "track"), () => {
     val gridSpacing = StdIOTools.readInt("Grid spacing of 1/_?")
     val numNotes = StdIOTools.readInt("How many notes?")
 
@@ -42,7 +42,7 @@ class TrackOperations @Inject() (
         )}
   })
 
-  registry.registerOperation("chord", () => {
+  registry.registerOperation(OperationToken("chord", "track"), () => {
     reader
       .readMidiNoteNumbers(Simultaneous)
       .map { midiNoteNumber =>

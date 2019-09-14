@@ -2,12 +2,12 @@ package client.operations
 
 class ClientOperationRegistry extends OperationRegistry {
 
-  private var operations: Map[String, Operation] = Map[String, Operation]()
+  private var operations: Map[OperationToken, Operation] = Map[OperationToken, Operation]()
 
-  override def registerOperation(token: String, operation: Operation): Unit = operations += (token -> operation)
+  override def registerOperation(token: OperationToken, operation: Operation): Unit = operations += (token -> operation)
 
-  override def getAllOperations: Iterable[String] = operations.keys
+  override def getRegisteredTokens: Iterable[OperationToken] = operations.keys
 
-  override def getOperation(token: String): Option[Operation] = operations.get(token)
+  override def getOperation(command: String): Option[Operation] = operations.map { case (token, opp) => token.command -> opp }.get(command)
 
 }
