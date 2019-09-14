@@ -49,8 +49,17 @@ object LilypondFormatDummy {
 
   def timeSignatureToLily(timeSignature: TimeSignature): String = s"\\time ${timeSignature.num}/${timeSignature.denom}"
 
-  def compileFile(noteInput: String, timeSignature: Option[String]): String = {
-    val content: String = Seq(timeSignature, Some(noteInput))
+  def keyToLily(key: Key): String = {
+    val keyName = musicVectorToLily(key.root)
+    s"\\key $keyName \\major"
+  }
+
+  def compileFile(
+    noteInput: String,
+    timeSignature: Option[String],
+    key: Option[String],
+  ): String = {
+    val content: String = Seq(timeSignature, key, Some(noteInput))
       .collect {
         case Some(input) => input
       }.mkString("\n")
@@ -58,7 +67,7 @@ object LilypondFormatDummy {
     s"""\\version "2.18"
       |
       |{
-      |  $content
+      |$content
       |}
       |""".stripMargin
   }
