@@ -22,7 +22,7 @@ case class Rational private (n: Int, d: Int) extends Ordered[Rational] {
 
   override def compare(that: Rational): Int = {
     if (that.n == 0) this.n
-    else if (this.n == 0) that.n
+    else if (this.n == 0) -that.n
     else (this - that).n
   }
 
@@ -41,6 +41,8 @@ case class Rational private (n: Int, d: Int) extends Ordered[Rational] {
 }
 
 object Rational {
+
+  def reciprocal(n: Int): Rational = Rational(1, n)
 
   def apply(n: Int): Rational = Rational(n, 1)
 
