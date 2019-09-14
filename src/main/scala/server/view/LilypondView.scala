@@ -5,7 +5,7 @@ import java.io._
 import javax.inject.Inject
 import music.interpret.NaivePitchSpelling
 import music.write.LilypondFormatDummy
-import music.{MidiPitch, Note}
+import music.{MidiPitch, Note, Position, TimeSignature}
 import protocol.Event
 import pubsub.EventBus
 import server.domain.track.{TrackState, TrackSymbolsUpdated}
@@ -28,7 +28,8 @@ class LilypondView @Inject() (
       val spelledNotes = notes.zip(scientificPitch).map { case (note, sp) => Note(note.duration, sp) }
       val lilyString = LilypondFormatDummy.notesToLilypond(spelledNotes)
 
-      val lilyFile = LilypondFormatDummy.compileFile(lilyString)
+      val timeSignature = currentState.getSymbolAt[TimeSignature](Position.zero).map(LilypondFormatDummy.timeSignatureToLily)
+      val lilyFile = LilypondFormatDummy.compileFile(lilyString, timeSignature)
 
       build(lilyFile)
       ()

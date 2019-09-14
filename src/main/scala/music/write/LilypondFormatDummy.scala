@@ -47,12 +47,20 @@ object LilypondFormatDummy {
 
   def durationToLily(duration: Duration): String = s"${duration.value.d}"
 
-  def compileFile(noteInput: String): String =
+  def timeSignatureToLily(timeSignature: TimeSignature): String = s"\\time ${timeSignature.num}/${timeSignature.denom}"
+
+  def compileFile(noteInput: String, timeSignature: Option[String]): String = {
+    val content: String = Seq(timeSignature, Some(noteInput))
+      .collect {
+        case Some(input) => input
+      }.mkString("\n")
+
     s"""\\version "2.18"
       |
       |{
-      |  $noteInput
+      |  $content
       |}
       |""".stripMargin
+  }
 
 }
