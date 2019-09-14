@@ -5,7 +5,7 @@ import protocol.Control
 import protocol.server.ServerInterface
 import pubsub.Dispatcher
 
-private[server] class ControlHandler @Inject() (
+private[server] class ServerControlHandler @Inject() (
   dispatcher: Dispatcher[Control],
   server: ServerInterface
 ) {

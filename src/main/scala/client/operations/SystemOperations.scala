@@ -1,9 +1,13 @@
 package client.operations
 
 import com.google.inject.Inject
-import server.control.Disconnect
+import protocol.client.ClientInterface
+import server.control.{Disconnect, GetViews}
 
-class SystemOperations @Inject() (registry: OperationRegistry) {
+class SystemOperations @Inject() (
+  registry: OperationRegistry,
+  client: ClientInterface,
+) {
 
   registry.registerOperation("help", () => {
     println("Available operations:")
@@ -19,6 +23,13 @@ class SystemOperations @Inject() (registry: OperationRegistry) {
       case "y" => List(Disconnect(true))
       case _ => List(Disconnect(false))
     }
+  })
+
+  registry.registerOperation("views", () => {
+    println("Active views:")
+    client.sendQuery(GetViews).foreach(_.foreach(println))
+
+    List()
   })
 
 }

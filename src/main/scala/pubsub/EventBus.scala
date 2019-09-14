@@ -11,4 +11,6 @@ class EventBus[A] extends Publisher[A, Unit] with Subscriber[String, A, Unit] {
 
   override def publish(a: A): Unit = subscribers.values.foreach(_(a))
 
+  override def viewSubscriptions: Iterable[String] = subscribers.keys
+
 }

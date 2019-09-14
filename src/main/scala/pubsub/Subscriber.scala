@@ -6,4 +6,6 @@ trait Subscriber[K, A, B] {
 
   def unsubscribe(key: K): B
 
+  def viewSubscriptions: Iterable[K]
+
 }

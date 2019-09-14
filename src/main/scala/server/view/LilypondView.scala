@@ -10,7 +10,8 @@ import protocol.Event
 import pubsub.EventBus
 import server.domain.track.{TrackState, TrackSymbolsUpdated}
 
-class TrackView @Inject() (
+// TODO: Separate pitch analyis and lilypond and clean up!
+class LilypondView @Inject() (
   eventBus: EventBus[Event],
   trackState: TrackState
 ) {
@@ -34,7 +35,6 @@ class TrackView @Inject() (
     case _ => ()
   })
 
-  // TODO: clean up and move to correct class, this is just for testing!
   def build(contents: String): Unit = {
     try {
       val file = new File("data/test.ly")

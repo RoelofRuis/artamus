@@ -1,8 +1,8 @@
 package server
 
-import _root_.server.control.ControlHandler
+import _root_.server.control.{ServerControlHandler, EventBusHandler}
 import _root_.server.domain.track.{TrackCommandHandler, TrackQueryHandler, TrackState}
-import _root_.server.view.TrackView
+import _root_.server.view.{ChordView, LilypondView}
 import net.codingwell.scalaguice.ScalaPrivateModule
 import protocol._
 import protocol.server.ServerInterface
@@ -14,7 +14,8 @@ class ServerModule extends ScalaPrivateModule {
     bind[ServerInterface].toInstance(protocol.createServer(9999))
 
     bind[Dispatcher[Control]].toInstance(protocol.createDispatcher[Control]())
-    bind[ControlHandler].asEagerSingleton()
+    bind[ServerControlHandler].asEagerSingleton()
+    bind[EventBusHandler].asEagerSingleton()
 
     bind[Dispatcher[Command]].toInstance(protocol.createDispatcher[Command]())
     bind[TrackCommandHandler].asEagerSingleton()
@@ -26,7 +27,8 @@ class ServerModule extends ScalaPrivateModule {
 
     bind[EventBus[Event]].toInstance(new EventBus[Event])
 
-    bind[TrackView].asEagerSingleton()
+    bind[LilypondView].asEagerSingleton()
+    bind[ChordView].asEagerSingleton()
 
     bind[Bootstrapper].asEagerSingleton()
     expose[Bootstrapper]
