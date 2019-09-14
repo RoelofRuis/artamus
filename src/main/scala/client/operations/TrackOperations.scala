@@ -1,8 +1,9 @@
 package client.operations
 
-import client.read.MusicReader
+import client.read.{MusicReader, StdIOTools}
 import com.google.inject.Inject
 import music._
+import music.util.math.Rational
 import server.domain.track.{AddNote, SetKey, SetTimeSignature}
 
 class TrackOperations @Inject() (
@@ -18,24 +19,24 @@ class TrackOperations @Inject() (
     List(SetKey(Key(reader.readMusicVector)))
   })
 
-  registry.registerOperation("notes", () => {
-    def getInt: Int = {
-      println("how many?")
-       try { scala.io.StdIn.readInt() }
-       catch { case _: NumberFormatException => getInt }
-    }
+  registry.registerOperation("note-seq", () => {
+    val gridSpacing = StdIOTools.readInt("Grid spacing of 1/_?")
+    val numNotes = StdIOTools.readInt("How many notes?")
 
-    val numNotes = getInt
+    val elementDuration = Duration(Rational.reciprocal(gridSpacing))
 
-    println(s"reading $numNotes notes:")
+    println(s"Reading [$numNotes][$elementDuration] notes:")
 
     reader
       .readMidiNoteNumbers(numNotes)
-      .map{ midiNoteNumber =>
+      .zipWithIndex
+      .map{ case (midiNoteNumber, index) =>
         AddNote(
-          Position.apply(Duration.QUARTER, 0),
-          Note(Duration.QUARTER, MidiPitch(midiNoteNumber))
+          Position.apply(elementDuration, index),
+          Note(elementDuration, MidiPitch(midiNoteNumber))
         )}
   })
+
+
 
 }
