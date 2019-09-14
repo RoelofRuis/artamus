@@ -12,6 +12,10 @@ class TrackState @Inject() (eventBus: EventBus[Event]) {
 
   private var track: Track = ImmutableTrack.empty
 
+  def reset(): Unit = {
+    track = ImmutableTrack.empty
+  }
+
   def setTrackSymbol[A](pos: Position, symbol: A)(implicit ev: Symbol[A]): Unit = {
     track = track.setSymbolAt(pos, symbol)
   }

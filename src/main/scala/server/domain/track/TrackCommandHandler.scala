@@ -12,6 +12,11 @@ private[server] class TrackCommandHandler @Inject() (
 
   import music.properties.Symbols._
 
+  dispatcher.subscribe[NewTrack.type]{ _ =>
+    state.reset()
+    true
+  }
+
   dispatcher.subscribe[SetTimeSignature]{ command =>
     // TODO: move explicit position away from here
     state.setTrackSymbol(Position(Duration.QUARTER, 0), command.t)

@@ -5,12 +5,16 @@ import client.read.{MusicReader, StdIOTools}
 import com.google.inject.Inject
 import music._
 import music.util.math.Rational
-import server.domain.track.{AddNote, SetKey, SetTimeSignature}
+import server.domain.track.{AddNote, NewTrack, SetKey, SetTimeSignature}
 
 class TrackOperations @Inject() (
   registry: OperationRegistry,
   reader: MusicReader
 ) {
+
+  registry.registerOperation("new", () => {
+    List(NewTrack)
+  })
 
   registry.registerOperation("ts", () => {
     List(SetTimeSignature(reader.readTimeSignature))

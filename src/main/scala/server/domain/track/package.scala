@@ -6,6 +6,8 @@ import protocol.{Command, Event, Query}
 package object track {
 
   // Commands
+  case object NewTrack extends Command
+
   case class SetTimeSignature(t: TimeSignature) extends Command
   case class SetKey(k: Key) extends Command
 
