@@ -1,5 +1,6 @@
 package client.operations
 
+import client.read.MusicReader.{NoteOn, Simultaneous}
 import client.read.{MusicReader, StdIOTools}
 import com.google.inject.Inject
 import music._
@@ -28,13 +29,24 @@ class TrackOperations @Inject() (
     println(s"Reading [$numNotes][$elementDuration] notes:")
 
     reader
-      .readMidiNoteNumbers(numNotes)
+      .readMidiNoteNumbers(NoteOn(numNotes))
       .zipWithIndex
       .map{ case (midiNoteNumber, index) =>
         AddNote(
           Position.apply(elementDuration, index),
           Note(elementDuration, MidiPitch(midiNoteNumber))
         )}
+  })
+
+  registry.registerOperation("chord", () => {
+    reader
+      .readMidiNoteNumbers(Simultaneous)
+      .map { midiNoteNumber =>
+        AddNote(
+          Position.zero,
+          Note(Duration.QUARTER, MidiPitch(midiNoteNumber))
+        )
+      }
   })
 
 

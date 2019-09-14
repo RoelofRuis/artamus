@@ -1,5 +1,6 @@
 package client.read
 
+import client.read.MusicReader.{NoteOn, ReadMethod, Simultaneous}
 import javax.inject.Inject
 import midi.in.MidiMessageReader
 import music._
@@ -9,7 +10,7 @@ class MusicReader @Inject() (reader: MidiMessageReader) {
   import midi.in.Reading._
 
   def readMusicVector: MusicVector = {
-    val midiNoteNumbers = readMidiNoteNumbers(2)
+    val midiNoteNumbers = readMidiNoteNumbers(NoteOn(2))
     val firstStep = Scale.MAJOR_SCALE_MATH.pitchClassToStep(MidiPitch(midiNoteNumbers.head).pitchClass)
 
     if (firstStep.isEmpty) readMusicVector
@@ -19,7 +20,7 @@ class MusicReader @Inject() (reader: MidiMessageReader) {
   }
 
   def readTimeSignature: TimeSignature = {
-    readMidiNoteNumbers(2).map{ MidiPitch(_).pitchClass } match {
+    readMidiNoteNumbers(NoteOn(2)).map{ MidiPitch(_).pitchClass } match {
       case num :: denom :: Nil =>
         TimeSignature(num.value + 1, denom.value + 1) match {
           case Some(t) => t
@@ -29,6 +30,20 @@ class MusicReader @Inject() (reader: MidiMessageReader) {
     }
   }
 
-  def readMidiNoteNumbers(n: Int): List[MidiNoteNumber] = reader.noteOn(n).map(s => MidiNoteNumber(s.getData1))
+  def readMidiNoteNumbers(method: ReadMethod): List[MidiNoteNumber] = {
+    val notes = method match {
+      case NoteOn(n) => reader.noteOn(n)
+      case Simultaneous => reader.simultaneousPressedOn
+    }
+    notes.map(s => MidiNoteNumber(s.getData1))
+  }
+
+}
+
+object MusicReader {
+
+  sealed trait ReadMethod
+  case class NoteOn(n: Int) extends ReadMethod
+  case object Simultaneous extends ReadMethod
 
 }
