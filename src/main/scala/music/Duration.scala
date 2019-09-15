@@ -1,6 +1,6 @@
 package music
 
-import util.math.Rational
+import music.math.Rational
 
 final case class Duration(value: Rational) {
 

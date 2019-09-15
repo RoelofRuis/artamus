@@ -1,6 +1,6 @@
 package music
 
-import music.Scale.ScaleMath
+import music.math.ScaleMath
 
 //TODO: figure out: is this the same as a spelled pitch?
 
@@ -30,7 +30,10 @@ object MusicVector {
 
   lazy val zero = MusicVector(Step(0), Accidental(0))
 
-  /** Allows several mathematical operations on MusicVectors when the scale to be used is in scope */
+  /**
+    * Allows several mathematical operations on MusicVectors when the scale to be used is in scope
+    * TODO: should this depend on ScaleMath or something else?
+    */
   implicit class MusicVectorMath(vector: MusicVector)(implicit scale: ScaleMath) {
 
     def +(other: MusicVector): MusicVector = {

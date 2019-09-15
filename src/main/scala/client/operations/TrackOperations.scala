@@ -5,7 +5,7 @@ import client.read.{MusicReader, StdIOTools}
 import com.google.inject.Inject
 import music.Scale.MajorScale
 import music._
-import music.util.math.Rational
+import music.math.Rational
 import server.domain.track.{AddNote, NewTrack, SetKey, SetTimeSignature}
 
 class TrackOperations @Inject() (

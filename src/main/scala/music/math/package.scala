@@ -1,4 +1,4 @@
-package music.util
+package music
 
 package object math {
 

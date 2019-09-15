@@ -1,4 +1,4 @@
-package music.util.math
+package music.math
 
 import scala.annotation.tailrec
 
