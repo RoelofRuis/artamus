@@ -1,13 +1,21 @@
 package music.write
 
+import music.{Key, Note, ScientificPitch, TimeSignature}
+
 final case class LilypondFile(
-  noteInput: String,
-  timeSignature: Option[String],
-  key: Option[String],
+  notes: Iterable[Note[ScientificPitch]],
+  timeSignature: Option[TimeSignature],
+  key: Option[Key],
 ) {
 
+  import music.write.LilypondFormat._
+
   def getStringContents: String = {
-    val content = Seq(timeSignature, key, Some(noteInput)).collect { case Some(input) => input }.mkString("\n")
+    val content = Seq(
+      timeSignature.map(_.toLilypond),
+      key.map(_.toLilypond),
+      Some(notes.map(_.toLilypond).mkString(" "))
+    ).collect { case Some(input) => input }.mkString("\n")
 
     s"""\\version "2.18"
       |

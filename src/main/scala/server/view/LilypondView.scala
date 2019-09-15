@@ -25,21 +25,16 @@ class LilypondView @Inject() (
         .map { case (_, stackedNotes) => stackedNotes.head }
       val scientificPitch = NaivePitchSpelling.interpret(notes.map(_.pitch))
 
-      val spelledNotes: Iterable[Note[ScientificPitch]] = notes.zip(scientificPitch).map { case (note, sp) => Note(note.duration, sp) }
-
-      import music.write.LilypondFormat._
-
-      //TODO: deze magic in file stoppen!
-      val lilyString = spelledNotes.map(_.toLilypond).mkString(" ")
-      val timeSignature = currentState.getSymbolAt[TimeSignature](Position.zero).map(_.toLilypond)
-      val key = currentState.getSymbolAt[Key](Position.zero).map(_.toLilypond)
-
-      val lilyFile = LilypondFile(lilyString, timeSignature, key)
+      val lilyFile = LilypondFile(
+        notes.zip(scientificPitch).map { case (note, sp) => Note(note.duration, sp) },
+        currentState.getSymbolAt[TimeSignature](Position.zero),
+        currentState.getSymbolAt[Key](Position.zero)
+      )
 
       build(lilyFile)
       ()
     case _ => ()
-  }, active = false)
+  }, active = true)
 
   def build(lilyFile: LilypondFile): Unit = {
     try {
