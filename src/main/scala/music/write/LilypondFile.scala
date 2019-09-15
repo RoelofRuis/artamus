@@ -20,6 +20,7 @@ final case class LilypondFile(
     s"""\\version "2.18"
       |
       |{
+      |\\numericTimeSignature
       |$content
       |}
       |""".stripMargin

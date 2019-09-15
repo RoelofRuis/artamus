@@ -34,7 +34,7 @@ class LilypondView @Inject() (
       build(lilyFile)
       ()
     case _ => ()
-  }, active = true)
+  }, active = false)
 
   def build(lilyFile: LilypondFile): Unit = {
     try {

@@ -61,7 +61,7 @@ object LilypondFormat {
   }
 
   implicit val timeSignatureToLilypond: LilypondFormat[TimeSignature] = (timeSignature: TimeSignature) => {
-    s"\\numericTimeSignature\n\\time ${timeSignature.num}/${timeSignature.denom}"
+    s"\\time ${timeSignature.num}/${timeSignature.denom}"
   }
 
   implicit val keyToLilypond: LilypondFormat[Key] = (key: Key) => {
