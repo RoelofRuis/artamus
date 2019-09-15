@@ -1,9 +1,9 @@
 package server.domain.track
 
 import javax.inject.Inject
-import music.Position
-import music.containers.{ImmutableTrack, Track}
-import music.properties.Symbols.{StackableSymbol, Symbol}
+import music.symbolic.containers.{ImmutableTrack, Track}
+import music.symbolic.properties.Symbols.{StackableSymbol, Symbol}
+import music.symbolic.Position
 import protocol.Event
 import pubsub.EventBus
 

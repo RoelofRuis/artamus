@@ -1,4 +1,4 @@
-package music
+package music.symbolic
 
 import music.math.Rational
 

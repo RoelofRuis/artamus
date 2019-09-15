@@ -1,8 +1,8 @@
-package music.containers
+package music.symbolic.containers
 
-import music.Position
-import music.containers.ImmutableTrack.OrderedSymbols
-import music.properties.Symbols.{StackableSymbol, Symbol}
+import music.symbolic.containers.ImmutableTrack.OrderedSymbols
+import music.symbolic.properties.Symbols.{StackableSymbol, Symbol}
+import music.symbolic.Position
 
 import scala.collection.SortedMap
 

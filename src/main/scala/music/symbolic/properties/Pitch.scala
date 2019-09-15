@@ -1,7 +1,7 @@
-package music.properties
+package music.symbolic.properties
 
 import music.math.ScaleMath
-import music.{MidiNoteNumber, MidiPitch, Octave, ScientificPitch}
+import music.symbolic.{MidiNoteNumber, MidiPitch, Octave, ScientificPitch}
 
 object Pitch {
 

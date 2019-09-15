@@ -1,4 +1,4 @@
-package music
+package music.symbolic
 
 /** Indicates the step (position) in a scale */
 final case class Step(value: Int) extends AnyVal {

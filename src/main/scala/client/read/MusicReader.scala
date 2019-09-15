@@ -3,8 +3,8 @@ package client.read
 import client.read.MusicReader.{NoteOn, ReadMethod, Simultaneous}
 import javax.inject.Inject
 import midi.in.MidiMessageReader
-import music._
 import music.math.ScaleMath
+import music.symbolic.{MidiNoteNumber, MidiPitch, MusicVector, TimeSignature}
 
 class MusicReader @Inject() (reader: MidiMessageReader) {
 

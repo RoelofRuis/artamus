@@ -3,9 +3,9 @@ package client.operations
 import client.read.MusicReader.{NoteOn, Simultaneous}
 import client.read.{MusicReader, StdIOTools}
 import com.google.inject.Inject
-import music.Scale.MajorScale
-import music._
 import music.math.Rational
+import music.symbolic._
+import music.symbolic.const.{Durations, Scales}
 import server.domain.track.{AddNote, NewTrack, SetKey, SetTimeSignature}
 
 class TrackOperations @Inject() (
@@ -22,7 +22,7 @@ class TrackOperations @Inject() (
   })
 
   registry.registerOperation(OperationToken("key", "track"), () => {
-    List(SetKey(Key(reader.readMusicVector, MajorScale)))
+    List(SetKey(Key(reader.readMusicVector, Scales.MAJOR)))
   })
 
   registry.registerOperation(OperationToken("note-seq", "track"), () => {
@@ -49,7 +49,7 @@ class TrackOperations @Inject() (
       .map { midiNoteNumber =>
         AddNote(
           Position.zero,
-          Note(Duration.QUARTER, MidiPitch(midiNoteNumber))
+          Note(Durations.QUARTER, MidiPitch(midiNoteNumber))
         )
       }
   })

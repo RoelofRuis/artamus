@@ -1,7 +1,7 @@
 package music.write
 
-import music.Scale.{MajorScale, MinorScale}
-import music._
+import music.symbolic._
+import music.symbolic.const.Scales
 
 trait LilypondFormat[A] {
   def toLilypond(a: A): String
@@ -68,8 +68,8 @@ object LilypondFormat {
     // TODO: implement http://lilypond.org/doc/v2.18/Documentation/notation/displaying-pitches#key-signature
     val pitch = key.root.toLilypond
     val mode = key.scale match {
-      case MajorScale => "\\major"
-      case MinorScale => "\\minor"
+      case Scales.MAJOR => "\\major"
+      case Scales.MINOR => "\\minor"
       case _ => "\\major"
     }
     s"\\key $pitch $mode"

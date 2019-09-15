@@ -9,8 +9,8 @@ private[server] class TrackQueryHandler @Inject() (
   state: TrackState
 ) {
 
-  import music.properties.Pitch.midiPitchHasExactPitch
-  import music.properties.Symbols._
+  import music.symbolic.properties.Pitch.midiPitchHasExactPitch
+  import music.symbolic.properties.Symbols._
 
   dispatcher.subscribe[GetMidiPitches.type]{ _ =>
     state.getTrack.getAllStackedSymbols.map {

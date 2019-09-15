@@ -1,4 +1,6 @@
-package music
+package music.symbolic
+
+import music.math
 
 final case class TimeSignature private (num: Int, denom: Int)
 

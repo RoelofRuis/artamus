@@ -1,6 +1,6 @@
 package music.interpret
 
-import music._
+import music.symbolic._
 
 object NaivePitchSpelling extends PitchSpelling {
 

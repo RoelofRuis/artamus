@@ -1,6 +1,6 @@
 package music.interpret
 
-import music.{MidiPitch, ScientificPitch}
+import music.symbolic.{MidiPitch, ScientificPitch}
 
 trait PitchSpelling {
 

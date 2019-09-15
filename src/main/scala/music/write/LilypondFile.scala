@@ -1,6 +1,6 @@
 package music.write
 
-import music.{Key, Note, ScientificPitch, TimeSignature}
+import music.symbolic.{Key, Note, ScientificPitch, TimeSignature}
 
 final case class LilypondFile(
   notes: Iterable[Note[ScientificPitch]],

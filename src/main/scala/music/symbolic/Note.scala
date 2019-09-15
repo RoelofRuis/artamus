@@ -1,6 +1,6 @@
-package music
+package music.symbolic
 
-import music.properties.Pitch.HasExactPitch
+import music.symbolic.properties.Pitch.HasExactPitch
 
 final case class Note[A : HasExactPitch](duration: Duration, pitch: A)
 

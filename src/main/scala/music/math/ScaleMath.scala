@@ -1,11 +1,12 @@
 package music.math
 
-import music.Scale.MajorScale
-import music.{MusicVector, PitchClass, Scale, Step}
+import music.symbolic.const.Scales
+import music.symbolic.{MusicVector, PitchClass, Scale, Step}
 
+// TODO: see if this is the correct name now!
 class ScaleMath(scale: Scale) {
 
-  val numberOfSteps: Int = scale.stepSizes.length
+  def numberOfSteps: Int = scale.numberOfSteps
 
   def pitchClassToStep(pc: PitchClass): Option[Step] = {
     def find(currentPc: Int, scaleSeq: Seq[Int]): Option[Int] = {
@@ -39,6 +40,6 @@ class ScaleMath(scale: Scale) {
 
 object ScaleMath {
 
-  val OnAPiano = new ScaleMath(MajorScale)
+  val OnAPiano = new ScaleMath(Scales.MAJOR)
 
 }

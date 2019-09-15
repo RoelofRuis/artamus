@@ -1,4 +1,4 @@
-package music
+package music.symbolic
 
 final case class MidiPitch private (octave: Octave, pitchClass: PitchClass)
 

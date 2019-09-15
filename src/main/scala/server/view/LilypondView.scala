@@ -3,8 +3,8 @@ package server.view
 import java.io._
 
 import javax.inject.Inject
-import music._
 import music.interpret.NaivePitchSpelling
+import music.symbolic._
 import music.write.LilypondFile
 import protocol.Event
 import pubsub.EventBus

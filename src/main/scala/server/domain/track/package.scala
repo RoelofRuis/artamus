@@ -1,6 +1,6 @@
 package server.domain
 
-import music._
+import music.symbolic._
 import protocol.{Command, Event, Query}
 
 package object track {

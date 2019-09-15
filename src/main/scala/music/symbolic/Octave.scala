@@ -1,4 +1,4 @@
-package music
+package music.symbolic
 
 final case class Octave private (value: Int) extends AnyVal
 
