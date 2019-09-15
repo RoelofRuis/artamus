@@ -1,3 +1,3 @@
 package music
 
-final case class Key(root: MusicVector)
+final case class Key(root: MusicVector, scale: Scale)

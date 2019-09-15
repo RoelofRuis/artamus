@@ -1,6 +1,7 @@
 package music.properties
 
-import music.{Scale, _}
+import music.{MidiNoteNumber, MidiPitch, Octave, ScientificPitch}
+import music.Scale.MajorScale
 
 object Pitch {
 
@@ -18,7 +19,7 @@ object Pitch {
 
   implicit val scientificPitchHasExactPitch: HasExactPitch[ScientificPitch] = (pitch: ScientificPitch) => {
       val octaveValue = octaveHasExactPitch.getMidiNoteNumber(pitch.octave)
-      val mvecValue = Scale.MAJOR_SCALE_MATH.musicVectorToPitchClass(pitch.musicVector).value
+      val mvecValue = MajorScale.math.musicVectorToPitchClass(pitch.musicVector).value
       octaveValue + mvecValue
   }
 

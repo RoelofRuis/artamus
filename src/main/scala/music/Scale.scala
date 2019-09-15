@@ -1,13 +1,22 @@
 package music
 
-final case class Scale(stepSizes: Seq[Int])
+import music.Scale.ScaleMath
+
+trait Scale {
+
+  val stepSizes: Seq[Int]
+
+  def math: ScaleMath = new ScaleMath(this)
+
+}
 
 object Scale {
 
-  final val MAJOR_SCALE = Scale(Seq(2, 2, 1, 2, 2, 2, 1))
-  final val MAJOR_SCALE_MATH = ScaleMath(MAJOR_SCALE)
+  case object MajorScale extends Scale {
+    val stepSizes: Seq[Int] = Seq(2, 2, 1, 2, 2, 2, 1)
+  }
 
-  implicit class ScaleMath(scale: Scale) {
+  class ScaleMath(scale: Scale) {
 
     val numberOfSteps: Int = scale.stepSizes.length
 
@@ -33,11 +42,16 @@ object Scale {
 
     def musicVectorToPitchClass(mvec: MusicVector): PitchClass = {
       // Fixme: This won't work for accidentals with values larger than `scale.numberOfSteps`
-      val newPc = scale.stepToPitchClass(mvec.step).value + mvec.acc.value
-      if (newPc < 0) PitchClass(scale.numberOfSteps - newPc)
-      else if (newPc > scale.numberOfSteps) PitchClass(newPc - scale.numberOfSteps)
+      val newPc = stepToPitchClass(mvec.step).value + mvec.acc.value
+      if (newPc < 0) PitchClass(numberOfSteps - newPc)
+      else if (newPc > numberOfSteps) PitchClass(newPc - numberOfSteps)
       else PitchClass(newPc)
     }
+
+  }
+
+  object ScaleMath {
+    def apply(scale: Scale): ScaleMath = new ScaleMath(scale)
 
   }
 

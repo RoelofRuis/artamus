@@ -3,6 +3,7 @@ package client.operations
 import client.read.MusicReader.{NoteOn, Simultaneous}
 import client.read.{MusicReader, StdIOTools}
 import com.google.inject.Inject
+import music.Scale.MajorScale
 import music._
 import music.util.math.Rational
 import server.domain.track.{AddNote, NewTrack, SetKey, SetTimeSignature}
@@ -21,7 +22,7 @@ class TrackOperations @Inject() (
   })
 
   registry.registerOperation(OperationToken("key", "track"), () => {
-    List(SetKey(Key(reader.readMusicVector)))
+    List(SetKey(Key(reader.readMusicVector, MajorScale)))
   })
 
   registry.registerOperation(OperationToken("note-seq", "track"), () => {

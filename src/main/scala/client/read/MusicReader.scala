@@ -3,6 +3,7 @@ package client.read
 import client.read.MusicReader.{NoteOn, ReadMethod, Simultaneous}
 import javax.inject.Inject
 import midi.in.MidiMessageReader
+import music.Scale.MajorScale
 import music._
 
 class MusicReader @Inject() (reader: MidiMessageReader) {
@@ -11,7 +12,7 @@ class MusicReader @Inject() (reader: MidiMessageReader) {
 
   def readMusicVector: MusicVector = {
     val midiNoteNumbers = readMidiNoteNumbers(NoteOn(2))
-    val firstStep = Scale.MAJOR_SCALE_MATH.pitchClassToStep(MidiPitch(midiNoteNumbers.head).pitchClass)
+    val firstStep = MajorScale.math.pitchClassToStep(MidiPitch(midiNoteNumbers.head).pitchClass)
 
     if (firstStep.isEmpty) readMusicVector
     else {
