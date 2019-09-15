@@ -32,7 +32,7 @@ class ScaleMath(scale: Scale) {
     // Fixme: This won't work for accidentals with values larger than `scale.numberOfSteps`
     val newPc = stepToPitchClass(mvec.step).value + mvec.acc.value
     if (newPc < 0) PitchClass(numberOfSteps - newPc)
-    else if (newPc > numberOfSteps) PitchClass(newPc - numberOfSteps)
+    else if (newPc > scale.numberOfPitches) PitchClass(newPc - scale.numberOfPitches)
     else PitchClass(newPc)
   }
 
