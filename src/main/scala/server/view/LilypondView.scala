@@ -3,9 +3,9 @@ package server.view
 import java.io._
 
 import javax.inject.Inject
-import music.interpret.NaivePitchSpelling
-import music.write.LilypondFormatDummy
 import music._
+import music.interpret.NaivePitchSpelling
+import music.write.LilypondFile
 import protocol.Event
 import pubsub.EventBus
 import server.domain.track.{TrackState, TrackSymbolsUpdated}
@@ -25,24 +25,28 @@ class LilypondView @Inject() (
         .map { case (_, stackedNotes) => stackedNotes.head }
       val scientificPitch = NaivePitchSpelling.interpret(notes.map(_.pitch))
 
-      val spelledNotes = notes.zip(scientificPitch).map { case (note, sp) => Note(note.duration, sp) }
-      val lilyString = LilypondFormatDummy.notesToLilypond(spelledNotes)
+      val spelledNotes: Iterable[Note[ScientificPitch]] = notes.zip(scientificPitch).map { case (note, sp) => Note(note.duration, sp) }
 
-      val timeSignature = currentState.getSymbolAt[TimeSignature](Position.zero).map(LilypondFormatDummy.timeSignatureToLily)
-      val key = currentState.getSymbolAt[Key](Position.zero).map(LilypondFormatDummy.keyToLily)
-      val lilyFile = LilypondFormatDummy.compileFile(lilyString, timeSignature, key)
+      import music.write.LilypondFormat._
+
+      //TODO: deze magic in file stoppen!
+      val lilyString = spelledNotes.map(_.toLilypond).mkString(" ")
+      val timeSignature = currentState.getSymbolAt[TimeSignature](Position.zero).map(_.toLilypond)
+      val key = currentState.getSymbolAt[Key](Position.zero).map(_.toLilypond)
+
+      val lilyFile = LilypondFile(lilyString, timeSignature, key)
 
       build(lilyFile)
       ()
     case _ => ()
   })
 
-  def build(contents: String): Unit = {
+  def build(lilyFile: LilypondFile): Unit = {
     try {
       val file = new File("data/test.ly")
 
       val writer = new PrintWriter(file)
-      writer.write(contents)
+      writer.write(lilyFile.getStringContents)
       writer.close()
 
       println(s"Running lilypond...")

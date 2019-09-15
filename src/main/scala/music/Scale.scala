@@ -6,15 +6,15 @@ trait Scale {
 
   val stepSizes: Seq[Int]
 
+  // TODO: not sure if this is relevant for other keys than major..?
   def math: ScaleMath = new ScaleMath(this)
 
 }
 
 object Scale {
 
-  case object MajorScale extends Scale {
-    val stepSizes: Seq[Int] = Seq(2, 2, 1, 2, 2, 2, 1)
-  }
+  case object MajorScale extends Scale { val stepSizes: Seq[Int] = Seq(2, 2, 1, 2, 2, 2, 1) }
+  case object MinorScale extends Scale { val stepSizes: Seq[Int] = Seq(2, 1, 2, 2, 1, 2, 2) }
 
   class ScaleMath(scale: Scale) {
 
