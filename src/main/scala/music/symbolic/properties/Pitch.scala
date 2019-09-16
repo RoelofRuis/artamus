@@ -14,13 +14,13 @@ object Pitch {
   implicit val octaveHasExactPitch: HasExactPitch[Octave] = (pitch: Octave) => MidiNoteNumber((pitch.value + 1) * 12)
 
   implicit val midiPitchHasExactPitch: HasExactPitch[MidiPitch] = (pitch: MidiPitch) => {
-    octaveHasExactPitch.getMidiNoteNumber(pitch.octave) + pitch.pitchClass.value
+    MidiNoteNumber(octaveHasExactPitch.getMidiNoteNumber(pitch.octave).value + pitch.pitchClass.value)
   }
 
   implicit val scientificPitchHasExactPitch: HasExactPitch[ScientificPitch] = (pitch: ScientificPitch) => {
-      val octaveValue = octaveHasExactPitch.getMidiNoteNumber(pitch.octave)
+      val octaveValue = octaveHasExactPitch.getMidiNoteNumber(pitch.octave).value
       val mvecValue = TwelveToneEqualTemprament.musicVectorToPitchClass(pitch.musicVector).value
-      octaveValue + mvecValue
+      MidiNoteNumber(octaveValue + mvecValue)
   }
 
 }
