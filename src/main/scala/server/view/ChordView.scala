@@ -29,7 +29,7 @@ class ChordView @Inject() (
         println(s"pc: $pc -> $functions")
       }
     case _ => ()
-  })
+  }, active = false)
 
   def same(in: Interval, pc: PitchClass): Boolean = {
     TwelveToneEqualTemprament.compare(in.musicVector, pc)

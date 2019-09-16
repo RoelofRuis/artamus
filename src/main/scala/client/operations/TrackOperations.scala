@@ -5,7 +5,7 @@ import client.read.{MusicReader, StdIOTools}
 import com.google.inject.Inject
 import music.math.Rational
 import music.symbolic._
-import music.symbolic.const.{Durations, Scales}
+import music.symbolic.const.Scales
 import server.domain.track.{AddNote, NewTrack, SetKey, SetTimeSignature}
 
 class TrackOperations @Inject() (
@@ -43,16 +43,24 @@ class TrackOperations @Inject() (
         )}
   })
 
-  registry.registerOperation(OperationToken("chord", "track"), () => {
-    reader
-      .readMidiNoteNumbers(Simultaneous)
-      .map { midiNoteNumber =>
-        AddNote(
-          Position.zero,
-          Note(Durations.QUARTER, MidiPitch(midiNoteNumber))
-        )
-      }
-  })
+  registry.registerOperation(OperationToken("chords", "track"), () => {
+    val gridSpacing = StdIOTools.readInt("Grid spacing of 1/_?")
+    val numChords = StdIOTools.readInt("How many chords?")
+
+    val elementDuration = Duration(Rational.reciprocal(gridSpacing))
+
+    Range(0, numChords).flatMap { i =>
+      reader
+        .readMidiNoteNumbers(Simultaneous)
+        .map { midiNoteNumber =>
+          AddNote(
+            Position.apply(elementDuration, i),
+            Note(elementDuration, MidiPitch(midiNoteNumber))
+          )
+        }
+      }.toList
+    }
+  )
 
 
 
