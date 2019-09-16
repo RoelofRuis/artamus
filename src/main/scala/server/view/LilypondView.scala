@@ -20,13 +20,16 @@ class LilypondView @Inject() (
     case TrackSymbolsUpdated =>
       val currentState = trackState.getTrack
 
-      val notes = currentState
+      val stackedNotes: Seq[Seq[Note[MidiPitch]]] = currentState
         .getAllStackedSymbols[Note[MidiPitch]]
-        .map { case (_, stackedNotes) => stackedNotes.head }
-      val scientificPitch = NaivePitchSpelling.interpret(notes.map(_.pitch))
+        .map { case (_, n) => n }
+
+      val scientificPitch = stackedNotes
+        .map(stack => NaivePitchSpelling.interpret(stack.map(_.pitch)).zip(stack))
+        .map(_.map { case (sp, note) => Note(note.duration, sp) })
 
       val lilyFile = LilypondFile(
-        notes.zip(scientificPitch).map { case (note, sp) => Note(note.duration, sp) },
+        scientificPitch,
         currentState.getSymbolAt[TimeSignature](Position.zero),
         currentState.getSymbolAt[Key](Position.zero)
       )
@@ -34,7 +37,7 @@ class LilypondView @Inject() (
       build(lilyFile)
       ()
     case _ => ()
-  }, active = false)
+  }, active = true)
 
   def build(lilyFile: LilypondFile): Unit = {
     try {

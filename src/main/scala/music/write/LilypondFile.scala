@@ -3,7 +3,7 @@ package music.write
 import music.symbolic.{Key, Note, ScientificPitch, TimeSignature}
 
 final case class LilypondFile(
-  notes: Seq[Note[ScientificPitch]],
+  notes: Seq[Seq[Note[ScientificPitch]]],
   timeSignature: Option[TimeSignature],
   key: Option[Key],
 ) {

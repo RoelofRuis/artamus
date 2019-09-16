@@ -4,7 +4,7 @@ import music.math.Rational
 
 final case class Position(value: Rational) extends Comparable[Position] {
 
-  override def compareTo(o: Position): Int = value.compare(o.value)
+  override def compareTo(o: Position): Int = value compare o.value
 
 }
 

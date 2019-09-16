@@ -15,6 +15,16 @@ object LilypondFormat {
     def toLilypond: String = LilypondFormat[A].toLilypond(a)
   }
 
+  implicit val simultaneousNotesToLilypond: LilypondFormat[Seq[Note[ScientificPitch]]] = (notes: Seq[Note[ScientificPitch]]) => {
+    val dur = notes.map(_.duration).max
+    notes.map { note =>
+      Seq(
+        note.pitch.musicVector.toLilypond,
+        note.pitch.octave.toLilypond,
+      ).mkString("")
+    }.mkString("<", " ", ">") + dur.toLilypond
+  }
+
   implicit val noteToLilypond: LilypondFormat[Note[ScientificPitch]] = (note: Note[ScientificPitch]) => {
     Seq(
       note.pitch.musicVector.toLilypond,
