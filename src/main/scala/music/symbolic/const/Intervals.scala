@@ -23,6 +23,7 @@ object Intervals {
   lazy val DIM_SEVEN: Interval = build(6, DOUBLE_FLAT)
   lazy val FLAT_SEVEN: Interval = build(6, FLAT)
   lazy val SEVEN: Interval = build(6, NEUTRAL)
+  lazy val OCTAVE: Interval = build(7, NEUTRAL)
 
   lazy val ALL_OCTAVE_CONFINED: Seq[Interval] = Seq(
     ROOT,
