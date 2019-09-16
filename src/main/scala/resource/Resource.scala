@@ -5,7 +5,7 @@ import resource.Resource._
 import scala.util.{Failure, Success, Try}
 
 /* @NotThreadSafe: synchronize on usage of `state` */
-final class Resource[A] private (acquireRes: => Either[Throwable, A], releaseRes: A => Iterable[Throwable]) extends ResourceTransformers[A] {
+final class Resource[A] private (acquireRes: => Either[Throwable, A], releaseRes: A => Seq[Throwable]) extends ResourceTransformers[A] {
 
   private var state: State[A] = Empty()
 
@@ -63,10 +63,10 @@ final class Resource[A] private (acquireRes: => Either[Throwable, A], releaseRes
     }
 
   private def releaseInternally(a: A): Option[ResourceReleaseException] = {
-    val errors: Iterable[Throwable] = releaseRes(a)
+    val errors: Seq[Throwable] = releaseRes(a)
 
     if (errors.isEmpty) None
-    else Some(ResourceReleaseException(errors.toSeq))
+    else Some(ResourceReleaseException(errors))
 
   }
 
@@ -74,7 +74,7 @@ final class Resource[A] private (acquireRes: => Either[Throwable, A], releaseRes
 
 object Resource {
 
-  def apply[A](acquireRes: => Either[Throwable, A], releaseRes: A => Iterable[Throwable]): Resource[A] = {
+  def apply[A](acquireRes: => Either[Throwable, A], releaseRes: A => Seq[Throwable]): Resource[A] = {
     new Resource[A](acquireRes, releaseRes)
   }
 

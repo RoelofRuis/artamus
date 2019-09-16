@@ -20,7 +20,7 @@ final class SocketConnection (socket: Resource[Socket]) extends Connection {
     _.close()
   )
 
-  def send(message: Any): Either[Iterable[Throwable], Unit] = {
+  def send(message: Any): Either[Seq[Throwable], Unit] = {
     outputStream.acquire match {
       case Right(stream) => Try { stream.writeObject(message) } match {
         case Success(_) => Right(())
@@ -30,7 +30,7 @@ final class SocketConnection (socket: Resource[Socket]) extends Connection {
     }
   }
 
-  def receive: Either[Iterable[Throwable], Object] = {
+  def receive: Either[Seq[Throwable], Object] = {
     inputStream.acquire match {
       case Right(stream) => Try { stream.readObject() } match {
         case Success(r) => Right(r)

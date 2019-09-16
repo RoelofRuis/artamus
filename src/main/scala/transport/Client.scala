@@ -8,13 +8,13 @@ class Client private (socketResource: Resource[Socket]) extends Connection {
 
   private var connection: Option[SocketConnection] = None
 
-  override def send(message: Any): Either[Iterable[Throwable], Unit] = getConnection.send(message)
+  override def send(message: Any): Either[Seq[Throwable], Unit] = getConnection.send(message)
 
-  override def receive: Either[Iterable[Throwable], Object] = getConnection.receive
+  override def receive: Either[Seq[Throwable], Object] = getConnection.receive
 
   override def isClosed: Boolean = socketResource.isClosed
 
-  override def close: List[Throwable] = connection.map(_.close).getOrElse(List())
+  override def close: Seq[Throwable] = connection.map(_.close).getOrElse(List())
 
   private def getConnection: SocketConnection = {
     connection match {

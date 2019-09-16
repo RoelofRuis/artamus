@@ -18,19 +18,19 @@ final case class ImmutableTrack private (
 
   def getSymbolAt[A](pos: Position)(implicit ev: Symbol[A]): Option[A] = getSymbolTrack[A].getSymbolAt(pos)
 
-  def getSymbolRange[A](from: Position, until: Position)(implicit ev: Symbol[A]): Iterable[(Position, A)] = getSymbolTrack[A].getSymbolRange(from, until)
+  def getSymbolRange[A](from: Position, until: Position)(implicit ev: Symbol[A]): Seq[(Position, A)] = getSymbolTrack[A].getSymbolRange(from, until)
 
-  def getAllSymbols[A](implicit ev: Symbol[A]): Iterable[(Position, A)] = getSymbolTrack[A].getAllSymbols
+  def getAllSymbols[A](implicit ev: Symbol[A]): Seq[(Position, A)] = getSymbolTrack[A].getAllSymbols
 
 
   /* StackableSymbol[A] methods */
   def addSymbolAt[A](pos: Position, a: A)(implicit ev: StackableSymbol[A]): Track = updateSymbols[A](_.addSymbolAt(pos, a))
 
-  def getStackedSymbolsAt[A](pos: Position)(implicit ev: StackableSymbol[A]): Iterable[A] = getSymbolTrack[A].getStackedSymbolsAt(pos)
+  def getStackedSymbolsAt[A](pos: Position)(implicit ev: StackableSymbol[A]): Seq[A] = getSymbolTrack[A].getStackedSymbolsAt(pos)
 
-  def getStackedSymbolRange[A](from: Position, until: Position)(implicit ev: StackableSymbol[A]): Iterable[(Position, Iterable[A])] = getSymbolTrack[A].getStackedSymbolRange(from, until)
+  def getStackedSymbolRange[A](from: Position, until: Position)(implicit ev: StackableSymbol[A]): Seq[(Position, Seq[A])] = getSymbolTrack[A].getStackedSymbolRange(from, until)
 
-  def getAllStackedSymbols[A](implicit ev: StackableSymbol[A]): Iterable[(Position, Iterable[A])] = getSymbolTrack[A].getAllStackedSymbols
+  def getAllStackedSymbols[A](implicit ev: StackableSymbol[A]): Seq[(Position, Seq[A])] = getSymbolTrack[A].getAllStackedSymbols
 
   // Convenience functions
   private def getSymbolTrack[A](implicit ev: Symbol[A]): OrderedSymbols[A] =
@@ -56,20 +56,20 @@ object ImmutableTrack {
 
     def getSymbolAt(pos: Position)(implicit ev: Symbol[A]): Option[A] = symbolData.get(pos).flatMap(_.headOption)
 
-    def getSymbolRange(from: Position, until: Position)(implicit ev: Symbol[A]): Iterable[(Position, A)] =
-      symbolData.range(from, until).map { case (pos, values) => (pos, values.head) }
+    def getSymbolRange(from: Position, until: Position)(implicit ev: Symbol[A]): Seq[(Position, A)] =
+      symbolData.range(from, until).map { case (pos, values) => (pos, values.head) }.toSeq
 
-    def getAllSymbols(implicit ev: Symbol[A]): Iterable[(Position, A)] = symbolData.map { case (pos, values) => (pos, values.head) }
+    def getAllSymbols(implicit ev: Symbol[A]): Seq[(Position, A)] = symbolData.map { case (pos, values) => (pos, values.head) }.toSeq
 
     /* StackableSymbol[A] methods */
     def addSymbolAt(pos: Position, a: A)(implicit ev: StackableSymbol[A]): OrderedSymbols[A] =
       OrderedSymbols(symbolData.updated(pos, symbolData.getOrElse(pos, List[A]()) :+ a))
 
-    def getStackedSymbolsAt(pos: Position)(implicit ev: StackableSymbol[A]): Iterable[A] = symbolData.getOrElse(pos, List())
+    def getStackedSymbolsAt(pos: Position)(implicit ev: StackableSymbol[A]): Seq[A] = symbolData.getOrElse(pos, List())
 
-    def getStackedSymbolRange(from: Position, until: Position)(implicit ev: StackableSymbol[A]): Iterable[(Position, Iterable[A])] = symbolData.range(from, until)
+    def getStackedSymbolRange(from: Position, until: Position)(implicit ev: StackableSymbol[A]): Seq[(Position, Seq[A])] = symbolData.range(from, until).toSeq
 
-    def getAllStackedSymbols(implicit ev: StackableSymbol[A]): Iterable[(Position, Iterable[A])] = symbolData
+    def getAllStackedSymbols(implicit ev: StackableSymbol[A]): Seq[(Position, Seq[A])] = symbolData.toSeq
 
   }
 

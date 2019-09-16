@@ -4,7 +4,7 @@ import music.symbolic._
 
 object NaivePitchSpelling extends PitchSpelling {
 
-  override def interpret(midiPitches: Iterable[MidiPitch]): Iterable[ScientificPitch] = {
+  override def interpret(midiPitches: Seq[MidiPitch]): Seq[ScientificPitch] = {
     midiPitches.map(interpretOne)
   }
 

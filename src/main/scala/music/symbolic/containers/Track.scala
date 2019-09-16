@@ -15,18 +15,18 @@ trait Track {
 
   def getSymbolAt[A](pos: Position)(implicit ev: Symbol[A]): Option[A]
 
-  def getSymbolRange[A](from: Position, until: Position)(implicit ev: Symbol[A]): Iterable[(Position, A)]
+  def getSymbolRange[A](from: Position, until: Position)(implicit ev: Symbol[A]): Seq[(Position, A)]
 
-  def getAllSymbols[A](implicit ev: Symbol[A]): Iterable[(Position, A)]
+  def getAllSymbols[A](implicit ev: Symbol[A]): Seq[(Position, A)]
 
 
   /* StackableSymbol[A] methods */
   def addSymbolAt[A](pos: Position, a: A)(implicit ev: StackableSymbol[A]): Track
 
-  def getStackedSymbolsAt[A](pos: Position)(implicit ev: StackableSymbol[A]): Iterable[A]
+  def getStackedSymbolsAt[A](pos: Position)(implicit ev: StackableSymbol[A]): Seq[A]
 
-  def getStackedSymbolRange[A](from: Position, until: Position)(implicit ev: StackableSymbol[A]): Iterable[(Position, Iterable[A])]
+  def getStackedSymbolRange[A](from: Position, until: Position)(implicit ev: StackableSymbol[A]): Seq[(Position, Seq[A])]
 
-  def getAllStackedSymbols[A](implicit ev: StackableSymbol[A]): Iterable[(Position, Iterable[A])]
+  def getAllStackedSymbols[A](implicit ev: StackableSymbol[A]): Seq[(Position, Seq[A])]
 
 }

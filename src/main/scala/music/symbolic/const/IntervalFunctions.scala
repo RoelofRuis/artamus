@@ -3,7 +3,7 @@ package music.symbolic.const
 import music.symbolic.IntervalFunction
 import music.symbolic.tuning.TwelveToneEqualTemprament
 
-object IntervalFunction {
+object IntervalFunctions {
 
   // By definition this makes these functions only express something in 12 tone equal temprament
   val tuning: TwelveToneEqualTemprament.type = TwelveToneEqualTemprament

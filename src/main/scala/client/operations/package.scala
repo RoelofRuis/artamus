@@ -11,7 +11,7 @@ package object operations {
 
   trait OperationRegistry {
     def getOperation(token: String): Option[Operation]
-    def getRegisteredTokens: Iterable[OperationToken]
+    def getRegisteredTokens: Seq[OperationToken]
     def registerOperation(token: OperationToken, operation: Operation): Unit
   }
 
