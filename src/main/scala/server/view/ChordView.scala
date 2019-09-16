@@ -1,6 +1,7 @@
 package server.view
 
 import javax.inject.Inject
+import music.interpret.JazzHarmony
 import music.symbolic.{Interval, PitchClass}
 import music.symbolic.const.Intervals
 import music.symbolic.tuning.TwelveToneEqualTemprament
@@ -19,11 +20,13 @@ class ChordView @Inject() (
         notes.map(_.pitch.pitchClass)
       }
 
+      println
       pitchClasses.head.foreach { pc =>
         val res = Intervals.ALL_OCTAVE_CONFINED.filter( i => {
           TwelveToneEqualTemprament.compare(i.musicVector, pc)
         })
-        println(s"pc: $pc -> $res")
+        val functions = res.flatMap(JazzHarmony.intervalToFunctions)
+        println(s"pc: $pc -> $functions")
       }
     case _ => ()
   })

@@ -19,7 +19,6 @@ object Intervals {
   lazy val SHARP_FIVE: Interval = build(4, SHARP)
   lazy val FLAT_SIX: Interval = build(5, FLAT)
   lazy val SIX: Interval = build(5, NEUTRAL)
-  lazy val SHARP_SIX: Interval = build(5, SHARP)
   lazy val DIM_SEVEN: Interval = build(6, DOUBLE_FLAT)
   lazy val FLAT_SEVEN: Interval = build(6, FLAT)
   lazy val SEVEN: Interval = build(6, NEUTRAL)
@@ -31,7 +30,7 @@ object Intervals {
     FLAT_THREE, THREE,
     FOUR, SHARP_FOUR,
     FLAT_FIVE, FIVE, SHARP_FIVE,
-    FLAT_SIX, SIX, SHARP_SIX,
+    FLAT_SIX, SIX,
     DIM_SEVEN, FLAT_SEVEN, SEVEN
   )
 
