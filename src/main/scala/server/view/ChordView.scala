@@ -1,6 +1,9 @@
 package server.view
 
 import javax.inject.Inject
+import music.symbolic.{Interval, PitchClass}
+import music.symbolic.const.Intervals
+import music.symbolic.tuning.TwelveToneEqualTemprament
 import protocol.Event
 import pubsub.EventBus
 import server.domain.track.{TrackState, TrackSymbolsUpdated}
@@ -16,8 +19,21 @@ class ChordView @Inject() (
         notes.map(_.pitch.pitchClass)
       }
 
-      println(pitchClasses.head)
+      pitchClasses.head.foreach { pc =>
+        val res = Intervals.ALL_OCTAVE_CONFINED.filter( i => {
+          TwelveToneEqualTemprament.compare(i.musicVector, pc)
+        })
+        println(s"pc: $pc -> $res")
+      }
     case _ => ()
   })
+
+  def same(in: Interval, pc: PitchClass): Boolean = {
+    TwelveToneEqualTemprament.compare(in.musicVector, pc)
+  }
+
+  def intervalOptions(pc: PitchClass): Seq[Interval] ={
+    Intervals.ALL_OCTAVE_CONFINED.filter(same(_, pc))
+  }
 
 }

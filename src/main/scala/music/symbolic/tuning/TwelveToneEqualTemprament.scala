@@ -37,6 +37,10 @@ object TwelveToneEqualTemprament extends Tuning {
     else PitchClass(newPc)
   }
 
+  override def compare(mvec: MusicVector, pc: PitchClass): Boolean = {
+    musicVectorToPitchClass(mvec) == pc
+  }
+
   override def transpose(mv: MusicVector, i: Interval): MusicVector = {
     val newStep = mv.step + i.musicVector.step
     val newPc = stepToPitchClass(newStep).value

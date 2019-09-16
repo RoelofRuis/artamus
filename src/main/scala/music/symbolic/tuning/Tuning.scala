@@ -18,6 +18,8 @@ trait Tuning {
   def musicVectorToPitchClass(mvec: MusicVector): PitchClass
 
   // Math
-  def transpose(mvec: MusicVector, i: Interval): MusicVector
+  def transpose(mvec: MusicVector, i: Interval): MusicVector // TODO: rewrite as AbsoluteRelativePair math
+
+  def compare(mvec: MusicVector, pc: PitchClass): Boolean
 
 }
