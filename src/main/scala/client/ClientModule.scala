@@ -1,6 +1,5 @@
 package client
 
-import client.events.TrackEventHandler
 import client.operations._
 import client.read.MusicReader
 import com.google.inject.Provides
@@ -26,10 +25,10 @@ class ClientModule extends ScalaPrivateModule {
     bind[OperationRegistry].toInstance(new ClientOperationRegistry())
     bind[SystemOperations].asEagerSingleton()
     bind[TrackOperations].asEagerSingleton()
+    bind[TrackPlaybackOperations].asEagerSingleton()
     bind[DevOperations].asEagerSingleton()
 
     bind[Dispatcher[Event]].toInstance(protocol.createDispatcher[Event]())
-    bind[TrackEventHandler].asEagerSingleton()
 
     bind[Bootstrapper].asEagerSingleton()
     expose[Bootstrapper]
