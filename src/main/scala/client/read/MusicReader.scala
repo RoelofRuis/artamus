@@ -12,7 +12,7 @@ class MusicReader @Inject() (reader: MidiMessageReader) {
 
   def readMusicVector: MusicVector = {
     val midiNoteNumbers = readMidiNoteNumbers(NoteOn(2))
-    val firstStep = ScaleMath.OnAPiano.pitchClassToStep(MidiPitch(midiNoteNumbers.head).pitchClass)
+    val firstStep = ScaleMath.ON_A_PIANO.pitchClassToStep(MidiPitch(midiNoteNumbers.head).pitchClass)
 
     if (firstStep.isEmpty) readMusicVector
     else {

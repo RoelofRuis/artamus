@@ -40,6 +40,6 @@ class ScaleMath(scale: Scale) {
 
 object ScaleMath {
 
-  val OnAPiano = new ScaleMath(Scales.MAJOR)
+  val ON_A_PIANO = new ScaleMath(Scales.MAJOR)
 
 }

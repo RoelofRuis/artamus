@@ -24,7 +24,7 @@ object Intervals {
   lazy val FLAT_SEVEN: Interval = build(6, FLAT)
   lazy val SEVEN: Interval = build(6, NEUTRAL)
 
-  lazy val NAMED_FUNCTIONS: Seq[Interval] = Seq(
+  lazy val ALL_OCTAVE_CONFINED: Seq[Interval] = Seq(
     ROOT,
     FLAT_TWO, TWO,
     FLAT_THREE, THREE,

@@ -19,7 +19,7 @@ object Pitch {
 
   implicit val scientificPitchHasExactPitch: HasExactPitch[ScientificPitch] = (pitch: ScientificPitch) => {
       val octaveValue = octaveHasExactPitch.getMidiNoteNumber(pitch.octave)
-      val mvecValue = ScaleMath.OnAPiano.musicVectorToPitchClass(pitch.musicVector).value
+      val mvecValue = ScaleMath.ON_A_PIANO.musicVectorToPitchClass(pitch.musicVector).value
       octaveValue + mvecValue
   }
 
