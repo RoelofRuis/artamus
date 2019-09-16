@@ -3,8 +3,8 @@ package client.read
 import client.read.MusicReader.{NoteOn, ReadMethod, Simultaneous}
 import javax.inject.Inject
 import midi.in.MidiMessageReader
-import music.math.ScaleMath
 import music.symbolic.{MidiNoteNumber, MidiPitch, MusicVector, TimeSignature}
+import music.symbolic.tuning.TwelveToneEqualTemprament
 
 class MusicReader @Inject() (reader: MidiMessageReader) {
 
@@ -12,7 +12,7 @@ class MusicReader @Inject() (reader: MidiMessageReader) {
 
   def readMusicVector: MusicVector = {
     val midiNoteNumbers = readMidiNoteNumbers(NoteOn(2))
-    val firstStep = ScaleMath.ON_A_PIANO.pitchClassToStep(MidiPitch(midiNoteNumbers.head).pitchClass)
+    val firstStep = TwelveToneEqualTemprament.pitchClassToStep(MidiPitch(midiNoteNumbers.head).pitchClass)
 
     if (firstStep.isEmpty) readMusicVector
     else {

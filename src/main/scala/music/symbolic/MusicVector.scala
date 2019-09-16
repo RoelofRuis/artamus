@@ -1,7 +1,5 @@
 package music.symbolic
 
-import music.math.ScaleMath
-
 /**
   * Data structure that is pointing (like a mathematical vector) to a note from a given scale step.
   *
@@ -21,37 +19,5 @@ final case class MusicVector private (step: Step, acc: Accidental) extends Compa
   }
 
   override def toString: String = s"MV[${step.value},${acc.value}]"
-
-}
-
-object MusicVector {
-
-  lazy val zero = MusicVector(Step(0), Accidental(0))
-
-  /**
-    * Allows several mathematical operations on MusicVectors when the scale to be used is in scope
-    * TODO: should this depend on ScaleMath or something else?
-    */
-  implicit class MusicVectorMath(vector: MusicVector)(implicit scale: ScaleMath) {
-
-    def +(other: MusicVector): MusicVector = {
-      val newStep = vector.step + other.step
-      val newPc = scale.stepToPitchClass(newStep).value
-      val actualPc = (scale.stepToPitchClass(vector.step).value + vector.acc.value) +
-        (scale.stepToPitchClass(other.step).value + other.acc.value)
-
-      MusicVector(newStep % scale.numberOfSteps, Accidental(actualPc - newPc))
-    }
-
-    def -(other: MusicVector): MusicVector = {
-      val newStep = vector.step - other.step
-      val newPc = scale.stepToPitchClass(newStep).value
-      val actualPc = (scale.stepToPitchClass(vector.step).value + vector.acc.value) -
-        (scale.stepToPitchClass(other.step).value + other.acc.value)
-
-      MusicVector(newStep % scale.numberOfSteps, Accidental(actualPc - newPc))
-    }
-
-  }
 
 }

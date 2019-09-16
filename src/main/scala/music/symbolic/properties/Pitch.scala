@@ -1,7 +1,7 @@
 package music.symbolic.properties
 
-import music.math.ScaleMath
 import music.symbolic.{MidiNoteNumber, MidiPitch, Octave, ScientificPitch}
+import music.symbolic.tuning.TwelveToneEqualTemprament
 
 object Pitch {
 
@@ -19,7 +19,7 @@ object Pitch {
 
   implicit val scientificPitchHasExactPitch: HasExactPitch[ScientificPitch] = (pitch: ScientificPitch) => {
       val octaveValue = octaveHasExactPitch.getMidiNoteNumber(pitch.octave)
-      val mvecValue = ScaleMath.ON_A_PIANO.musicVectorToPitchClass(pitch.musicVector).value
+      val mvecValue = TwelveToneEqualTemprament.musicVectorToPitchClass(pitch.musicVector).value
       octaveValue + mvecValue
   }
 
