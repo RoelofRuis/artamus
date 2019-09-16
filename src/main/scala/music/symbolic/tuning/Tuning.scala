@@ -1,8 +1,10 @@
 package music.symbolic.tuning
 
-import music.symbolic.{MusicVector, PitchClass, Step}
+import music.symbolic.{Interval, MusicVector, PitchClass, Step}
 
 trait Tuning {
+
+  def stepSizes: Seq[Int]
 
   def numDistinctSteps: Int
 
@@ -16,8 +18,6 @@ trait Tuning {
   def musicVectorToPitchClass(mvec: MusicVector): PitchClass
 
   // Math
-  def +(mv1: MusicVector, mv2: MusicVector): MusicVector
-
-  def -(mv1: MusicVector, mv2: MusicVector): MusicVector
+  def transpose(mvec: MusicVector, i: Interval): MusicVector
 
 }

@@ -1,14 +1,13 @@
 package music.symbolic.tuning
 import music.symbolic.const.Scales
-import music.symbolic.{Accidental, MusicVector, PitchClass, Step}
+import music.symbolic._
 
+// TODO: try to extract operations and essential constants when this class is more mature
 object TwelveToneEqualTemprament extends Tuning {
 
-  private val scale = Scales.MAJOR
-
-  override def numDistinctSteps: Int = scale.numberOfSteps
-
-  override def numDistinctPitches: Int = scale.numberOfPitches
+  override def stepSizes: Seq[Int] = Scales.MAJOR.stepSizes
+  override def numDistinctSteps: Int = Scales.MAJOR.numberOfSteps
+  override def numDistinctPitches: Int = Scales.MAJOR.numberOfPitches
 
   override def pitchClassToStep(pc: PitchClass): Option[Step] = {
     def find(currentPc: Int, scaleSeq: Seq[Int]): Option[Int] = {
@@ -16,8 +15,8 @@ object TwelveToneEqualTemprament extends Tuning {
       if (step == -1) None else Some(step)
     }
 
-    if (pc.value >= 0) find(pc.value, scale.stepSizes).map(Step)
-    else find(-pc.value, scale.stepSizes.reverse).map(steps => Step(numDistinctSteps - steps))
+    if (pc.value >= 0) find(pc.value, stepSizes).map(Step)
+    else find(-pc.value, stepSizes.reverse).map(steps => Step(numDistinctSteps - steps))
   }
 
   override def stepToPitchClass(step: Step): PitchClass = {
@@ -26,8 +25,8 @@ object TwelveToneEqualTemprament extends Tuning {
       else loop(curStep - numDistinctSteps, scaleSeq.sum, scaleSeq)
     }
 
-    if (step.value >= 0) PitchClass(loop(step.value, 0, scale.stepSizes))
-    else PitchClass(-loop(Math.abs(step.value), 0, scale.stepSizes.reverse))
+    if (step.value >= 0) PitchClass(loop(step.value, 0, stepSizes))
+    else PitchClass(-loop(Math.abs(step.value), 0, stepSizes.reverse))
   }
 
   override def musicVectorToPitchClass(mvec: MusicVector): PitchClass = {
@@ -38,21 +37,12 @@ object TwelveToneEqualTemprament extends Tuning {
     else PitchClass(newPc)
   }
 
-  override def +(mv1: MusicVector, mv2: MusicVector): MusicVector = {
-    val newStep = mv1.step + mv2.step
+  override def transpose(mv: MusicVector, i: Interval): MusicVector = {
+    val newStep = mv.step + i.musicVector.step
     val newPc = stepToPitchClass(newStep).value
-    val actualPc = (stepToPitchClass(mv1.step).value + mv1.acc.value) +
-      (stepToPitchClass(mv2.step).value + mv2.acc.value)
+    val actualPc = musicVectorToPitchClass(mv).value + musicVectorToPitchClass(i.musicVector).value
 
-    MusicVector(newStep % scale.numberOfSteps, Accidental(actualPc - newPc))
+    MusicVector(newStep % numDistinctSteps, Accidental(actualPc - newPc))
   }
 
-  override def -(mv1: MusicVector, mv2: MusicVector): MusicVector = {
-    val newStep = mv1.step - mv2.step
-    val newPc = stepToPitchClass(newStep).value
-    val actualPc = (stepToPitchClass(mv1.step).value + mv1.acc.value) -
-      (stepToPitchClass(mv2.step).value + mv2.acc.value)
-
-    MusicVector(newStep % scale.numberOfSteps, Accidental(actualPc - newPc))
-  }
 }
