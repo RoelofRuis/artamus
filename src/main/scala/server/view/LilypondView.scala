@@ -3,7 +3,7 @@ package server.view
 import java.io._
 
 import javax.inject.Inject
-import music.interpret.NaivePitchSpelling
+import music.interpret.pitch.NaivePitchSpelling
 import music.symbolic._
 import music.write.LilypondFile
 import protocol.Event
@@ -37,7 +37,7 @@ class LilypondView @Inject() (
       build(lilyFile)
       ()
     case _ => ()
-  }, active = true)
+  }, active = false)
 
   def build(lilyFile: LilypondFile): Unit = {
     try {

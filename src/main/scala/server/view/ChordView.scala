@@ -1,8 +1,9 @@
 package server.view
 
 import javax.inject.Inject
-import music.interpret.JazzHarmony
-import music.symbolic.{Interval, PitchClass}
+import music.interpret.Interpretation
+import music.interpret.harmony.JazzHarmony
+import music.symbolic.IntervalFunction
 import music.symbolic.const.Intervals
 import music.symbolic.tuning.TwelveToneEqualTemprament
 import protocol.Event
@@ -22,21 +23,14 @@ class ChordView @Inject() (
 
       println
       pitchClasses.head.foreach { pc =>
-        val res = Intervals.ALL_OCTAVE_CONFINED.filter( i => {
-          TwelveToneEqualTemprament.compare(i.musicVector, pc)
-        })
-        val functions = res.flatMap(JazzHarmony.intervalToFunctions)
-        println(s"pc: $pc -> $functions")
+        val interpretation: Interpretation[IntervalFunction] =
+          Intervals.ALL_OCTAVE_CONFINED
+            .filter( i => { TwelveToneEqualTemprament.compare(i.musicVector, pc)})
+            .map(JazzHarmony.intervalToFunctions)
+            .foldRight(Interpretation.none[IntervalFunction]){ case (acc, i) => acc.add(i) }
+        println(s"pc: $pc -> $interpretation")
       }
     case _ => ()
-  }, active = false)
-
-  def same(in: Interval, pc: PitchClass): Boolean = {
-    TwelveToneEqualTemprament.compare(in.musicVector, pc)
-  }
-
-  def intervalOptions(pc: PitchClass): Seq[Interval] ={
-    Intervals.ALL_OCTAVE_CONFINED.filter(same(_, pc))
-  }
+  }, active = true)
 
 }
