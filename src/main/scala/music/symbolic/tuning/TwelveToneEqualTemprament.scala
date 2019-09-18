@@ -49,6 +49,10 @@ object TwelveToneEqualTemprament extends Tuning {
     Interval(MusicVector(newStep, Accidental(actualPc - newPc)))
   }
 
+  override def transpose(i1: Interval, i2: Interval): Interval = {
+    Interval(transpose(i1.musicVector, i2))
+  }
+
   override def transpose(mv: MusicVector, i: Interval): MusicVector = {
     val newStep = mv.step + i.musicVector.step
     val newPc = stepToPitchClass(newStep).value

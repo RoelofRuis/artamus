@@ -19,6 +19,7 @@ trait Tuning {
 
   // Math
   // TODO: rewrite these as AbsoluteRelativePair math
+  def transpose(i1: Interval, i2: Interval): Interval
   def transpose(mvec: MusicVector, i: Interval): MusicVector
   def addIntervals(i1: Interval, i2: Interval): Interval
 
