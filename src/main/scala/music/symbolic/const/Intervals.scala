@@ -7,7 +7,7 @@ object Intervals {
 
   private def build(step: Int, acc: Accidental): Interval = Interval(MusicVector(Step(step), acc))
 
-  lazy val ROOT: Interval = build(0, NEUTRAL)
+  lazy val PRIME: Interval = build(0, NEUTRAL)
   lazy val FLAT_TWO: Interval = build(1, FLAT)
   lazy val TWO: Interval = build(1, NEUTRAL)
   lazy val FLAT_THREE: Interval = build(2, FLAT)
@@ -24,8 +24,8 @@ object Intervals {
   lazy val SEVEN: Interval = build(6, NEUTRAL)
   lazy val OCTAVE: Interval = build(7, NEUTRAL)
 
-  lazy val ALL_OCTAVE_CONFINED: Seq[Interval] = Seq(
-    ROOT,
+  lazy val WITHIN_OCTAVE: Seq[Interval] = Seq(
+    PRIME,
     FLAT_TWO, TWO,
     FLAT_THREE, THREE,
     FOUR, SHARP_FOUR,

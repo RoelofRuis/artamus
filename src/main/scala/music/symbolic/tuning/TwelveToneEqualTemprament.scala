@@ -1,6 +1,6 @@
 package music.symbolic.tuning
-import music.symbolic.const.Scales
 import music.symbolic._
+import music.symbolic.const.Scales
 
 // TODO: try to extract operations and essential constants when this class is more mature
 object TwelveToneEqualTemprament extends Tuning {
@@ -35,6 +35,28 @@ object TwelveToneEqualTemprament extends Tuning {
     if (newPc < 0) PitchClass(numDistinctSteps - newPc)
     else if (newPc > numDistinctPitches) PitchClass(newPc - numDistinctPitches)
     else PitchClass(newPc)
+  }
+
+  override def vector(step: Int, accidental: Int): MusicVector = {
+    MusicVector(Step(step), Accidental(accidental))
+  }
+
+  override def rectify(mv: MusicVector): MusicVector = {
+    if (mv.step.value >= 0) mv
+    else {
+      val rectifiedValue= mv.step.value + ((mv.step.value / -numDistinctSteps) + 1) * numDistinctSteps
+      MusicVector(Step(rectifiedValue), mv.acc)
+    }
+  }
+
+  override def subtract(mv1: MusicVector, mv2: MusicVector): MusicVector = {
+    val newStep = mv1.step.value - mv2.step.value
+    val newPc = stepToPitchClass(Step(newStep)).value
+    val actualPc = musicVectorToPitchClass(mv1).value - musicVectorToPitchClass(mv2).value
+
+    val pcDiff = actualPc - newPc
+
+    MusicVector(Step(newStep % numDistinctSteps), Accidental(pcDiff))
   }
 
   override def compare(mvec: MusicVector, pc: PitchClass): Boolean = {

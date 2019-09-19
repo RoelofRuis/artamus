@@ -8,7 +8,7 @@ object IntervalFunctions {
   // By definition this makes these functions only express something in 12 tone equal temprament
   val tuning: TwelveToneEqualTemprament.type = TwelveToneEqualTemprament
 
-  lazy val ROOT: IntervalFunction = IntervalFunction(Intervals.ROOT)
+  lazy val ROOT: IntervalFunction = IntervalFunction(Intervals.PRIME)
   lazy val TWO: IntervalFunction = IntervalFunction(Intervals.TWO)
   lazy val FLAT_THREE: IntervalFunction = IntervalFunction(Intervals.FLAT_THREE)
   lazy val THREE: IntervalFunction = IntervalFunction(Intervals.THREE)
