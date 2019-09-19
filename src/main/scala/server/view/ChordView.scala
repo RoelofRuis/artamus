@@ -15,12 +15,13 @@ class ChordView @Inject() (
     case TrackSymbolsUpdated =>
       val track = trackState.getTrack
 
-      val pitchClasses = track.getAllStackedSymbols.map { case (_, notes) =>
-        notes.map(_.pitch.pitchClass)
+      val possibleChords = track.getAllStackedSymbols.map { case (position, notes) =>
+        val possibleChords = ChordFinder.findChords(notes.map(_.pitch.pitchClass))
+        (position, possibleChords)
       }
 
       println
-      pitchClasses.map(ChordFinder.findChords).foreach(println)
+      println(s"Possible chords: $possibleChords")
     case _ => ()
   }, active = true)
 

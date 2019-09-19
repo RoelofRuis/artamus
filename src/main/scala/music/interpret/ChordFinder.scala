@@ -2,13 +2,20 @@ package music.interpret
 
 import music.symbolic._
 import music.symbolic.const.{IntervalFunctions, Intervals}
+import music.symbolic.properties.Symbols.Symbol
 import music.symbolic.tuning.{Tuning, TwelveToneEqualTemprament}
 
 object ChordFinder {
 
   val tuning: Tuning = TwelveToneEqualTemprament
 
-  def findChords(l: Seq[PitchClass]): Seq[String] = {
+  sealed trait ChordType
+  case object Major extends ChordType
+
+  case class Chord(root: MusicVector, tp: ChordType)
+  implicit object ChordSymbol extends Symbol[Chord]
+
+  def findChords(l: Seq[PitchClass]): Seq[Chord] = {
     val pitchInterpretation = Interpretation.allOf(l.toList).distinct
 
     ROOTS.flatMap { root =>
@@ -16,18 +23,18 @@ object ChordFinder {
         .expand(pc => pitchClassAsInterval(root, pc).toList) // Intervals
         .expand(mv => intervalToFunctions(Interval(mv)).toList) // Functions
         .mapAll(findChord)
-        .data.flatten.map(name => s"$root + $name")
+        .data.flatten.map(tpe => Chord(root, tpe))
     }
   }
 
-  def findChord(l: List[IntervalFunction]): Option[String] = {
+  private def findChord(l: List[IntervalFunction]): Option[ChordType] = {
     l.sorted match {
-      case IntervalFunctions.ROOT :: IntervalFunctions.THREE :: IntervalFunctions.FIVE :: Nil => Some("major")
+      case IntervalFunctions.ROOT :: IntervalFunctions.THREE :: IntervalFunctions.FIVE :: Nil => Some(Major)
       case _ => None
     }
   }
 
-  def pitchClassAsInterval(root: MusicVector, pc: PitchClass): Seq[MusicVector] = {
+  private def pitchClassAsInterval(root: MusicVector, pc: PitchClass): Seq[MusicVector] = {
     val negAccVal = - root.acc.value
     Range.inclusive(negAccVal - 1, negAccVal + 2)
       .flatMap { mod =>
@@ -39,7 +46,7 @@ object ChordFinder {
       }
   }
 
-  val ROOTS: Seq[MusicVector] = Seq(
+  private val ROOTS: Seq[MusicVector] = Seq(
     tuning.vector(0, 0),
     tuning.vector(0, 1),
     tuning.vector(1, -1),
@@ -59,7 +66,7 @@ object ChordFinder {
     tuning.vector(6, 0)
   )
 
-  def intervalToFunctions(i: Interval): Seq[IntervalFunction] = {
+  private def intervalToFunctions(i: Interval): Seq[IntervalFunction] = {
     i match {
       case Intervals.PRIME => Seq(IntervalFunctions.ROOT)
       case Intervals.FLAT_TWO => Seq(IntervalFunctions.FLAT_NINE)
