@@ -2,7 +2,6 @@ package music.interpret
 
 import music.symbolic._
 import music.symbolic.const.{IntervalFunctions, Intervals}
-import music.symbolic.properties.Symbols.Symbol
 import music.symbolic.tuning.{Tuning, TwelveToneEqualTemprament}
 
 object ChordFinder {
@@ -11,9 +10,6 @@ object ChordFinder {
 
   sealed trait ChordType
   case object Major extends ChordType
-
-  case class Chord(root: MusicVector, tp: ChordType)
-  implicit object ChordSymbol extends Symbol[Chord]
 
   def findChords(l: Seq[PitchClass]): Seq[Chord] = {
     val pitchInterpretation = Interpretation.allOf(l.toList).distinct

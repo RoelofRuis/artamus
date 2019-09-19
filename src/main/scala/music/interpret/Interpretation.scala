@@ -10,23 +10,9 @@ import music.interpret.Interpretation.{AllOf, OneOf}
   * That can be interpreted as "either 'A and B' or 'C and D'"
   *
   * Combinators exist on the Interpretation class to transition from one interpretation to another.
+  *
+  * @deprecated Very memory intensive data structure, this could probably be done in a more 'monadic' way
   */
-object Interpretation {
-
-  private type OneOf[A] = List[A]
-  private type AllOf[A] = List[A]
-
-  /* Creators */
-  def empty[A]: Interpretation[A] = Interpretation(Nil)
-
-  def only[A](a: A): Interpretation[A] = Interpretation((a :: Nil) :: Nil)
-
-  def oneOf[A](l: List[A]): Interpretation[A] = Interpretation(l.map((a: A) => a :: Nil))
-
-  def allOf[A](l: List[A]): Interpretation[A] = Interpretation(l :: Nil)
-
-}
-
 case class Interpretation[A](data: OneOf[AllOf[A]]) {
 
   def add(other: Interpretation[A]) = Interpretation(data ::: other.data)
@@ -72,4 +58,20 @@ case class Interpretation[A](data: OneOf[AllOf[A]]) {
   private def expandAllOf[T](a: AllOf[A])(f: A => List[T]): Interpretation[T] = {
     Interpretation(a.map(f).foldLeft(List(List[T]()))((res, elem) => combineLists[T](res, elem)))
   }
+}
+
+object Interpretation {
+
+  private type OneOf[A] = List[A]
+  private type AllOf[A] = List[A]
+
+  /* Creators */
+  def empty[A]: Interpretation[A] = Interpretation(Nil)
+
+  def only[A](a: A): Interpretation[A] = Interpretation((a :: Nil) :: Nil)
+
+  def oneOf[A](l: List[A]): Interpretation[A] = Interpretation(l.map((a: A) => a :: Nil))
+
+  def allOf[A](l: List[A]): Interpretation[A] = Interpretation(l :: Nil)
+
 }

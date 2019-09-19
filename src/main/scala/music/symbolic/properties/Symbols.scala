@@ -1,6 +1,6 @@
 package music.symbolic.properties
 
-import music.symbolic.{Key, MidiPitch, Note, TimeSignature}
+import music.symbolic._
 
 object Symbols {
 
@@ -9,6 +9,7 @@ object Symbols {
 
   implicit object TimeSignatureSymbol extends Symbol[TimeSignature]
   implicit object KeySymbol extends Symbol[Key]
+  implicit object ChordSymbol extends Symbol[Chord]
 
   implicit object NoteSymbol extends StackableSymbol[Note[MidiPitch]]
 
