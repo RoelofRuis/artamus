@@ -10,6 +10,7 @@ object ChordFinder {
 
   sealed trait ChordType
   case object Major extends ChordType
+  case object Minor extends ChordType
 
   def findChords(l: Seq[PitchClass]): Seq[Chord] = {
     val pitchInterpretation = Interpretation.allOf(l.toList).distinct
@@ -26,6 +27,7 @@ object ChordFinder {
   private def findChord(l: List[IntervalFunction]): Option[ChordType] = {
     l.sorted match {
       case IntervalFunctions.ROOT :: IntervalFunctions.THREE :: IntervalFunctions.FIVE :: Nil => Some(Major)
+      case IntervalFunctions.ROOT :: IntervalFunctions.FLAT_THREE :: IntervalFunctions.FIVE :: Nil => Some(Minor)
       case _ => None
     }
   }

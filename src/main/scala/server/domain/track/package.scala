@@ -18,5 +18,6 @@ package object track {
 
   // Queries
   case object GetMidiPitches extends Query { type Res = List[List[Int]] }
+  case object GetChords extends Query { type Res = List[Chord] }
 
 }

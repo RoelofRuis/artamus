@@ -25,7 +25,7 @@ class ClientModule extends ScalaPrivateModule {
     bind[OperationRegistry].toInstance(new ClientOperationRegistry())
     bind[SystemOperations].asEagerSingleton()
     bind[TrackOperations].asEagerSingleton()
-    bind[TrackPlaybackOperations].asEagerSingleton()
+    bind[TrackQueryOperations].asEagerSingleton()
     bind[DevOperations].asEagerSingleton()
 
     bind[Dispatcher[Event]].toInstance(protocol.createDispatcher[Event]())
