@@ -4,6 +4,7 @@ import java.io._
 
 import javax.inject.Inject
 import music.interpret.pitch.NaivePitchSpelling
+import music.symbolic.Pitched.PitchClass
 import music.symbolic._
 import music.write.LilypondFile
 import protocol.Event
@@ -20,16 +21,16 @@ class LilypondView @Inject() (
     case TrackSymbolsUpdated =>
       val currentState = trackState.getTrack
 
-      val stackedNotes: Seq[Seq[Note[MidiPitch]]] = currentState
-        .getAllStackedSymbols[Note[MidiPitch]]
+      val stackedNotes: Seq[Seq[Note[PitchClass]]] = currentState
+        .getAllStackedSymbols[Note[PitchClass]]
         .map { case (_, n) => n }
 
-      val scientificPitch = stackedNotes
+      val spelledPitches = stackedNotes
         .map(stack => NaivePitchSpelling.interpret(stack.map(_.pitch)).zip(stack))
         .map(_.map { case (sp, note) => Note(note.duration, sp) })
 
       val lilyFile = LilypondFile(
-        scientificPitch,
+        spelledPitches,
         currentState.getSymbolAt[TimeSignature](Position.zero),
         currentState.getSymbolAt[Key](Position.zero)
       )

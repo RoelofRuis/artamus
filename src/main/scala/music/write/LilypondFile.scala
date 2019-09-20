@@ -1,9 +1,10 @@
 package music.write
 
-import music.symbolic.{Key, Note, ScientificPitch, TimeSignature}
+import music.symbolic.Pitched.Spelled
+import music.symbolic._
 
 final case class LilypondFile(
-  notes: Seq[Seq[Note[ScientificPitch]]],
+  notes: Seq[Seq[Note[Spelled]]],
   timeSignature: Option[TimeSignature],
   key: Option[Key],
 ) {

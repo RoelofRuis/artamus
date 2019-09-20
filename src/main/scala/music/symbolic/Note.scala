@@ -1,11 +1,5 @@
 package music.symbolic
 
-import music.symbolic.properties.Pitch.HasExactPitch
+import music.symbolic.Pitched.{ExactPitch, Pitch}
 
-final case class Note[A : HasExactPitch](duration: Duration, pitch: A)
-
-object Note {
-
-  def apply(duration: Duration, midiPitch: MidiPitch): Note[MidiPitch] = new Note(duration, midiPitch)
-
-}
+final case class Note[A <: ExactPitch](duration: Duration, pitch: Pitch[A])

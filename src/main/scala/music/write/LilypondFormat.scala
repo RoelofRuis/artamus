@@ -1,6 +1,7 @@
 package music.write
 
-import music.symbolic._
+import music.symbolic.{Duration, Key, Note, TimeSignature}
+import music.symbolic.Pitched.{Accidental, Octave, Spelled, Step}
 import music.symbolic.const.Scales
 
 trait LilypondFormat[A] {
@@ -15,25 +16,25 @@ object LilypondFormat {
     def toLilypond: String = LilypondFormat[A].toLilypond(a)
   }
 
-  implicit val simultaneousNotesToLilypond: LilypondFormat[Seq[Note[ScientificPitch]]] = (notes: Seq[Note[ScientificPitch]]) => {
+  implicit val simultaneousNotesToLilypond: LilypondFormat[Seq[Note[Spelled]]] = (notes: Seq[Note[Spelled]]) => {
     val dur = notes.map(_.duration).max
     notes.map { note =>
       Seq(
-        note.pitch.musicVector.toLilypond,
+        note.pitch.p.toLilypond,
         note.pitch.octave.toLilypond,
       ).mkString("")
     }.mkString("<", " ", ">") + dur.toLilypond
   }
 
-  implicit val noteToLilypond: LilypondFormat[Note[ScientificPitch]] = (note: Note[ScientificPitch]) => {
+  implicit val noteToLilypond: LilypondFormat[Note[Spelled]] = (note: Note[Spelled]) => {
     Seq(
-      note.pitch.musicVector.toLilypond,
+      note.pitch.p.toLilypond,
       note.pitch.octave.toLilypond,
       note.duration.toLilypond
     ).mkString("")
   }
 
-  implicit val musicVectorToLilypond: LilypondFormat[MusicVector] = (mvec: MusicVector) => {
+  implicit val spelledPitchToLilypond: LilypondFormat[Spelled] = (spelledPitch: Spelled) => {
     def accidentalText(a: Accidental, acc: String = "", suppressE: Boolean = false): String = {
       a match {
         case Accidental(0) => acc
@@ -41,8 +42,8 @@ object LilypondFormat {
         case Accidental(v) if v < 0 => accidentalText(Accidental(v + 1), acc + (if (suppressE) "s" else "es"))
       }
     }
-    val stepValue = mvec.step.value
-    mvec.step.toLilypond + accidentalText(mvec.acc, suppressE = stepValue == 2 || stepValue == 5)
+    val stepValue = spelledPitch.step.value
+    spelledPitch.step.toLilypond + accidentalText(spelledPitch.accidental, suppressE = stepValue == 2 || stepValue == 5)
   }
 
   implicit val stepToLilypond: LilypondFormat[Step] = (step: Step) => {

@@ -1,86 +1,82 @@
 package music.symbolic.tuning
-import music.symbolic._
-import music.symbolic.const.Scales
 
-// TODO: try to extract operations and essential constants when this class is more mature
-object TwelveToneEqualTemprament extends Tuning {
+import music.symbolic.Pitched._
 
-  override def stepSizes: Seq[Int] = Scales.MAJOR.stepSizes
-  override def numDistinctSteps: Int = Scales.MAJOR.numberOfSteps
-  override def numDistinctPitches: Int = Scales.MAJOR.numberOfPitches
+object TwelveToneEqualTemprament {
 
-  override def pitchClassToStep(pc: PitchClass): Option[Step] = {
-    def find(currentPc: Int, scaleSeq: Seq[Int]): Option[Int] = {
-      val step = scaleSeq.scan(0)(_ + _).indexOf(currentPc)
-      if (step == -1) None else Some(step)
-    }
+  private val pcSteps = Seq(0, 2, 4, 5, 7, 9, 11)
+  private val numPitchClasses = 12
+  private val numSteps = pcSteps.size
 
-    if (pc.value >= 0) find(pc.value, stepSizes).map(Step)
-    else find(-pc.value, stepSizes.reverse).map(steps => Step(numDistinctSteps - steps))
+  object Intervals {
+    val PERFECT_PRIME = Interval(pc(0), step(0))
+    val SMALL_SECOND = Interval(pc(1), step(1))
+    val LARGE_SECOND = Interval(pc(2), step(1))
+    val SMALL_THIRD = Interval(pc(3), step(2))
+    val LARGE_THIRD = Interval(pc(4), step(2))
+    val PERFECT_FOURTH = Interval(pc(5), step(3))
+    val AUGMENTED_FOURTH = Interval(pc(6), step(3))
+    val DIMINISHED_FIFTH = Interval(pc(6), step(4))
+    val PERFECT_FIFTH = Interval(pc(7), step(4))
+    val SMALL_SIXTH = Interval(pc(8), step(5))
+    val LARGE_SIXTH = Interval(pc(9), step(5))
+    val DIMINISHED_SEVENTH = Interval(pc(9), step(6))
+    val SMALL_SEVENTH = Interval(pc(10), step(6))
+    val LARGE_SEVENTH = Interval(pc(11), step(6))
+
+    val ALL: Seq[Interval] = Seq(
+      PERFECT_PRIME,
+      SMALL_SECOND, LARGE_SECOND,
+      SMALL_THIRD, LARGE_THIRD,
+      PERFECT_FOURTH, AUGMENTED_FOURTH,
+      DIMINISHED_FIFTH, PERFECT_FIFTH,
+      SMALL_SIXTH, LARGE_SIXTH,
+      DIMINISHED_SEVENTH, SMALL_SEVENTH, LARGE_SEVENTH
+    )
   }
 
-  override def stepToPitchClass(step: Step): PitchClass = {
-    def loop(curStep: Int, total: Int, scaleSeq: Seq[Int]): Int = {
-      if (curStep <= numDistinctSteps) scaleSeq.slice(0, curStep).sum + total
-      else loop(curStep - numDistinctSteps, scaleSeq.sum, scaleSeq)
-    }
+  // Creation
+  def step(i: Int): Step = Step(i % numSteps)
+  def pc(i: Int): PitchClass = PitchClass(i % numPitchClasses)
 
-    if (step.value >= 0) PitchClass(loop(step.value, 0, stepSizes))
-    else PitchClass(-loop(Math.abs(step.value), 0, stepSizes.reverse))
+  def noteNumberToPitch(noteNumber: MidiNoteNumber): Pitch[PitchClass] = {
+    Pitch(Octave((noteNumber.value / numPitchClasses) - 1), pc(noteNumber.value))
   }
 
-  override def musicVectorToPitchClass(mvec: MusicVector): PitchClass = {
-    // Fixme: This won't work for accidentals with values larger than `scale.numberOfSteps`
-    val newPc = stepToPitchClass(mvec.step).value + mvec.acc.value
-    if (newPc < 0) PitchClass(numDistinctSteps - newPc)
-    else if (newPc > numDistinctPitches) PitchClass(newPc - numDistinctPitches)
-    else PitchClass(newPc)
+  def pitchToNoteNumber(pitch: Pitch[PitchClass]): MidiNoteNumber = {
+    MidiNoteNumber(((pitch.octave.value + 1) * 12) + pitch.p.value)
   }
 
-  override def vector(step: Int, accidental: Int): MusicVector = {
-    MusicVector(Step(step), Accidental(accidental))
+  def pcToStep(pc: PitchClass): Option[Step] = {
+    pcSteps.find(_ == pc.value).map(Step)
   }
 
-  override def rectify(mv: MusicVector): MusicVector = {
-    if (mv.step.value >= 0) mv
-    else {
-      val rectifiedValue= mv.step.value + ((mv.step.value / -numDistinctSteps) + 1) * numDistinctSteps
-      MusicVector(Step(rectifiedValue), mv.acc)
-    }
+  // Conversion
+  def stepToPc(step: Step): PitchClass = PitchClass(pcSteps(step.value))
+
+  def intervalToPc(in: Interval): PitchClass = {
+    val stepPc = stepToPc(in.s)
+    val givenPc = in.pc
+    val diff = stepPc.value - givenPc.value
+    PitchClass(stepPc.value - diff)
   }
 
-  override def subtract(mv1: MusicVector, mv2: MusicVector): MusicVector = {
-    val newStep = mv1.step.value - mv2.step.value
-    val newPc = stepToPitchClass(Step(newStep)).value
-    val actualPc = musicVectorToPitchClass(mv1).value - musicVectorToPitchClass(mv2).value
-
-    val pcDiff = actualPc - newPc
-
-    MusicVector(Step(newStep % numDistinctSteps), Accidental(pcDiff))
+  // Interpretation
+  def possibleIntervals(pc1: PitchClass, pc2: PitchClass): Seq[Interval] = {
+    val diff = pcDiff(pc1, pc2)
+    Intervals.ALL.filter(intervalToPc(_).value == diff)
   }
 
-  override def compare(mvec: MusicVector, pc: PitchClass): Boolean = {
-    musicVectorToPitchClass(mvec) == pc
+  def interpretations(given: PitchClass): Seq[(PitchClass, Interval)] = {
+    Range(0, numPitchClasses)
+      .map(PitchClass)
+      .flatMap(root =>possibleIntervals(root, given).map((root, _)))
   }
 
-  override def addIntervals(i1: Interval, i2: Interval): Interval = {
-    val newStep = i1.musicVector.step + i2.musicVector.step
-    val newPc = stepToPitchClass(newStep).value
-    val actualPc = musicVectorToPitchClass(i1.musicVector).value + musicVectorToPitchClass(i2.musicVector).value
-
-    Interval(MusicVector(newStep, Accidental(actualPc - newPc)))
-  }
-
-  override def transpose(i1: Interval, i2: Interval): Interval = {
-    Interval(transpose(i1.musicVector, i2))
-  }
-
-  override def transpose(mv: MusicVector, i: Interval): MusicVector = {
-    val newStep = mv.step + i.musicVector.step
-    val newPc = stepToPitchClass(newStep).value
-    val actualPc = musicVectorToPitchClass(mv).value + musicVectorToPitchClass(i.musicVector).value
-
-    MusicVector(newStep % numDistinctSteps, Accidental(actualPc - newPc))
+  private def pcDiff(pc1: PitchClass, pc2: PitchClass): Int = {
+    val diff = pc2.value - pc1.value
+    if (diff < 0) diff + numPitchClasses
+    else diff
   }
 
 }

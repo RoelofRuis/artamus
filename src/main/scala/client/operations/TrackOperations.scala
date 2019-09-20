@@ -4,14 +4,18 @@ import client.read.MusicReader.{NoteOn, Simultaneous}
 import client.read.{MusicReader, StdIOTools}
 import com.google.inject.Inject
 import music.math.Rational
+import music.symbolic.Pitched.PitchClass
 import music.symbolic._
 import music.symbolic.const.Scales
+import music.symbolic.tuning.TwelveToneEqualTemprament
 import server.domain.track.{AddNote, NewTrack, SetKey, SetTimeSignature}
 
 class TrackOperations @Inject() (
   registry: OperationRegistry,
   reader: MusicReader
 ) {
+
+  val tuning = TwelveToneEqualTemprament
 
   registry.registerOperation(OperationToken("new", "track"), () => {
     List(NewTrack)
@@ -22,7 +26,7 @@ class TrackOperations @Inject() (
   })
 
   registry.registerOperation(OperationToken("key", "track"), () => {
-    List(SetKey(Key(reader.readMusicVector, Scales.MAJOR)))
+    List(SetKey(Key(reader.readSpelledPitch, Scales.MAJOR)))
   })
 
   registry.registerOperation(OperationToken("note-seq", "track"), () => {
@@ -39,7 +43,7 @@ class TrackOperations @Inject() (
       .map{ case (midiNoteNumber, index) =>
         AddNote(
           Position.apply(elementDuration, index),
-          Note(elementDuration, MidiPitch(midiNoteNumber))
+          Note(elementDuration, tuning.noteNumberToPitch(midiNoteNumber))
         )}
   })
 
@@ -55,7 +59,7 @@ class TrackOperations @Inject() (
         .map { midiNoteNumber =>
           AddNote(
             Position.apply(elementDuration, i),
-            Note(elementDuration, MidiPitch(midiNoteNumber))
+            Note(elementDuration, tuning.noteNumberToPitch(midiNoteNumber))
           )
         }
       }.toList

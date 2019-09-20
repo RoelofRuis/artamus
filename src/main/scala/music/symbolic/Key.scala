@@ -1,4 +1,5 @@
 package music.symbolic
 
-// TODO: is root an interval?
-final case class Key(root: MusicVector, scale: Scale)
+import music.symbolic.Pitched.Spelled
+
+final case class Key(root: Spelled, scale: Scale)
