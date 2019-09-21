@@ -13,15 +13,16 @@ import music.interpret.Interpretation.{AllOf, OneOf}
   *
   * @deprecated Very memory intensive data structure, this could probably be done in a more 'monadic' way
   */
-case class Interpretation[A](data: OneOf[AllOf[A]]) {
-
-  def add(other: Interpretation[A]) = Interpretation(data ::: other.data)
+final case class Interpretation[A] private (data: OneOf[AllOf[A]]) {
 
   /**
     * Each element of type A can be interpreted as multiple elements of type B
     */
-  def expand[T](f: A => List[T]): Interpretation[T] = {
-    data.map((all: AllOf[A]) => expandAllOf[T](all)(f)).reduce(_.add(_))
+  def expand[T](f: A => Seq[T]): Interpretation[T] = {
+    val expanded = data
+      .map { all: AllOf[A] => expandAllOf[T](all)(f(_)) }
+      .reduce(_ ++ _)
+    Interpretation(expanded)
   }
 
   /**
@@ -34,11 +35,11 @@ case class Interpretation[A](data: OneOf[AllOf[A]]) {
   /**
     * Multiple elements of type A occurring together can be interpreted as at most 1 element of type B
     */
-  def mapAll[T](f: List[A] => Option[T]): Interpretation[T] = {
+  def mapAll[T](f: Seq[A] => Option[T]): Interpretation[T] = {
     Interpretation.oneOf(data.flatMap((all: AllOf[A]) => f(all)))
   }
 
-  def filter(f: List[A] => Boolean): Interpretation[A] = {
+  def filter(f: Seq[A] => Boolean): Interpretation[A] = {
     Interpretation(data.filter(f))
   }
 
@@ -50,28 +51,28 @@ case class Interpretation[A](data: OneOf[AllOf[A]]) {
 
   override def toString: String = data.map(_.mkString(" and ")).map("(" + _ + ")").mkString(" or ")
 
-  private def combineLists[T](l1: List[List[T]], l2: List[T]): List[List[T]] = {
-    if (l2 == Nil) l1
-    else l2.flatMap((elem: T) => l1.map((list: List[T]) => elem :: list))
+  private def combineLists[T](l1: Seq[Seq[T]], l2: Seq[T]): Seq[Seq[T]] = {
+    if (l2.isEmpty) l1
+    else l2.flatMap((elem: T) => l1.map((list: Seq[T]) => elem +: list))
   }
 
-  private def expandAllOf[T](a: AllOf[A])(f: A => List[T]): Interpretation[T] = {
-    Interpretation(a.map(f).foldLeft(List(List[T]()))((res, elem) => combineLists[T](res, elem)))
+  private def expandAllOf[T](a: AllOf[A])(f: A => Seq[T]): OneOf[AllOf[T]] = {
+    a.map(f).foldLeft(Seq(Seq[T]()))((res, elem) => combineLists[T](res, elem))
   }
 }
 
 object Interpretation {
 
-  private type OneOf[A] = List[A]
-  private type AllOf[A] = List[A]
+  private type OneOf[A] = Seq[A]
+  private type AllOf[A] = Seq[A]
 
   /* Creators */
-  def empty[A]: Interpretation[A] = Interpretation(Nil)
+  def empty[A]: Interpretation[A] = Interpretation(Seq())
 
-  def only[A](a: A): Interpretation[A] = Interpretation((a :: Nil) :: Nil)
+  def only[A](a: A): Interpretation[A] = Interpretation(Seq(Seq(a)))
 
-  def oneOf[A](l: List[A]): Interpretation[A] = Interpretation(l.map((a: A) => a :: Nil))
+  def oneOf[A](l: Seq[A]): Interpretation[A] = Interpretation(l.map(Seq(_)))
 
-  def allOf[A](l: List[A]): Interpretation[A] = Interpretation(l :: Nil)
+  def allOf[A](l: Seq[A]): Interpretation[A] = Interpretation(Seq(l))
 
 }

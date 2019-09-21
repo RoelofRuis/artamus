@@ -1,12 +1,23 @@
 package music.symbolic.tuning
 
 import music.symbolic.Pitched._
+import music.symbolic.tuning.TwelveToneEqualTemprament.Functions._
 
 object TwelveToneEqualTemprament {
 
   private val pcSteps = Seq(0, 2, 4, 5, 7, 9, 11)
   private val numPitchClasses = 12
   private val numSteps = pcSteps.size
+
+  object Functions {
+    val ROOT = Function(pc(0), step(0))
+    val TWO = Function(pc(2), step(1))
+    val THREE = Function(pc(4), step(2))
+    val FOUR = Function(pc(5), step(3))
+    val FIVE = Function(pc(7), step(4))
+    val SIX = Function(pc(9), step(5))
+    val SEVEN = Function(pc(11), step(6))
+  }
 
   object Intervals {
     val PERFECT_PRIME = Interval(pc(0), step(0))
@@ -39,6 +50,8 @@ object TwelveToneEqualTemprament {
   def step(i: Int): Step = Step(i % numSteps)
   def pc(i: Int): PitchClass = PitchClass(i % numPitchClasses)
 
+  def pitchClasses: Seq[PitchClass] = Range(0, numPitchClasses).map(PitchClass)
+
   def noteNumberToPitch(noteNumber: MidiNoteNumber): Pitch[PitchClass] = {
     Pitch(Octave((noteNumber.value / numPitchClasses) - 1), pc(noteNumber.value))
   }
@@ -67,10 +80,15 @@ object TwelveToneEqualTemprament {
     Intervals.ALL.filter(intervalToPc(_).value == diff)
   }
 
-  def interpretations(given: PitchClass): Seq[(PitchClass, Interval)] = {
-    Range(0, numPitchClasses)
-      .map(PitchClass)
-      .flatMap(root =>possibleIntervals(root, given).map((root, _)))
+  def functions(i: Interval): Seq[Function] = i match {
+    case Intervals.PERFECT_PRIME => Seq(ROOT)
+    case Intervals.LARGE_THIRD => Seq(THREE)
+    case Intervals.PERFECT_FIFTH => Seq(FIVE)
+    case _ => Seq()
+  }
+
+  def chordMap: PartialFunction[Seq[Function], String] = {
+    case Seq(ROOT, THREE, FIVE) => "Major"
   }
 
   private def pcDiff(pc1: PitchClass, pc2: PitchClass): Int = {

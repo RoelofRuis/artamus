@@ -1,8 +1,11 @@
 package music.interpret
 
 import music.symbolic.Pitched.{Chord, PitchClass}
+import music.symbolic.tuning.TwelveToneEqualTemprament
 
 object ChordFinder {
+
+  val tuning = TwelveToneEqualTemprament
 
   sealed trait ChordType
   case object Major extends ChordType
