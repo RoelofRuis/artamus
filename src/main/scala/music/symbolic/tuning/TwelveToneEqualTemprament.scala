@@ -3,6 +3,7 @@ package music.symbolic.tuning
 import music.symbolic.Pitched._
 import music.symbolic.tuning.TwelveToneEqualTemprament.Functions._
 
+// TODO: split this into appropriate parts!
 object TwelveToneEqualTemprament {
 
   private val pcSteps = Seq(0, 2, 4, 5, 7, 9, 11)
@@ -87,8 +88,11 @@ object TwelveToneEqualTemprament {
     case _ => Seq()
   }
 
-  def chordMap: PartialFunction[Seq[Function], String] = {
-    case Seq(ROOT, THREE, FIVE) => "Major"
+  def chordMap: Seq[Function] => Option[String] = { functions: Seq[Function]=>
+    functions.sorted match {
+      case Seq(ROOT, THREE, FIVE) => Some("Major")
+      case _ => None
+    }
   }
 
   private def pcDiff(pc1: PitchClass, pc2: PitchClass): Int = {

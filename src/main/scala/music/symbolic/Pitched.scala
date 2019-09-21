@@ -16,7 +16,13 @@ object Pitched {
 
   case class Interval(pc: PitchClass, s: Step)
 
-  case class Function(pc: PitchClass, s: Step)
+  case class Function(pc: PitchClass, s: Step) extends Comparable[Function] {
+    override def compareTo(o: Function): Int = {
+      val stepCompare = s.value.compare(o.s.value)
+      if (stepCompare != 0) stepCompare
+      else pc.value.compare(o.pc.value)
+    }
+  }
 
   case class Octave(value: Int)
 

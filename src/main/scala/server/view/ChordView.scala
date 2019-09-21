@@ -2,6 +2,8 @@ package server.view
 
 import javax.annotation.concurrent.NotThreadSafe
 import javax.inject.Inject
+import music.interpret.ChordFinder
+import music.symbolic.tuning.TwelveToneEqualTemprament
 import protocol.Event
 import pubsub.EventBus
 import server.domain.track.{TrackState, TrackSymbolsUpdated}
@@ -15,15 +17,19 @@ class ChordView @Inject() (
   eventBus.subscribe("chord-analysis", {
     case TrackSymbolsUpdated =>
       val track = trackState.getTrack
-//    TODO: fixen!
-//      val possibleChords = track.getAllStackedSymbols.map { case (position, notes) =>
-//        val possibleChords = ChordFinder.findChords(notes.map(_.pitch.pitchClass))
-//        (position, possibleChords)
-//      }
-//
-//      println
-//      println(s"Possible chords: $possibleChords")
-//      chords = possibleChords.toList
+      val possibleChords = track.getAllStackedSymbols.map { case (position, notes) =>
+        val pitches = notes.map(_.pitch.p)
+        val possibleChords = ChordFinder.findChords(pitches)
+        (position, possibleChords)
+      }
+
+      println
+      possibleChords.foreach { case (pos, chords) =>
+        chords.foreach { chord =>
+          val name = TwelveToneEqualTemprament.chordMap(chord.functions)
+          println(s"$pos: [${chord.root.value}] [$name]")
+        }
+      }
     case _ => ()
   }, active = true)
 

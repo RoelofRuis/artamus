@@ -11,7 +11,7 @@ import music.interpret.Interpretation.{AllOf, OneOf}
   *
   * Combinators exist on the Interpretation class to transition from one interpretation to another.
   *
-  * @deprecated Very memory intensive data structure, this could probably be done in a more 'monadic' way
+  * TODO: make evaluation lazy so it can be more memory efficient
   */
 final case class Interpretation[A] private (data: OneOf[AllOf[A]]) {
 
