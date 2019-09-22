@@ -22,12 +22,11 @@ class MusicReader @Inject() (reader: MidiMessageReader) {
   }
 
   def readTimeSignature: TimeSignature = {
-    readMidiNoteNumbers(NoteOn(2)).map{ tuning.noteNumberToPitch(_).p } match {
-      case num :: denom :: Nil =>
-        TimeSignature(num.value + 1, denom.value + 1) match {
-          case Some(t) => t
-          case _ => readTimeSignature
-        }
+    val num = numberFromBits(readMidiNoteNumbers(NoteOn(1)))
+    val denom = numberFromBits(readMidiNoteNumbers(Simultaneous))
+
+    TimeSignature(num, denom) match {
+      case Some(t) => t
       case _ => readTimeSignature
     }
   }
@@ -38,6 +37,12 @@ class MusicReader @Inject() (reader: MidiMessageReader) {
       case Simultaneous => reader.simultaneousPressedOn
     }
     notes.map(s => MidiNoteNumber(s.getData1))
+  }
+
+  def numberFromBits(notes: List[MidiNoteNumber]): Int = {
+    notes.foldRight(0){ case (noteNumber, acc) =>
+      acc + (1 << tuning.noteNumberToPitch(noteNumber).p.value)
+    }
   }
 
 }
