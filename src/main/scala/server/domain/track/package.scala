@@ -1,7 +1,7 @@
 package server.domain
 
-import music.symbolic.Pitched.PitchClass
 import music.symbolic._
+import music.symbolic.pitched.PitchClass
 import protocol.{Command, Event, Query}
 
 package object track {

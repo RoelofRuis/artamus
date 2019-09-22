@@ -2,8 +2,7 @@ package server.domain.track
 
 import javax.inject.Inject
 import music.symbolic.Note
-import music.symbolic.Pitched.PitchClass
-import music.symbolic.tuning.TwelveToneEqualTemprament
+import music.symbolic.pitched.PitchClass
 import protocol.Query
 import pubsub.Dispatcher
 
@@ -12,9 +11,7 @@ private[server] class TrackQueryHandler @Inject() (
   state: TrackState
 ) {
 
-  val tuning: TwelveToneEqualTemprament.type = TwelveToneEqualTemprament
-
-  import music.symbolic.properties.Symbols._
+  import music.symbolic.pitched.TwelveToneEqualTemprament._
 
   dispatcher.subscribe[GetMidiPitches.type]{ _ =>
     state.getTrack.getAllStackedSymbols[Note[PitchClass]].map {

@@ -1,8 +1,8 @@
 package music.write
 
-import music.symbolic.{Duration, Key, Note, TimeSignature}
-import music.symbolic.Pitched.{Accidental, Octave, Spelled, Step}
 import music.symbolic.const.Scales
+import music.symbolic.pitched.{Accidental, Octave, Spelled, Step}
+import music.symbolic.{Duration, Key, Note, TimeSignature}
 
 trait LilypondFormat[A] {
   def toLilypond(a: A): String

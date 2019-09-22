@@ -4,10 +4,8 @@ import client.read.MusicReader.{NoteOn, Simultaneous}
 import client.read.{MusicReader, StdIOTools}
 import com.google.inject.Inject
 import music.math.Rational
-import music.symbolic.Pitched.PitchClass
 import music.symbolic._
 import music.symbolic.const.Scales
-import music.symbolic.tuning.TwelveToneEqualTemprament
 import server.domain.track.{AddNote, NewTrack, SetKey, SetTimeSignature}
 
 class TrackOperations @Inject() (
@@ -15,7 +13,7 @@ class TrackOperations @Inject() (
   reader: MusicReader
 ) {
 
-  val tuning = TwelveToneEqualTemprament
+  import music.symbolic.pitched.TwelveToneEqualTemprament._
 
   registry.registerOperation(OperationToken("new", "track"), () => {
     List(NewTrack)

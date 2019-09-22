@@ -3,19 +3,17 @@ package client.read
 import client.read.MusicReader.{NoteOn, ReadMethod, Simultaneous}
 import javax.inject.Inject
 import midi.in.MidiMessageReader
-import music.symbolic.Pitched.{Accidental, MidiNoteNumber, Spelled, Step}
-import music.symbolic.tuning.TwelveToneEqualTemprament
 import music.symbolic.TimeSignature
+import music.symbolic.pitched.{Accidental, MidiNoteNumber, Spelled, Step}
 
 class MusicReader @Inject() (reader: MidiMessageReader) {
 
-  val tuning: TwelveToneEqualTemprament.type = TwelveToneEqualTemprament
-
   import midi.in.Reading._
+  import music.symbolic.pitched.TwelveToneEqualTemprament._
 
   def readSpelledPitch: Spelled = {
     val midiNoteNumbers = readMidiNoteNumbers(NoteOn(2))
-    val firstStep = tuning.pcToStep(tuning.noteNumberToPitch(midiNoteNumbers.head).p)
+    val firstStep = tuning.pc2step(tuning.noteNumberToPitch(midiNoteNumbers.head).p)
 
     if (firstStep.isEmpty) readSpelledPitch
     else {

@@ -13,7 +13,7 @@ class DevOperations @Inject() (
 
   registry.registerOperation(OperationToken("print-midi", "dev"), () => {
     reader.noteOn(1)
-      .foreach { case msg: ShortMessage =>
+      .foreach { msg: ShortMessage =>
         print(s"COMMAND:${msg.getCommand}\nCHANNEL:${msg.getChannel}\nDATA1:${msg.getData1}\nDATA2:${msg.getData2}\n")
       }
     List()

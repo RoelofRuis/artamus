@@ -1,6 +1,6 @@
 package music.interpret.pitch
 
-import music.symbolic.Pitched.{Pitch, PitchClass, Spelled}
+import music.symbolic.pitched.{Pitch, PitchClass, Spelled}
 
 trait PitchSpelling {
 

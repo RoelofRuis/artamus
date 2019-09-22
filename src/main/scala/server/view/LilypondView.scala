@@ -4,8 +4,8 @@ import java.io._
 
 import javax.inject.Inject
 import music.interpret.pitch.NaivePitchSpelling
-import music.symbolic.Pitched.PitchClass
 import music.symbolic._
+import music.symbolic.pitched.PitchClass
 import music.write.LilypondFile
 import protocol.Event
 import pubsub.EventBus

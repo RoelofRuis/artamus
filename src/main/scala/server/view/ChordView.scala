@@ -3,7 +3,7 @@ package server.view
 import javax.annotation.concurrent.NotThreadSafe
 import javax.inject.Inject
 import music.interpret.ChordFinder
-import music.symbolic.tuning.TwelveToneEqualTemprament
+import music.symbolic.pitched.TwelveToneEqualTemprament
 import protocol.Event
 import pubsub.EventBus
 import server.domain.track.{TrackState, TrackSymbolsUpdated}
@@ -26,7 +26,7 @@ class ChordView @Inject() (
       println
       possibleChords.foreach { case (pos, chords) =>
         chords.foreach { chord =>
-          val name = TwelveToneEqualTemprament.chordMap(chord.functions)
+          val name = TwelveToneEqualTemprament.Chords.FUNCTION_CHORD_MAPPING.toMap.get(chord.functions)
           println(s"$pos: [${chord.root.value}] [$name]")
         }
       }

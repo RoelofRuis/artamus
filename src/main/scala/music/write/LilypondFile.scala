@@ -1,7 +1,7 @@
 package music.write
 
-import music.symbolic.Pitched.Spelled
 import music.symbolic._
+import music.symbolic.pitched.Spelled
 
 final case class LilypondFile(
   notes: Seq[Seq[Note[Spelled]]],
