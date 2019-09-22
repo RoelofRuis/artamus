@@ -3,7 +3,7 @@ package server.view
 import java.io._
 
 import javax.inject.Inject
-import music.interpret.pitch.NaivePitchSpelling
+import music.interpret.pitched.NaivePitchSpelling
 import music.symbolic._
 import music.symbolic.pitched.PitchClass
 import music.write.LilypondFile

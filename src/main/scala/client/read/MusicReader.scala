@@ -9,7 +9,7 @@ import music.symbolic.pitched.{Accidental, MidiNoteNumber, Spelled, Step}
 class MusicReader @Inject() (reader: MidiMessageReader) {
 
   import midi.in.Reading._
-  import music.symbolic.pitched.TwelveToneEqualTemprament._
+  import music.interpret.pitched.TwelveToneEqualTemprament._
 
   def readSpelledPitch: Spelled = {
     val midiNoteNumbers = readMidiNoteNumbers(NoteOn(2))

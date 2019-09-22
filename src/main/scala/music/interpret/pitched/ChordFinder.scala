@@ -1,11 +1,12 @@
-package music.interpret
+package music.interpret.pitched
 
+import music.interpret.Interpretation
 import music.symbolic.pitched.{Chord, PitchClass}
 
 object ChordFinder {
 
-  import music.symbolic.pitched.TwelveToneEqualTemprament._
-  import music.symbolic.pitched.Analysis._
+  import music.interpret.pitched.Analysis._
+  import music.interpret.pitched.TwelveToneEqualTemprament._
 
   def findChords(set: Seq[PitchClass]): Seq[Chord] = {
     tuning.pcs.flatMap{ root =>

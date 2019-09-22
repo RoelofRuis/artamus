@@ -1,13 +1,11 @@
-package music.symbolic.pitched
+package music.interpret.pitched
 
-import music.symbolic.pitched.Analysis.{DefinedChords, DefinedFunctions, DefinedIntervals}
+import Analysis.{DefinedChords, DefinedFunctions, DefinedIntervals}
+import music.symbolic.pitched.{Function, Interval, TuningSystem}
 
 object TwelveToneEqualTemprament {
 
-  implicit val tuning: TuningSystem[TwelveToneEqualTemprament.type] =
-    new TuningSystem[TwelveToneEqualTemprament.type] {
-      override val pcSeq: Seq[Int] = Seq(0, 2, 4, 5, 7, 9, 11)
-    }
+  implicit val tuning: TuningSystem[TwelveToneEqualTemprament.type] = TuningSystem(Seq(0, 2, 4, 5, 7, 9, 11))
 
   implicit object Intervals extends DefinedIntervals[TwelveToneEqualTemprament.type] {
     val PERFECT_PRIME = Interval(tuning.pc(0), tuning.step(0))

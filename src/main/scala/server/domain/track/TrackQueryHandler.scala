@@ -11,7 +11,7 @@ private[server] class TrackQueryHandler @Inject() (
   state: TrackState
 ) {
 
-  import music.symbolic.pitched.TwelveToneEqualTemprament._
+  import music.interpret.pitched.TwelveToneEqualTemprament._
 
   dispatcher.subscribe[GetMidiPitches.type]{ _ =>
     state.getTrack.getAllStackedSymbols[Note[PitchClass]].map {

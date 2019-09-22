@@ -1,4 +1,4 @@
-package music.interpret.pitch
+package music.interpret.pitched
 
 import music.symbolic.pitched._
 

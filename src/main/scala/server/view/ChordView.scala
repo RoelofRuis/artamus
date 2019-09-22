@@ -2,8 +2,7 @@ package server.view
 
 import javax.annotation.concurrent.NotThreadSafe
 import javax.inject.Inject
-import music.interpret.ChordFinder
-import music.symbolic.pitched.TwelveToneEqualTemprament
+import music.interpret.pitched.{ChordFinder, TwelveToneEqualTemprament}
 import protocol.Event
 import pubsub.EventBus
 import server.domain.track.{TrackState, TrackSymbolsUpdated}

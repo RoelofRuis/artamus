@@ -1,4 +1,6 @@
-package music.symbolic.pitched
+package music.interpret.pitched
+
+import music.symbolic.pitched.{Function, Interval, PitchClass, TuningSystem}
 
 object Analysis {
 

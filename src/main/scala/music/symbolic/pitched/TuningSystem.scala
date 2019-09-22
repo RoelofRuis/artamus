@@ -1,7 +1,6 @@
 package music.symbolic.pitched
 
-trait TuningSystem[A] {
-  val pcSeq: Seq[Int]
+final case class TuningSystem[A](pcSeq: Seq[Int]) {
 
   val numSteps: Int = pcSeq.size
   val numPitchClasses: Int = pcSeq.last + 1
@@ -32,4 +31,5 @@ trait TuningSystem[A] {
   def pitchToNoteNumber(pitch: Pitch[PitchClass]): MidiNoteNumber = {
     MidiNoteNumber(((pitch.octave.value + 1) * numPitchClasses) + pitch.p.value)
   }
+
 }
