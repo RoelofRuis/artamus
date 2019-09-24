@@ -22,8 +22,8 @@ class MusicReader @Inject() (reader: MidiMessageReader) {
   }
 
   def readTimeSignature: TimeSignature = {
-    val num = numberFromBits(readMidiNoteNumbers(NoteOn(1)))
-    val denom = numberFromBits(readMidiNoteNumbers(Simultaneous))
+    val num = numberFromBits(readMidiNoteNumbers(Simultaneous))
+    val denom = numberFromBits(readMidiNoteNumbers(NoteOn(1)))
 
     TimeSignature(num, denom) match {
       case Some(t) => t
