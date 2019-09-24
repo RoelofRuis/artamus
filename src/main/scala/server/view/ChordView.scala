@@ -25,7 +25,7 @@ class ChordView @Inject() (
       println
       possibleChords.foreach { case (pos, chords) =>
         chords.foreach { chord =>
-          val name = TwelveToneEqualTemprament.Chords.FUNCTION_CHORD_MAPPING.toMap.get(chord.functions.sorted)
+          val name = TwelveToneEqualTemprament.Chords.functionChordMapping.toMap.get(chord.functions.sorted)
           println(s"$pos: [${chord.root.value}] [$name]")
         }
       }

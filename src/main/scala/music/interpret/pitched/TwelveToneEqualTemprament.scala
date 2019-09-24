@@ -23,7 +23,7 @@ object TwelveToneEqualTemprament {
     val SMALL_SEVENTH = Interval(tuning.pc(10), tuning.step(6))
     val LARGE_SEVENTH = Interval(tuning.pc(11), tuning.step(6))
 
-    override val INTERVALS: Seq[Interval] = Seq(
+    override val intervals: Seq[Interval] = Seq(
       PERFECT_PRIME,
       SMALL_SECOND, LARGE_SECOND,
       SMALL_THIRD, LARGE_THIRD,
@@ -43,7 +43,7 @@ object TwelveToneEqualTemprament {
     val SIX = Function(tuning.pc(9), tuning.step(5))
     val SEVEN = Function(tuning.pc(11), tuning.step(6))
 
-    override val INTERVAL_FUNCTION_MAPPING: PartialFunction[Interval, Seq[Function]] = {
+    override val intervalFunctionMapping: PartialFunction[Interval, Seq[Function]] = {
       case Intervals.PERFECT_PRIME => Seq(ROOT)
       case Intervals.LARGE_THIRD => Seq(THREE)
       case Intervals.PERFECT_FIFTH => Seq(FIVE)
@@ -52,7 +52,7 @@ object TwelveToneEqualTemprament {
 
   implicit object Chords extends DefinedChords[TwelveToneEqualTemprament.type] {
     import Functions._
-    override val FUNCTION_CHORD_MAPPING: Seq[(Seq[Function], String)] = Seq(
+    override val functionChordMapping: Seq[(Seq[Function], String)] = Seq(
       (Seq(ROOT, THREE, FIVE), "Major"),
     )
   }
