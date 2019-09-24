@@ -6,17 +6,16 @@ import protocol.server.ServerInterface
 import pubsub.Dispatcher
 
 private[server] class ServerControlHandler @Inject() (
-  dispatcher: Dispatcher[Control],
-  server: ServerInterface
+  server: ServerInterface,
+  dispatcher: Dispatcher[Control]
 ) {
 
   dispatcher.subscribe[Disconnect] {
     case Disconnect(false) =>
-      server.closeActiveConnection()
       true
 
     case Disconnect(true) =>
-      server.stopServer()
+      server.shutdown()
       true
 
     case _ => false

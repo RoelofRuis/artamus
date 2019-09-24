@@ -1,17 +1,23 @@
 package server
 
-import _root_.server.control.{ServerControlHandler, EventBusHandler}
+import java.net.ServerSocket
+
+import _root_.server.control.{EventBusHandler, ServerControlHandler}
 import _root_.server.domain.track.{TrackCommandHandler, TrackQueryHandler, TrackState}
 import _root_.server.view.{ChordView, LilypondView}
+import com.google.inject.Provides
+import javax.inject.Singleton
 import net.codingwell.scalaguice.ScalaPrivateModule
 import protocol._
-import protocol.server.ServerInterface
+import protocol.server._
 import pubsub.{Dispatcher, EventBus}
+import resource.Resource
 
 class ServerModule extends ScalaPrivateModule {
 
   override def configure(): Unit = {
-    bind[ServerInterface].toInstance(protocol.createServer(9999))
+    bind[ServerInterface].to[SimpleServer]
+    bind[Resource[ServerSocket]].toInstance(ServerSockets.onPort(9999))
 
     bind[Dispatcher[Control]].toInstance(protocol.createDispatcher[Control]())
     bind[ServerControlHandler].asEagerSingleton()
@@ -32,6 +38,23 @@ class ServerModule extends ScalaPrivateModule {
 
     bind[Bootstrapper].asEagerSingleton()
     expose[Bootstrapper]
+  }
+
+  @Provides @Singleton
+  def serverConnectionFactory(
+    commandDispatcher: Dispatcher[Command],
+    controlDispatcher: Dispatcher[Control],
+    queryDispatcher: Dispatcher[Query],
+    eventBus: EventBus[Event],
+  ): ServerConnectionFactory = {
+    new ServerConnectionFactory(
+      ServerBindings(
+        commandDispatcher,
+        controlDispatcher,
+        queryDispatcher,
+        eventBus
+      )
+    )
   }
 
 }

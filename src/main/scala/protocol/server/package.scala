@@ -6,11 +6,9 @@ package object server {
 
   trait ServerInterface {
 
-    def acceptConnections(bindings: ServerBindings): Unit
+    def accept(): Unit
 
-    def closeActiveConnection(): Unit
-
-    def stopServer(): Unit
+    def shutdown(): Unit
 
   }
 

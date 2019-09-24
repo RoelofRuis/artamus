@@ -1,5 +1,4 @@
 import protocol.client.{ClientBindings, ClientInterface, DefaultClient}
-import protocol.server.{ServerInterface, SingleConnectionServer}
 import pubsub.{Dispatcher, SimpleDispatcher}
 
 import scala.language.reflectiveCalls
@@ -8,8 +7,6 @@ package object protocol {
 
   def createClient(port: Int, bindings: ClientBindings): ClientInterface = new DefaultClient(port, bindings)
 
-  def createServer(port: Int): ServerInterface = new SingleConnectionServer(port)
-
   def createDispatcher[A <: { type Res }](): Dispatcher[A] = new SimpleDispatcher[A]
 
   trait Message { type Res }
@@ -17,8 +14,6 @@ package object protocol {
   trait Command extends Message { final type Res = Boolean }
   trait Query extends Message
   trait Event { type Res = Unit }
-
-
 
   private[protocol] object MessageTypes {
 
