@@ -37,6 +37,7 @@ object TwelveToneEqualTemprament {
   implicit object Functions extends DefinedFunctions[TwelveToneEqualTemprament.type] {
     val ROOT = Function(tuning.pc(0), tuning.step(0))
     val TWO = Function(tuning.pc(2), tuning.step(1))
+    val FLAT_THREE = Function(tuning.pc(3), tuning.step(2))
     val THREE = Function(tuning.pc(4), tuning.step(2))
     val FOUR = Function(tuning.pc(5), tuning.step(3))
     val FIVE = Function(tuning.pc(7), tuning.step(4))
@@ -45,6 +46,7 @@ object TwelveToneEqualTemprament {
 
     override val intervalFunctionMapping: PartialFunction[Interval, Seq[Function]] = {
       case Intervals.PERFECT_PRIME => Seq(ROOT)
+      case Intervals.SMALL_THIRD => Seq(FLAT_THREE)
       case Intervals.LARGE_THIRD => Seq(THREE)
       case Intervals.PERFECT_FIFTH => Seq(FIVE)
     }
@@ -54,6 +56,7 @@ object TwelveToneEqualTemprament {
     import Functions._
     override val functionChordMapping: Seq[(Seq[Function], String)] = Seq(
       (Seq(ROOT, THREE, FIVE), "Major"),
+      (Seq(ROOT, FLAT_THREE, FIVE), "Minor")
     )
   }
 
