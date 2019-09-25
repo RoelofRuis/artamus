@@ -4,7 +4,6 @@ import java.io.{ObjectInputStream, ObjectOutputStream}
 import java.net.Socket
 
 import javax.inject.Inject
-import protocol.Event
 
 import scala.util.{Failure, Success, Try}
 
@@ -18,54 +17,36 @@ class ServerConnectionFactory @Inject() (bindings: ServerBindings) {
       lazy val objectIn = new ObjectInputStream(socket.getInputStream)
       val objectOut = new ObjectOutputStream(socket.getOutputStream)
 
-      val connection = createConnection(objectIn, objectOut, socket)
+      val in = new ServerInputStream(objectIn) // TODO: this logic has to be pushed outwards
+      val out = new ServerOutputStream(objectOut) // TODO: this logic has to be pushed outwards
 
-      Success(connectionRunnable(connection))
+      val connectionId = nextConnectionId
+
+      Success(new Runnable {
+        override def run(): Unit = {
+          bindings.eventSubscriber.subscribe(connectionId, message => out.sendEvent(message))
+
+          try {
+            while (socket.isConnected) {
+              in.readNext(bindings) match {
+                case Right(response) => out.sendData(response)
+                case Left(error) => out.sendError(error)
+              }
+            }
+          } catch {
+            case ex: InterruptedException =>
+              println(s"Connection was interrupted [$ex]")
+
+            case ex: Throwable =>
+              ex.printStackTrace()
+          } finally {
+            bindings.eventSubscriber.unsubscribe(connectionId)
+            socket.close()
+          }
+        }
+      })
     } catch {
       case ex: Exception => Failure(ex)
-    }
-  }
-
-  private def createConnection(
-    objectIn: ObjectInputStream,
-    objectOut: ObjectOutputStream,
-    socket: Socket
-  ): ServerConnection = {
-    val in = new ServerInputStream(objectIn)
-    val out = new ServerOutputStream(objectOut)
-
-    new ServerConnection {
-      def sendEvent[A <: Event](message: A): Unit = out.sendEvent(message)
-
-      def handleNext(): Unit = {
-        in.readNext(bindings) match {
-          case Right(response) => out.sendData(response)
-          case Left(error) => out.sendError(error)
-        }
-      }
-
-      override def isOpen: Boolean = socket.isConnected
-
-      override def close(): Unit = {
-        objectIn.close()
-        objectOut.close()
-        socket.close()
-      }
-    }
-  }
-
-  private def connectionRunnable(connection: ServerConnection): Runnable = {
-    val connectionId = nextConnectionId
-    () => {
-      bindings.eventSubscriber.subscribe(connectionId, connection.sendEvent)
-
-      while (connection.isOpen) {
-        connection.handleNext()
-      }
-
-      bindings.eventSubscriber.unsubscribe(connectionId)
-
-      connection.close()
     }
   }
 
