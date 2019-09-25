@@ -8,6 +8,7 @@ import resource.Resource
 
 import scala.util.{Failure, Success, Try}
 
+/** @deprecated Moved to protocol */
 class Server(serverSocketResource: Resource[ServerSocket]) extends ServerInterface with LazyLogging {
 
   private val connectionQueue = new ArrayBlockingQueue[SocketConnection](1)

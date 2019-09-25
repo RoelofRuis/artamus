@@ -4,6 +4,7 @@ import java.net.{InetAddress, Socket}
 
 import resource.Resource
 
+/** @deprecated Moved to protocol */
 class Client private (socketResource: Resource[Socket]) extends Connection {
 
   private var connection: Option[SocketConnection] = None

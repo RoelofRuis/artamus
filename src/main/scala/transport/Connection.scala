@@ -1,5 +1,6 @@
 package transport
 
+/** @deprecated Moved to protocol */
 trait Connection {
 
   def send(message: Any): Either[Seq[Throwable], Unit]

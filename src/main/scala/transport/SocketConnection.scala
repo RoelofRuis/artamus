@@ -8,6 +8,7 @@ import resource.Resource
 import scala.language.reflectiveCalls
 import scala.util.{Failure, Success, Try}
 
+/** @deprecated Moved to protocol */
 final class SocketConnection (socket: Resource[Socket]) extends Connection {
 
   private val inputStream: Resource[ObjectInputStream] = socket.transformUnsafe(
