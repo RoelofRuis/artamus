@@ -1,7 +1,7 @@
 package protocol.server
 
 import java.net.ServerSocket
-import java.util.concurrent.{ExecutorService, Executors, RejectedExecutionException}
+import java.util.concurrent.{ExecutorService, Executors, RejectedExecutionException, TimeUnit}
 
 import com.typesafe.scalalogging.LazyLogging
 import javax.inject.Inject
@@ -35,7 +35,6 @@ class SimpleServer @Inject() (
         shutdown()
       }
     }
-    serverSocket.close
   }
 
   private def acceptConnection(connection: Runnable): Try[Unit] = {
@@ -43,6 +42,10 @@ class SimpleServer @Inject() (
     Try { executor.execute(connection) }
   }
 
-  def shutdown(): Unit = executor.shutdown()
+  def shutdown(): Unit = {
+    if (! executor.isShutdown) executor.shutdown()
+    executor.awaitTermination(10L, TimeUnit.SECONDS)
+    if (! serverSocket.isClosed) serverSocket.close
+  }
 
 }

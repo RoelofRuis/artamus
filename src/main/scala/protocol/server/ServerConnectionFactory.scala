@@ -1,6 +1,6 @@
 package protocol.server
 
-import java.io.{ObjectInputStream, ObjectOutputStream}
+import java.io.{IOException, ObjectInputStream, ObjectOutputStream}
 import java.net.Socket
 
 import javax.inject.Inject
@@ -17,28 +17,25 @@ class ServerConnectionFactory @Inject() (bindings: ServerBindings) {
       lazy val objectIn = new ObjectInputStream(socket.getInputStream)
       val objectOut = new ObjectOutputStream(socket.getOutputStream)
 
-      val in = new ServerInputStream(objectIn) // TODO: this logic has to be pushed outwards
-      val out = new ServerOutputStream(objectOut) // TODO: this logic has to be pushed outwards
-
       val connectionId = nextConnectionId
 
       Success(new Runnable {
         override def run(): Unit = {
-          bindings.eventSubscriber.subscribe(connectionId, message => out.sendEvent(message))
+          bindings.eventSubscriber.subscribe(connectionId, bindings.writeEvent(_))
 
           try {
             while (socket.isConnected) {
-              in.readNext(bindings) match {
-                case Right(response) => out.sendData(response)
-                case Left(error) => out.sendError(error)
-              }
+              val request = objectIn.readObject()
+              val payload = objectIn.readObject()
+
+              bindings.handleRequest(request, payload).foreach(objectOut.writeObject)
             }
           } catch {
-            case ex: InterruptedException =>
-              println(s"Connection was interrupted [$ex]")
+            case ex: IOException => println(s"Connection thread encountered IOException [$ex]")
 
-            case ex: Throwable =>
-              ex.printStackTrace()
+            case ex: InterruptedException => println(s"Connection thread was interrupted [$ex]")
+
+            case ex: Exception => println(s"Exception in connection thread [$ex]")
           } finally {
             bindings.eventSubscriber.unsubscribe(connectionId)
             socket.close()
