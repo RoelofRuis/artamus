@@ -22,6 +22,15 @@ package object server {
     queryDispatcher: Dispatcher[Query],
     eventSubscriber: Subscriber[String, Event, Unit]
   ) {
+
+    def subscribe(connectionId: String): Unit = {
+      eventSubscriber.subscribe(connectionId, msg => List(EventResponse, msg))
+    }
+
+    def unsubscribe(connectionId: String): Unit = {
+      eventSubscriber.unsubscribe(connectionId)
+    }
+
     def handleRequest(request: Object, payload: Object): List[Object] = {
       val response = tryRead[ServerRequest](request).toEither match {
         case Right(CommandRequest) =>
@@ -60,8 +69,6 @@ package object server {
     }
 
     private def tryRead[A](obj: Object): Try[A] = Try { obj.asInstanceOf[A] }
-
-    def writeEvent(msg: Any): List[Any] = List(EventResponse, msg)
   }
 
 }

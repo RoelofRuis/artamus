@@ -21,7 +21,7 @@ class ServerConnectionFactory @Inject() (bindings: ServerBindings) {
 
       Success(new Runnable {
         override def run(): Unit = {
-          bindings.eventSubscriber.subscribe(connectionId, bindings.writeEvent(_))
+          bindings.subscribe(connectionId)
 
           try {
             while (socket.isConnected) {
@@ -37,7 +37,7 @@ class ServerConnectionFactory @Inject() (bindings: ServerBindings) {
 
             case ex: Exception => println(s"Exception in connection thread [$ex]")
           } finally {
-            bindings.eventSubscriber.unsubscribe(connectionId)
+            bindings.unsubscribe(connectionId)
             socket.close()
           }
         }
