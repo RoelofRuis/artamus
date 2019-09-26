@@ -8,12 +8,12 @@ import music.symbolic._
 import music.symbolic.pitched.PitchClass
 import music.write.LilypondFile
 import protocol.Event
-import pubsub.EventBus
+import pubsub.BufferedEventBus
 import server.domain.track.{TrackState, TrackSymbolsUpdated}
 
 // TODO: Separate pitch analyis and lilypond and clean up!
 class LilypondView @Inject() (
-  eventBus: EventBus[Event],
+  eventBus: BufferedEventBus[Event],
   trackState: TrackState
 ) {
 
@@ -38,7 +38,7 @@ class LilypondView @Inject() (
       build(lilyFile)
       ()
     case _ => ()
-  }, active = false)
+  }, active = true)
 
   def build(lilyFile: LilypondFile): Unit = {
     try {

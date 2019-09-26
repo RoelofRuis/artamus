@@ -10,7 +10,7 @@ import javax.inject.Singleton
 import net.codingwell.scalaguice.ScalaPrivateModule
 import protocol._
 import protocol.server._
-import pubsub.{Dispatcher, EventBus}
+import pubsub.{BufferedEventBus, Dispatcher, EventBus}
 import resource.Resource
 
 class ServerModule extends ScalaPrivateModule {
@@ -30,7 +30,7 @@ class ServerModule extends ScalaPrivateModule {
 
     bind[TrackState].asEagerSingleton()
 
-    bind[EventBus[Event]].toInstance(new EventBus[Event])
+    bind[BufferedEventBus[Event]].toInstance(new BufferedEventBus[Event])
 
     bind[LilypondView].asEagerSingleton()
     bind[ChordView].asEagerSingleton()
@@ -43,7 +43,7 @@ class ServerModule extends ScalaPrivateModule {
   def serverConnectionFactory(
     commandDispatcher: Dispatcher[Command],
     queryDispatcher: Dispatcher[Query],
-    eventBus: EventBus[Event],
+    eventBus: BufferedEventBus[Event],
   ): ServerConnectionFactory = {
     new ServerConnectionFactory(
       ServerBindings(

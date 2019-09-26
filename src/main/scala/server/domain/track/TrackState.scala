@@ -5,10 +5,10 @@ import music.symbolic.containers.{ImmutableTrack, Track}
 import music.symbolic.properties.Symbols.{StackableSymbol, Symbol}
 import music.symbolic.Position
 import protocol.Event
-import pubsub.EventBus
+import pubsub.{BufferedEventBus, EventBus}
 
 /* @NotThreadSafe: synchronize acces on `track` */
-class TrackState @Inject() (eventBus: EventBus[Event]) {
+class TrackState @Inject() (eventBus: BufferedEventBus[Event]) {
 
   private var track: Track = ImmutableTrack.empty
 

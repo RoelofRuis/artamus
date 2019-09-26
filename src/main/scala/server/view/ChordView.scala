@@ -4,12 +4,12 @@ import javax.annotation.concurrent.NotThreadSafe
 import javax.inject.Inject
 import music.interpret.pitched.{ChordFinder, TwelveToneEqualTemprament}
 import protocol.Event
-import pubsub.EventBus
+import pubsub.BufferedEventBus
 import server.domain.track.{TrackState, TrackSymbolsUpdated}
 
 @NotThreadSafe
 class ChordView @Inject() (
-  eventBus: EventBus[Event],
+  eventBus: BufferedEventBus[Event],
   trackState: TrackState
 ) {
 

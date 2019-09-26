@@ -1,15 +1,21 @@
 package server.control
 
 import javax.inject.Inject
-import protocol.{Event, Query}
-import pubsub.{Dispatcher, EventBus}
+import protocol.{Command, Event, Query}
+import pubsub.{BufferedEventBus, Dispatcher}
 
 private[server] class EventBusHandler @Inject() (
-  dispatcher: Dispatcher[Query],
-  eventBus: EventBus[Event]
+  busCommands: Dispatcher[Command],
+  busQueries: Dispatcher[Query],
+  eventBus: BufferedEventBus[Event]
 ) {
 
-  dispatcher.subscribe[GetViews.type] { _ =>
+  busCommands.subscribe[PublishChanges.type] { _ =>
+    val numFlushed = eventBus.flush
+    numFlushed > 0
+  }
+
+  busQueries.subscribe[GetViews.type] { _ =>
     eventBus.viewSubscriptions.toList
   }
 

@@ -6,6 +6,7 @@ import com.google.inject.Inject
 import music.math.Rational
 import music.symbolic._
 import music.symbolic.const.Scales
+import server.control.PublishChanges
 import server.domain.track.{AddNote, NewTrack, SetKey, SetTimeSignature}
 
 class TrackOperations @Inject() (
@@ -35,7 +36,7 @@ class TrackOperations @Inject() (
 
     println(s"Reading [$numNotes][$elementDuration] notes:")
 
-    reader
+    val messages = reader
       .readMidiNoteNumbers(NoteOn(numNotes))
       .zipWithIndex
       .map{ case (midiNoteNumber, index) =>
@@ -43,6 +44,8 @@ class TrackOperations @Inject() (
           Position.apply(elementDuration, index),
           Note(elementDuration, tuning.noteNumberToPitch(midiNoteNumber))
         )}
+
+    messages :+ PublishChanges
   })
 
   registry.registerOperation(OperationToken("chords", "track"), () => {
@@ -51,7 +54,7 @@ class TrackOperations @Inject() (
 
     val elementDuration = Duration(Rational.reciprocal(gridSpacing))
 
-    Range(0, numChords).flatMap { i =>
+    val messages = Range(0, numChords).flatMap { i =>
       reader
         .readMidiNoteNumbers(Simultaneous)
         .map { midiNoteNumber =>
@@ -61,9 +64,8 @@ class TrackOperations @Inject() (
           )
         }
       }.toList
-    }
-  )
 
-
+    messages :+ PublishChanges
+  })
 
 }
