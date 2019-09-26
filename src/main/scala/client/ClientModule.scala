@@ -9,8 +9,7 @@ import midi.DeviceHash
 import midi.in.MidiMessageReader
 import midi.out.SequenceWriter
 import net.codingwell.scalaguice.ScalaPrivateModule
-import protocol.Event
-import protocol.client.{ClientBindings, ClientInterface}
+import protocol.{ClientBindings, ClientInterface, Event}
 import pubsub.Dispatcher
 
 class ClientModule extends ScalaPrivateModule {

@@ -3,7 +3,7 @@ package client.operations
 import client.events.QuarterNotesFormat
 import javax.inject.Inject
 import midi.out.SequenceWriter
-import protocol.client.ClientInterface
+import protocol.ClientInterface
 import server.domain.track.GetMidiPitches
 
 class TrackQueryOperations @Inject() (

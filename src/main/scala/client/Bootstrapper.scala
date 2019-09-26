@@ -2,8 +2,7 @@ package client
 
 import client.operations.{Operation, OperationRegistry}
 import javax.inject.Inject
-import protocol.Command
-import protocol.client.ClientInterface
+import protocol.{ClientInterface, Command}
 
 class Bootstrapper @Inject() (
   client: ClientInterface,

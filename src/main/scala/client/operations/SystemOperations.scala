@@ -1,7 +1,7 @@
 package client.operations
 
 import com.google.inject.Inject
-import protocol.client.ClientInterface
+import protocol.ClientInterface
 import server.control.{Disconnect, GetViews}
 
 class SystemOperations @Inject() (

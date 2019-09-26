@@ -4,7 +4,7 @@ import java.io.{ObjectInputStream, ObjectOutputStream}
 import java.net.{InetAddress, Socket}
 
 import com.typesafe.scalalogging.LazyLogging
-import protocol.{CommandRequest, Event, QueryRequest}
+import protocol._
 
 import scala.util.Try
 

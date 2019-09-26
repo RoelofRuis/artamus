@@ -4,6 +4,7 @@ import java.io.{IOException, ObjectInputStream, ObjectOutputStream}
 import java.net.Socket
 
 import javax.inject.Inject
+import protocol.ServerBindings
 
 import scala.util.{Failure, Success, Try}
 
