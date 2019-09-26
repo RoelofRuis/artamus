@@ -15,19 +15,15 @@ package object protocol {
   trait Query extends Message
   trait Event { type Res = Unit }
 
-  private[protocol] object MessageTypes {
+  sealed trait ServerRequest
+  final case class ControlRequest(data: Control) extends ServerRequest // TODO samenvoegen met command!
+  final case class CommandRequest(data: Command) extends ServerRequest
+  final case class QueryRequest(data: Query) extends ServerRequest
 
-    sealed trait ServerRequest
-    case object ControlRequest extends ServerRequest
-    case object CommandRequest extends ServerRequest
-    case object QueryRequest extends ServerRequest
+  sealed trait ServerResponse
+  final case class DataResponse(data: Either[ServerException, Any]) extends ServerResponse
+  final case class EventResponse[A <: Event](event: A) extends ServerResponse
 
-    sealed trait ServerResponse
-    case object DataResponse extends ServerResponse
-    case object EventResponse extends ServerResponse
-
-    type StreamException = String
-
-  }
+  type ServerException = String
 
 }

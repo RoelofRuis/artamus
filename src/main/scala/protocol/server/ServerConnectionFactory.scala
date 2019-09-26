@@ -26,9 +26,9 @@ class ServerConnectionFactory @Inject() (bindings: ServerBindings) {
           try {
             while (socket.isConnected) {
               val request = objectIn.readObject()
-              val payload = objectIn.readObject()
 
-              bindings.handleRequest(request, payload).foreach(objectOut.writeObject)
+              val response = bindings.handleRequest(request)
+              objectOut.writeObject(response)
             }
           } catch {
             case ex: IOException => println(s"Connection thread encountered IOException [$ex]")
