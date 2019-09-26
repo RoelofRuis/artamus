@@ -1,13 +1,13 @@
 package client
 
-import protocol.Message
+import protocol.Command
 
 // TODO: see if it can be moved to protocol
 package object operations {
 
   case class OperationToken(command: String, registrar: String)
 
-  type Operation = () => List[Message]
+  type Operation = () => List[Command]
 
   trait OperationRegistry {
     def getOperation(token: String): Option[Operation]

@@ -1,5 +1,4 @@
 import protocol.client.{ClientBindings, ClientInterface, DefaultClient}
-import protocol.server.{ServerInterface, SingleConnectionServer}
 import pubsub.{Dispatcher, SimpleDispatcher}
 
 import scala.language.reflectiveCalls
@@ -8,31 +7,20 @@ package object protocol {
 
   def createClient(port: Int, bindings: ClientBindings): ClientInterface = new DefaultClient(port, bindings)
 
-  def createServer(port: Int): ServerInterface = new SingleConnectionServer(port)
-
   def createDispatcher[A <: { type Res }](): Dispatcher[A] = new SimpleDispatcher[A]
 
-  trait Message { type Res }
-  trait Control extends Message { final type Res = Boolean }
-  trait Command extends Message { final type Res = Boolean }
-  trait Query extends Message
-  trait Event { type Res = Unit }
+  trait Command { final type Res = Boolean }
+  trait Query { type Res }
+  trait Event { final type Res = Unit }
 
+  sealed trait ServerRequest
+  final case class CommandRequest(data: Command) extends ServerRequest
+  final case class QueryRequest(data: Query) extends ServerRequest
 
+  sealed trait ServerResponse
+  final case class DataResponse(data: Either[ServerException, Any]) extends ServerResponse
+  final case class EventResponse[A <: Event](event: A) extends ServerResponse
 
-  private[protocol] object MessageTypes {
-
-    sealed trait ServerRequest
-    case object ControlRequest extends ServerRequest
-    case object CommandRequest extends ServerRequest
-    case object QueryRequest extends ServerRequest
-
-    sealed trait ServerResponse
-    case object DataResponse extends ServerResponse
-    case object EventResponse extends ServerResponse
-
-    type StreamException = String
-
-  }
+  type ServerException = String
 
 }
