@@ -17,7 +17,7 @@ class ServerModule extends ScalaPrivateModule {
 
   override def configure(): Unit = {
     bind[ServerInterface].to[SimpleServer]
-    bind[Resource[ServerSocket]].toInstance(ServerSockets.onPort(9999))
+    bind[Resource[ServerSocket]].toInstance(Sockets.serverOnPort(9999))
 
     bind[ServerControlHandler].asEagerSingleton()
     bind[EventBusHandler].asEagerSingleton()

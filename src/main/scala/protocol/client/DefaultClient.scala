@@ -1,19 +1,17 @@
 package protocol.client
 
 import java.io.{ObjectInputStream, ObjectOutputStream}
-import java.net.{InetAddress, Socket}
+import java.net.Socket
 
 import com.typesafe.scalalogging.LazyLogging
-import protocol.{CommandRequest, Event, QueryRequest}
+import protocol.{CommandRequest, Event, QueryRequest, Sockets}
 
 import scala.util.Try
 
 private[protocol] class DefaultClient(
-  port: Int,
+  socket: Socket,
   bindings: ClientBindings
 ) extends ClientInterface with LazyLogging {
-
-  private val socket = new Socket(InetAddress.getByName("localhost"), port)
 
   private lazy val objectIn = new ObjectInputStream(socket.getInputStream)
   private val objectOut = new ObjectOutputStream(socket.getOutputStream)
@@ -50,4 +48,12 @@ private[protocol] class DefaultClient(
 
   // TODO: improve error handling on failure cases
   private def handleEvents(events: List[Try[Event]]): Unit = events.foreach(_.foreach(bindings.eventDispatcher.handle))
+}
+
+object DefaultClient {
+
+  def apply(port: Int, bindings: ClientBindings): DefaultClient = {
+    new DefaultClient(Sockets.onPort(port).acquire.right.get, bindings) // TODO: UNSAFE
+  }
+
 }
