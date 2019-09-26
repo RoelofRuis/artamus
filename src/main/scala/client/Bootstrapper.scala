@@ -2,8 +2,8 @@ package client
 
 import client.operations.{Operation, OperationRegistry}
 import javax.inject.Inject
+import protocol.Command
 import protocol.client.ClientInterface
-import protocol.{Command, Control}
 
 class Bootstrapper @Inject() (
   client: ClientInterface,
@@ -18,7 +18,6 @@ class Bootstrapper @Inject() (
 
       op().foreach {
         case command: Command => client.sendCommand(command).foreach(res => println(s"$command -> $res"))
-        case control: Control => client.sendControl(control).foreach(res => println(s"$control -> $res"))
         case _ =>
       }
 

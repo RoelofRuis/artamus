@@ -17,7 +17,6 @@ package object server {
   // TODO: clean this up!
   final case class ServerBindings(
     commandDispatcher: Dispatcher[Command],
-    controlDispatcher: Dispatcher[Control],
     queryDispatcher: Dispatcher[Query],
     eventSubscriber: Subscriber[String, Event, Unit]
   ) {
@@ -36,12 +35,6 @@ package object server {
           commandDispatcher.handle(command) match {
             case Some(res) => Right(res)
             case None => Left(s"No handler defined for command [$command]")
-          }
-
-        case Right(ControlRequest(control)) =>
-          controlDispatcher.handle(control) match {
-            case Some(res) => Right(res)
-            case None => Left(s"No handler defined for control [$control]")
           }
 
         case Right(QueryRequest(query)) =>

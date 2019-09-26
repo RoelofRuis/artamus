@@ -9,14 +9,11 @@ package object protocol {
 
   def createDispatcher[A <: { type Res }](): Dispatcher[A] = new SimpleDispatcher[A]
 
-  trait Message { type Res }
-  trait Control extends Message { final type Res = Boolean }
-  trait Command extends Message { final type Res = Boolean }
-  trait Query extends Message
-  trait Event { type Res = Unit }
+  trait Command { final type Res = Boolean }
+  trait Query { type Res }
+  trait Event { final type Res = Unit }
 
   sealed trait ServerRequest
-  final case class ControlRequest(data: Control) extends ServerRequest // TODO samenvoegen met command!
   final case class CommandRequest(data: Command) extends ServerRequest
   final case class QueryRequest(data: Query) extends ServerRequest
 

@@ -4,7 +4,7 @@ import java.io.{ObjectInputStream, ObjectOutputStream}
 import java.net.{InetAddress, Socket}
 
 import com.typesafe.scalalogging.LazyLogging
-import protocol.Event
+import protocol.{CommandRequest, Event, QueryRequest}
 
 import scala.util.Try
 
@@ -16,22 +16,10 @@ private[protocol] class DefaultClient(port: Int, bindings: ClientBindings) exten
   private val objectOut = new ObjectOutputStream(socket.getOutputStream)
 
   private val in = new ClientInputStream(objectIn)
-  private val out = new ClientOutputStream(objectOut)
-
-  override def sendControl[A <: protocol.Control](message: A): Option[protocol.Control#Res] = {
-    logger.info(s"Send CONTROL [$message]")
-    out.sendControl(message)
-    val (response, events) = in.expectResponseMessage[Boolean]
-
-    handleEvents(events)
-
-    logger.info(s"Received [$response]")
-    response.toOption
-  }
 
   override def sendCommand[A <: protocol.Command](message: A): Option[protocol.Command#Res] = {
     logger.info(s"Send COMMAND [$message]")
-    out.sendCommand(message)
+    objectOut.writeObject(CommandRequest(message))
     val (response, events) = in.expectResponseMessage[Boolean]
 
     handleEvents(events)
@@ -42,7 +30,7 @@ private[protocol] class DefaultClient(port: Int, bindings: ClientBindings) exten
 
   override def sendQuery[A <: protocol.Query](message: A): Option[A#Res] = {
     logger.info(s"Send QUERY [$message]")
-    out.sendQuery(message)
+    objectOut.writeObject(QueryRequest(message))
     val (response, events) = in.expectResponseMessage[A#Res]
 
     handleEvents(events)

@@ -19,7 +19,6 @@ class ServerModule extends ScalaPrivateModule {
     bind[ServerInterface].to[SimpleServer]
     bind[Resource[ServerSocket]].toInstance(ServerSockets.onPort(9999))
 
-    bind[Dispatcher[Control]].toInstance(protocol.createDispatcher[Control]())
     bind[ServerControlHandler].asEagerSingleton()
     bind[EventBusHandler].asEagerSingleton()
 
@@ -43,14 +42,12 @@ class ServerModule extends ScalaPrivateModule {
   @Provides @Singleton
   def serverConnectionFactory(
     commandDispatcher: Dispatcher[Command],
-    controlDispatcher: Dispatcher[Control],
     queryDispatcher: Dispatcher[Query],
     eventBus: EventBus[Event],
   ): ServerConnectionFactory = {
     new ServerConnectionFactory(
       ServerBindings(
         commandDispatcher,
-        controlDispatcher,
         queryDispatcher,
         eventBus
       )
