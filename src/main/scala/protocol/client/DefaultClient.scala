@@ -8,7 +8,10 @@ import protocol.{CommandRequest, Event, QueryRequest}
 
 import scala.util.Try
 
-private[protocol] class DefaultClient(port: Int, bindings: ClientBindings) extends ClientInterface with LazyLogging {
+private[protocol] class DefaultClient(
+  port: Int,
+  bindings: ClientBindings
+) extends ClientInterface with LazyLogging {
 
   private val socket = new Socket(InetAddress.getByName("localhost"), port)
 

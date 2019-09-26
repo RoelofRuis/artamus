@@ -12,8 +12,6 @@ package object client {
     def close(): Unit
   }
 
-  final case class ClientBindings(
-    eventDispatcher: Dispatcher[Event]
-  )
+  final case class ClientBindings(eventDispatcher: Dispatcher[Event])
 
 }
