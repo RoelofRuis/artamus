@@ -20,6 +20,10 @@ final case class LilypondFile(
 
     s"""\\version "2.18"
       |
+      |\\header {
+      |  tagline = ##f
+      |}
+      |
       |{
       |\\numericTimeSignature
       |$content
