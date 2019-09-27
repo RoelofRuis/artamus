@@ -7,7 +7,10 @@ import java.util.concurrent.{ExecutorService, Executors}
 import music.write.LilypondFile
 
 
-class LilypondRenderingService(val resourceRootPath: String) {
+class LilypondRenderingService(
+  val resourceRootPath: String,
+  val cleanupLySources: Boolean,
+) {
 
   private val executor: ExecutorService = Executors.newFixedThreadPool(1)
   private val taskIdGenerator = new AtomicLong(0L)
@@ -47,7 +50,7 @@ class LilypondRenderingService(val resourceRootPath: String) {
       } catch {
         case ex: Exception => complete(taskId, Left(RenderingException("Exception during rendering", Some(ex))))
       } finally {
-        sourceFile.delete()
+        if (cleanupLySources) sourceFile.delete()
       }
     }
   }

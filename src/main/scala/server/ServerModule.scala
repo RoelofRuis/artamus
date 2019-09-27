@@ -33,7 +33,7 @@ class ServerModule extends ScalaPrivateModule with ServerConfig {
 
     bind[BufferedEventBus[Event]].toInstance(new BufferedEventBus[Event])
 
-    bind[LilypondRenderingService].toInstance(new LilypondRenderingService(resourceRootPath))
+    bind[LilypondRenderingService].toInstance(new LilypondRenderingService(resourceRootPath, cleanupLySources))
     bind[LilypondView].asEagerSingleton()
     bind[ChordView].asEagerSingleton()
 
