@@ -1,7 +1,5 @@
 package server.view
 
-import java.io._
-
 import javax.inject.Inject
 import music.interpret.pitched.NaivePitchSpelling
 import music.symbolic._
@@ -10,11 +8,13 @@ import music.write.LilypondFile
 import protocol.Event
 import pubsub.BufferedEventBus
 import server.domain.track.{TrackState, TrackSymbolsUpdated}
+import server.rendering.LilypondRenderingService
 
-// TODO: Separate pitch analyis and lilypond and clean up!
+// TODO: clean up further!
 class LilypondView @Inject() (
   eventBus: BufferedEventBus[Event],
-  trackState: TrackState
+  trackState: TrackState,
+  rendering: LilypondRenderingService
 ) {
 
   eventBus.subscribe("pitch-spelling", {
@@ -35,27 +35,9 @@ class LilypondView @Inject() (
         currentState.getSymbolAt[Key](Position.zero)
       )
 
-      build(lilyFile)
+      rendering.render(lilyFile)
       ()
     case _ => ()
   }, active = true)
-
-  def build(lilyFile: LilypondFile): Unit = {
-    try {
-      val file = new File("data/test.ly")
-
-      val writer = new PrintWriter(file)
-      writer.write(lilyFile.getStringContents)
-      writer.close()
-
-      println(s"Running lilypond...")
-      import sys.process._
-      val result = s"lilypond -fpng -odata ${file.getAbsolutePath}".!!
-      println(s"Lilypond completed\n$result\n")
-    } catch {
-      case ex: IOException => println(s"IO exception [$ex]")
-      case ex: Throwable => println(s"Other exception [$ex]")
-    }
-  }
 
 }

@@ -2,6 +2,7 @@ package server
 
 import java.net.ServerSocket
 
+import _root_.server.rendering.LilypondRenderingService
 import _root_.server.control.{EventBusHandler, ServerControlHandler}
 import _root_.server.domain.track.{TrackCommandHandler, TrackQueryHandler, TrackState}
 import _root_.server.view.{ChordView, LilypondView}
@@ -10,7 +11,7 @@ import javax.inject.Singleton
 import net.codingwell.scalaguice.ScalaPrivateModule
 import protocol._
 import protocol.server._
-import pubsub.{BufferedEventBus, Dispatcher, EventBus}
+import pubsub.{BufferedEventBus, Dispatcher}
 import resource.Resource
 
 class ServerModule extends ScalaPrivateModule {
@@ -32,6 +33,7 @@ class ServerModule extends ScalaPrivateModule {
 
     bind[BufferedEventBus[Event]].toInstance(new BufferedEventBus[Event])
 
+    bind[LilypondRenderingService].toInstance(new LilypondRenderingService("data"))
     bind[LilypondView].asEagerSingleton()
     bind[ChordView].asEagerSingleton()
 
