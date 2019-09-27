@@ -14,11 +14,11 @@ import protocol.server._
 import pubsub.{BufferedEventBus, Dispatcher}
 import resource.Resource
 
-class ServerModule extends ScalaPrivateModule {
+class ServerModule extends ScalaPrivateModule with ServerConfig {
 
   override def configure(): Unit = {
     bind[ServerInterface].to[SimpleServer]
-    bind[Resource[ServerSocket]].toInstance(ServerSockets.onPort(9999))
+    bind[Resource[ServerSocket]].toInstance(ServerSockets.onPort(port))
 
     bind[ServerControlHandler].asEagerSingleton()
     bind[EventBusHandler].asEagerSingleton()
@@ -33,7 +33,7 @@ class ServerModule extends ScalaPrivateModule {
 
     bind[BufferedEventBus[Event]].toInstance(new BufferedEventBus[Event])
 
-    bind[LilypondRenderingService].toInstance(new LilypondRenderingService("data"))
+    bind[LilypondRenderingService].toInstance(new LilypondRenderingService(resourceRootPath))
     bind[LilypondView].asEagerSingleton()
     bind[ChordView].asEagerSingleton()
 

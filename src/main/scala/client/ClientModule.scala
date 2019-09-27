@@ -5,19 +5,18 @@ import client.read.MusicReader
 import com.google.inject.Provides
 import com.google.inject.internal.SingletonScope
 import javax.inject.Singleton
-import midi.DeviceHash
 import midi.in.MidiMessageReader
 import midi.out.SequenceWriter
 import net.codingwell.scalaguice.ScalaPrivateModule
 import protocol.{ClientBindings, ClientInterface, Event}
 import pubsub.Dispatcher
 
-class ClientModule extends ScalaPrivateModule {
+class ClientModule extends ScalaPrivateModule with ClientConfig {
 
   override def configure(): Unit = {
     // TODO: Remove '.get', wrap with resource management!
-    bind[SequenceWriter].toInstance(midi.loadSequenceWriter(MyDevices.FocusriteUSBMIDI_OUT, TICKS_PER_QUARTER).get)
-    bind[MidiMessageReader].toInstance(midi.loadReader(MyDevices.iRigUSBMIDI_IN).get)
+    bind[SequenceWriter].toInstance(midi.loadSequenceWriter(midiOut, ticksPerQuarter).get)
+    bind[MidiMessageReader].toInstance(midi.loadReader(midiIn).get)
 
     bind[MusicReader].in(new SingletonScope)
 
@@ -35,18 +34,6 @@ class ClientModule extends ScalaPrivateModule {
 
   @Provides @Singleton
   def messageBus(eventDispatcher: Dispatcher[Event]): ClientInterface =
-    protocol.createClient(9999, ClientBindings(eventDispatcher))
-
-
-
-  // TODO: move this to config
-  final val TICKS_PER_QUARTER: Int = 4
-
-  object MyDevices {
-    val GervillSoftSynt: DeviceHash = "55c8a757"
-    val FocusriteUSBMIDI_IN: DeviceHash = "658ef990"
-    val FocusriteUSBMIDI_OUT: DeviceHash = "c7797746"
-    val iRigUSBMIDI_IN: DeviceHash = "e98b95f2"
-  }
+    protocol.createClient(port, ClientBindings(eventDispatcher))
 
 }
