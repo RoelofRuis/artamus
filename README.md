@@ -1,4 +1,4 @@
-Storing small musical ideas and playing around with modularization using Guice.
+Artamus music server
 
 ```
 Package overview:
@@ -10,11 +10,9 @@ music.interpret     Contains interpretation algorithms          [music.symbolic]
 music.math          Contains basic music math operations        []
 music.symbolic      Contains the music data structures          []
 music.write         Contains lilypond file text format writing  [music.symbolic]
-protocol            Contains an abstract client-server protocol [pubsub]
+protocol            Contains an abstract client-server protocol [resource]
 pubsub              Contains publish-subscribe logic            []
 resource            Contains resource management wrappers       []
 server              Contains the application state              [pubsub, music, protocol]
-
-WIP
 transport           Contains transport layer logic              [resource]
 ```
