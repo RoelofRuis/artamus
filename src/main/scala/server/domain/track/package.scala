@@ -14,9 +14,6 @@ package object track {
 
   case class AddNote(position: Position, note: Note[PitchClass]) extends Command
 
-  // Events
-  case object TrackSymbolsUpdated extends Event
-
   // Queries
   case object GetMidiPitches extends Query { type Res = List[List[Int]] }
 

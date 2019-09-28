@@ -2,13 +2,14 @@ package server
 
 import _root_.server.control.{EventBusHandler, ServerControlHandler}
 import _root_.server.domain.track.{TrackCommandHandler, TrackQueryHandler, TrackState}
-import _root_.server.rendering.LilypondRenderingService
+import _root_.server.rendering.{LilypondRenderer, LilypondRenderingService}
 import _root_.server.view.{ChordView, LilypondView}
 import com.google.inject.Provides
 import javax.inject.Singleton
 import net.codingwell.scalaguice.ScalaPrivateModule
 import protocol._
-import pubsub.{BufferedEventBus, Dispatcher}
+import pubsub.{BufferedEventBus, Dispatcher, EventBus}
+import server.domain.DomainEvent
 
 class ServerModule extends ScalaPrivateModule with ServerConfig {
 
@@ -24,9 +25,13 @@ class ServerModule extends ScalaPrivateModule with ServerConfig {
 
     bind[TrackState].asEagerSingleton()
 
-    bind[BufferedEventBus[Event]].toInstance(new BufferedEventBus[Event])
+    bind[BufferedEventBus[DomainEvent]].toInstance(new BufferedEventBus[DomainEvent])
+
+    bind[EventBus[Event]].toInstance(new EventBus[Event])
 
     bind[LilypondRenderingService].toInstance(new LilypondRenderingService(resourceRootPath, cleanupLySources))
+    bind[LilypondRenderer].asEagerSingleton()
+
     bind[LilypondView].asEagerSingleton()
     bind[ChordView].asEagerSingleton()
 
@@ -38,7 +43,7 @@ class ServerModule extends ScalaPrivateModule with ServerConfig {
   def serverConnectionFactory(
     commandDispatcher: Dispatcher[Command],
     queryDispatcher: Dispatcher[Query],
-    eventBus: BufferedEventBus[Event],
+    eventBus: EventBus[Event],
   ): ServerInterface = {
     DefaultServer.apply(
       port,

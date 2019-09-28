@@ -1,22 +1,23 @@
 package server.control
 
 import javax.inject.Inject
-import protocol.{Command, Event, Query}
+import protocol.{Command, Query}
 import pubsub.{BufferedEventBus, Dispatcher}
+import server.domain.DomainEvent
 
 private[server] class EventBusHandler @Inject() (
   busCommands: Dispatcher[Command],
   busQueries: Dispatcher[Query],
-  eventBus: BufferedEventBus[Event]
+  domainUpdates: BufferedEventBus[DomainEvent]
 ) {
 
   busCommands.subscribe[PublishChanges.type] { _ =>
-    val numFlushed = eventBus.flush
+    val numFlushed = domainUpdates.flush
     numFlushed > 0
   }
 
   busQueries.subscribe[GetViews.type] { _ =>
-    eventBus.viewSubscriptions.toList
+    domainUpdates.viewSubscriptions.toList
   }
 
 }

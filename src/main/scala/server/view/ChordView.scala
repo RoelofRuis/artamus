@@ -3,18 +3,18 @@ package server.view
 import javax.annotation.concurrent.NotThreadSafe
 import javax.inject.Inject
 import music.interpret.pitched.{ChordFinder, TwelveToneEqualTemprament}
-import protocol.Event
 import pubsub.BufferedEventBus
-import server.domain.track.{TrackState, TrackSymbolsUpdated}
+import server.domain.track.TrackState
+import server.domain.{DomainEvent, StateChanged}
 
 @NotThreadSafe
 class ChordView @Inject() (
-  eventBus: BufferedEventBus[Event],
+  domainUpdates: BufferedEventBus[DomainEvent],
   trackState: TrackState
 ) {
 
-  eventBus.subscribe("chord-analysis", {
-    case TrackSymbolsUpdated =>
+  domainUpdates.subscribe("chord-analysis", {
+    case StateChanged =>
       val track = trackState.getTrack
       val possibleChords = track.getAllStackedSymbols.map { case (position, notes) =>
         val pitches = notes.map(_.pitch.p)

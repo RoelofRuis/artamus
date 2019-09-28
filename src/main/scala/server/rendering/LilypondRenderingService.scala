@@ -4,9 +4,10 @@ import java.io.{File, PrintWriter}
 import java.util.concurrent.atomic.AtomicLong
 import java.util.concurrent.{ExecutorService, Executors}
 
+import javax.annotation.concurrent.NotThreadSafe
 import music.write.LilypondFile
 
-
+@NotThreadSafe
 class LilypondRenderingService(
   val resourceRootPath: String,
   val cleanupLySources: Boolean,
@@ -14,6 +15,7 @@ class LilypondRenderingService(
 
   private val executor: ExecutorService = Executors.newFixedThreadPool(1)
   private val taskIdGenerator = new AtomicLong(0L)
+  private var completionHandler: Option[(Long, Either[RenderingException, RenderingResult]) => Unit] = None
 
   def render(lilyFile: LilypondFile): Long = {
     val taskId = taskIdGenerator.getAndIncrement()
@@ -25,9 +27,13 @@ class LilypondRenderingService(
 
   def shutdown(): Unit = executor.shutdown()
 
-  private def complete(id: Long, result: Either[RenderingException, RenderingResult]): Unit = {
+  def setCompletionHandler(handler: (Long, Either[RenderingException, RenderingResult]) => Unit): Unit = {
+    completionHandler = Some(handler)
+  }
+
+  private def complete(taskId: Long, result: Either[RenderingException, RenderingResult]): Unit = {
     // TODO: ensure thread safety!
-    println(s"Rendering [$id]: [$result]")
+    completionHandler.foreach(_(taskId, result))
   }
 
   private def makeRunnable(lilyFile: LilypondFile, taskId: Long): Runnable = {

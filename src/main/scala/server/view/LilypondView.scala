@@ -5,20 +5,19 @@ import music.interpret.pitched.NaivePitchSpelling
 import music.symbolic._
 import music.symbolic.pitched.PitchClass
 import music.write.LilypondFile
-import protocol.Event
 import pubsub.BufferedEventBus
-import server.domain.track.{TrackState, TrackSymbolsUpdated}
-import server.rendering.LilypondRenderingService
+import server.domain.track.TrackState
+import server.domain.{DomainEvent, StateChanged}
+import server.rendering.LilypondRenderer
 
-// TODO: clean up further!
 class LilypondView @Inject() (
-  eventBus: BufferedEventBus[Event],
+  domainUpdates: BufferedEventBus[DomainEvent],
   trackState: TrackState,
-  rendering: LilypondRenderingService
+  rendering: LilypondRenderer
 ) {
 
-  eventBus.subscribe("pitch-spelling", {
-    case TrackSymbolsUpdated =>
+  domainUpdates.subscribe("pitch-spelling", {
+    case StateChanged =>
       val currentState = trackState.getTrack
 
       val stackedNotes: Seq[Seq[Note[PitchClass]]] = currentState
@@ -35,7 +34,7 @@ class LilypondView @Inject() (
         currentState.getSymbolAt[Key](Position.zero)
       )
 
-      rendering.render(lilyFile)
+      rendering.submit("lilypond-view", lilyFile)
       ()
     case _ => ()
   }, active = true)
