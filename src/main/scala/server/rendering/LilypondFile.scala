@@ -20,6 +20,10 @@ final case class LilypondFile(
 
     s"""\\version "2.18"
       |
+      |\\paper {
+      |  #(set-paper-size "a6landscape")
+      |}
+      |
       |\\header {
       |  tagline = ##f
       |}
