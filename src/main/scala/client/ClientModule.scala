@@ -10,7 +10,7 @@ import midi.in.MidiMessageReader
 import midi.out.SequenceWriter
 import net.codingwell.scalaguice.ScalaPrivateModule
 import protocol.Event
-import protocol.client.{ClientBindings, ClientInterface}
+import protocol.client._
 import pubsub.Dispatcher
 
 class ClientModule extends ScalaPrivateModule {
@@ -35,9 +35,8 @@ class ClientModule extends ScalaPrivateModule {
   }
 
   @Provides @Singleton
-  def messageBus(eventDispatcher: Dispatcher[Event]): ClientInterface =
-    protocol.createClient(9999, ClientBindings(eventDispatcher))
-
+  def messageBus(dispatcher: Dispatcher[Event]): ClientInterface =
+    new DefaultClient(ClientFactory.createClient(9999), dispatcher)
 
 
   // TODO: move this to config

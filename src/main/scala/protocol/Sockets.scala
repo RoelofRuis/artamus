@@ -10,8 +10,4 @@ object Sockets {
     Resource.wrapUnsafe[ServerSocket](new ServerSocket(port), _.close())
   }
 
-  def onPort(port: Int): Resource[Socket] = {
-    Resource.wrapUnsafe[Socket](new Socket(InetAddress.getByName("localhost"), port), _.close())
-  }
-
 }

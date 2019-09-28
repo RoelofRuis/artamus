@@ -1,11 +1,8 @@
-import protocol.client.{ClientBindings, ClientInterface, DefaultClient}
 import pubsub.{Dispatcher, SimpleDispatcher}
 
 import scala.language.reflectiveCalls
 
 package object protocol {
-
-  def createClient(port: Int, bindings: ClientBindings): ClientInterface = new DefaultClient(port, bindings)
 
   def createDispatcher[A <: { type Res }](): Dispatcher[A] = new SimpleDispatcher[A]
 
