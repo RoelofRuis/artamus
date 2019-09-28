@@ -3,7 +3,7 @@ package server
 import _root_.server.control.{EventBusHandler, ServerControlHandler}
 import _root_.server.domain.track.{TrackCommandHandler, TrackQueryHandler, TrackState}
 import _root_.server.rendering.{LilypondRenderer, LilypondRenderingService}
-import _root_.server.view.{ChordView, LilypondView}
+import _root_.server.view.{ChordView, HistogramView, LilypondView}
 import com.google.inject.Provides
 import javax.inject.Singleton
 import net.codingwell.scalaguice.ScalaPrivateModule
@@ -34,6 +34,7 @@ class ServerModule extends ScalaPrivateModule with ServerConfig {
 
     bind[LilypondView].asEagerSingleton()
     bind[ChordView].asEagerSingleton()
+    bind[HistogramView].asEagerSingleton()
 
     bind[Bootstrapper].asEagerSingleton()
     expose[Bootstrapper]
