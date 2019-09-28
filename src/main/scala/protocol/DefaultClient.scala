@@ -1,15 +1,14 @@
-package protocol.client
+package protocol
 
 import com.typesafe.scalalogging.LazyLogging
-import javax.inject.Inject
-import protocol._
 import pubsub.Dispatcher
 import resource.Resource
+import transport.client.ClientThread
 
 import scala.util.{Failure, Success, Try}
 
-class DefaultClient @Inject() (
-  client: Resource[SimpleClient],
+class DefaultClient(
+  client: Resource[ClientThread],
   eventDispatcher: Dispatcher[Event],
 ) extends ClientInterface with LazyLogging {
 
@@ -21,7 +20,7 @@ class DefaultClient @Inject() (
     sendRequest[QueryRequest, A#Res](QueryRequest(message))
   }
 
-  def close(): Unit = client.close
+  override def close(): Unit = client.close
 
   private def sendRequest[A, R](request: A): Option[R] = {
     client.acquire match {
@@ -40,9 +39,9 @@ class DefaultClient @Inject() (
     }
   }
 
-  private def expectResponseMessage[A](client: SimpleClient): (Either[ServerException, A], List[Try[Event]]) = readResponsesAndEvents(client, List())
+  private def expectResponseMessage[A](client: ClientThread): (Either[ServerException, A], List[Try[Event]]) = readResponsesAndEvents(client, List())
 
-  private def readResponsesAndEvents[A](client: SimpleClient, events: List[Try[Event]]): (Either[ServerException, A], List[Try[Event]]) = {
+  private def readResponsesAndEvents[A](client: ClientThread, events: List[Try[Event]]): (Either[ServerException, A], List[Try[Event]]) = {
     decode[ServerResponse](client.readNext).toEither match {
       case Right(DataResponse(response)) =>
         val decoded = response match {
@@ -65,3 +64,10 @@ class DefaultClient @Inject() (
   private def handleEvents(events: List[Try[Event]]): Unit = events.foreach(_.foreach(eventDispatcher.handle))
 }
 
+object DefaultClient {
+
+  def apply(port: Int, dispatcher: Dispatcher[Event]): ClientInterface = {
+    new DefaultClient(ClientThread.asResource(port), dispatcher)
+  }
+
+}

@@ -1,8 +1,7 @@
 package server.control
 
 import javax.inject.Inject
-import protocol.Command
-import protocol.server.ServerInterface
+import protocol.{Command, ServerInterface}
 import pubsub.Dispatcher
 
 private[server] class ServerControlHandler @Inject() (
@@ -15,10 +14,14 @@ private[server] class ServerControlHandler @Inject() (
       true
 
     case Disconnect(true) =>
-      server.shutdown()
+      initiateShutdown()
       true
 
     case _ => false
+  }
+
+  private def initiateShutdown(): Unit = {
+    new Thread (() => server.shutdown()).start()
   }
 
 }

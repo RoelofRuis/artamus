@@ -1,14 +1,13 @@
-package protocol.server
+package transport.server
 
-import java.io.{IOException, ObjectInputStream, ObjectOutputStream}
+import java.io.{EOFException, IOException, ObjectInputStream, ObjectOutputStream}
 import java.net.Socket
 
-import javax.inject.Inject
-import protocol.ServerBindings
+import com.typesafe.scalalogging.LazyLogging
 
 import scala.util.{Failure, Success, Try}
 
-class ServerConnectionFactory @Inject() (bindings: ServerBindings) {
+private[server] class ServerConnectionFactory(bindings: ServerBindings) extends LazyLogging {
 
   def connect(socket: Socket, connectionId: String): Try[Runnable] = {
     try {
@@ -17,7 +16,7 @@ class ServerConnectionFactory @Inject() (bindings: ServerBindings) {
 
       Success(new Runnable {
         override def run(): Unit = {
-          bindings.subscribe(connectionId)
+          bindings.connectionAccepted(connectionId)
 
           try {
             while (socket.isConnected) {
@@ -27,13 +26,10 @@ class ServerConnectionFactory @Inject() (bindings: ServerBindings) {
               objectOut.writeObject(response)
             }
           } catch {
-            case ex: IOException => println(s"Connection thread encountered IOException [$ex]")
-
-            case ex: InterruptedException => println(s"Connection thread was interrupted [$ex]")
-
-            case ex: Exception => println(s"Exception in connection thread [$ex]")
+            case _: EOFException => logger.info("EOF: Client hang up")
+            case ex: IOException => logger.error("Connection thread encountered IOException", ex)
           } finally {
-            bindings.unsubscribe(connectionId)
+            bindings.connectionDropped(connectionId)
             socket.close()
           }
         }
@@ -43,5 +39,3 @@ class ServerConnectionFactory @Inject() (bindings: ServerBindings) {
     }
   }
 }
-
-

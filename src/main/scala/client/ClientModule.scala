@@ -8,8 +8,7 @@ import javax.inject.Singleton
 import midi.in.MidiMessageReader
 import midi.out.SequenceWriter
 import net.codingwell.scalaguice.ScalaPrivateModule
-import protocol.client._
-import protocol.{ClientInterface, Event}
+import protocol.{ClientInterface, DefaultClient, Event}
 import pubsub.Dispatcher
 
 class ClientModule extends ScalaPrivateModule with ClientConfig {
@@ -27,14 +26,13 @@ class ClientModule extends ScalaPrivateModule with ClientConfig {
     bind[TrackQueryOperations].asEagerSingleton()
     bind[DevOperations].asEagerSingleton()
 
-    bind[Dispatcher[Event]].toInstance(protocol.createDispatcher[Event]())
+    bind[Dispatcher[Event]].toInstance(pubsub.createDispatcher[Event]())
 
     bind[Bootstrapper].asEagerSingleton()
     expose[Bootstrapper]
   }
 
   @Provides @Singleton
-  def messageBus(dispatcher: Dispatcher[Event]): ClientInterface =
-    new DefaultClient(ClientFactory.createClient(port), dispatcher)
+  def client(dispatcher: Dispatcher[Event]): ClientInterface = DefaultClient(port, dispatcher)
 
 }

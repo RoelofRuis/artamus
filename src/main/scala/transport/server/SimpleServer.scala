@@ -1,18 +1,18 @@
-package protocol.server
+package transport.server
 
+import java.io.IOException
 import java.net.ServerSocket
 import java.util.concurrent.{ExecutorService, Executors, RejectedExecutionException, TimeUnit}
 
 import com.typesafe.scalalogging.LazyLogging
-import javax.inject.Inject
 import resource.Resource
 
 import scala.util.Try
 
-class SimpleServer @Inject() (
+class SimpleServer (
   serverSocket: Resource[ServerSocket],
   connectionFactory: ServerConnectionFactory
-) extends ServerInterface with LazyLogging {
+) extends LazyLogging {
 
   private val executor: ExecutorService = Executors.newFixedThreadPool(1)
 
@@ -28,13 +28,16 @@ class SimpleServer @Inject() (
         execution <- acceptConnection(connection)
       } yield execution
 
-      execution.recover {
-        case ex: RejectedExecutionException =>
-          if ( ! executor.isShutdown) logger.warn("Server was unable to accept new connection", ex)
+      val recovered = execution.recover {
+        case ex: RejectedExecutionException if ! executor.isShutdown =>
+          logger.warn("Server was unable to accept new connection", ex)
+
+        case _: IOException if serverSocket.isClosed =>
+          logger.info("Server was shut down")
         }
 
-      if (execution.isFailure) {
-        logger.error("Server exception", execution.failed.get)
+      if (recovered.isFailure) {
+        logger.error("Server exception, forcing shutdown", recovered.failed.get)
         shutdown()
       }
     }
@@ -55,6 +58,17 @@ class SimpleServer @Inject() (
     val subId = s"${SERVER_SUB_KEY}_$connectionId"
     connectionId+=1
     subId
+  }
+
+}
+
+object SimpleServer {
+
+  def apply(port: Int, bindings: ServerBindings): SimpleServer = {
+    new SimpleServer(
+      Resource.wrapUnsafe[ServerSocket](new ServerSocket(port), _.close()),
+      new ServerConnectionFactory(bindings)
+    )
   }
 
 }

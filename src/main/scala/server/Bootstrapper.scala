@@ -1,11 +1,11 @@
 package server
 
 import javax.inject.Inject
-import protocol.server._
+import protocol.ServerInterface
 import server.rendering.LilypondRenderingService
 
 class Bootstrapper @Inject() (
-  server: SimpleServer,
+  server: ServerInterface,
   rendering: LilypondRenderingService
 ) {
 
@@ -15,6 +15,6 @@ class Bootstrapper @Inject() (
     server.accept()
     rendering.shutdown()
 
-    println("Program ended")
+    println("\nProgram ended")
   }
 }
