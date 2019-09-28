@@ -7,7 +7,8 @@ import java.util.concurrent.{ExecutorService, Executors, RejectedExecutionExcept
 import com.typesafe.scalalogging.LazyLogging
 import resource.Resource
 
-import scala.util.Try
+import scala.concurrent.{Future, Promise}
+import scala.util.{Success, Try}
 
 class SimpleServer (
   serverSocket: Resource[ServerSocket],
@@ -43,10 +44,15 @@ class SimpleServer (
     }
   }
 
-  def shutdown(): Unit = {
-    if (! executor.isShutdown) executor.shutdown()
-    executor.awaitTermination(10L, TimeUnit.SECONDS)
-    if (! serverSocket.isClosed) serverSocket.close
+  def shutdown(): Future[Unit] = {
+    val promise = Promise[Unit]
+    new Thread (() => {
+      if (! executor.isShutdown) executor.shutdown()
+      executor.awaitTermination(10L, TimeUnit.SECONDS)
+      if (! serverSocket.isClosed) serverSocket.close
+      promise.complete(Success(()))
+    }).start()
+    promise.future
   }
 
   private def acceptConnection(connection: Runnable): Try[Unit] = {

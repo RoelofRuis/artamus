@@ -14,14 +14,10 @@ private[server] class ServerControlHandler @Inject() (
       true
 
     case Disconnect(true) =>
-      initiateShutdown()
+      server.shutdown()
       true
 
     case _ => false
-  }
-
-  private def initiateShutdown(): Unit = {
-    new Thread (() => server.shutdown()).start()
   }
 
 }
