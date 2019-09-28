@@ -3,12 +3,13 @@ package protocol.server
 import java.io.{IOException, ObjectInputStream, ObjectOutputStream}
 import java.net.Socket
 
+import com.typesafe.scalalogging.LazyLogging
 import javax.inject.Inject
 import protocol.ServerBindings
 
 import scala.util.{Failure, Success, Try}
 
-class ServerConnectionFactory @Inject() (bindings: ServerBindings) {
+class ServerConnectionFactory @Inject() (bindings: ServerBindings) extends LazyLogging {
 
   def connect(socket: Socket, connectionId: String): Try[Runnable] = {
     try {
@@ -22,8 +23,10 @@ class ServerConnectionFactory @Inject() (bindings: ServerBindings) {
           try {
             while (socket.isConnected) {
               val request = objectIn.readObject()
+              logger.debug(s"Read request [$request]")
 
               val response = bindings.handleRequest(request)
+              logger.debug(s"Sending response [$response]")
               objectOut.writeObject(response)
             }
           } catch {

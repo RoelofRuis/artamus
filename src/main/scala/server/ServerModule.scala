@@ -2,9 +2,9 @@ package server
 
 import java.net.ServerSocket
 
-import _root_.server.rendering.LilypondRenderingService
 import _root_.server.control.{EventBusHandler, ServerControlHandler}
 import _root_.server.domain.track.{TrackCommandHandler, TrackQueryHandler, TrackState}
+import _root_.server.rendering.LilypondRenderingService
 import _root_.server.view.{ChordView, LilypondView}
 import com.google.inject.Provides
 import javax.inject.Singleton
@@ -18,7 +18,7 @@ class ServerModule extends ScalaPrivateModule with ServerConfig {
 
   override def configure(): Unit = {
     bind[ServerInterface].to[SimpleServer]
-    bind[Resource[ServerSocket]].toInstance(ServerSockets.onPort(port))
+    bind[Resource[ServerSocket]].toInstance(Sockets.serverOnPort(9999))
 
     bind[ServerControlHandler].asEagerSingleton()
     bind[EventBusHandler].asEagerSingleton()
