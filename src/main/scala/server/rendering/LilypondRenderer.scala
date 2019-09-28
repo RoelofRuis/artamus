@@ -5,7 +5,6 @@ import java.io.File
 import com.typesafe.scalalogging.LazyLogging
 import javax.annotation.concurrent.NotThreadSafe
 import javax.inject.Inject
-import music.write.LilypondFile
 import protocol.Event
 import pubsub.EventBus
 

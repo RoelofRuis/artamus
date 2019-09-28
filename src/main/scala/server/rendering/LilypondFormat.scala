@@ -1,4 +1,4 @@
-package music.write
+package server.rendering
 
 import music.symbolic.const.Scales
 import music.symbolic.pitched.{Accidental, Octave, Spelled, Step}

@@ -4,11 +4,10 @@ import javax.inject.Inject
 import music.interpret.pitched.NaivePitchSpelling
 import music.symbolic._
 import music.symbolic.pitched.PitchClass
-import music.write.LilypondFile
 import pubsub.BufferedEventBus
 import server.domain.track.TrackState
 import server.domain.{DomainEvent, StateChanged}
-import server.rendering.LilypondRenderer
+import server.rendering.{LilypondFile, LilypondRenderer}
 
 class LilypondView @Inject() (
   domainUpdates: BufferedEventBus[DomainEvent],

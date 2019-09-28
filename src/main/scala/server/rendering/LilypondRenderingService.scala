@@ -5,7 +5,6 @@ import java.util.concurrent.atomic.AtomicLong
 import java.util.concurrent.{ExecutorService, Executors}
 
 import javax.annotation.concurrent.NotThreadSafe
-import music.write.LilypondFile
 
 @NotThreadSafe
 class LilypondRenderingService(
@@ -48,7 +47,7 @@ class LilypondRenderingService(
 
         import sys.process._
 
-        val result = s"lilypond -fpng -odata ${sourceFile.getAbsolutePath}".!!
+        val result = getLilypondCommand(sourceFile.getAbsolutePath).!!
 
         if (targetFile.exists()) complete(taskId, Right(RenderingResult(targetFile)))
         else complete(taskId, Left(RenderingException(result, None)))
@@ -59,6 +58,10 @@ class LilypondRenderingService(
         if (cleanupLySources) sourceFile.delete()
       }
     }
+  }
+
+  private def getLilypondCommand(outputPath: String): String = {
+    s"lilypond -fpng -odata $outputPath"
   }
 
 }

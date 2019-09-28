@@ -1,7 +1,7 @@
-package music.write
+package server.rendering
 
-import music.symbolic._
 import music.symbolic.pitched.Spelled
+import music.symbolic.{Key, Note, TimeSignature}
 
 final case class LilypondFile(
   notes: Seq[Seq[Note[Spelled]]],
@@ -9,7 +9,7 @@ final case class LilypondFile(
   key: Option[Key],
 ) {
 
-  import music.write.LilypondFormat._
+  import server.rendering.LilypondFormat._
 
   def getStringContents: String = {
     val content = Seq(
@@ -22,6 +22,14 @@ final case class LilypondFile(
       |
       |\\header {
       |  tagline = ##f
+      |}
+      |
+      |\\layout{
+      |  clip-regions
+      |  = #(list
+      |      (cons
+      |       (make-rhythmic-location 0 0 0)
+      |       (make-rhythmic-location 1 0 0)))
       |}
       |
       |{
