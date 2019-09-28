@@ -24,14 +24,6 @@ final case class LilypondFile(
       |  tagline = ##f
       |}
       |
-      |\\layout{
-      |  clip-regions
-      |  = #(list
-      |      (cons
-      |       (make-rhythmic-location 0 0 0)
-      |       (make-rhythmic-location 1 0 0)))
-      |}
-      |
       |{
       |\\numericTimeSignature
       |$content
