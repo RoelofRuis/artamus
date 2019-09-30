@@ -12,9 +12,9 @@ package object pitched {
 
   final case class PitchClass(value: Int) extends ExactPitch
 
-  final case class Spelled(step: Step, accidental: Accidental) extends ExactPitch
+  final case class SpelledPitch(step: Step, accidental: Accidental) extends ExactPitch
 
-  case class Interval(pc: PitchClass, s: Step)
+  case class Interval(pc: PitchClass, step: Step)
 
   case class Function(pc: PitchClass, s: Step) extends Comparable[Function] {
     override def compareTo(o: Function): Int = {

@@ -1,7 +1,7 @@
 package server.rendering
 
 import music.symbolic.const.Scales
-import music.symbolic.pitched.{Accidental, Octave, Spelled, Step}
+import music.symbolic.pitched.{Accidental, Octave, SpelledPitch, Step}
 import music.symbolic.{Duration, Key, Note, TimeSignature}
 
 trait LilypondFormat[A] {
@@ -16,7 +16,7 @@ object LilypondFormat {
     def toLilypond: String = LilypondFormat[A].toLilypond(a)
   }
 
-  implicit val simultaneousNotesToLilypond: LilypondFormat[Seq[Note[Spelled]]] = (notes: Seq[Note[Spelled]]) => {
+  implicit val simultaneousNotesToLilypond: LilypondFormat[Seq[Note[SpelledPitch]]] = (notes: Seq[Note[SpelledPitch]]) => {
     val dur = notes.map(_.duration).max
     notes.map { note =>
       Seq(
@@ -26,7 +26,7 @@ object LilypondFormat {
     }.mkString("<", " ", ">") + dur.toLilypond
   }
 
-  implicit val noteToLilypond: LilypondFormat[Note[Spelled]] = (note: Note[Spelled]) => {
+  implicit val noteToLilypond: LilypondFormat[Note[SpelledPitch]] = (note: Note[SpelledPitch]) => {
     Seq(
       note.pitch.p.toLilypond,
       note.pitch.octave.toLilypond,
@@ -34,7 +34,7 @@ object LilypondFormat {
     ).mkString("")
   }
 
-  implicit val spelledPitchToLilypond: LilypondFormat[Spelled] = (spelledPitch: Spelled) => {
+  implicit val spelledPitchToLilypond: LilypondFormat[SpelledPitch] = (spelledPitch: SpelledPitch) => {
     def accidentalText(a: Accidental, acc: String = "", suppressE: Boolean = false): String = {
       a match {
         case Accidental(0) => acc

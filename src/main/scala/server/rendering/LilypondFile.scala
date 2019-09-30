@@ -1,10 +1,10 @@
 package server.rendering
 
-import music.symbolic.pitched.Spelled
+import music.symbolic.pitched.SpelledPitch
 import music.symbolic.{Key, Note, TimeSignature}
 
 final case class LilypondFile(
-  notes: Seq[Seq[Note[Spelled]]],
+  notes: Seq[Seq[Note[SpelledPitch]]],
   timeSignature: Option[TimeSignature],
   key: Option[Key],
 ) {

@@ -2,13 +2,14 @@ package music.interpret.pitched
 
 import music.symbolic.pitched._
 
+/** @deprecated Should be implemented by using intervals with `tuning.spellInterval` */
 object NaivePitchSpelling extends PitchSpelling {
 
-  override def interpret(pitches: Seq[Pitch[PitchClass]]): Seq[Pitch[Spelled]] = {
+  override def interpret(pitches: Seq[Pitch[PitchClass]]): Seq[Pitch[SpelledPitch]] = {
     pitches.map(interpretOne)
   }
 
-  private def interpretOne(pitch: Pitch[PitchClass]): Pitch[Spelled] = {
+  private def interpretOne(pitch: Pitch[PitchClass]): Pitch[SpelledPitch] = {
     val spelling = pitch.p.value match {
       case 0 => spell(0, 0)
       case 1 => spell(0, 1)
@@ -26,6 +27,6 @@ object NaivePitchSpelling extends PitchSpelling {
     Pitch(pitch.octave, spelling)
   }
 
-  private def spell(step: Int, acc: Int): Spelled = Spelled(Step(step), Accidental(acc))
+  private def spell(step: Int, acc: Int): SpelledPitch = SpelledPitch(Step(step), Accidental(acc))
 
 }

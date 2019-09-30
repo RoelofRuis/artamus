@@ -10,7 +10,7 @@ final case class TuningSystem[A](pcSeq: Seq[Int]) {
   def pcs: Seq[PitchClass] = Range(0, numPitchClasses).map(PitchClass)
 
   def pc2step(pc: PitchClass): Option[Step] = pcSeq.find(_ == pc.value).map(Step)
-  def step2pc(step: Step): PitchClass = PitchClass(pcSeq(step.value))
+  def step2pc(step: Step): PitchClass = pc(pcSeq(step.value))
   def pcDiff(pc1: PitchClass, pc2: PitchClass): Int = {
     val diff = pc2.value - pc1.value
     if (diff < 0) diff + numPitchClasses
@@ -18,10 +18,10 @@ final case class TuningSystem[A](pcSeq: Seq[Int]) {
   }
 
   def interval2pc(in: Interval): PitchClass = {
-    val stepPc = step2pc(in.s)
+    val stepPc = step2pc(in.step)
     val givenPc = in.pc
     val diff = stepPc.value - givenPc.value
-    PitchClass(stepPc.value - diff)
+    pc(stepPc.value - diff)
   }
 
   def noteNumberToPitch(noteNumber: MidiNoteNumber): Pitch[PitchClass] = {
@@ -30,6 +30,20 @@ final case class TuningSystem[A](pcSeq: Seq[Int]) {
 
   def pitchToNoteNumber(pitch: Pitch[PitchClass]): MidiNoteNumber = {
     MidiNoteNumber(((pitch.octave.value + 1) * numPitchClasses) + pitch.p.value)
+  }
+
+  def spellInterval(root: SpelledPitch, interval: Interval): SpelledPitch = {
+    def unboundStepValue(step: Int): Int = {
+      if (step >= numSteps) unboundStepValue(step - numSteps) + numPitchClasses
+      else pcSeq(step)
+    }
+
+    val newStep = root.step.value + interval.step.value
+    val newPc = unboundStepValue(newStep)
+    val actualPc = unboundStepValue(root.step.value) + root.accidental.value + interval.pc.value
+    val pcDiff = actualPc - newPc
+
+    SpelledPitch(step(newStep), Accidental(pcDiff))
   }
 
 }
