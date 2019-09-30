@@ -1,4 +1,4 @@
-package server.view
+package server.analysis
 
 import javax.annotation.concurrent.NotThreadSafe
 import javax.inject.Inject
@@ -11,7 +11,7 @@ import server.domain.{DomainEvent, StateChanged}
 import scala.collection.SortedMap
 
 @NotThreadSafe
-class HistogramView @Inject() (
+class PitchHistogramAnalysis @Inject() (
   domainUpdates: BufferedEventBus[DomainEvent],
   trackState: TrackState
 ) {

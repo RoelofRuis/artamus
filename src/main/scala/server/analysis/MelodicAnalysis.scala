@@ -1,4 +1,4 @@
-package server.view
+package server.analysis
 
 import javax.inject.Inject
 import music.interpret.pitched.NaivePitchSpelling
@@ -9,13 +9,13 @@ import server.domain.track.TrackState
 import server.domain.{DomainEvent, StateChanged}
 import server.rendering.{LilypondFile, LilypondRenderer}
 
-class LilypondView @Inject() (
+class MelodicAnalysis @Inject() (
   domainUpdates: BufferedEventBus[DomainEvent],
   trackState: TrackState,
   rendering: LilypondRenderer
 ) {
 
-  domainUpdates.subscribe("pitch-spelling", {
+  domainUpdates.subscribe("melodic-analysis", {
     case StateChanged =>
       val currentState = trackState.getTrack
 
@@ -33,7 +33,7 @@ class LilypondView @Inject() (
         currentState.getSymbolAt[Key](Position.zero)
       )
 
-      rendering.submit("lilypond-view", lilyFile)
+      rendering.submit("melodic-analysis", lilyFile)
       ()
     case _ => ()
   }, active = true)

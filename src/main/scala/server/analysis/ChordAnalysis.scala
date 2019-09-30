@@ -1,4 +1,4 @@
-package server.view
+package server.analysis
 
 import javax.annotation.concurrent.NotThreadSafe
 import javax.inject.Inject
@@ -8,12 +8,12 @@ import server.domain.track.TrackState
 import server.domain.{DomainEvent, StateChanged}
 
 @NotThreadSafe
-class ChordView @Inject() (
+class ChordAnalysis @Inject() (
   domainUpdates: BufferedEventBus[DomainEvent],
   trackState: TrackState
 ) {
 
-  domainUpdates.subscribe("chord-analysis", {
+  domainUpdates.subscribe("chords", {
     case StateChanged =>
       val track = trackState.getTrack
       val possibleChords = track.getAllStackedSymbols.map { case (position, notes) =>
