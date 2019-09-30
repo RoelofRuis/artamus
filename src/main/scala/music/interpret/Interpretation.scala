@@ -18,9 +18,9 @@ final case class Interpretation[A] private (data: OneOf[AllOf[A]]) {
   /**
     * Each element of type A can be interpreted as multiple elements of type B
     */
-  def expand[T](f: A => Seq[T]): Interpretation[T] = {
+  def expand[B](f: A => Seq[B]): Interpretation[B] = {
     val expanded = data
-      .map { all: AllOf[A] => expandAllOf[T](all)(f(_)) }
+      .map { all: AllOf[A] => expandAllOf[B](all)(f(_)) }
       .reduce(_ ++ _)
     Interpretation(expanded)
   }
@@ -28,14 +28,21 @@ final case class Interpretation[A] private (data: OneOf[AllOf[A]]) {
   /**
     * Each element of type A can be interpreted as exactly 1 element of type B
     */
-  def map[T](f: A => T): Interpretation[T] = {
+  def map[B](f: A => B): Interpretation[B] = {
     Interpretation(data.map((all: AllOf[A]) => all.map((a: A) => f(a))))
+  }
+
+  /**
+    * Each element of type A can be interpreted as at most 1 element of type B
+    */
+  def mapOption[B](f: A => Option[B]): Interpretation[B] = {
+    Interpretation(data.map((all: AllOf[A]) => all.flatMap((a: A) => f(a))).filter(_.nonEmpty))
   }
 
   /**
     * Multiple elements of type A occurring together can be interpreted as at most 1 element of type B
     */
-  def mapAll[T](f: Seq[A] => Option[T]): Interpretation[T] = {
+  def mapAll[B](f: Seq[A] => Option[B]): Interpretation[B] = {
     Interpretation.oneOf(data.flatMap((all: AllOf[A]) => f(all)))
   }
 
