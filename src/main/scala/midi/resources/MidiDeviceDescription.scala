@@ -3,7 +3,6 @@ package midi.resources
 import javax.sound.midi.{MidiDevice, MidiSystem}
 import midi.DeviceHash
 
-// TODO: see where this needs to go and whether it is still needed
 case class MidiDeviceDescription private (
   info: MidiDevice.Info,
   classType: String,

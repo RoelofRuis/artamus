@@ -3,7 +3,7 @@ package midi.util
 import com.typesafe.scalalogging.LazyLogging
 import midi.util.TemporalReadableBlockingQueue.BlockingQueueReadMethod
 
-object ReadIntoList extends LazyLogging {
+private[midi] object ReadIntoList extends LazyLogging {
 
   def take[A](n: Int): BlockingQueueReadMethod[A, List] = takeUntil(_.length == n, _ => true)
 
@@ -12,7 +12,7 @@ object ReadIntoList extends LazyLogging {
   def takeUntil[A](condition: List[A] => Boolean, accept: A => Boolean): BlockingQueueReadMethod[A, List] = { queue =>
     def take: A = {
       val next = queue.take()
-      logger.info(s"MIDI in received [$next]") // TODO: set to debug
+      logger.debug(s"MIDI in received [$next]")
       if (accept(next)) next
       else take
     }
