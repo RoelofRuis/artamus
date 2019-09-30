@@ -17,13 +17,6 @@ final case class TuningSystem[A](pcSeq: Seq[Int]) {
     else diff
   }
 
-  def interval2pc(in: Interval): PitchClass = {
-    val stepPc = step2pc(in.step)
-    val givenPc = in.pc
-    val diff = stepPc.value - givenPc.value
-    pc(stepPc.value - diff)
-  }
-
   def noteNumberToPitch(noteNumber: MidiNoteNumber): Pitch[PitchClass] = {
     Pitch(Octave((noteNumber.value / numPitchClasses) - 1), pc(noteNumber.value))
   }

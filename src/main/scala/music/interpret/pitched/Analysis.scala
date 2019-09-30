@@ -25,7 +25,7 @@ object Analysis {
   implicit class IntervalAnalysisOps[A : DefinedIntervals](a: TuningSystem[A]) {
     def possibleIntervals(pc1: PitchClass, pc2: PitchClass): Seq[Interval] = {
       val diff = a.pcDiff(pc1, pc2)
-      implicitly[DefinedIntervals[A]].intervals.filter(a.interval2pc(_).value == diff)
+      implicitly[DefinedIntervals[A]].intervals.filter(_.pc.value == diff)
     }
   }
 
