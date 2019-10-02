@@ -4,8 +4,9 @@ import client.read.MusicReader.{NoteOn, Simultaneous}
 import client.read.{MusicReader, StdIOTools}
 import com.google.inject.Inject
 import music.math.Rational
-import music.symbolic._
-import music.symbolic.const.Scales
+import music.symbolic.pitch.Scale
+import music.symbolic.symbol.{Key, Note}
+import music.symbolic.temporal.{Duration, Position}
 import server.control.PublishChanges
 import server.domain.track.{AddNote, NewTrack, SetKey, SetTimeSignature}
 
@@ -25,7 +26,7 @@ class TrackOperations @Inject() (
   })
 
   registry.registerOperation(OperationToken("key", "track"), () => {
-    List(SetKey(Key(reader.readSpelledPitch, Scales.MAJOR)))
+    List(SetKey(Key(reader.readSpelledPitch, Scale.MAJOR)))
   })
 
   registry.registerOperation(OperationToken("note-seq", "track"), () => {

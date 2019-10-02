@@ -1,10 +1,13 @@
-package music.symbolic
+package music.symbolic.temporal
 
 import music.math.Rational
 
 final case class Duration(value: Rational) extends Comparable[Duration] {
-
-  def dotted: Duration = Duration(value * Rational(3, 2))
-
   override def compareTo(o: Duration): Int = value compare o.value
+}
+
+object Duration {
+
+  val QUARTER = Duration(Rational(1, 4))
+
 }

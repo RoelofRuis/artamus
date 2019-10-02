@@ -2,8 +2,7 @@ package server.analysis
 
 import javax.annotation.concurrent.NotThreadSafe
 import javax.inject.Inject
-import music.symbolic.Note
-import music.symbolic.pitched.PitchClass
+import music.symbolic.pitch.PitchClass
 import pubsub.BufferedEventBus
 import server.domain.track.TrackState
 import server.domain.{DomainEvent, StateChanged}
@@ -36,10 +35,8 @@ class PitchHistogramAnalysis @Inject() (
       )
 
       val histogram = track
-        .getAllStackedSymbols[Note[PitchClass]]
-        .flatMap { case (_, notes) => notes }
-        .map(_.pitch.p.value)
-        .foldRight(zero) { case (pc, acc) => acc.updated(pc, acc.get(pc).map(_ + 1L).get) }
+        .getAll.flatMap(_.get[PitchClass])
+        .foldRight(zero) { case (pc, acc) => acc.updated(pc.value, acc.get(pc.value).map(_ + 1L).get) }
 
       histogram.foreach { case (bin, count) =>
         println(s"$bin|: $count")

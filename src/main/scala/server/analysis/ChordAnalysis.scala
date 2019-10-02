@@ -3,6 +3,7 @@ package server.analysis
 import javax.annotation.concurrent.NotThreadSafe
 import javax.inject.Inject
 import music.interpret.pitched.{ChordFinder, TwelveToneEqualTemprament}
+import music.symbolic.pitch.PitchClass
 import pubsub.BufferedEventBus
 import server.domain.track.TrackState
 import server.domain.{DomainEvent, StateChanged}
@@ -16,8 +17,9 @@ class ChordAnalysis @Inject() (
   domainUpdates.subscribe("chords", {
     case StateChanged =>
       val track = trackState.getTrack
-      val possibleChords = track.getAllStackedSymbols.map { case (position, notes) =>
-        val pitches = notes.map(_.pitch.p)
+      println(track)
+      val possibleChords = track.getAllWithPosition.map { case (position, notes) =>
+        val pitches = notes.flatMap { props => props.get[PitchClass] }
         val possibleChords = ChordFinder.findChords(pitches)
         (position, possibleChords)
       }

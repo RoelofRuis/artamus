@@ -1,7 +1,7 @@
 package music.interpret.pitched
 
 import Analysis.{DefinedChords, DefinedFunctions, DefinedIntervals}
-import music.symbolic.pitched.{Function, Interval, TuningSystem}
+import music.symbolic.pitch.{Function, Interval, TuningSystem}
 
 object TwelveToneEqualTemprament {
 

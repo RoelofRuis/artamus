@@ -1,6 +1,6 @@
 package music.symbolic
 
-package object pitched {
+package object pitch {
 
   final case class MidiNoteNumber(value: Int)
 

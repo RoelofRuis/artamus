@@ -1,4 +1,4 @@
-package music.symbolic.pitched
+package music.symbolic.pitch
 
 final case class TuningSystem[A](pcSeq: Seq[Int]) {
 

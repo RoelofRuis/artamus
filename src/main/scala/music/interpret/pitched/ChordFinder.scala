@@ -1,7 +1,7 @@
 package music.interpret.pitched
 
 import music.interpret.Interpretation
-import music.symbolic.pitched.{Chord, PitchClass}
+import music.symbolic.pitch.{Chord, PitchClass}
 
 object ChordFinder {
 

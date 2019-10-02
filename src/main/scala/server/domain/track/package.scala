@@ -1,8 +1,9 @@
 package server.domain
 
-import music.symbolic._
-import music.symbolic.pitched.PitchClass
-import protocol.{Command, Event, Query}
+import music.symbolic.pitch.PitchClass
+import music.symbolic.symbol.{Key, Note, TimeSignature}
+import music.symbolic.temporal.Position
+import protocol.{Command, Query}
 
 package object track {
 

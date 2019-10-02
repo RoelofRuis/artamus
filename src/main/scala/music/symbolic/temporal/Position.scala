@@ -1,4 +1,4 @@
-package music.symbolic
+package music.symbolic.temporal
 
 import music.math.Rational
 

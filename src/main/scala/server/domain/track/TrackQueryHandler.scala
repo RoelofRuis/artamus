@@ -1,8 +1,7 @@
 package server.domain.track
 
 import javax.inject.Inject
-import music.symbolic.Note
-import music.symbolic.pitched.PitchClass
+import music.symbolic.pitch.{Octave, Pitch, PitchClass}
 import protocol.Query
 import pubsub.Dispatcher
 
@@ -14,8 +13,16 @@ private[server] class TrackQueryHandler @Inject() (
   import music.interpret.pitched.TwelveToneEqualTemprament._
 
   dispatcher.subscribe[GetMidiPitches.type]{ _ =>
-    state.getTrack.getAllStackedSymbols[Note[PitchClass]].map {
-      case (_, notes) => notes.map(note => tuning.pitchToNoteNumber(note.pitch).value).toList
+    state.getTrack.getAllWithPosition.map {
+      case (_, notes) =>
+        notes
+          .flatMap { in =>
+            val pc = in.get[PitchClass]
+            val oct = in.get[Octave]
+            if (pc.isDefined && oct.isDefined) Some(tuning.pitchToNoteNumber(Pitch(oct.get, pc.get)).value)
+            else None
+          }
+        .toList
     }.toList
   }
 

@@ -2,8 +2,9 @@ package server.analysis
 
 import javax.inject.Inject
 import music.interpret.pitched.NaivePitchSpelling
-import music.symbolic._
-import music.symbolic.pitched.PitchClass
+import music.symbolic.pitch.{Octave, Pitch, PitchClass, SpelledPitch}
+import music.symbolic.symbol.{Key, Note, TimeSignature}
+import music.symbolic.temporal.{Duration, Position}
 import pubsub.BufferedEventBus
 import server.domain.track.TrackState
 import server.domain.{DomainEvent, StateChanged}
@@ -17,20 +18,30 @@ class MelodicAnalysis @Inject() (
 
   domainUpdates.subscribe("melodic-analysis", {
     case StateChanged =>
-      val currentState = trackState.getTrack
+      val track = trackState.getTrack
 
-      val stackedNotes: Seq[Seq[Note[PitchClass]]] = currentState
-        .getAllStackedSymbols[Note[PitchClass]]
-        .map { case (_, n) => n }
-
-      val spelledPitches = stackedNotes
-        .map(stack => NaivePitchSpelling.interpret(stack.map(_.pitch)).zip(stack))
-        .map(_.map { case (sp, note) => Note(note.duration, sp) })
+      val stackedNotes: Seq[Seq[Note[SpelledPitch]]] =
+        track.getAllWithPosition
+          .map { case (_, notes) =>
+            notes.flatMap { props =>
+              val pc: Option[PitchClass] = props.get[PitchClass]
+              val oct: Option[Octave] = props.get[Octave]
+              val dur: Option[Duration] = props.get[Duration]
+              if (pc.isDefined && oct.isDefined && dur.isDefined) Some((oct.get, pc.get, dur.get))
+              else None
+            }
+          }
+          .map { n =>
+            NaivePitchSpelling.interpret(n.map(x => (x._1, x._2))).zip(n.map(_._3))
+          }
+          .map { stack =>
+            stack.map { case ((oct, spelled), dur) => Note(dur, Pitch(oct, spelled))}
+          }
 
       val lilyFile = LilypondFile(
-        spelledPitches,
-        currentState.getSymbolAt[TimeSignature](Position.zero),
-        currentState.getSymbolAt[Key](Position.zero)
+        stackedNotes,
+        track.getAt(Position.zero).map(_.get[TimeSignature]).head,
+        track.getAt(Position.zero).map(_.get[Key]).head
       )
 
       rendering.submit("melodic-analysis", lilyFile)

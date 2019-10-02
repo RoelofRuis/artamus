@@ -3,8 +3,8 @@ package client.read
 import client.read.MusicReader.{NoteOn, ReadMethod, Simultaneous}
 import javax.inject.Inject
 import midi.in.MidiMessageReader
-import music.symbolic.TimeSignature
-import music.symbolic.pitched.{Accidental, MidiNoteNumber, SpelledPitch, Step}
+import music.symbolic.pitch.{Accidental, MidiNoteNumber, SpelledPitch, Step}
+import music.symbolic.symbol.TimeSignature
 
 class MusicReader @Inject() (reader: MidiMessageReader) {
 

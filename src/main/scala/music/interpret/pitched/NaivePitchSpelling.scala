@@ -1,15 +1,15 @@
 package music.interpret.pitched
 
-import music.symbolic.pitched._
+import music.symbolic.pitch._
 
 object NaivePitchSpelling extends PitchSpelling {
 
-  override def interpret(pitches: Seq[Pitch[PitchClass]]): Seq[Pitch[SpelledPitch]] = {
+  override def interpret(pitches: Seq[(Octave, PitchClass)]): Seq[(Octave, SpelledPitch)] = {
     pitches.map(interpretOne)
   }
 
-  private def interpretOne(pitch: Pitch[PitchClass]): Pitch[SpelledPitch] = {
-    val spelling = pitch.p.value match {
+  private def interpretOne(input: (Octave, PitchClass)): (Octave, SpelledPitch) = {
+    val spelling = input._2.value match {
       case 0 => spell(0, 0)
       case 1 => spell(0, 1)
       case 2 => spell(1, 0)
@@ -23,7 +23,7 @@ object NaivePitchSpelling extends PitchSpelling {
       case 10 => spell(6, -1)
       case 11 => spell(6, 0)
     }
-    Pitch(pitch.octave, spelling)
+    (input._1, spelling)
   }
 
   private def spell(step: Int, acc: Int): SpelledPitch = SpelledPitch(Step(step), Accidental(acc))

@@ -1,8 +1,8 @@
 package server.rendering
 
-import music.symbolic.const.Scales
-import music.symbolic.pitched.{Accidental, Octave, SpelledPitch, Step}
-import music.symbolic.{Duration, Key, Note, TimeSignature}
+import music.symbolic.pitch._
+import music.symbolic.symbol.{Key, Note, TimeSignature}
+import music.symbolic.temporal.Duration
 
 trait LilypondFormat[A] {
   def toLilypond(a: A): String
@@ -79,8 +79,8 @@ object LilypondFormat {
     // TODO: implement http://lilypond.org/doc/v2.18/Documentation/notation/displaying-pitches#key-signature
     val pitch = key.root.toLilypond
     val mode = key.scale match {
-      case Scales.MAJOR => "\\major"
-      case Scales.MINOR => "\\minor"
+      case Scale.MAJOR => "\\major"
+      case Scale.MINOR => "\\minor"
       case _ => "\\major"
     }
     s"\\key $pitch $mode"
