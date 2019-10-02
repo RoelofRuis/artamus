@@ -17,8 +17,8 @@ private[server] class TrackQueryHandler @Inject() (
       case (_, notes) =>
         notes
           .flatMap { in =>
-            val pc = in.get[PitchClass]
-            val oct = in.get[Octave]
+            val pc = in.getProperty[PitchClass]
+            val oct = in.getProperty[Octave]
             if (pc.isDefined && oct.isDefined) Some(tuning.pitchToNoteNumber(Pitch(oct.get, pc.get)).value)
             else None
           }

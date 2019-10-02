@@ -35,7 +35,7 @@ class PitchHistogramAnalysis @Inject() (
       )
 
       val histogram = track
-        .readAll.flatMap(_.get[PitchClass])
+        .readAll.flatMap(_.getProperty[PitchClass])
         .foldRight(zero) { case (pc, acc) => acc.updated(pc.value, acc.get(pc.value).map(_ + 1L).get) }
 
       histogram.foreach { case (bin, count) =>

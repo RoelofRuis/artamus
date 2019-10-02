@@ -7,22 +7,22 @@ import scala.reflect.{ClassTag, classTag}
 import scala.language.existentials
 
 @Immutable
-final case class PropertyList private (private val props: Map[String, Any]) {
+final case class TrackSymbol private (private val props: Map[String, Any]) {
 
-  def add[A : Property](prop: A): PropertyList = {
+  def addProperty[A : Property](prop: A): TrackSymbol = {
     val key = prop.getClass.getCanonicalName
-    PropertyList(props.updated(key, prop))
+    TrackSymbol(props.updated(key, prop))
   }
 
-  def get[A : Property : ClassTag]: Option[A] = {
+  def getProperty[A : Property : ClassTag]: Option[A] = {
     val key = classTag[A].runtimeClass.getCanonicalName
     props.get(key).map(_.asInstanceOf[A])
   }
 
 }
 
-object PropertyList {
+object TrackSymbol {
 
-  def empty: PropertyList = PropertyList(Map())
+  def empty: TrackSymbol = TrackSymbol(Map())
 
 }

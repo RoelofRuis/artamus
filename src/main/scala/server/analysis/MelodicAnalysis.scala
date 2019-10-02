@@ -24,9 +24,9 @@ class MelodicAnalysis @Inject() (
         track.readAllWithPosition
           .map { case (_, notes) =>
             notes.flatMap { props =>
-              val pc: Option[PitchClass] = props.get[PitchClass]
-              val oct: Option[Octave] = props.get[Octave]
-              val dur: Option[Duration] = props.get[Duration]
+              val pc: Option[PitchClass] = props.getProperty[PitchClass]
+              val oct: Option[Octave] = props.getProperty[Octave]
+              val dur: Option[Duration] = props.getProperty[Duration]
               if (pc.isDefined && oct.isDefined && dur.isDefined) Some((oct.get, pc.get, dur.get))
               else None
             }
@@ -40,8 +40,8 @@ class MelodicAnalysis @Inject() (
 
       val lilyFile = LilypondFile(
         stackedNotes,
-        track.readAt(Position.zero).map(_.get[TimeSignature]).head,
-        track.readAt(Position.zero).map(_.get[Key]).head
+        track.readAt(Position.zero).map(_.getProperty[TimeSignature]).head,
+        track.readAt(Position.zero).map(_.getProperty[Key]).head
       )
 
       rendering.submit("melodic-analysis", lilyFile)

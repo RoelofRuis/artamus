@@ -1,7 +1,7 @@
 package server.domain.track
 
 import javax.inject.Inject
-import music.symbolic
+import music.symbolic.containers.TrackSymbol
 import music.symbolic.containers.{OrderedSymbolMap, ReadableSymbolMap}
 import music.symbolic.temporal.Position
 import pubsub.BufferedEventBus
@@ -12,15 +12,13 @@ class TrackState @Inject() (domainUpdates: BufferedEventBus[DomainEvent]) {
 
   private var symbolMap: OrderedSymbolMap = OrderedSymbolMap.empty
 
-  def reset(): Unit = {
-    symbolMap = OrderedSymbolMap.empty
-  }
+  def reset(): Unit = symbolMap = OrderedSymbolMap.empty
 
-  def setSymbol[A : symbolic.Symbol](pos: Position, symbol: A): Unit = {
+  def setSymbol(pos: Position, symbol: TrackSymbol): Unit = {
     symbolMap.addSymbolAt(pos, symbol)
   }
 
-  def addSymbol[A : symbolic.Symbol](pos: Position, symbol: A): Unit = {
+  def addSymbol(pos: Position, symbol: TrackSymbol): Unit = {
     symbolMap.addSymbolAt(pos, symbol)
     domainUpdates.publish(StateChanged)
   }

@@ -4,8 +4,8 @@ import music.symbolic.temporal.Position
 
 trait ReadableSymbolMap {
 
-  def readAt(pos: Position): Seq[PropertyList]
-  def readAll: Seq[PropertyList]
-  def readAllWithPosition: Seq[(Position, Seq[PropertyList])]
+  def readAt(pos: Position): Seq[TrackSymbol]
+  def readAll: Seq[TrackSymbol]
+  def readAllWithPosition: Seq[(Position, Seq[TrackSymbol])]
 
 }

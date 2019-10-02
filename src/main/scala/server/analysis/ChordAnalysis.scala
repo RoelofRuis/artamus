@@ -19,7 +19,7 @@ class ChordAnalysis @Inject() (
       val track = trackState.readState
       println(track)
       val possibleChords = track.readAllWithPosition.map { case (position, notes) =>
-        val pitches = notes.flatMap { props => props.get[PitchClass] }
+        val pitches = notes.flatMap { props => props.getProperty[PitchClass] }
         val possibleChords = ChordFinder.findChords(pitches)
         (position, possibleChords)
       }

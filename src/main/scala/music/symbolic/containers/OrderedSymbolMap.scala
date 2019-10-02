@@ -3,7 +3,6 @@ package music.symbolic.containers
 import java.util.concurrent.atomic.AtomicLong
 
 import javax.annotation.concurrent.NotThreadSafe
-import music.symbolic
 import music.symbolic.Property
 import music.symbolic.temporal.Position
 
@@ -15,34 +14,34 @@ final class OrderedSymbolMap private () extends ReadableSymbolMap {
 
   private val nextSymbolID = new AtomicLong(0L)
   private var ordering: SortedMap[Position, Seq[Long]] = SortedMap()
-  private var symbols: Map[Long, PropertyList] = Map()
+  private var symbols: Map[Long, TrackSymbol] = Map()
 
-  def addSymbolAt[A: symbolic.Symbol](pos: Position, symbol: A): Long = {
+  def addSymbolAt(pos: Position, symbol: TrackSymbol): Long = {
     val id = nextSymbolID.getAndIncrement()
     ordering = ordering.updated(pos, ordering.getOrElse(pos, List()) :+ id)
-    symbols = symbols.updated(id, implicitly[symbolic.Symbol[A]].getProperties(symbol))
+    symbols = symbols.updated(id, symbol)
     id
   }
 
   def addProperty[A: Property](id: Long, prop: A): Boolean = {
     if (symbols.contains(id)) {
-      symbols.updated(id, symbols(id).add(prop))
+      symbols.updated(id, symbols(id).addProperty(prop))
       true
     }
     else false
   }
 
-  def readAt(pos: Position): Seq[PropertyList] = {
-    ordering.getOrElse(pos, List()).map { index => symbols.getOrElse(index, PropertyList.empty) }
+  def readAt(pos: Position): Seq[TrackSymbol] = {
+    ordering.getOrElse(pos, List()).map { index => symbols.getOrElse(index, TrackSymbol.empty) }
   }
 
-  def readAll: Seq[PropertyList] = {
+  def readAll: Seq[TrackSymbol] = {
     symbols.map { case (_, properties) => properties }.toSeq
   }
 
-  def readAllWithPosition: Seq[(Position, Seq[PropertyList])] = {
+  def readAllWithPosition: Seq[(Position, Seq[TrackSymbol])] = {
     ordering.map { case (position, indices) =>
-      (position, indices.map { index => symbols.getOrElse(index, PropertyList.empty) })
+      (position, indices.map { index => symbols.getOrElse(index, TrackSymbol.empty) })
     }.toSeq
   }
 
