@@ -2,7 +2,6 @@ package music.interpret.pitched
 
 import music.symbolic.pitched._
 
-/** @deprecated Should be implemented by using intervals with `tuning.spellInterval` */
 object NaivePitchSpelling extends PitchSpelling {
 
   override def interpret(pitches: Seq[Pitch[PitchClass]]): Seq[Pitch[SpelledPitch]] = {
