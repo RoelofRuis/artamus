@@ -1,10 +1,12 @@
 package music.symbolic.containers
 
+import com.google.errorprone.annotations.Immutable
 import music.symbolic.Property
 
 import scala.reflect.{ClassTag, classTag}
 import scala.language.existentials
 
+@Immutable
 final case class PropertyList private (private val props: Map[String, Any]) {
 
   def add[A : Property](prop: A): PropertyList = {

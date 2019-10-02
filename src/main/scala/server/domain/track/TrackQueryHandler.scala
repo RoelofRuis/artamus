@@ -13,7 +13,7 @@ private[server] class TrackQueryHandler @Inject() (
   import music.interpret.pitched.TwelveToneEqualTemprament._
 
   dispatcher.subscribe[GetMidiPitches.type]{ _ =>
-    state.getTrack.getAllWithPosition.map {
+    state.readState.readAllWithPosition.map {
       case (_, notes) =>
         notes
           .flatMap { in =>

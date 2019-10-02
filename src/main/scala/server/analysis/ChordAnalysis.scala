@@ -16,9 +16,9 @@ class ChordAnalysis @Inject() (
 
   domainUpdates.subscribe("chords", {
     case StateChanged =>
-      val track = trackState.getTrack
+      val track = trackState.readState
       println(track)
-      val possibleChords = track.getAllWithPosition.map { case (position, notes) =>
+      val possibleChords = track.readAllWithPosition.map { case (position, notes) =>
         val pitches = notes.flatMap { props => props.get[PitchClass] }
         val possibleChords = ChordFinder.findChords(pitches)
         (position, possibleChords)

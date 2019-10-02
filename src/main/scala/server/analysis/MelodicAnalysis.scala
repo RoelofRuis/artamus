@@ -18,10 +18,10 @@ class MelodicAnalysis @Inject() (
 
   domainUpdates.subscribe("melodic-analysis", {
     case StateChanged =>
-      val track = trackState.getTrack
+      val track = trackState.readState
 
       val stackedNotes: Seq[Seq[Note[SpelledPitch]]] =
-        track.getAllWithPosition
+        track.readAllWithPosition
           .map { case (_, notes) =>
             notes.flatMap { props =>
               val pc: Option[PitchClass] = props.get[PitchClass]
@@ -40,8 +40,8 @@ class MelodicAnalysis @Inject() (
 
       val lilyFile = LilypondFile(
         stackedNotes,
-        track.getAt(Position.zero).map(_.get[TimeSignature]).head,
-        track.getAt(Position.zero).map(_.get[Key]).head
+        track.readAt(Position.zero).map(_.get[TimeSignature]).head,
+        track.readAt(Position.zero).map(_.get[Key]).head
       )
 
       rendering.submit("melodic-analysis", lilyFile)

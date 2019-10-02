@@ -11,7 +11,7 @@ import scala.collection.SortedMap
 import scala.language.reflectiveCalls
 
 @NotThreadSafe
-final class OrderedSymbolMap private () {
+final class OrderedSymbolMap private () extends ReadableSymbolMap {
 
   private val nextSymbolID = new AtomicLong(0L)
   private var ordering: SortedMap[Position, Seq[Long]] = SortedMap()
@@ -32,15 +32,15 @@ final class OrderedSymbolMap private () {
     else false
   }
 
-  def getAt(pos: Position): Seq[PropertyList] = {
+  def readAt(pos: Position): Seq[PropertyList] = {
     ordering.getOrElse(pos, List()).map { index => symbols.getOrElse(index, PropertyList.empty) }
   }
 
-  def getAll: Seq[PropertyList] = {
+  def readAll: Seq[PropertyList] = {
     symbols.map { case (_, properties) => properties }.toSeq
   }
 
-  def getAllWithPosition: Seq[(Position, Seq[PropertyList])] = {
+  def readAllWithPosition: Seq[(Position, Seq[PropertyList])] = {
     ordering.map { case (position, indices) =>
       (position, indices.map { index => symbols.getOrElse(index, PropertyList.empty) })
     }.toSeq

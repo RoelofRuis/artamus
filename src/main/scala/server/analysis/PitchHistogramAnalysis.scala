@@ -17,7 +17,7 @@ class PitchHistogramAnalysis @Inject() (
 
   domainUpdates.subscribe("pitch-histogram", {
     case StateChanged =>
-      val track = trackState.getTrack
+      val track = trackState.readState
 
       val zero = SortedMap(
         0 -> 0L,
@@ -35,7 +35,7 @@ class PitchHistogramAnalysis @Inject() (
       )
 
       val histogram = track
-        .getAll.flatMap(_.get[PitchClass])
+        .readAll.flatMap(_.get[PitchClass])
         .foldRight(zero) { case (pc, acc) => acc.updated(pc.value, acc.get(pc.value).map(_ + 1L).get) }
 
       histogram.foreach { case (bin, count) =>

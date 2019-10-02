@@ -19,18 +19,18 @@ private[server] class TrackCommandHandler @Inject() (
 
   dispatcher.subscribe[SetTimeSignature]{ command =>
     // TODO: move explicit position away from here
-    state.setTrackSymbol(Position(Duration.QUARTER, 0), command.t)
+    state.setSymbol(Position(Duration.QUARTER, 0), command.t)
     true
   }
 
   dispatcher.subscribe[SetKey] { command =>
     // TODO: move explicit position away from here
-    state.setTrackSymbol(Position(Duration.QUARTER, 0), command.k)
+    state.setSymbol(Position(Duration.QUARTER, 0), command.k)
     true
   }
 
   dispatcher.subscribe[AddNote] { command =>
-    state.addTrackSymbol(
+    state.addSymbol(
       command.position,
       command.note
     )
