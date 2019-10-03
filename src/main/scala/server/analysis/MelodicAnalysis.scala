@@ -2,9 +2,9 @@ package server.analysis
 
 import javax.inject.Inject
 import music.interpret.pitched.NaivePitchSpelling
-import music.symbolic.pitch.{Octave, Pitch, PitchClass, SpelledPitch}
-import music.symbolic.symbol.{Key, Note, TimeSignature}
-import music.symbolic.temporal.{Duration, Position}
+import music.symbolic.pitch.SpelledNote
+import music.symbolic.symbol.{Key, TimeSignature}
+import music.symbolic.temporal.Position
 import pubsub.BufferedEventBus
 import server.domain.track.TrackState
 import server.domain.{DomainEvent, StateChanged}
@@ -20,22 +20,10 @@ class MelodicAnalysis @Inject() (
     case StateChanged =>
       val track = trackState.readState
 
-      val stackedNotes: Seq[Seq[Note[SpelledPitch]]] =
+      val stackedNotes: Seq[Seq[SpelledNote]] =
         track.readAllWithPosition
-          .map { case (_, notes) =>
-            notes.flatMap { props =>
-              val pc: Option[PitchClass] = props.getProperty[PitchClass]
-              val oct: Option[Octave] = props.getProperty[Octave]
-              val dur: Option[Duration] = props.getProperty[Duration]
-              if (pc.isDefined && oct.isDefined && dur.isDefined) Some((oct.get, pc.get, dur.get))
-              else None
-            }
-          }
-          .map { n =>
-            NaivePitchSpelling.interpret(n.map(x => (x._1, x._2))).zip(n.map(_._3))
-          }
-          .map { stack =>
-            stack.map { case ((oct, spelled), dur) => Note(dur, Pitch(oct, spelled))}
+          .map { case (_, symbols) =>
+            symbols.flatMap { symbol => NaivePitchSpelling.spell(symbol) }
           }
 
       val lilyFile = LilypondFile(

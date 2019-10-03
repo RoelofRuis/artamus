@@ -1,18 +1,24 @@
 package music.symbolic
 
+import music.symbolic.temporal.Duration
+
 package object pitch {
 
   final case class MidiNoteNumber(value: Int)
-
-  trait ExactPitch
 
   final case class Step(value: Int)
 
   final case class Accidental(value: Int)
 
-  final case class PitchClass(value: Int) extends ExactPitch
+  final case class PitchClass(value: Int)
 
-  final case class SpelledPitch(step: Step, accidental: Accidental) extends ExactPitch
+  final case class SpelledPitch(step: Step, accidental: Accidental)
+
+  final case class SpelledNote(
+    duration: Duration,
+    octave: Octave,
+    pitch: SpelledPitch
+  )
 
   case class Interval(pc: PitchClass, step: Step)
 
@@ -26,7 +32,7 @@ package object pitch {
 
   case class Octave(value: Int)
 
-  case class Pitch[A <: ExactPitch](octave: Octave, p: A)
+  case class Pitch(octave: Octave, pitchClass: PitchClass)
 
   case class Chord(root: PitchClass, functions: Seq[Function])
 

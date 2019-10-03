@@ -22,12 +22,12 @@ final case class TuningSystem[A](pcSeq: Seq[Int]) {
     else diff
   }
 
-  def noteNumberToPitch(noteNumber: MidiNoteNumber): Pitch[PitchClass] = {
+  def noteNumberToPitch(noteNumber: MidiNoteNumber): Pitch = {
     Pitch(Octave((noteNumber.value / numPitchClasses) - 1), pc(noteNumber.value))
   }
 
-  def pitchToNoteNumber(pitch: Pitch[PitchClass]): MidiNoteNumber = {
-    MidiNoteNumber(((pitch.octave.value + 1) * numPitchClasses) + pitch.p.value)
+  def pitchToNoteNumber(pitch: Pitch): MidiNoteNumber = {
+    MidiNoteNumber(((pitch.octave.value + 1) * numPitchClasses) + pitch.pitchClass.value)
   }
 
   def spellInterval(root: SpelledPitch, interval: Interval): SpelledPitch = {

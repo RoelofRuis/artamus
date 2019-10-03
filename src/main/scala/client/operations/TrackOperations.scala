@@ -5,7 +5,7 @@ import client.read.{MusicReader, StdIOTools}
 import com.google.inject.Inject
 import music.math.Rational
 import music.symbolic.pitch.Scale
-import music.symbolic.symbol.{Key, Note}
+import music.symbolic.symbol.Key
 import music.symbolic.temporal.{Duration, Position}
 import server.control.PublishChanges
 import server.domain.track.{AddNote, NewTrack, SetKey, SetTimeSignature}
@@ -43,7 +43,8 @@ class TrackOperations @Inject() (
       .map{ case (midiNoteNumber, index) =>
         AddNote(
           Position.apply(elementDuration, index),
-          Note(elementDuration, tuning.noteNumberToPitch(midiNoteNumber))
+          elementDuration,
+          tuning.noteNumberToPitch(midiNoteNumber)
         )}
 
     messages :+ PublishChanges
@@ -61,7 +62,8 @@ class TrackOperations @Inject() (
         .map { midiNoteNumber =>
           AddNote(
             Position.apply(elementDuration, i),
-            Note(elementDuration, tuning.noteNumberToPitch(midiNoteNumber))
+            elementDuration,
+            tuning.noteNumberToPitch(midiNoteNumber)
           )
         }
       }.toList

@@ -33,9 +33,9 @@ private[server] class TrackCommandHandler @Inject() (
       command.position,
       TrackSymbol
         .empty
-        .addProperty(command.note.pitch.octave)
-        .addProperty(command.note.pitch.p)
-        .addProperty(command.note.duration)
+        .addProperty(command.pitch.octave)
+        .addProperty(command.pitch.pitchClass)
+        .addProperty(command.duration)
     )
     true
   }

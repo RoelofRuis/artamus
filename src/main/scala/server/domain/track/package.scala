@@ -1,8 +1,8 @@
 package server.domain
 
-import music.symbolic.pitch.PitchClass
-import music.symbolic.symbol.{Key, Note, TimeSignature}
-import music.symbolic.temporal.Position
+import music.symbolic.pitch.Pitch
+import music.symbolic.symbol.{Key, TimeSignature}
+import music.symbolic.temporal.{Duration, Position}
 import protocol.{Command, Query}
 
 package object track {
@@ -13,7 +13,7 @@ package object track {
   case class SetTimeSignature(t: TimeSignature) extends Command
   case class SetKey(k: Key) extends Command
 
-  case class AddNote(position: Position, note: Note[PitchClass]) extends Command
+  case class AddNote(position: Position, duration: Duration, pitch: Pitch) extends Command
 
   // Queries
   case object GetMidiPitches extends Query { type Res = List[List[Int]] }

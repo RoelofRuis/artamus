@@ -1,7 +1,7 @@
 package server.rendering
 
 import music.symbolic.pitch._
-import music.symbolic.symbol.{Key, Note, TimeSignature}
+import music.symbolic.symbol.{Key, TimeSignature}
 import music.symbolic.temporal.Duration
 
 trait LilypondFormat[A] {
@@ -16,22 +16,15 @@ object LilypondFormat {
     def toLilypond: String = LilypondFormat[A].toLilypond(a)
   }
 
-  implicit val simultaneousNotesToLilypond: LilypondFormat[Seq[Note[SpelledPitch]]] = (notes: Seq[Note[SpelledPitch]]) => {
+  implicit val simultaneousNotesToLilypond: LilypondFormat[Seq[SpelledNote]] = (notes: Seq[SpelledNote]) => {
     val dur = notes.map(_.duration).max
+    // TODO: no brackets for single notes!
     notes.map { note =>
       Seq(
-        note.pitch.p.toLilypond,
-        note.pitch.octave.toLilypond,
+        note.pitch.toLilypond,
+        note.octave.toLilypond,
       ).mkString("")
     }.mkString("<", " ", ">") + dur.toLilypond
-  }
-
-  implicit val noteToLilypond: LilypondFormat[Note[SpelledPitch]] = (note: Note[SpelledPitch]) => {
-    Seq(
-      note.pitch.p.toLilypond,
-      note.pitch.octave.toLilypond,
-      note.duration.toLilypond
-    ).mkString("")
   }
 
   implicit val spelledPitchToLilypond: LilypondFormat[SpelledPitch] = (spelledPitch: SpelledPitch) => {
