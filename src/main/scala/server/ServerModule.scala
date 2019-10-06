@@ -9,7 +9,7 @@ import javax.inject.Singleton
 import net.codingwell.scalaguice.ScalaPrivateModule
 import protocol._
 import pubsub.{BufferedEventBus, Dispatcher, EventBus}
-import server.domain.DomainEvent
+import server.domain.{DomainEvent, DomainStateListener}
 
 class ServerModule extends ScalaPrivateModule with ServerConfig {
 
@@ -33,7 +33,7 @@ class ServerModule extends ScalaPrivateModule with ServerConfig {
     bind[LilypondRenderer].asEagerSingleton()
 
     bind[DomainStateListener].asEagerSingleton()
-    bind[RenderingController].asEagerSingleton()
+    bind[RenderingAnalysis].asEagerSingleton()
 
     bind[Bootstrapper].asEagerSingleton()
     expose[Bootstrapper]

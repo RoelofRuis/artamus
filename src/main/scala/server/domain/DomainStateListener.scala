@@ -1,19 +1,22 @@
-package server.analysis
+package server.domain
 
 import javax.annotation.concurrent.NotThreadSafe
 import javax.inject.Inject
 import pubsub.BufferedEventBus
-import server.domain.{DomainEvent, StateChanged}
+import server.analysis.RenderingAnalysis
+import server.rendering.LilypondRenderer
 
 @NotThreadSafe
 class DomainStateListener @Inject() (
   domainUpdates: BufferedEventBus[DomainEvent],
-  renderingController: RenderingController
+  renderingAnalysis: RenderingAnalysis,
+  rendering: LilypondRenderer,
 ) {
 
   domainUpdates.subscribe("domain-state-rendering", {
     case StateChanged(state) =>
-      renderingController.render("domain", state)
+      val lilyFile = renderingAnalysis.toLilypondFile("domain", state)
+      rendering.submit("melodic-analysis", lilyFile)
     case _ => ()
   })
 }

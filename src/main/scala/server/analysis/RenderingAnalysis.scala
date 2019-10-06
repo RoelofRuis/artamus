@@ -1,30 +1,31 @@
 package server.analysis
 
 import blackboard.OrderedSymbolMap
-import javax.inject.Inject
 import music.interpret.pitched.{ChordFinder, NaivePitchSpelling, TwelveToneEqualTemprament}
 import music.symbolic.pitch.{PitchClass, SpelledNote}
 import music.symbolic.symbol.{Key, TimeSignature}
 import music.symbolic.temporal.Position
-import server.rendering.{LilypondFile, LilypondRenderer}
+import server.rendering.LilypondFile
 
 import scala.collection.SortedMap
 
 /*
 TODO: Over time this has to become the blackboard strategy
 */
-class RenderingController @Inject() (
-  rendering: LilypondRenderer
-) {
+class RenderingAnalysis() {
 
   import Properties._
 
-  def render(key: String, trackState: OrderedSymbolMap[Position]): Unit = {
+  // Transformatief
+  // A => A
+
+  // Einde
+  // A => B
+
+  def toLilypondFile(key: String, trackState: OrderedSymbolMap[Position]): LilypondFile = {
     analyseChords(trackState)
     analysePitchHistogram(trackState)
-    val lilyFile = analyseMelody(trackState)
-
-    rendering.submit("melodic-analysis", lilyFile)
+    analyseMelody(trackState)
   }
 
   def analyseChords(track:  OrderedSymbolMap[Position]): Unit = {
