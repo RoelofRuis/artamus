@@ -1,6 +1,6 @@
 package server.domain.track
 
-import blackboard.{OrderedSymbolMap, TrackSymbol}
+import blackboard.{OrderedSymbolMap, OrderedSymbolMapBuilder, TrackSymbol}
 import javax.inject.Inject
 import music.symbolic.temporal.Position
 import pubsub.BufferedEventBus
@@ -9,20 +9,19 @@ import server.domain.{DomainEvent, StateChanged}
 /* @NotThreadSafe: synchronize access on `track` */
 class TrackState @Inject() (domainUpdates: BufferedEventBus[DomainEvent]) {
 
-  private var symbolMap: OrderedSymbolMap[Position] = OrderedSymbolMap.empty
+  private val mapBuilder: OrderedSymbolMapBuilder[Position] = new OrderedSymbolMapBuilder[Position]
 
-  def reset(): Unit = symbolMap = OrderedSymbolMap.empty
+  def reset(): Unit = mapBuilder.reset()
 
   def setSymbol(pos: Position, symbol: TrackSymbol): Unit = {
-    symbolMap.addSymbolAt(pos, symbol)
+    mapBuilder.addSymbolAt(pos, symbol)
   }
 
   def addSymbol(pos: Position, symbol: TrackSymbol): Unit = {
-    symbolMap.addSymbolAt(pos, symbol)
-    domainUpdates.publish(StateChanged(symbolMap)) // TODO: fix state escaping!
+    mapBuilder.addSymbolAt(pos, symbol)
+    domainUpdates.publish(StateChanged(mapBuilder.get))
   }
 
-  @deprecated // TODO: fix state escaping!
-  def readState: OrderedSymbolMap[Position] = symbolMap
+  def readState: OrderedSymbolMap[Position] = mapBuilder.get
 
 }

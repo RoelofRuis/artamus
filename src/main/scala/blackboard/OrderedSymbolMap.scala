@@ -1,31 +1,23 @@
 package blackboard
 
-import java.util.concurrent.atomic.AtomicLong
-
-import javax.annotation.concurrent.NotThreadSafe
+import javax.annotation.concurrent.Immutable
 
 import scala.collection.SortedMap
 
-@NotThreadSafe
-final class OrderedSymbolMap[A : Ordering] private () {
+@Immutable
+case class OrderedSymbolMap[A: Ordering](
+  ordering: SortedMap[A, Seq[Long]],
+  symbols: Map[Long, TrackSymbol]
+) {
 
-  private val nextSymbolID = new AtomicLong(0L)
-  private var ordering: SortedMap[A, Seq[Long]] = SortedMap[A, Seq[Long]]()
-  private var symbols: Map[Long, TrackSymbol] = Map()
-
-  def addSymbolAt(pos: A, symbol: TrackSymbol): Long = {
-    val id = nextSymbolID.getAndIncrement()
-    ordering = ordering.updated(pos, ordering.getOrElse(pos, List()) :+ id)
-    symbols = symbols.updated(id, symbol)
-    id
-  }
-
-  def addProperty[P: Property](id: Long, prop: P): Boolean = {
+  def addProperty[P: Property](id: Long, prop: P): OrderedSymbolMap[A] = {
     if (symbols.contains(id)) {
-      symbols.updated(id, symbols(id).addProperty(prop))
-      true
+      OrderedSymbolMap(
+        ordering,
+        symbols.updated(id, symbols(id).addProperty(prop))
+      )
     }
-    else false
+    else this
   }
 
   def readAt(pos: A): Seq[TrackSymbol] = {
@@ -46,6 +38,6 @@ final class OrderedSymbolMap[A : Ordering] private () {
 
 object OrderedSymbolMap {
 
-  def empty[A : Ordering]: OrderedSymbolMap[A] = new OrderedSymbolMap()
+  def empty[A : Ordering]: OrderedSymbolMap[A] = OrderedSymbolMap(SortedMap(), Map())
 
 }
