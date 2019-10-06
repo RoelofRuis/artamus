@@ -1,6 +1,6 @@
 package music.interpret.pitched
 
-import blackboard.TrackSymbol
+import blackboard.TrackSymbol // TODO: fix problematic cyclic dependency
 import music.symbolic.pitch.SpelledNote
 
 trait PitchSpelling {

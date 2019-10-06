@@ -3,7 +3,7 @@ package server
 import _root_.server.control.{EventBusHandler, ServerControlHandler}
 import _root_.server.domain.track.{TrackCommandHandler, TrackQueryHandler, TrackState}
 import _root_.server.rendering.{LilypondRenderer, LilypondRenderingService}
-import _root_.server.analysis.{ChordAnalysis, PitchHistogramAnalysis, MelodicAnalysis}
+import _root_.server.analysis._
 import com.google.inject.Provides
 import javax.inject.Singleton
 import net.codingwell.scalaguice.ScalaPrivateModule
@@ -32,9 +32,8 @@ class ServerModule extends ScalaPrivateModule with ServerConfig {
     bind[LilypondRenderingService].toInstance(new LilypondRenderingService(resourceRootPath, cleanupLySources))
     bind[LilypondRenderer].asEagerSingleton()
 
-    bind[MelodicAnalysis].asEagerSingleton()
-    bind[ChordAnalysis].asEagerSingleton()
-    bind[PitchHistogramAnalysis].asEagerSingleton()
+    bind[DomainStateRendering].asEagerSingleton()
+    bind[RenderingController].asEagerSingleton()
 
     bind[Bootstrapper].asEagerSingleton()
     expose[Bootstrapper]

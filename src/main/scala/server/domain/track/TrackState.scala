@@ -6,7 +6,7 @@ import music.symbolic.temporal.Position
 import pubsub.BufferedEventBus
 import server.domain.{DomainEvent, StateChanged}
 
-/* @NotThreadSafe: synchronize acces on `track` */
+/* @NotThreadSafe: synchronize access on `track` */
 class TrackState @Inject() (domainUpdates: BufferedEventBus[DomainEvent]) {
 
   private var symbolMap: OrderedSymbolMap[Position] = OrderedSymbolMap.empty
@@ -19,10 +19,10 @@ class TrackState @Inject() (domainUpdates: BufferedEventBus[DomainEvent]) {
 
   def addSymbol(pos: Position, symbol: TrackSymbol): Unit = {
     symbolMap.addSymbolAt(pos, symbol)
-    domainUpdates.publish(StateChanged)
+    domainUpdates.publish(StateChanged(symbolMap)) // TODO: fix state escaping!
   }
 
-  // TODO: fix state escaping!
+  @deprecated // TODO: fix state escaping!
   def readState: OrderedSymbolMap[Position] = symbolMap
 
 }
