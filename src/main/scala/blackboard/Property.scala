@@ -1,4 +1,4 @@
-package music.symbolic
+package blackboard
 
 import music.symbolic.pitch.{Octave, PitchClass}
 import music.symbolic.symbol.{Key, TimeSignature}
@@ -6,6 +6,7 @@ import music.symbolic.temporal.Duration
 
 trait Property[A]
 
+// TODO: these should be moved to the package using them
 object Property {
 
   implicit val pitchClassProp: Property[PitchClass] = new Property[PitchClass] {}
@@ -15,4 +16,3 @@ object Property {
   implicit val keyProp: Property[Key] = new Property[Key] {}
 
 }
-

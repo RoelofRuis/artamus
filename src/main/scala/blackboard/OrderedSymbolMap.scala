@@ -1,29 +1,26 @@
-package music.symbolic.containers
+package blackboard
 
 import java.util.concurrent.atomic.AtomicLong
 
 import javax.annotation.concurrent.NotThreadSafe
-import music.symbolic.Property
-import music.symbolic.temporal.Position
 
 import scala.collection.SortedMap
-import scala.language.reflectiveCalls
 
 @NotThreadSafe
-final class OrderedSymbolMap private () extends ReadableSymbolMap {
+final class OrderedSymbolMap[A : Ordering] private () {
 
   private val nextSymbolID = new AtomicLong(0L)
-  private var ordering: SortedMap[Position, Seq[Long]] = SortedMap()
+  private var ordering: SortedMap[A, Seq[Long]] = SortedMap[A, Seq[Long]]()
   private var symbols: Map[Long, TrackSymbol] = Map()
 
-  def addSymbolAt(pos: Position, symbol: TrackSymbol): Long = {
+  def addSymbolAt(pos: A, symbol: TrackSymbol): Long = {
     val id = nextSymbolID.getAndIncrement()
     ordering = ordering.updated(pos, ordering.getOrElse(pos, List()) :+ id)
     symbols = symbols.updated(id, symbol)
     id
   }
 
-  def addProperty[A: Property](id: Long, prop: A): Boolean = {
+  def addProperty[P: Property](id: Long, prop: P): Boolean = {
     if (symbols.contains(id)) {
       symbols.updated(id, symbols(id).addProperty(prop))
       true
@@ -31,7 +28,7 @@ final class OrderedSymbolMap private () extends ReadableSymbolMap {
     else false
   }
 
-  def readAt(pos: Position): Seq[TrackSymbol] = {
+  def readAt(pos: A): Seq[TrackSymbol] = {
     ordering.getOrElse(pos, List()).map { index => symbols.getOrElse(index, TrackSymbol.empty) }
   }
 
@@ -39,7 +36,7 @@ final class OrderedSymbolMap private () extends ReadableSymbolMap {
     symbols.map { case (_, properties) => properties }.toSeq
   }
 
-  def readAllWithPosition: Seq[(Position, Seq[TrackSymbol])] = {
+  def readAllWithPosition: Seq[(A, Seq[TrackSymbol])] = {
     ordering.map { case (position, indices) =>
       (position, indices.map { index => symbols.getOrElse(index, TrackSymbol.empty) })
     }.toSeq
@@ -49,6 +46,6 @@ final class OrderedSymbolMap private () extends ReadableSymbolMap {
 
 object OrderedSymbolMap {
 
-  def empty: OrderedSymbolMap = new OrderedSymbolMap()
+  def empty[A : Ordering]: OrderedSymbolMap[A] = new OrderedSymbolMap()
 
 }

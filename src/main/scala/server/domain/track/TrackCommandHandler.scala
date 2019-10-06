@@ -1,7 +1,7 @@
 package server.domain.track
 
+import blackboard.TrackSymbol
 import javax.inject.Inject
-import music.symbolic.containers.TrackSymbol
 import music.symbolic.temporal.{Duration, Position}
 import protocol.Command
 import pubsub.Dispatcher

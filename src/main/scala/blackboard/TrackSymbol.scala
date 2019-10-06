@@ -1,15 +1,13 @@
-package music.symbolic.containers
+package blackboard
 
-import com.google.errorprone.annotations.Immutable
-import music.symbolic.Property
+import javax.annotation.concurrent.Immutable
 
 import scala.reflect.{ClassTag, classTag}
-import scala.language.existentials
 
 @Immutable
 final case class TrackSymbol private (private val props: Map[String, Any]) {
 
-  def addProperty[A : Property](prop: A): TrackSymbol = {
+  def addProperty[A: Property](prop: A): TrackSymbol = {
     val key = prop.getClass.getCanonicalName
     TrackSymbol(props.updated(key, prop))
   }
@@ -18,7 +16,6 @@ final case class TrackSymbol private (private val props: Map[String, Any]) {
     val key = classTag[A].runtimeClass.getCanonicalName
     props.get(key).map(_.asInstanceOf[A])
   }
-
 }
 
 object TrackSymbol {

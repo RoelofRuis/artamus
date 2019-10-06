@@ -1,6 +1,6 @@
 package music.interpret.pitched
 
-import music.symbolic.containers.TrackSymbol
+import blackboard.TrackSymbol
 import music.symbolic.pitch.SpelledNote
 
 trait PitchSpelling {
