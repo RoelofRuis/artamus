@@ -6,13 +6,13 @@ import music.symbolic.temporal.Position
 import protocol.Command
 import pubsub.Dispatcher
 import server.domain.track.TrackState
-import server.domain.track.container.OrderedSymbolMap
+import server.domain.track.container.SymbolTrack
 import server.rendering.{LilypondFile, LilypondRenderer}
 
 private[server] class ChangeHandler @Inject() (
   busCommands: Dispatcher[Command],
   state: TrackState,
-  renderingController: Controller[OrderedSymbolMap[Position], LilypondFile],
+  renderingController: Controller[SymbolTrack[Position], LilypondFile],
   rendering: LilypondRenderer,
 ) {
 

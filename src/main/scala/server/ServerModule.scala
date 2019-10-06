@@ -11,7 +11,7 @@ import music.symbolic.temporal.Position
 import net.codingwell.scalaguice.ScalaPrivateModule
 import protocol._
 import pubsub.{Dispatcher, EventBus}
-import server.domain.track.container.OrderedSymbolMap
+import server.domain.track.container.SymbolTrack
 
 class ServerModule extends ScalaPrivateModule with ServerConfig {
 
@@ -32,7 +32,7 @@ class ServerModule extends ScalaPrivateModule with ServerConfig {
     bind[LilypondRenderingService].toInstance(new LilypondRenderingService(resourceRootPath, cleanupLySources))
     bind[LilypondRenderer].asEagerSingleton()
 
-    bind[Controller[OrderedSymbolMap[Position], LilypondFile]]
+    bind[Controller[SymbolTrack[Position], LilypondFile]]
       .toInstance(
       new Controller(
         Seq(new ChordAnalyser(), new PitchHistogramAnalyser()),

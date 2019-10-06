@@ -4,13 +4,13 @@ import blackboard.KnowledgeSource
 import music.analysis.{TwelveToneChordAnalysis, TwelveToneEqualTemprament}
 import music.symbolic.pitch.PitchClass
 import music.symbolic.temporal.Position
-import server.domain.track.container.OrderedSymbolMap
+import server.domain.track.container.SymbolTrack
 
-class ChordAnalyser extends KnowledgeSource[OrderedSymbolMap[Position]] {
+class ChordAnalyser extends KnowledgeSource[SymbolTrack[Position]] {
 
-  override def canExecute(state: OrderedSymbolMap[Position]): Boolean = true
+  override def canExecute(state: SymbolTrack[Position]): Boolean = true
 
-  override def execute(track: OrderedSymbolMap[Position]): OrderedSymbolMap[Position] = {
+  override def execute(track: SymbolTrack[Position]): SymbolTrack[Position] = {
     val possibleChords = track.readAllWithPosition.map { case (position, notes) =>
       val pitches = notes.flatMap { symbol => symbol.props.get[PitchClass] }
       val possibleChords = TwelveToneChordAnalysis.findChords(pitches)

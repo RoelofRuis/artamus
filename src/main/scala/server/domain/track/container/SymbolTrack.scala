@@ -5,14 +5,14 @@ import javax.annotation.concurrent.Immutable
 import scala.collection.SortedMap
 
 @Immutable
-case class OrderedSymbolMap[A: Ordering](
+case class SymbolTrack[A: Ordering](
   ordering: SortedMap[A, Seq[Long]],
   symbols: Map[Long, SymbolProperties]
 ) {
 
-  def addProperty[P: Property](symbol: TrackSymbol, prop: P): OrderedSymbolMap[A] = {
+  def addProperty[P: Property](symbol: TrackSymbol, prop: P): SymbolTrack[A] = {
     if (symbols.contains(symbol.id)) {
-      OrderedSymbolMap(
+      SymbolTrack(
         ordering,
         symbols.updated(symbol.id, symbols(symbol.id).add(prop))
       )
@@ -36,8 +36,8 @@ case class OrderedSymbolMap[A: Ordering](
 
 }
 
-object OrderedSymbolMap {
+object SymbolTrack {
 
-  def empty[A : Ordering]: OrderedSymbolMap[A] = OrderedSymbolMap(SortedMap(), Map())
+  def empty[A : Ordering]: SymbolTrack[A] = SymbolTrack(SortedMap(), Map())
 
 }

@@ -3,15 +3,15 @@ package server.analysis
 import blackboard.KnowledgeSource
 import music.symbolic.pitch.PitchClass
 import music.symbolic.temporal.Position
-import server.domain.track.container.OrderedSymbolMap
+import server.domain.track.container.SymbolTrack
 
 import scala.collection.SortedMap
 
-class PitchHistogramAnalyser extends KnowledgeSource[OrderedSymbolMap[Position]] {
+class PitchHistogramAnalyser extends KnowledgeSource[SymbolTrack[Position]] {
 
-  override def canExecute(state: OrderedSymbolMap[Position]): Boolean = true
+  override def canExecute(state: SymbolTrack[Position]): Boolean = true
 
-  override def execute(track: OrderedSymbolMap[Position]): OrderedSymbolMap[Position] = {
+  override def execute(track: SymbolTrack[Position]): SymbolTrack[Position] = {
     val zero = SortedMap(
       0 -> 0L,
       1 -> 0L,

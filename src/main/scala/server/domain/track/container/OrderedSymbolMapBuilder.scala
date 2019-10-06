@@ -5,14 +5,15 @@ import java.util.concurrent.atomic.AtomicLong
 import javax.annotation.concurrent.NotThreadSafe
 
 @NotThreadSafe
+@deprecated
 class OrderedSymbolMapBuilder[A: Ordering]() {
 
   private val nextSymbolId = new AtomicLong(0L)
-  private var map: OrderedSymbolMap[A] = OrderedSymbolMap.empty[A]
+  private var map: SymbolTrack[A] = SymbolTrack.empty[A]
 
   def addSymbolAt(pos: A, props: SymbolProperties): Long = {
     val id = nextSymbolId.getAndIncrement()
-    map = OrderedSymbolMap(
+    map = SymbolTrack(
       map.ordering.updated(pos, map.ordering.getOrElse(pos, List()) :+ id),
       map.symbols.updated(id, props)
     )
@@ -21,9 +22,9 @@ class OrderedSymbolMapBuilder[A: Ordering]() {
 
   def reset(): Unit = {
     nextSymbolId.set(0L)
-    map = OrderedSymbolMap.empty[A]
+    map = SymbolTrack.empty[A]
   }
 
-  def get: OrderedSymbolMap[A] = map.copy()
+  def get: SymbolTrack[A] = map.copy()
 
 }

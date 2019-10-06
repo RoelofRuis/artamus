@@ -1,7 +1,7 @@
 package server.domain.track
 
 import music.symbolic.temporal.Position
-import server.domain.track.container.{OrderedSymbolMap, OrderedSymbolMapBuilder, SymbolProperties}
+import server.domain.track.container.{SymbolTrack, OrderedSymbolMapBuilder, SymbolProperties}
 
 /* @NotThreadSafe: synchronize access on `track` */
 class TrackState() {
@@ -18,6 +18,6 @@ class TrackState() {
     mapBuilder.addSymbolAt(pos, props)
   }
 
-  def readState: OrderedSymbolMap[Position] = mapBuilder.get
+  def readState: SymbolTrack[Position] = mapBuilder.get
 
 }
