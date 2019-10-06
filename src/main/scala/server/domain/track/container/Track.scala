@@ -1,17 +1,30 @@
 package server.domain.track.container
 
-import music.symbolic.temporal.Position
+import javax.annotation.concurrent.Immutable
 
-import scala.reflect.ClassTag
+import scala.reflect.{ClassTag, classTag}
 
-trait SymbolType[A]
-
-class Track(
-  tracks: Map[String, SymbolTrack[Position]]
+@Immutable
+final case class Track(
+  tracks: Map[String, SymbolTrack]
 ) {
 
-  def read[S : SymbolType : ClassTag]: SymbolTrack[Position] = {
-    ???
+  def upsertSymbolTrack[S <: SymbolType : ClassTag](symbolTrack: SymbolTrack): Track = {
+    val key = classTag[S].runtimeClass.getCanonicalName
+    Track(
+      tracks.updated(key, symbolTrack)
+    )
   }
+
+  def getSymbolTrack[S <: SymbolType : ClassTag]: SymbolTrack = {
+    val key = classTag[S].runtimeClass.getCanonicalName
+    tracks.getOrElse(key, SymbolTrack.empty)
+  }
+
+}
+
+object Track {
+
+  def empty: Track = Track(Map())
 
 }

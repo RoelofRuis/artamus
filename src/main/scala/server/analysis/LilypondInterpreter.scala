@@ -4,22 +4,22 @@ import blackboard.Interpreter
 import music.symbolic.pitch._
 import music.symbolic.symbol.{Key, TimeSignature}
 import music.symbolic.temporal.{Duration, Position}
-import server.domain.track.container.{SymbolTrack, SymbolProperties}
+import server.domain.track.container._
 import server.rendering.LilypondFile
 
-class LilypondInterpreter extends Interpreter[SymbolTrack[Position], LilypondFile] {
+class LilypondInterpreter extends Interpreter[Track, LilypondFile] {
 
-  def interpret(track: SymbolTrack[Position]): LilypondFile = {
+  def interpret(track: Track): LilypondFile = {
     val stackedNotes: Seq[Seq[SpelledNote]] =
-      track.readAllWithPosition
+      track.getSymbolTrack[NoteType.type].readAllWithPosition
         .map { case (_, symbols) =>
           symbols.flatMap { symbol => spell(symbol.props) }
         }
 
     LilypondFile(
       stackedNotes,
-      track.readAt(Position.zero).map(_.props.get[TimeSignature]).head,
-      track.readAt(Position.zero).map(_.props.get[Key]).head
+      track.getSymbolTrack[TimeSignatureType.type].readAt(Position.zero).headOption.flatMap(_.props.get[TimeSignature]),
+      track.getSymbolTrack[KeyType.type].readAt(Position.zero).headOption.flatMap(_.props.get[Key])
     )
   }
 

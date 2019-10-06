@@ -4,7 +4,7 @@ import javax.inject.Inject
 import music.symbolic.temporal.{Duration, Position}
 import protocol.Command
 import pubsub.Dispatcher
-import server.domain.track.container.SymbolProperties
+import server.domain.track.container.{KeyType, NoteType, SymbolProperties, TimeSignatureType}
 
 private[server] class TrackCommandHandler @Inject() (
   dispatcher: Dispatcher[Command],
@@ -18,18 +18,18 @@ private[server] class TrackCommandHandler @Inject() (
 
   dispatcher.subscribe[SetTimeSignature]{ command =>
     // TODO: move explicit position away from here
-    state.setSymbol(Position(Duration.QUARTER, 0), SymbolProperties.empty.add(command.t))
+    state.addSymbol[TimeSignatureType.type](Position(Duration.QUARTER, 0), SymbolProperties.empty.add(command.t))
     true
   }
 
   dispatcher.subscribe[SetKey] { command =>
     // TODO: move explicit position away from here
-    state.setSymbol(Position(Duration.QUARTER, 0), SymbolProperties.empty.add(command.k))
+    state.addSymbol[KeyType.type](Position(Duration.QUARTER, 0), SymbolProperties.empty.add(command.k))
     true
   }
 
   dispatcher.subscribe[AddNote] { command =>
-    state.addSymbol(
+    state.addSymbol[NoteType.type](
       command.position,
       SymbolProperties
         .empty

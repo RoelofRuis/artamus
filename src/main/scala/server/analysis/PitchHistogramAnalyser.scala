@@ -2,16 +2,15 @@ package server.analysis
 
 import blackboard.KnowledgeSource
 import music.symbolic.pitch.PitchClass
-import music.symbolic.temporal.Position
-import server.domain.track.container.SymbolTrack
+import server.domain.track.container.{NoteType, Track}
 
 import scala.collection.SortedMap
 
-class PitchHistogramAnalyser extends KnowledgeSource[SymbolTrack[Position]] {
+class PitchHistogramAnalyser extends KnowledgeSource[Track] {
 
-  override def canExecute(state: SymbolTrack[Position]): Boolean = true
+  override def canExecute(state: Track): Boolean = true
 
-  override def execute(track: SymbolTrack[Position]): SymbolTrack[Position] = {
+  override def execute(track: Track): Track = {
     val zero = SortedMap(
       0 -> 0L,
       1 -> 0L,
@@ -28,6 +27,7 @@ class PitchHistogramAnalyser extends KnowledgeSource[SymbolTrack[Position]] {
     )
 
     val histogram = track
+      .getSymbolTrack[NoteType.type]
       .readAll.flatMap(_.props.get[PitchClass])
       .foldRight(zero) { case (pc, acc) => acc.updated(pc.value, acc.get(pc.value).map(_ + 1L).get) }
 

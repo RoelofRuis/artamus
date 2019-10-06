@@ -1,16 +1,26 @@
 package server.domain.track.container
 
 import javax.annotation.concurrent.Immutable
+import music.symbolic.temporal.Position
 
 import scala.collection.SortedMap
 
 @Immutable
-case class SymbolTrack[A: Ordering](
-  ordering: SortedMap[A, Seq[Long]],
-  symbols: Map[Long, SymbolProperties]
+final case class SymbolTrack(
+  ordering: SortedMap[Position, Seq[Long]],
+  symbols: Map[Long, SymbolProperties],
+  lastId: Long
 ) {
 
-  def readAt(pos: A): Seq[TrackSymbol] = {
+  def addSymbolAt(pos: Position, props: SymbolProperties): SymbolTrack = {
+    SymbolTrack(
+      ordering.updated(pos, ordering.getOrElse(pos, List()) :+ lastId),
+      symbols.updated(lastId, props),
+      lastId + 1
+    )
+  }
+
+  def readAt(pos: Position): Seq[TrackSymbol] = {
     ordering.getOrElse(pos, List()).flatMap { index => symbols.get(index).map(TrackSymbol(index, _)) }
   }
 
@@ -18,7 +28,7 @@ case class SymbolTrack[A: Ordering](
     symbols.map { case (index, properties) => TrackSymbol(index, properties) }.toSeq
   }
 
-  def readAllWithPosition: Seq[(A, Seq[TrackSymbol])] = {
+  def readAllWithPosition: Seq[(Position, Seq[TrackSymbol])] = {
     ordering.map { case (position, indices) =>
       (position, indices.flatMap { index => symbols.get(index).map(TrackSymbol(index, _)) })
     }.toSeq
@@ -28,6 +38,6 @@ case class SymbolTrack[A: Ordering](
 
 object SymbolTrack {
 
-  def empty[A : Ordering]: SymbolTrack[A] = SymbolTrack(SortedMap(), Map())
+  def empty: SymbolTrack = SymbolTrack(SortedMap(), Map(), 0)
 
 }

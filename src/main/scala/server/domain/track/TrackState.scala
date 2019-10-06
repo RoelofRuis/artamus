@@ -1,23 +1,21 @@
 package server.domain.track
 
 import music.symbolic.temporal.Position
-import server.domain.track.container.{SymbolTrack, OrderedSymbolMapBuilder, SymbolProperties}
+import server.domain.track.container.{SymbolProperties, SymbolType, Track}
+
+import scala.reflect.ClassTag
 
 /* @NotThreadSafe: synchronize access on `track` */
 class TrackState() {
 
-  private val mapBuilder: OrderedSymbolMapBuilder[Position] = new OrderedSymbolMapBuilder[Position]
+  private var track: Track = Track.empty
 
-  def reset(): Unit = mapBuilder.reset()
+  def reset(): Unit = track = Track.empty
 
-  def setSymbol(pos: Position, props: SymbolProperties): Unit = {
-    mapBuilder.addSymbolAt(pos, props)
+  def addSymbol[S <: SymbolType : ClassTag](pos: Position, props: SymbolProperties): Unit = {
+    track = track.upsertSymbolTrack[S](track.getSymbolTrack[S].addSymbolAt(pos, props))
   }
 
-  def addSymbol(pos: Position, props: SymbolProperties): Unit = {
-    mapBuilder.addSymbolAt(pos, props)
-  }
-
-  def readState: SymbolTrack[Position] = mapBuilder.get
+  def readState: Track = track
 
 }
