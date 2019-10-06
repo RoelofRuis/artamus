@@ -3,7 +3,7 @@ package server.analysis
 import blackboard.KnowledgeSource
 import music.analysis.{TwelveToneChordAnalysis, TwelveToneEqualTemprament}
 import music.symbolic.pitch.PitchClass
-import server.domain.track.container.{NoteType, Track}
+import server.domain.track.container.{ChordType, NoteType, SymbolProperties, Track}
 
 class ChordAnalyser extends KnowledgeSource[Track] {
 
@@ -16,13 +16,28 @@ class ChordAnalyser extends KnowledgeSource[Track] {
       (position, possibleChords)
     }
 
+    // TODO: remove additional printing
     possibleChords.foreach { case (pos, chords) =>
       chords.zipWithIndex.foreach { case (chord, index) =>
         val name = TwelveToneEqualTemprament.Chords.functionChordMapping.toMap.get(chord.functions.sorted)
         println(s"$pos (option $index): [${chord.root.value}] [$name]")
       }
     }
-    track
+
+    possibleChords
+      .groupBy { case (pos, _) => pos }
+      .map { case (_, chords) => chords.head }
+      .foldLeft(track) { case (acc, (pos, chord)) =>
+        chord match {
+          case c if c.nonEmpty => acc
+            .upsertSymbolTrack[ChordType.type](
+              acc
+                .getSymbolTrack[ChordType.type]
+                .addSymbolAt(pos, SymbolProperties.empty.add(c.head))
+            )
+          case _ => acc
+        }
+      }
   }
 
 }
