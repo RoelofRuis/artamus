@@ -1,6 +1,6 @@
 package server.analysis
 
-import blackboard.{Interpreter, KnowledgeSource, OrderedSymbolMap}
+import blackboard.{Controller, Interpreter, KnowledgeSource, OrderedSymbolMap}
 import music.symbolic.temporal.Position
 import server.rendering.LilypondFile
 

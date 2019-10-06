@@ -1,6 +1,4 @@
-package server.analysis
-
-import blackboard.{Interpreter, KnowledgeSource}
+package blackboard
 
 trait Controller[A, B] {
   val knowledgeSources: Seq[KnowledgeSource[A]]
