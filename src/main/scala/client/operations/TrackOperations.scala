@@ -7,7 +7,7 @@ import music.math.Rational
 import music.symbolic.pitch.Scale
 import music.symbolic.symbol.Key
 import music.symbolic.temporal.{Duration, Position}
-import server.control.PublishChanges
+import server.control.CommitChanges
 import server.domain.track.{AddNote, NewTrack, SetKey, SetTimeSignature}
 
 class TrackOperations @Inject() (
@@ -47,7 +47,7 @@ class TrackOperations @Inject() (
           tuning.noteNumberToPitch(midiNoteNumber)
         )}
 
-    messages :+ PublishChanges
+    messages :+ CommitChanges
   })
 
   registry.registerOperation(OperationToken("chords", "track"), () => {
@@ -68,7 +68,7 @@ class TrackOperations @Inject() (
         }
       }.toList
 
-    messages :+ PublishChanges
+    messages :+ CommitChanges
   })
 
 }

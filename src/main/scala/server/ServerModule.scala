@@ -1,21 +1,20 @@
 package server
 
-import _root_.server.control.{EventBusHandler, ServerControlHandler}
+import _root_.server.analysis._
+import _root_.server.control.{ChangeHandler, ServerControlHandler}
 import _root_.server.domain.track.{TrackCommandHandler, TrackQueryHandler, TrackState}
 import _root_.server.rendering.{LilypondRenderer, LilypondRenderingService}
-import _root_.server.analysis._
 import com.google.inject.Provides
 import javax.inject.Singleton
 import net.codingwell.scalaguice.ScalaPrivateModule
 import protocol._
-import pubsub.{BufferedEventBus, Dispatcher, EventBus}
-import server.domain.{DomainEvent, DomainStateListener}
+import pubsub.{Dispatcher, EventBus}
 
 class ServerModule extends ScalaPrivateModule with ServerConfig {
 
   override def configure(): Unit = {
     bind[ServerControlHandler].asEagerSingleton()
-    bind[EventBusHandler].asEagerSingleton()
+    bind[ChangeHandler].asEagerSingleton()
 
     bind[Dispatcher[Command]].toInstance(pubsub.createDispatcher[Command]())
     bind[TrackCommandHandler].asEagerSingleton()
@@ -25,14 +24,11 @@ class ServerModule extends ScalaPrivateModule with ServerConfig {
 
     bind[TrackState].asEagerSingleton()
 
-    bind[BufferedEventBus[DomainEvent]].toInstance(new BufferedEventBus[DomainEvent])
-
     bind[EventBus[Event]].toInstance(new EventBus[Event])
 
     bind[LilypondRenderingService].toInstance(new LilypondRenderingService(resourceRootPath, cleanupLySources))
     bind[LilypondRenderer].asEagerSingleton()
 
-    bind[DomainStateListener].asEagerSingleton()
     bind[RenderingController].asEagerSingleton()
 
     bind[Bootstrapper].asEagerSingleton()

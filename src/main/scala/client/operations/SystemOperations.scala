@@ -2,7 +2,7 @@ package client.operations
 
 import com.google.inject.Inject
 import protocol.ClientInterface
-import server.control.{Disconnect, GetDomainListeners}
+import server.control.Disconnect
 
 class SystemOperations @Inject() (
   registry: OperationRegistry,
@@ -26,13 +26,6 @@ class SystemOperations @Inject() (
       case "y" => List(Disconnect(true))
       case _ => List(Disconnect(false))
     }
-  })
-
-  registry.registerOperation(OperationToken("listeners", "system"), () => {
-    println("Active listeners:")
-    client.sendQuery(GetDomainListeners).foreach(_.foreach(println))
-
-    List()
   })
 
 }
