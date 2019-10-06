@@ -11,6 +11,8 @@ private[server] class TrackCommandHandler @Inject() (
   state: TrackState
 ) {
 
+  import server.analysis.Properties._
+
   dispatcher.subscribe[NewTrack.type]{ _ =>
     state.reset()
     true

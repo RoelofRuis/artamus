@@ -9,7 +9,7 @@ import music.symbolic.symbol.TimeSignature
 class MusicReader @Inject() (reader: MidiMessageReader) {
 
   import midi.in.Reading._
-  import music.interpret.pitched.TwelveToneEqualTemprament._
+  import music.analysis.TwelveToneEqualTemprament._
 
   def readSpelledPitch: SpelledPitch = {
     val midiNoteNumbers = readMidiNoteNumbers(NoteOn(2))

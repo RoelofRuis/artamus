@@ -15,7 +15,7 @@ class TrackOperations @Inject() (
   reader: MusicReader
 ) {
 
-  import music.interpret.pitched.TwelveToneEqualTemprament._
+  import music.analysis.TwelveToneEqualTemprament._
 
   registry.registerOperation(OperationToken("new", "track"), () => {
     List(NewTrack)

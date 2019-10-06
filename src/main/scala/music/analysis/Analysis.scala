@@ -1,4 +1,4 @@
-package music.interpret.pitched
+package music.analysis
 
 import music.symbolic.pitch.{Function, Interval, PitchClass, TuningSystem}
 
