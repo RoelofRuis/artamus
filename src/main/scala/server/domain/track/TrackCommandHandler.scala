@@ -1,17 +1,15 @@
 package server.domain.track
 
-import blackboard.SymbolProperties
 import javax.inject.Inject
 import music.symbolic.temporal.{Duration, Position}
 import protocol.Command
 import pubsub.Dispatcher
+import server.domain.track.container.SymbolProperties
 
 private[server] class TrackCommandHandler @Inject() (
   dispatcher: Dispatcher[Command],
   state: TrackState
 ) {
-
-  import server.analysis.Properties._
 
   dispatcher.subscribe[NewTrack.type]{ _ =>
     state.reset()

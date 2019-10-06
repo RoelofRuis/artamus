@@ -1,13 +1,12 @@
 package server.analysis
 
-import blackboard.{KnowledgeSource, OrderedSymbolMap}
+import blackboard.KnowledgeSource
 import music.analysis.{TwelveToneChordAnalysis, TwelveToneEqualTemprament}
 import music.symbolic.pitch.PitchClass
 import music.symbolic.temporal.Position
+import server.domain.track.container.OrderedSymbolMap
 
 class ChordAnalyser extends KnowledgeSource[OrderedSymbolMap[Position]] {
-
-  import Properties._
 
   override def canExecute(state: OrderedSymbolMap[Position]): Boolean = true
 

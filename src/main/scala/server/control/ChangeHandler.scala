@@ -1,16 +1,18 @@
 package server.control
 
+import blackboard.Controller
 import javax.inject.Inject
+import music.symbolic.temporal.Position
 import protocol.Command
 import pubsub.Dispatcher
-import server.analysis.RenderingController
 import server.domain.track.TrackState
-import server.rendering.LilypondRenderer
+import server.domain.track.container.OrderedSymbolMap
+import server.rendering.{LilypondFile, LilypondRenderer}
 
 private[server] class ChangeHandler @Inject() (
   busCommands: Dispatcher[Command],
   state: TrackState,
-  renderingController: RenderingController,
+  renderingController: Controller[OrderedSymbolMap[Position], LilypondFile],
   rendering: LilypondRenderer,
 ) {
 

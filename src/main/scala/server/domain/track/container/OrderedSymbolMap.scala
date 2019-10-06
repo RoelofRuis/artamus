@@ -1,4 +1,4 @@
-package blackboard
+package server.domain.track.container
 
 import javax.annotation.concurrent.Immutable
 

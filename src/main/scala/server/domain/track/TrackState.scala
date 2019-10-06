@@ -1,7 +1,7 @@
 package server.domain.track
 
-import blackboard.{OrderedSymbolMap, OrderedSymbolMapBuilder, SymbolProperties}
 import music.symbolic.temporal.Position
+import server.domain.track.container.{OrderedSymbolMap, OrderedSymbolMapBuilder, SymbolProperties}
 
 /* @NotThreadSafe: synchronize access on `track` */
 class TrackState() {

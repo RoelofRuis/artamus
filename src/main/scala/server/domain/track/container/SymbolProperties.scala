@@ -1,4 +1,4 @@
-package blackboard
+package server.domain.track.container
 
 import scala.reflect.{ClassTag, classTag}
 

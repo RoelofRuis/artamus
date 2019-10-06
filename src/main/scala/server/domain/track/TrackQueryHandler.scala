@@ -10,8 +10,6 @@ private[server] class TrackQueryHandler @Inject() (
   state: TrackState
 ) {
 
-  import server.analysis.Properties._
-
   import music.analysis.TwelveToneEqualTemprament._
 
   dispatcher.subscribe[GetMidiPitches.type]{ _ =>

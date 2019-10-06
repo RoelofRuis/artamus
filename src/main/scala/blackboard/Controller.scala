@@ -1,8 +1,9 @@
 package blackboard
 
-trait Controller[A, B] {
-  val knowledgeSources: Seq[KnowledgeSource[A]]
+class Controller[A, B](
+  val knowledgeSources: Seq[KnowledgeSource[A]],
   val interpreter: Interpreter[A, B]
+) {
 
   def run(state: A): B = {
     val res = knowledgeSources.foldLeft(state) {
