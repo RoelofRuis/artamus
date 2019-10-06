@@ -10,16 +10,6 @@ case class SymbolTrack[A: Ordering](
   symbols: Map[Long, SymbolProperties]
 ) {
 
-  def addProperty[P: Property](symbol: TrackSymbol, prop: P): SymbolTrack[A] = {
-    if (symbols.contains(symbol.id)) {
-      SymbolTrack(
-        ordering,
-        symbols.updated(symbol.id, symbols(symbol.id).add(prop))
-      )
-    }
-    else this
-  }
-
   def readAt(pos: A): Seq[TrackSymbol] = {
     ordering.getOrElse(pos, List()).flatMap { index => symbols.get(index).map(TrackSymbol(index, _)) }
   }
