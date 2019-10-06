@@ -6,7 +6,7 @@ import pubsub.BufferedEventBus
 import server.domain.{DomainEvent, StateChanged}
 
 @NotThreadSafe
-class DomainStateRendering @Inject() (
+class DomainStateListener @Inject() (
   domainUpdates: BufferedEventBus[DomainEvent],
   renderingController: RenderingController
 ) {

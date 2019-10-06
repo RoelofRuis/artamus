@@ -16,7 +16,7 @@ private[server] class EventBusHandler @Inject() (
     numFlushed > 0
   }
 
-  busQueries.subscribe[GetViews.type] { _ =>
+  busQueries.subscribe[GetDomainListeners.type] { _ =>
     domainUpdates.viewSubscriptions.toList
   }
 

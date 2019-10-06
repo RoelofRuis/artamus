@@ -10,6 +10,6 @@ package object control {
   case object PublishChanges extends Command
 
   // Queries
-  case object GetViews extends Query { type Res = List[String] }
+  case object GetDomainListeners extends Query { type Res = List[String] }
 
 }

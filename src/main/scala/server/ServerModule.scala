@@ -32,7 +32,7 @@ class ServerModule extends ScalaPrivateModule with ServerConfig {
     bind[LilypondRenderingService].toInstance(new LilypondRenderingService(resourceRootPath, cleanupLySources))
     bind[LilypondRenderer].asEagerSingleton()
 
-    bind[DomainStateRendering].asEagerSingleton()
+    bind[DomainStateListener].asEagerSingleton()
     bind[RenderingController].asEagerSingleton()
 
     bind[Bootstrapper].asEagerSingleton()
