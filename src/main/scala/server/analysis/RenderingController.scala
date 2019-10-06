@@ -17,6 +17,8 @@ class RenderingController @Inject() (
   rendering: LilypondRenderer
 ) {
 
+  import Properties._
+
   def render(key: String, trackState: OrderedSymbolMap[Position]): Unit = {
     analyseChords(trackState)
     analysePitchHistogram(trackState)
