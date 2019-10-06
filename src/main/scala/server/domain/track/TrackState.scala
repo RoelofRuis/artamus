@@ -1,6 +1,6 @@
 package server.domain.track
 
-import blackboard.{OrderedSymbolMap, OrderedSymbolMapBuilder, TrackSymbol}
+import blackboard.{OrderedSymbolMap, OrderedSymbolMapBuilder, SymbolProperties}
 import music.symbolic.temporal.Position
 
 /* @NotThreadSafe: synchronize access on `track` */
@@ -10,12 +10,12 @@ class TrackState() {
 
   def reset(): Unit = mapBuilder.reset()
 
-  def setSymbol(pos: Position, symbol: TrackSymbol): Unit = {
-    mapBuilder.addSymbolAt(pos, symbol)
+  def setSymbol(pos: Position, props: SymbolProperties): Unit = {
+    mapBuilder.addSymbolAt(pos, props)
   }
 
-  def addSymbol(pos: Position, symbol: TrackSymbol): Unit = {
-    mapBuilder.addSymbolAt(pos, symbol)
+  def addSymbol(pos: Position, props: SymbolProperties): Unit = {
+    mapBuilder.addSymbolAt(pos, props)
   }
 
   def readState: OrderedSymbolMap[Position] = mapBuilder.get

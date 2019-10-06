@@ -7,30 +7,30 @@ import scala.collection.SortedMap
 @Immutable
 case class OrderedSymbolMap[A: Ordering](
   ordering: SortedMap[A, Seq[Long]],
-  symbols: Map[Long, TrackSymbol]
+  symbols: Map[Long, SymbolProperties]
 ) {
 
-  def addProperty[P: Property](id: Long, prop: P): OrderedSymbolMap[A] = {
-    if (symbols.contains(id)) {
+  def addProperty[P: Property](symbol: TrackSymbol, prop: P): OrderedSymbolMap[A] = {
+    if (symbols.contains(symbol.id)) {
       OrderedSymbolMap(
         ordering,
-        symbols.updated(id, symbols(id).addProperty(prop))
+        symbols.updated(symbol.id, symbols(symbol.id).add(prop))
       )
     }
     else this
   }
 
   def readAt(pos: A): Seq[TrackSymbol] = {
-    ordering.getOrElse(pos, List()).map { index => symbols.getOrElse(index, TrackSymbol.empty) }
+    ordering.getOrElse(pos, List()).flatMap { index => symbols.get(index).map(TrackSymbol(index, _)) }
   }
 
   def readAll: Seq[TrackSymbol] = {
-    symbols.map { case (_, properties) => properties }.toSeq
+    symbols.map { case (index, properties) => TrackSymbol(index, properties) }.toSeq
   }
 
   def readAllWithPosition: Seq[(A, Seq[TrackSymbol])] = {
     ordering.map { case (position, indices) =>
-      (position, indices.map { index => symbols.getOrElse(index, TrackSymbol.empty) })
+      (position, indices.flatMap { index => symbols.get(index).map(TrackSymbol(index, _)) })
     }.toSeq
   }
 

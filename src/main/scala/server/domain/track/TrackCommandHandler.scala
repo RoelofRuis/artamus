@@ -1,6 +1,6 @@
 package server.domain.track
 
-import blackboard.TrackSymbol
+import blackboard.SymbolProperties
 import javax.inject.Inject
 import music.symbolic.temporal.{Duration, Position}
 import protocol.Command
@@ -20,24 +20,24 @@ private[server] class TrackCommandHandler @Inject() (
 
   dispatcher.subscribe[SetTimeSignature]{ command =>
     // TODO: move explicit position away from here
-    state.setSymbol(Position(Duration.QUARTER, 0), TrackSymbol.empty.addProperty(command.t))
+    state.setSymbol(Position(Duration.QUARTER, 0), SymbolProperties.empty.add(command.t))
     true
   }
 
   dispatcher.subscribe[SetKey] { command =>
     // TODO: move explicit position away from here
-    state.setSymbol(Position(Duration.QUARTER, 0), TrackSymbol.empty.addProperty(command.k))
+    state.setSymbol(Position(Duration.QUARTER, 0), SymbolProperties.empty.add(command.k))
     true
   }
 
   dispatcher.subscribe[AddNote] { command =>
     state.addSymbol(
       command.position,
-      TrackSymbol
+      SymbolProperties
         .empty
-        .addProperty(command.pitch.octave)
-        .addProperty(command.pitch.pitchClass)
-        .addProperty(command.duration)
+        .add(command.pitch.octave)
+        .add(command.pitch.pitchClass)
+        .add(command.duration)
     )
     true
   }

@@ -13,12 +13,11 @@ class ChordAnalyser extends KnowledgeSource[OrderedSymbolMap[Position]] {
 
   override def execute(track: OrderedSymbolMap[Position]): OrderedSymbolMap[Position] = {
     val possibleChords = track.readAllWithPosition.map { case (position, notes) =>
-      val pitches = notes.flatMap { props => props.getProperty[PitchClass] }
+      val pitches = notes.flatMap { symbol => symbol.props.get[PitchClass] }
       val possibleChords = TwelveToneChordAnalysis.findChords(pitches)
       (position, possibleChords)
     }
 
-    println
     possibleChords.foreach { case (pos, chords) =>
       chords.zipWithIndex.foreach { case (chord, index) =>
         val name = TwelveToneEqualTemprament.Chords.functionChordMapping.toMap.get(chord.functions.sorted)

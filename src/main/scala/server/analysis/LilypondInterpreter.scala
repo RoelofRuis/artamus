@@ -1,6 +1,6 @@
 package server.analysis
 
-import blackboard.{Interpreter, OrderedSymbolMap, TrackSymbol}
+import blackboard.{Interpreter, OrderedSymbolMap, SymbolProperties}
 import music.symbolic.pitch._
 import music.symbolic.symbol.{Key, TimeSignature}
 import music.symbolic.temporal.{Duration, Position}
@@ -14,21 +14,21 @@ class LilypondInterpreter extends Interpreter[OrderedSymbolMap[Position], Lilypo
     val stackedNotes: Seq[Seq[SpelledNote]] =
       track.readAllWithPosition
         .map { case (_, symbols) =>
-          symbols.flatMap { symbol => spell(symbol) }
+          symbols.flatMap { symbol => spell(symbol.props) }
         }
 
     LilypondFile(
       stackedNotes,
-      track.readAt(Position.zero).map(_.getProperty[TimeSignature]).head,
-      track.readAt(Position.zero).map(_.getProperty[Key]).head
+      track.readAt(Position.zero).map(_.props.get[TimeSignature]).head,
+      track.readAt(Position.zero).map(_.props.get[Key]).head
     )
   }
 
-  private def spell(symbol: TrackSymbol): Option[SpelledNote] = {
+  private def spell(symbol: SymbolProperties): Option[SpelledNote] = {
     for {
-      pc <- symbol.getProperty[PitchClass]
-      oct <- symbol.getProperty[Octave]
-      dur <- symbol.getProperty[Duration]
+      pc <- symbol.get[PitchClass]
+      oct <- symbol.get[Octave]
+      dur <- symbol.get[Duration]
     } yield spellPitchClass(dur, oct, pc)
   }
 
