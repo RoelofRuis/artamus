@@ -9,10 +9,10 @@ final case class Track(
   tracks: Map[String, SymbolTrack]
 ) {
 
-  def upsertSymbolTrack[S <: SymbolType : ClassTag](symbolTrack: SymbolTrack): Track = {
+  def updateSymbolTrack[S <: SymbolType : ClassTag](update: SymbolTrack => SymbolTrack): Track = {
     val key = classTag[S].runtimeClass.getCanonicalName
     Track(
-      tracks.updated(key, symbolTrack)
+      tracks.updated(key, update(getSymbolTrack[S]))
     )
   }
 

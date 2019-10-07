@@ -30,10 +30,8 @@ class ChordAnalyser extends KnowledgeSource[Track] {
       .foldLeft(track) { case (acc, (pos, chord)) =>
         chord match {
           case c if c.nonEmpty => acc
-            .upsertSymbolTrack[ChordType.type](
-              acc
-                .getSymbolTrack[ChordType.type]
-                .addSymbolAt(pos, SymbolProperties.empty.add(c.head))
+            .updateSymbolTrack[ChordType.type](
+              _.addSymbolAt(pos, SymbolProperties.empty.add(c.head))
             )
           case _ => acc
         }
