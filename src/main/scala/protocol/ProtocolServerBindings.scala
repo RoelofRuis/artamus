@@ -3,7 +3,7 @@ package protocol
 import transport.server.ServerBindings
 import pubsub.{Dispatcher, Subscriber}
 
-import scala.util.Try
+import scala.util.{Failure, Success, Try}
 
 final case class ProtocolServerBindings(
   commandDispatcher: Dispatcher[Command],
@@ -22,16 +22,23 @@ final case class ProtocolServerBindings(
   def handleRequest(request: Object): DataResponse = {
     val result = tryRead[ServerRequest](request).toEither match {
       case Right(CommandRequest(command)) =>
-        commandDispatcher.handle(command) match {
-          case Some(res) => Right(res)
-          case None => Left(s"No handler defined for command [$command]")
+        Try { commandDispatcher.handle(command) } match {
+          case Success(response) => response match {
+            case Some(res) => Right(res)
+            case None => Left(s"No handler defined for command [$command]")
+          }
+          case Failure(ex) => Left(s"Error during command execution [$ex]")
         }
 
       case Right(QueryRequest(query)) =>
-        queryDispatcher.handle(query) match {
-          case Some(res) => Right(res)
-          case None => Left(s"No handler defined for query [$query]")
+        Try { queryDispatcher.handle(query) } match {
+          case Success(response) => response match {
+            case Some(res) => Right(res)
+            case None => Left(s"No handler defined for query [$query]")
+          }
+          case Failure(ex) => Left(s"Error during query execution [$ex]")
         }
+
 
       case Left(ex) => Left(s"Unable to determine message type. [$ex]")
     }

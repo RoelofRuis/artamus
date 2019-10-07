@@ -23,6 +23,9 @@ private[server] class ServerConnectionFactory(bindings: ServerBindings) extends 
               val request = objectIn.readObject()
 
               val response = bindings.handleRequest(request)
+
+              if (response.data.isLeft) logger.error("Error during processing", response.data.left.get)
+
               objectOut.writeObject(response)
             }
           } catch {

@@ -1,13 +1,11 @@
-package server.analysis
+package server.rendering
 
-import blackboard.Interpreter
 import music.symbolic.pitch._
 import music.symbolic.symbol.{Key, TimeSignature}
 import music.symbolic.temporal.{Duration, Position}
 import server.domain.track.container._
-import server.rendering.LilypondFile
 
-class LilypondInterpreter extends Interpreter[Track, LilypondFile] {
+class LilypondInterpreter {
 
   def interpret(track: Track): LilypondFile = {
     val stackedNotes: Seq[Seq[SpelledNote]] =
