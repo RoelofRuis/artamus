@@ -1,4 +1,4 @@
-package server.rendering
+package server.rendering.interpret
 
 import music.symbolic.pitch._
 import music.symbolic.symbol.{Key, TimeSignature}

@@ -1,4 +1,4 @@
-package server.rendering
+package server.rendering.render
 
 import java.io.File
 
@@ -7,10 +7,12 @@ import javax.annotation.concurrent.NotThreadSafe
 import javax.inject.Inject
 import protocol.Event
 import pubsub.EventBus
+import server.rendering.interpret.LilypondFile
+import server.rendering.{RenderingCompleted, RenderingException, RenderingResult}
 
 @NotThreadSafe
-class LilypondRenderer @Inject() (
-  renderingService: LilypondRenderingService,
+private[rendering] class AsyncRenderingBank @Inject() (
+  renderingService: LilypondCommandLineExecutor,
   broadcastEvents: EventBus[Event]
 ) extends LazyLogging {
 
@@ -25,6 +27,8 @@ class LilypondRenderer @Inject() (
 
     rendersInProgress += (renderId -> submitter)
   }
+
+  def shutdown(): Unit = renderingService.shutdown()
 
   private def complete(taskId: Long, renderingResult: Either[RenderingException, RenderingResult]): Unit = {
     rendersInProgress.get(taskId) match {

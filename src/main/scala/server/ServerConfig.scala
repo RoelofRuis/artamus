@@ -1,6 +1,8 @@
 package server
 
-trait ServerConfig {
+import server.rendering.RenderingConfig
+
+trait ServerConfig extends RenderingConfig {
 
   val port = 9999
 

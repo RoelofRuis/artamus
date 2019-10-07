@@ -1,4 +1,4 @@
-package server.rendering
+package server.rendering.interpret
 
 import music.symbolic.pitch.SpelledNote
 import music.symbolic.symbol.{Key, TimeSignature}
@@ -9,7 +9,7 @@ final case class LilypondFile(
   key: Option[Key],
 ) {
 
-  import server.rendering.LilypondFormat._
+  import server.rendering.interpret.LilypondFormat._
 
   def getStringContents: String = {
     val content = Seq(

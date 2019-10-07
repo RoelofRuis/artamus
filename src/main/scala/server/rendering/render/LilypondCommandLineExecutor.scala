@@ -1,13 +1,15 @@
-package server.rendering
+package server.rendering.render
 
 import java.io.{File, PrintWriter}
 import java.util.concurrent.atomic.AtomicLong
 import java.util.concurrent.{ExecutorService, Executors}
 
 import javax.annotation.concurrent.NotThreadSafe
+import server.rendering.{RenderingException, RenderingResult}
+import server.rendering.interpret.LilypondFile
 
 @NotThreadSafe
-class LilypondRenderingService(
+private[rendering] class LilypondCommandLineExecutor(
   val resourceRootPath: String,
   val cleanupLySources: Boolean,
 ) {

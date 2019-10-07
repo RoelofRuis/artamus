@@ -3,7 +3,6 @@ package server
 import _root_.server.analysis._
 import _root_.server.control.{ChangeHandler, ServerControlHandler}
 import _root_.server.domain.track.{TrackCommandHandler, TrackQueryHandler, TrackState}
-import _root_.server.rendering.{LilypondRenderer, LilypondRenderingService}
 import blackboard.Controller
 import com.google.inject.Provides
 import javax.inject.Singleton
@@ -11,10 +10,13 @@ import net.codingwell.scalaguice.ScalaPrivateModule
 import protocol._
 import pubsub.{Dispatcher, EventBus}
 import server.domain.track.container.Track
+import server.rendering.RenderingModule
 
 class ServerModule extends ScalaPrivateModule with ServerConfig {
 
   override def configure(): Unit = {
+    install(new RenderingModule with ServerConfig)
+
     bind[ServerControlHandler].asEagerSingleton()
     bind[ChangeHandler].asEagerSingleton()
 
@@ -25,11 +27,7 @@ class ServerModule extends ScalaPrivateModule with ServerConfig {
     bind[TrackQueryHandler].asEagerSingleton()
 
     bind[TrackState].asEagerSingleton()
-
     bind[EventBus[Event]].toInstance(new EventBus[Event])
-
-    bind[LilypondRenderingService].toInstance(new LilypondRenderingService(resourceRootPath, cleanupLySources))
-    bind[LilypondRenderer].asEagerSingleton()
 
     bind[Controller[Track]]
       .toInstance(new Controller(

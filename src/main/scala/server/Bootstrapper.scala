@@ -2,18 +2,18 @@ package server
 
 import javax.inject.Inject
 import protocol.ServerInterface
-import server.rendering.LilypondRenderingService
+import server.rendering.Renderer
 
 class Bootstrapper @Inject() (
   server: ServerInterface,
-  rendering: LilypondRenderingService
+  renderer: Renderer
 ) {
 
   def run(): Unit = {
     println("Starting server...")
 
     server.accept()
-    rendering.shutdown()
+    renderer.shutdown()
 
     println("\nProgram ended")
   }
