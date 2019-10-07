@@ -5,7 +5,7 @@ import java.io.File
 import com.typesafe.scalalogging.LazyLogging
 import javax.annotation.concurrent.NotThreadSafe
 import javax.inject.Inject
-import protocol.Event
+import protocol.Event // TODO: remove this dependency!
 import pubsub.EventBus
 import server.rendering.interpret.LilypondFile
 import server.rendering.{RenderingCompleted, RenderingException, RenderingResult}
@@ -13,7 +13,7 @@ import server.rendering.{RenderingCompleted, RenderingException, RenderingResult
 @NotThreadSafe
 private[rendering] class AsyncRenderingBank @Inject() (
   renderingService: LilypondCommandLineExecutor,
-  broadcastEvents: EventBus[Event]
+  broadcastEvents: EventBus[Event] // TODO: Invert controll and let user pass implemented interface!
 ) extends LazyLogging {
 
   private var rendersInProgress = Map[Long, String]()
