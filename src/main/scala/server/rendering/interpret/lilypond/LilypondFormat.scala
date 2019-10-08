@@ -1,9 +1,10 @@
-package server.rendering.interpret
+package server.rendering.interpret.lilypond
 
 import music.symbolic.pitch._
 import music.symbolic.symbol.{Key, TimeSignature}
 import music.symbolic.temporal.Duration
 
+// TODO: distribute over classes representing the lilypond structure!
 trait LilypondFormat[A] {
   def toLilypond(a: A): String
 }

@@ -1,13 +1,13 @@
-package server.rendering.render
+package server.rendering.service
 
 import java.io.File
 
 import com.typesafe.scalalogging.LazyLogging
 import javax.annotation.concurrent.NotThreadSafe
 import javax.inject.Inject
-import protocol.Event // TODO: remove this dependency!
+import protocol.Event
 import pubsub.EventBus
-import server.rendering.interpret.LilypondFile
+import server.rendering.interpret.lilypond.LyFile
 import server.rendering.{RenderingCompleted, RenderingException, RenderingResult}
 
 @NotThreadSafe
@@ -21,7 +21,7 @@ private[rendering] class AsyncRenderingBank @Inject() (
 
   renderingService.setCompletionHandler(complete)
 
-  def submit(submitter: String, file: LilypondFile): Unit = {
+  def submit(submitter: String, file: LyFile): Unit = {
     val renderId = renderingService.render(file)
     logger.debug(s"Submitting rendering ($renderId -> $submitter)")
 

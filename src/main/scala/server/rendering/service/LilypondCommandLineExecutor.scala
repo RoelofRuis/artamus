@@ -1,12 +1,12 @@
-package server.rendering.render
+package server.rendering.service
 
 import java.io.{File, PrintWriter}
 import java.util.concurrent.atomic.AtomicLong
 import java.util.concurrent.{ExecutorService, Executors}
 
 import javax.annotation.concurrent.NotThreadSafe
+import server.rendering.interpret.lilypond.LyFile
 import server.rendering.{RenderingException, RenderingResult}
-import server.rendering.interpret.LilypondFile
 
 @NotThreadSafe
 private[rendering] class LilypondCommandLineExecutor(
@@ -18,7 +18,7 @@ private[rendering] class LilypondCommandLineExecutor(
   private val taskIdGenerator = new AtomicLong(0L)
   private var completionHandler: Option[(Long, Either[RenderingException, RenderingResult]) => Unit] = None
 
-  def render(lilyFile: LilypondFile): Long = {
+  def render(lilyFile: LyFile): Long = {
     val taskId = taskIdGenerator.getAndIncrement()
 
     executor.execute(makeRunnable(lilyFile, taskId))
@@ -37,7 +37,7 @@ private[rendering] class LilypondCommandLineExecutor(
     completionHandler.foreach(_(taskId, result))
   }
 
-  private def makeRunnable(lilyFile: LilypondFile, taskId: Long): Runnable = {
+  private def makeRunnable(lilyFile: LyFile, taskId: Long): Runnable = {
     () => {
       val sourceFile = new File(s"$resourceRootPath/lily_$taskId.ly")
       val targetFile = new File(s"$resourceRootPath/lily_$taskId.png")

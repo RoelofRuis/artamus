@@ -2,7 +2,7 @@ package server.rendering
 
 import net.codingwell.scalaguice.ScalaPrivateModule
 import server.rendering.interpret.LilypondInterpreter
-import server.rendering.render.{AsyncRenderingBank, LilypondCommandLineExecutor, TrackRenderer}
+import server.rendering.service.{AsyncRenderingBank, LilypondCommandLineExecutor, TrackRenderer}
 
 class RenderingModule extends ScalaPrivateModule {
   this: RenderingConfig =>
