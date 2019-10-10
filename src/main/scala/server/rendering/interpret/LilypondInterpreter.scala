@@ -1,30 +1,31 @@
 package server.rendering.interpret
 
+import music.symbolic.Symbols.{MetaSymbol, Note}
 import music.symbolic.pitch._
 import music.symbolic.symbol.{Key, TimeSignature}
 import music.symbolic.temporal.{Duration, Position}
-import server.domain.track.container._
+import music.symbolic.{SymbolProperties, Track}
 import server.rendering.interpret.lilypond.{LyFile, Staff}
 
 private[rendering] class LilypondInterpreter {
 
   def interpret(track: Track): LyFile = {
     val stackedNotes: Seq[Seq[SpelledNote]] =
-      track.getSymbolTrack[NoteType.type].readAllWithPosition
+      track.getSymbolTrack[Note.type].readAllWithPosition
         .map { case (_, symbols) =>
           symbols.flatMap { symbol => spell(symbol.props) }
         }
 
     LyFile(
       Staff(
-        track.getSymbolTrack[KeyType.type].readAt(Position.zero).headOption.flatMap(_.props.get[Key]),
-        track.getSymbolTrack[TimeSignatureType.type].readAt(Position.zero).headOption.flatMap(_.props.get[TimeSignature]),
+        track.getSymbolTrack[MetaSymbol.type].readAt(Position.zero).headOption.flatMap(_.props.get[Key]),
+        track.getSymbolTrack[MetaSymbol.type].readAt(Position.zero).headOption.flatMap(_.props.get[TimeSignature]),
         stackedNotes,
       ),
     )
   }
 
-  private def spell(symbol: SymbolProperties): Option[SpelledNote] = {
+  private def spell(symbol: SymbolProperties[Note.type]): Option[SpelledNote] = {
     for {
       pc <- symbol.get[PitchClass]
       oct <- symbol.get[Octave]

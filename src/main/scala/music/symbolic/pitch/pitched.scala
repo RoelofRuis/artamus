@@ -34,6 +34,8 @@ package object pitch {
 
   case class Pitch(octave: Octave, pitchClass: PitchClass)
 
-  case class Chord(root: PitchClass, functions: Seq[Function])
+  case class ChordRoot(pc: PitchClass)
+
+  case class ChordFunctions(functions: Seq[Function])
 
 }

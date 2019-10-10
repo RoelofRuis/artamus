@@ -1,7 +1,8 @@
 package server.domain.track
 
+import music.symbolic.Symbols.SymbolType
 import music.symbolic.temporal.Position
-import server.domain.track.container.{SymbolProperties, SymbolType, Track}
+import music.symbolic.{SymbolProperties, Track}
 
 import scala.reflect.ClassTag
 
@@ -12,7 +13,7 @@ class TrackState() {
 
   def reset(): Unit = track = Track.empty
 
-  def addSymbol[S <: SymbolType : ClassTag](pos: Position, props: SymbolProperties): Unit = {
+  def addSymbol[S <: SymbolType : ClassTag](pos: Position, props: SymbolProperties[S]): Unit = {
     track = track.updateSymbolTrack[S](_.addSymbolAt(pos, props))
   }
 

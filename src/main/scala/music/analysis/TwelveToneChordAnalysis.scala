@@ -1,20 +1,20 @@
 package music.analysis
 
-import music.symbolic.pitch.{Chord, PitchClass}
+import music.symbolic.pitch.{ChordFunctions, ChordRoot, PitchClass}
 import server.analysis.Interpretation
 
 object TwelveToneChordAnalysis {
 
-  import music.analysis.Analysis._
   import TwelveToneEqualTemprament._
+  import music.analysis.Analysis._
 
-  def findChords(set: Seq[PitchClass]): Seq[Chord] = {
+  def findChords(set: Seq[PitchClass]): Seq[(ChordRoot, ChordFunctions)] = {
     tuning.pcs.flatMap{ root =>
       Interpretation.allOf(set)
         .expand(pc => tuning.possibleIntervals(root, pc))
         .expand(tuning.possibleFunctions)
         .filter(tuning.functionsToName(_).nonEmpty)
-        .data.map(functions => Chord(root, functions))
+        .data.map(functions => (ChordRoot(root), ChordFunctions(functions)))
     }
   }
 

@@ -2,8 +2,8 @@ package server
 
 import java.io.File
 
+import music.symbolic.Track
 import protocol.Event
-import server.domain.track.container.Track
 
 package object rendering {
 

@@ -1,8 +1,9 @@
 package server.analysis
 
 import blackboard.KnowledgeSource
+import music.symbolic.Symbols.Note
+import music.symbolic.Track
 import music.symbolic.pitch.PitchClass
-import server.domain.track.container.{NoteType, Track}
 
 import scala.collection.SortedMap
 
@@ -27,7 +28,7 @@ class PitchHistogramAnalyser extends KnowledgeSource[Track] {
     )
 
     val histogram = track
-      .getSymbolTrack[NoteType.type]
+      .getSymbolTrack[Note.type]
       .readAll.flatMap(_.props.get[PitchClass])
       .foldRight(zero) { case (pc, acc) => acc.updated(pc.value, acc.get(pc.value).map(_ + 1L).get) }
 
