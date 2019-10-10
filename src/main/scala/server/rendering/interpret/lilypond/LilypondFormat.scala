@@ -1,8 +1,6 @@
 package server.rendering.interpret.lilypond
 
-import music.symbolic.pitch._
-import music.symbolic.symbol.{Key, TimeSignature}
-import music.symbolic.temporal.Duration
+import music.primitives._
 
 // TODO: distribute over classes representing the lilypond structure!
 trait LilypondFormat[A] {

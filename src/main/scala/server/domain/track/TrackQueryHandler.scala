@@ -1,8 +1,8 @@
 package server.domain.track
 
 import javax.inject.Inject
-import music.symbolic.Symbols.Note
-import music.symbolic.pitch.{Octave, Pitch, PitchClass}
+import music.Symbols.Note
+import music.primitives.{Octave, PitchClass}
 import protocol.Query
 import pubsub.Dispatcher
 
@@ -23,7 +23,7 @@ private[server] class TrackQueryHandler @Inject() (
           .flatMap { symbol =>
             val pc = symbol.props.get[PitchClass]
             val oct = symbol.props.get[Octave]
-            if (pc.isDefined && oct.isDefined) Some(tuning.pitchToNoteNumber(Pitch(oct.get, pc.get)).value)
+            if (pc.isDefined && oct.isDefined) Some(tuning.octAndPcToNoteNumber(oct.get, pc.get).value)
             else None
           }
         .toList

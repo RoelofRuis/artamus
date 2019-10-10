@@ -1,10 +1,8 @@
 package server.rendering.interpret
 
-import music.symbolic.Symbols.{MetaSymbol, Note}
-import music.symbolic.pitch._
-import music.symbolic.symbol.{Key, TimeSignature}
-import music.symbolic.temporal.{Duration, Position}
-import music.symbolic.{SymbolProperties, Track}
+import music.primitives._
+import music.Symbols.{MetaSymbol, Note}
+import music.collection.{SymbolProperties, Track}
 import server.rendering.interpret.lilypond.{LyFile, Staff}
 
 private[rendering] class LilypondInterpreter {

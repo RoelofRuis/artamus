@@ -1,6 +1,6 @@
 package music.analysis
 
-import music.symbolic.pitch.{ChordFunctions, ChordRoot, PitchClass}
+import music.primitives._
 import server.analysis.Interpretation
 
 object TwelveToneChordAnalysis {

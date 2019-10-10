@@ -1,9 +1,9 @@
 package server.domain.track
 
 import javax.inject.Inject
-import music.symbolic.SymbolProperties
-import music.symbolic.Symbols.{MetaSymbol, Note}
-import music.symbolic.temporal.{Duration, Position}
+import music.primitives.{Duration, Position}
+import music.collection.SymbolProperties
+import music.Symbols.{MetaSymbol, Note}
 import protocol.Command
 import pubsub.Dispatcher
 
@@ -34,8 +34,8 @@ private[server] class TrackCommandHandler @Inject() (
       command.position,
       SymbolProperties
         .empty
-        .add(command.pitch.octave)
-        .add(command.pitch.pitchClass)
+        .add(command.octave)
+        .add(command.pitchClass)
         .add(command.duration)
     )
     true

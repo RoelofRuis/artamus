@@ -1,4 +1,6 @@
-package music.symbolic.pitch
+package music.analysis
+
+import music.primitives.{Octave, PitchClass, _}
 
 final case class TuningSystem[A](pcSeq: Seq[Int]) {
 
@@ -22,12 +24,14 @@ final case class TuningSystem[A](pcSeq: Seq[Int]) {
     else diff
   }
 
-  def noteNumberToPitch(noteNumber: MidiNoteNumber): Pitch = {
-    Pitch(Octave((noteNumber.value / numPitchClasses) - 1), pc(noteNumber.value))
+  def noteNumberToPc(noteNumber: MidiNoteNumber): PitchClass = noteNumberToOctAndPc(noteNumber)._2
+
+  def noteNumberToOctAndPc(noteNumber: MidiNoteNumber): (Octave, PitchClass) = {
+    (Octave((noteNumber.value / numPitchClasses) - 1), pc(noteNumber.value))
   }
 
-  def pitchToNoteNumber(pitch: Pitch): MidiNoteNumber = {
-    MidiNoteNumber(((pitch.octave.value + 1) * numPitchClasses) + pitch.pitchClass.value)
+  def octAndPcToNoteNumber(oct: Octave, pc: PitchClass): MidiNoteNumber = {
+    MidiNoteNumber(((oct.value + 1) * numPitchClasses) + pc.value)
   }
 
   def spellInterval(root: SpelledPitch, interval: Interval): SpelledPitch = {

@@ -2,7 +2,7 @@ package server
 
 import java.io.File
 
-import music.symbolic.Track
+import music.collection.Track
 import protocol.Event
 
 package object rendering {

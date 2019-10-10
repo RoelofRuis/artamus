@@ -1,6 +1,6 @@
 package music.analysis
 
-import music.symbolic.pitch.{Function, Interval, PitchClass, TuningSystem}
+import music.primitives._
 
 object Analysis {
 

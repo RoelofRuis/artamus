@@ -3,8 +3,7 @@ package client.read
 import client.read.MusicReader.{NoteOn, ReadMethod, Simultaneous}
 import javax.inject.Inject
 import midi.in.MidiMessageReader
-import music.symbolic.pitch.{Accidental, MidiNoteNumber, SpelledPitch, Step}
-import music.symbolic.symbol.TimeSignature
+import music.primitives._
 
 class MusicReader @Inject() (reader: MidiMessageReader) {
 
@@ -13,7 +12,7 @@ class MusicReader @Inject() (reader: MidiMessageReader) {
 
   def readSpelledPitch: SpelledPitch = {
     val midiNoteNumbers = readMidiNoteNumbers(NoteOn(2))
-    val firstStep = tuning.pc2step(tuning.noteNumberToPitch(midiNoteNumbers.head).pitchClass)
+    val firstStep = tuning.pc2step(tuning.noteNumberToPc(midiNoteNumbers.head))
 
     if (firstStep.isEmpty) readSpelledPitch
     else {
@@ -41,7 +40,7 @@ class MusicReader @Inject() (reader: MidiMessageReader) {
 
   def numberFromBits(notes: List[MidiNoteNumber]): Int = {
     notes.foldRight(0){ case (noteNumber, acc) =>
-      acc + (1 << tuning.noteNumberToPitch(noteNumber).pitchClass.value)
+      acc + (1 << tuning.noteNumberToPc(noteNumber).value)
     }
   }
 

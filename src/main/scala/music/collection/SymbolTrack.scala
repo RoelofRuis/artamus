@@ -1,8 +1,8 @@
-package music.symbolic
+package music.collection
 
 import javax.annotation.concurrent.Immutable
-import music.symbolic.Symbols.SymbolType
-import music.symbolic.temporal.Position
+import music.primitives.Position
+import music.Symbols.SymbolType
 
 import scala.collection.SortedMap
 

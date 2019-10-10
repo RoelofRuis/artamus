@@ -1,7 +1,7 @@
 package server.rendering.service
 
 import javax.inject.Inject
-import music.symbolic.Track
+import music.collection.Track
 import server.rendering.Renderer
 import server.rendering.interpret.LilypondInterpreter
 

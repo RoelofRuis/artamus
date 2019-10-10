@@ -1,4 +1,4 @@
-package music.symbolic.pitch
+package music.primitives
 
 final case class Scale(stepSizes: Seq[Int]) {
 

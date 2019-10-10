@@ -2,7 +2,7 @@ package server.control
 
 import blackboard.Controller
 import javax.inject.Inject
-import music.symbolic.Track
+import music.collection.Track
 import protocol.Command
 import pubsub.Dispatcher
 import server.domain.track.TrackState

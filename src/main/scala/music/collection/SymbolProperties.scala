@@ -1,7 +1,6 @@
-package music.symbolic
+package music.collection
 
-import music.symbolic.Properties.Property
-import music.symbolic.Symbols.SymbolType
+import music.Symbols.{Property, SymbolType}
 
 import scala.reflect.{ClassTag, classTag}
 

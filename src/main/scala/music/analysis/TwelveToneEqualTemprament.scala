@@ -1,7 +1,7 @@
 package music.analysis
 
 import music.analysis.Analysis.{DefinedChords, DefinedFunctions, DefinedIntervals}
-import music.symbolic.pitch.{Function, Interval, TuningSystem}
+import music.primitives._
 
 object TwelveToneEqualTemprament {
 

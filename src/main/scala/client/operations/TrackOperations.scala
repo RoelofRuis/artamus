@@ -4,9 +4,7 @@ import client.read.MusicReader.{NoteOn, Simultaneous}
 import client.read.{MusicReader, StdIOTools}
 import com.google.inject.Inject
 import music.math.Rational
-import music.symbolic.pitch.Scale
-import music.symbolic.symbol.Key
-import music.symbolic.temporal.{Duration, Position}
+import music.primitives.{Duration, Key, Position, Scale}
 import server.control.CommitChanges
 import server.domain.track.{AddNote, NewTrack, SetKey, SetTimeSignature}
 
@@ -41,10 +39,12 @@ class TrackOperations @Inject() (
       .readMidiNoteNumbers(NoteOn(numNotes))
       .zipWithIndex
       .map{ case (midiNoteNumber, index) =>
+        val (oct, pc) = tuning.noteNumberToOctAndPc(midiNoteNumber)
         AddNote(
           Position.apply(elementDuration, index),
           elementDuration,
-          tuning.noteNumberToPitch(midiNoteNumber)
+          oct,
+          pc
         )}
 
     messages :+ CommitChanges
@@ -60,10 +60,12 @@ class TrackOperations @Inject() (
       reader
         .readMidiNoteNumbers(Simultaneous)
         .map { midiNoteNumber =>
+          val (oct, pc) = tuning.noteNumberToOctAndPc(midiNoteNumber)
           AddNote(
             Position.apply(elementDuration, i),
             elementDuration,
-            tuning.noteNumberToPitch(midiNoteNumber)
+            oct,
+            pc
           )
         }
       }.toList

@@ -1,7 +1,6 @@
 package server.rendering.interpret.lilypond
 
-import music.symbolic.pitch.SpelledNote
-import music.symbolic.symbol.{Key, TimeSignature}
+import music.primitives._
 
 final case class Staff(
   key: Option[Key],

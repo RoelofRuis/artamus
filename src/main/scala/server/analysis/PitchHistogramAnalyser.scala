@@ -1,9 +1,9 @@
 package server.analysis
 
 import blackboard.KnowledgeSource
-import music.symbolic.Symbols.Note
-import music.symbolic.Track
-import music.symbolic.pitch.PitchClass
+import music.Symbols.Note
+import music.collection.Track
+import music.primitives.PitchClass
 
 import scala.collection.SortedMap
 

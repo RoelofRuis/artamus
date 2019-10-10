@@ -1,4 +1,4 @@
-package music.symbolic.symbol
+package music.primitives
 
 import music.math
 

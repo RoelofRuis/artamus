@@ -2,9 +2,9 @@ package server.analysis
 
 import blackboard.KnowledgeSource
 import music.analysis.{TwelveToneChordAnalysis, TwelveToneEqualTemprament}
-import music.symbolic.Symbols.{Chord, Note}
-import music.symbolic.{SymbolProperties, Track}
-import music.symbolic.pitch.PitchClass
+import music.Symbols.{Chord, Note}
+import music.collection.{SymbolProperties, Track}
+import music.primitives.PitchClass
 
 class ChordAnalyser extends KnowledgeSource[Track] {
 
