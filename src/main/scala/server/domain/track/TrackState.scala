@@ -1,7 +1,7 @@
 package server.domain.track
 
 import music.primitives.Position
-import music.Symbols.SymbolType
+import music.symbols.SymbolType
 import music.collection.{SymbolProperties, Track}
 
 import scala.reflect.ClassTag

@@ -1,5 +1,5 @@
 package music.collection
 
-import music.Symbols.SymbolType
+import music.symbols.SymbolType
 
 final case class TrackSymbol[S <: SymbolType](id: Long, props: SymbolProperties[S])

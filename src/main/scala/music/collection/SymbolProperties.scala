@@ -1,10 +1,11 @@
 package music.collection
 
-import music.Symbols.{Property, SymbolType}
+import music.symbols.{Property, SymbolType}
 
 import scala.reflect.{ClassTag, classTag}
 
-final case class SymbolProperties[S <: SymbolType](
+// TODO: this class should remain concealed
+final case class SymbolProperties[S <: SymbolType] private[music] (
   private val props: Map[String, Any]
 ) {
 

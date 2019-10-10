@@ -1,7 +1,7 @@
 package server.rendering.interpret
 
 import music.primitives._
-import music.Symbols.{MetaSymbol, Note}
+import music.symbols.{MetaSymbol, Note}
 import music.collection.{SymbolProperties, Track}
 import server.rendering.interpret.lilypond.{LyFile, Staff}
 

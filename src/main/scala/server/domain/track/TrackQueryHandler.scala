@@ -1,8 +1,8 @@
 package server.domain.track
 
 import javax.inject.Inject
-import music.Symbols.Note
 import music.primitives.{Octave, PitchClass}
+import music.symbols.Note
 import protocol.Query
 import pubsub.Dispatcher
 

@@ -1,10 +1,10 @@
 package server.analysis
 
 import blackboard.KnowledgeSource
+import music.symbols.{Chord, Note}
 import music.analysis.{TwelveToneChordAnalysis, TwelveToneEqualTemprament}
-import music.Symbols.{Chord, Note}
-import music.collection.{SymbolProperties, Track}
-import music.primitives.PitchClass
+import music.collection.Track
+import music.primitives.{ChordFunctions, ChordRoot, PitchClass}
 
 class ChordAnalyser extends KnowledgeSource[Track] {
 
@@ -19,9 +19,9 @@ class ChordAnalyser extends KnowledgeSource[Track] {
 
     // TODO: remove additional printing
     possibleChords.foreach { case (pos, chords) =>
-      chords.zipWithIndex.foreach { case ((chordRoot, chordFunctions), index) =>
-        val name = TwelveToneEqualTemprament.Chords.functionChordMapping.toMap.get(chordFunctions.functions.sorted)
-        println(s"$pos (option $index): [${chordRoot.pc.value}] [$name]")
+      chords.zipWithIndex.foreach { case (chord, index) =>
+        val name = TwelveToneEqualTemprament.Chords.functionChordMapping.toMap.get(chord.get[ChordFunctions].get.functions.sorted)
+        println(s"$pos (option $index): [${chord.get[ChordRoot].get.pc.value}] [$name]")
       }
     }
 
@@ -32,7 +32,7 @@ class ChordAnalyser extends KnowledgeSource[Track] {
         chord match {
           case c if c.nonEmpty => acc
             .updateSymbolTrack[Chord.type](
-              _.addSymbolAt(pos, SymbolProperties.empty.add(c.head._1).add(c.head._2))
+              _.addSymbolAt(pos, c.head)
             )
           case _ => acc
         }
