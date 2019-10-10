@@ -10,11 +10,12 @@ import music.collection.Track
 import net.codingwell.scalaguice.ScalaPrivateModule
 import protocol._
 import pubsub.{Dispatcher, EventBus}
-import server.rendering.RenderingModule
+import server.rendering.{RenderingCompletionHandler, RenderingModule}
 
 class ServerModule extends ScalaPrivateModule with ServerConfig {
 
   override def configure(): Unit = {
+    bind[RenderingCompletionHandler].to[RenderingEventCompletionHandler]
     install(new RenderingModule with ServerConfig)
 
     bind[ServerControlHandler].asEagerSingleton()
