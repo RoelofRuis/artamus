@@ -5,15 +5,13 @@ import java.io.File
 import com.typesafe.scalalogging.LazyLogging
 import javax.annotation.concurrent.NotThreadSafe
 import javax.inject.Inject
-import protocol.Event
-import pubsub.EventBus
 import server.rendering.interpret.lilypond.LyFile
-import server.rendering.{RenderingCompleted, RenderingException, RenderingResult}
+import server.rendering.{RenderingCompleted, RenderingCompletionHandler, RenderingException, RenderingResult}
 
 @NotThreadSafe
 private[rendering] class AsyncRenderingBank @Inject() (
   renderingService: LilypondCommandLineExecutor,
-  broadcastEvents: EventBus[Event] // TODO: Invert controll and let user pass implemented interface!
+  completionHandler: RenderingCompletionHandler
 ) extends LazyLogging {
 
   private var rendersInProgress = Map[Long, String]()
@@ -37,11 +35,11 @@ private[rendering] class AsyncRenderingBank @Inject() (
           case Right(result) =>
             logger.debug(s"Rendering successful [$taskId]")
             rendersCompleted += (name -> result.file)
-            broadcastEvents.publish(RenderingCompleted(name, taskId, success = true))
+            completionHandler.renderingCompleted(RenderingCompleted(name, taskId, success = true))
 
           case Left(ex) =>
             logger.warn(s"Rendering failed [$taskId] [$ex]")
-            broadcastEvents.publish(RenderingCompleted(name, taskId, success = false))
+            completionHandler.renderingCompleted(RenderingCompleted(name, taskId, success = false))
         }
 
       case None => logger.warn("Received completed render for unknown submitter!")
