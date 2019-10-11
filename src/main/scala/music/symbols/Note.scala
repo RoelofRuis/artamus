@@ -10,8 +10,7 @@ object Note extends SymbolType {
     pitchClass: PitchClass,
     duration: Duration
   ): SymbolProperties[Note.type] =
-    SymbolProperties
-      .empty
+    SymbolProperties[Note.type]
       .add(octave)
       .add(pitchClass)
       .add(duration)

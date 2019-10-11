@@ -7,14 +7,14 @@ import music.symbols.SymbolType
 import scala.collection.SortedMap
 
 @Immutable
-final case class SymbolTrack[S <: SymbolType](
-  positions: SortedMap[Position, Seq[Long]],
-  symbols: Map[Long, SymbolProperties[S]],
-  lastId: Long
-) {
+private[collection] final case class SymbolTrackImpl[S <: SymbolType](
+  private val positions: SortedMap[Position, Seq[Long]],
+  private val symbols: Map[Long, SymbolProperties[S]],
+  private val lastId: Long
+) extends SymbolTrack[S] {
 
   def addSymbolAt(pos: Position, props: SymbolProperties[S]): SymbolTrack[S] = {
-    SymbolTrack(
+    SymbolTrackImpl(
       positions.updated(pos, positions.getOrElse(pos, List()) :+ lastId),
       symbols.updated(lastId, props),
       lastId + 1
@@ -34,11 +34,5 @@ final case class SymbolTrack[S <: SymbolType](
       (position, indices.flatMap { index => symbols.get(index).map(TrackSymbol(index, _)) })
     }.toSeq
   }
-
-}
-
-object SymbolTrack {
-
-  def empty[S <: SymbolType]: SymbolTrack[S] = SymbolTrack[S](SortedMap(), Map(), 0)
 
 }
