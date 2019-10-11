@@ -9,7 +9,12 @@ class RenderingModule extends ScalaPrivateModule {
 
   override def configure(): Unit = {
     bind[LilypondInterpreter].asEagerSingleton()
-    bind[LilypondCommandLineExecutor].toInstance(new LilypondCommandLineExecutor(resourceRootPath, cleanupLySources))
+    bind[LilypondCommandLineExecutor].toInstance(
+      new LilypondCommandLineExecutor(
+        resourceRootPath,
+        cleanupLySources,
+        pngResolution,
+      ))
     bind[AsyncRenderingBank].asEagerSingleton()
     bind[Renderer].to[TrackRenderer].asEagerSingleton()
 

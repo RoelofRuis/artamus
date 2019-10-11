@@ -8,5 +8,8 @@ trait ServerConfig extends RenderingConfig {
 
   val resourceRootPath = "data"
   val cleanupLySources = false
+  val pngResolution = 160
+  val lyVersion: String = "2.18"
+  val paperSize: String = "a6landscape"
 
 }

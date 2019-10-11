@@ -5,7 +5,10 @@ import music.primitives._
 import music.symbols.{Chord, MetaSymbol, Note}
 import server.rendering.interpret.lilypond.{ChordNames, LyFile, Staff}
 
-private[rendering] class LilypondInterpreter {
+private[rendering] class LilypondInterpreter(
+  lyVersion: String,
+  paperSize: String
+) {
 
   def interpret(track: Track): LyFile = {
     val stackedNotes: Seq[Seq[SpelledNote]] =
@@ -26,7 +29,9 @@ private[rendering] class LilypondInterpreter {
         track.getSymbolTrack[MetaSymbol.type].readAt(Position.zero).headOption.flatMap(_.props.get[TimeSignature]),
         stackedNotes,
       ),
-      ChordNames(chords)
+      ChordNames(chords),
+      lyVersion,
+      paperSize,
     )
   }
 

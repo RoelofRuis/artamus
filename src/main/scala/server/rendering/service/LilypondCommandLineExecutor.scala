@@ -12,6 +12,7 @@ import server.rendering.{RenderingException, RenderingResult}
 private[rendering] class LilypondCommandLineExecutor(
   val resourceRootPath: String,
   val cleanupLySources: Boolean,
+  val pngResolution: Int,
 ) {
 
   private val executor: ExecutorService = Executors.newFixedThreadPool(1)
@@ -66,7 +67,7 @@ private[rendering] class LilypondCommandLineExecutor(
     * @see http://lilypond.org/doc/v2.18/Documentation/usage/command_002dline-usage
     */
   private def getLilypondCommand(outputPath: String): String = {
-    s"lilypond -fpng -odata -dresolution=160 $outputPath"
+    s"lilypond -fpng -odata -dresolution=$pngResolution $outputPath"
   }
 
 }
