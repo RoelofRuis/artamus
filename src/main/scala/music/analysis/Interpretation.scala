@@ -1,6 +1,6 @@
-package server.analysis
+package music.analysis
 
-import server.analysis.Interpretation.{AllOf, OneOf}
+import music.analysis.Interpretation.{AllOf, OneOf}
 
 /**
   * Models an interpretation of some phenomenon as a disjunction of conjunctions.

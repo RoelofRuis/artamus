@@ -3,7 +3,6 @@ package music.analysis
 import music.collection.SymbolProperties
 import music.primitives._
 import music.symbols.Chord
-import server.analysis.Interpretation
 
 import scala.collection.immutable.SortedSet
 
