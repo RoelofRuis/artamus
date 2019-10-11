@@ -1,5 +1,6 @@
 package client
 
+import client.events.RenderHandler
 import client.operations._
 import client.read.MusicReader
 import com.google.inject.Provides
@@ -27,6 +28,7 @@ class ClientModule extends ScalaPrivateModule with ClientConfig {
     bind[DevOperations].asEagerSingleton()
 
     bind[Dispatcher[Event]].toInstance(pubsub.createDispatcher[Event]())
+    bind[RenderHandler].asEagerSingleton()
 
     bind[Bootstrapper].asEagerSingleton()
     expose[Bootstrapper]

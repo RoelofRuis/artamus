@@ -1,4 +1,4 @@
-package client.events
+package client.write
 
 import midi.out.{SequenceBuilder, SequenceFormat}
 

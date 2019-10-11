@@ -1,6 +1,6 @@
 package client.operations
 
-import client.events.QuarterNotesFormat
+import client.write.QuarterNotesFormat
 import javax.inject.Inject
 import midi.out.SequenceWriter
 import protocol.ClientInterface

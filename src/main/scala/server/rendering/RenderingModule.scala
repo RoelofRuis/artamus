@@ -13,7 +13,7 @@ class RenderingModule extends ScalaPrivateModule {
         cleanupLySources,
         pngResolution,
       ))
-    bind[AsyncRenderer].asEagerSingleton()
+    bind[Renderer].to[AsyncRenderer].asEagerSingleton()
 
     expose[Renderer]
   }
