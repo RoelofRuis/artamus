@@ -1,6 +1,7 @@
 package server.rendering.interpret.lilypond
 
 import music.primitives._
+import music.spelling.{SpelledChord, SpelledNote, SpelledPitch}
 
 // TODO: distribute over classes representing the lilypond structure!
 trait LilypondFormat[A] {

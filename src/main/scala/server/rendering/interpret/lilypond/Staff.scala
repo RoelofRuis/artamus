@@ -1,6 +1,7 @@
 package server.rendering.interpret.lilypond
 
 import music.primitives._
+import music.spelling.SpelledNote
 
 final case class Staff(
   key: Option[Key],

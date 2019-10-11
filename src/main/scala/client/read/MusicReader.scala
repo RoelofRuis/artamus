@@ -4,6 +4,7 @@ import client.read.MusicReader.{NoteOn, ReadMethod, Simultaneous}
 import javax.inject.Inject
 import midi.in.MidiMessageReader
 import music.primitives._
+import music.spelling.SpelledPitch
 
 class MusicReader @Inject() (reader: MidiMessageReader) {
 

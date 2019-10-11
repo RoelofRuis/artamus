@@ -1,6 +1,6 @@
 package server.rendering.interpret.lilypond
 
-import music.primitives._
+import music.spelling.SpelledChord
 
 final case class ChordNames(
   chords: Seq[SpelledChord]

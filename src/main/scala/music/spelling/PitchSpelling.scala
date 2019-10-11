@@ -1,4 +1,4 @@
-package server.rendering.interpret
+package music.spelling
 
 import music.collection.SymbolProperties
 import music.primitives._
@@ -9,7 +9,7 @@ object PitchSpelling {
   def spellChord(symbol: SymbolProperties[Chord.type]): Option[SpelledChord] = {
     for {
       root <- symbol.get[ChordRoot]
-    } yield SpelledChord(spellPc(root.pc), Duration.QUARTER) // TODO: no explicit duration!
+    } yield SpelledChord(Duration.QUARTER, spellPc(root.pc)) // TODO: no explicit duration!
   }
 
   def spellNote(symbol: SymbolProperties[Note.type]): Option[SpelledNote] = {

@@ -1,6 +1,7 @@
 package music.analysis
 
 import music.primitives.{Octave, PitchClass, _}
+import music.spelling.SpelledPitch
 
 final case class TuningSystem[A](pcSeq: Seq[Int]) {
 
