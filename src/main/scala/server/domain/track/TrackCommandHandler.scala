@@ -1,7 +1,6 @@
 package server.domain.track
 
 import javax.inject.Inject
-import music.symbols.SymbolType
 import protocol.Command
 import pubsub.Dispatcher
 
@@ -17,7 +16,12 @@ private[server] class TrackCommandHandler @Inject() (
     true
   }
 
-  dispatcher.subscribe[CreateSymbol[S forSome { type S <: SymbolType }]]{ command =>
+  dispatcher.subscribe[CreateNoteSymbol]{ command =>
+    state.createSymbol(command.position, command.symbol)
+    true
+  }
+
+  dispatcher.subscribe[CreateMetaSymbol]{ command =>
     state.createSymbol(command.position, command.symbol)
     true
   }

@@ -21,11 +21,11 @@ class TrackOperations @Inject() (
   })
 
   registry.registerOperation(OperationToken("time-signature", "track"), () => {
-    List(CreateSymbol(Position.zero, MetaSymbol.timeSignature(reader.readTimeSignature)))
+    List(CreateMetaSymbol(Position.zero, MetaSymbol.timeSignature(reader.readTimeSignature)))
   })
 
   registry.registerOperation(OperationToken("key", "track"), () => {
-    List(CreateSymbol(Position.zero, MetaSymbol.key(Key(reader.readSpelledPitch, Scale.MAJOR))))
+    List(CreateMetaSymbol(Position.zero, MetaSymbol.key(Key(reader.readSpelledPitch, Scale.MAJOR))))
   })
 
   registry.registerOperation(OperationToken("note-seq", "track"), () => {
@@ -41,7 +41,7 @@ class TrackOperations @Inject() (
       .zipWithIndex
       .map{ case (midiNoteNumber, index) =>
         val (oct, pc) = tuning.noteNumberToOctAndPc(midiNoteNumber)
-        CreateSymbol(
+        CreateNoteSymbol(
           Position.apply(elementDuration, index),
           Note(
             oct,
@@ -64,7 +64,7 @@ class TrackOperations @Inject() (
         .readMidiNoteNumbers(Simultaneous)
         .map { midiNoteNumber =>
           val (oct, pc) = tuning.noteNumberToOctAndPc(midiNoteNumber)
-          CreateSymbol(
+          CreateNoteSymbol(
             Position.apply(elementDuration, i),
             Note(
               oct,

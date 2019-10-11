@@ -2,7 +2,7 @@ package server.domain.track
 
 import javax.inject.Inject
 import music.primitives.{Octave, PitchClass}
-import music.symbols.Note
+import music.symbols.{Chord, Note}
 import protocol.Query
 import pubsub.Dispatcher
 
@@ -12,6 +12,20 @@ private[server] class TrackQueryHandler @Inject() (
 ) {
 
   import music.analysis.TwelveToneEqualTemprament._
+
+  dispatcher.subscribe[GetNotes.type]{ _ =>
+    state
+      .readState
+      .getSymbolTrack[Note.type]
+      .readAll
+  }
+
+  dispatcher.subscribe[GetChords.type]{ _ =>
+    state
+      .readState
+      .getSymbolTrack[Chord.type]
+      .readAll
+  }
 
   dispatcher.subscribe[GetMidiPitches.type]{ _ =>
     state
