@@ -66,7 +66,7 @@ private[rendering] class LilypondCommandLineExecutor(
     * @see http://lilypond.org/doc/v2.18/Documentation/usage/command_002dline-usage
     */
   private def getLilypondCommand(outputPath: String): String = {
-    s"lilypond -fpng -odata $outputPath"
+    s"lilypond -fpng -odata -danti-alias-factor=2 $outputPath"
   }
 
 }
