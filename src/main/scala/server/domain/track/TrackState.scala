@@ -13,7 +13,7 @@ class TrackState() {
 
   def reset(): Unit = track = Track.empty
 
-  def addSymbol[S <: SymbolType : ClassTag](pos: Position, props: SymbolProperties[S]): Unit = {
+  def createSymbol[S <: SymbolType : ClassTag](pos: Position, props: SymbolProperties[S]): Unit = {
     track = track.updateSymbolTrack[S](_.addSymbolAt(pos, props))
   }
 

@@ -5,8 +5,9 @@ import client.read.{MusicReader, StdIOTools}
 import com.google.inject.Inject
 import music.math.Rational
 import music.primitives.{Duration, Key, Position, Scale}
+import music.symbols.{MetaSymbol, Note}
 import server.control.CommitChanges
-import server.domain.track.{AddNote, NewTrack, SetKey, SetTimeSignature}
+import server.domain.track._
 
 class TrackOperations @Inject() (
   registry: OperationRegistry,
@@ -20,11 +21,11 @@ class TrackOperations @Inject() (
   })
 
   registry.registerOperation(OperationToken("time-signature", "track"), () => {
-    List(SetTimeSignature(reader.readTimeSignature))
+    List(CreateSymbol(Position.zero, MetaSymbol.timeSignature(reader.readTimeSignature)))
   })
 
   registry.registerOperation(OperationToken("key", "track"), () => {
-    List(SetKey(Key(reader.readSpelledPitch, Scale.MAJOR)))
+    List(CreateSymbol(Position.zero, MetaSymbol.key(Key(reader.readSpelledPitch, Scale.MAJOR))))
   })
 
   registry.registerOperation(OperationToken("note-seq", "track"), () => {
@@ -40,11 +41,13 @@ class TrackOperations @Inject() (
       .zipWithIndex
       .map{ case (midiNoteNumber, index) =>
         val (oct, pc) = tuning.noteNumberToOctAndPc(midiNoteNumber)
-        AddNote(
+        CreateSymbol(
           Position.apply(elementDuration, index),
-          elementDuration,
-          oct,
-          pc
+          Note(
+            oct,
+            pc,
+            elementDuration
+          )
         )}
 
     messages :+ CommitChanges
@@ -61,11 +64,13 @@ class TrackOperations @Inject() (
         .readMidiNoteNumbers(Simultaneous)
         .map { midiNoteNumber =>
           val (oct, pc) = tuning.noteNumberToOctAndPc(midiNoteNumber)
-          AddNote(
+          CreateSymbol(
             Position.apply(elementDuration, i),
-            elementDuration,
-            oct,
-            pc
+            Note(
+              oct,
+              pc,
+              elementDuration
+            )
           )
         }
       }.toList

@@ -1,10 +1,11 @@
 package server.domain.track
 
 import javax.inject.Inject
-import music.primitives.{Duration, Position}
-import music.symbols.{MetaSymbol, Note}
+import music.symbols.SymbolType
 import protocol.Command
 import pubsub.Dispatcher
+
+import scala.language.existentials
 
 private[server] class TrackCommandHandler @Inject() (
   dispatcher: Dispatcher[Command],
@@ -16,27 +17,8 @@ private[server] class TrackCommandHandler @Inject() (
     true
   }
 
-  dispatcher.subscribe[SetTimeSignature]{ command =>
-    // TODO: move explicit position away from here
-    state.addSymbol[MetaSymbol.type](Position(Duration.QUARTER, 0), MetaSymbol.timeSignature(command.t))
-    true
-  }
-
-  dispatcher.subscribe[SetKey] { command =>
-    // TODO: move explicit position away from here
-    state.addSymbol[MetaSymbol.type](Position(Duration.QUARTER, 0), MetaSymbol.key(command.k))
-    true
-  }
-
-  dispatcher.subscribe[AddNote] { command =>
-    state.addSymbol[Note.type](
-      command.position,
-      Note(
-        command.octave,
-        command.pitchClass,
-        command.duration
-      )
-    )
+  dispatcher.subscribe[CreateSymbol[S forSome { type S <: SymbolType }]]{ command =>
+    state.createSymbol(command.position, command.symbol)
     true
   }
 
