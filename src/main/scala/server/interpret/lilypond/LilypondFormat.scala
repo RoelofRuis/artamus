@@ -1,4 +1,4 @@
-package server.rendering.interpret.lilypond
+package server.interpret.lilypond
 
 import music.primitives._
 import music.spelling.{SpelledChord, SpelledNote, SpelledPitch}

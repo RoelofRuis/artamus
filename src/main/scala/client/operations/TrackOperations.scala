@@ -6,7 +6,7 @@ import com.google.inject.Inject
 import music.math.Rational
 import music.primitives.{Duration, Key, Position, Scale}
 import music.symbols.{MetaSymbol, Note}
-import server.control.CommitChanges
+import server.control.Commit
 import server.domain.track._
 
 class TrackOperations @Inject() (
@@ -50,7 +50,7 @@ class TrackOperations @Inject() (
           )
         )}
 
-    messages :+ CommitChanges
+    messages :+ Commit
   })
 
   registry.registerOperation(OperationToken("chords", "track"), () => {
@@ -75,7 +75,7 @@ class TrackOperations @Inject() (
         }
       }.toList
 
-    messages :+ CommitChanges
+    messages :+ Commit
   })
 
 }

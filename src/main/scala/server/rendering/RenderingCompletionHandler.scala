@@ -1,5 +1,5 @@
 package server.rendering
 
 trait RenderingCompletionHandler {
-  def renderingCompleted(result: RenderingCompleted): Unit
+  def renderingCompleted(submitter: String, success: Boolean): Unit
 }

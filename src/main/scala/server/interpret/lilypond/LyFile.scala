@@ -1,4 +1,4 @@
-package server.rendering.interpret.lilypond
+package server.interpret.lilypond
 
 final case class LyFile(
   staff: Staff,

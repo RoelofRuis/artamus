@@ -1,4 +1,4 @@
-package server.rendering.interpret.lilypond
+package server.interpret.lilypond
 
 import music.primitives._
 import music.spelling.SpelledNote
@@ -9,7 +9,7 @@ final case class Staff(
   notes: Seq[Seq[SpelledNote]]
 ) {
 
-  import server.rendering.interpret.lilypond.LilypondFormat._
+  import server.interpret.lilypond.LilypondFormat._
 
   def asString: String = {
     val staffContents = Seq(

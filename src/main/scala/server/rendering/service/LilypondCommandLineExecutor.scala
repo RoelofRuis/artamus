@@ -5,8 +5,7 @@ import java.util.concurrent.atomic.AtomicLong
 import java.util.concurrent.{ExecutorService, Executors}
 
 import javax.annotation.concurrent.NotThreadSafe
-import server.rendering.interpret.lilypond.LyFile
-import server.rendering.{RenderingException, RenderingResult}
+import server.interpret.lilypond.LyFile
 
 @NotThreadSafe
 private[rendering] class LilypondCommandLineExecutor(
@@ -29,7 +28,7 @@ private[rendering] class LilypondCommandLineExecutor(
 
   def shutdown(): Unit = executor.shutdown()
 
-  def setCompletionHandler(handler: (Long, Either[RenderingException, RenderingResult]) => Unit): Unit = {
+  def setCompletionCallback(handler: (Long, Either[RenderingException, RenderingResult]) => Unit): Unit = {
     completionHandler = Some(handler)
   }
 

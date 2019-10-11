@@ -1,12 +1,19 @@
 package server
 
-import protocol.Command
+import java.io.File
+
+import protocol.{Command, Event}
 
 package object control {
 
   // Control
   case class Disconnect(shutdownServer: Boolean) extends Command
 
-  case object CommitChanges extends Command
+  case object Commit extends Command
+  case object Approve extends Command
+  case object Disapprove extends Command
+
+  // Events
+  final case class RenderingCompleted(file: File) extends Event
 
 }

@@ -2,8 +2,7 @@ package server
 
 import java.io.File
 
-import music.collection.Track
-import protocol.Event
+import server.interpret.lilypond.LyFile
 
 package object rendering {
 
@@ -11,22 +10,16 @@ package object rendering {
     val resourceRootPath: String
     val cleanupLySources: Boolean
     val pngResolution: Int
-    val lyVersion: String
-    val paperSize: String
   }
 
   trait Renderer {
 
-    def submit(submitter: String, track: Track): Unit
+    def submit(submitter: String, track: LyFile): Unit
+
+    def getRender(submitter: String): Option[File]
 
     def shutdown(): Unit
 
   }
-
-  final case class RenderingCompleted(key: String, version: Long, success: Boolean) extends Event
-
-  final case class RenderingException(message: String, cause: Option[Throwable]) extends Exception
-
-  final case class RenderingResult(file: File)
 
 }

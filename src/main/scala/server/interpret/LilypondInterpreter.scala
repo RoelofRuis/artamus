@@ -1,12 +1,12 @@
-package server.rendering.interpret
+package server.interpret
 
 import music.collection.Track
 import music.primitives._
 import music.spelling.TrackSpelling
 import music.symbols.MetaSymbol
-import server.rendering.interpret.lilypond.{ChordNames, LyFile, Staff}
+import server.interpret.lilypond.{ChordNames, LyFile, Staff}
 
-private[rendering] class LilypondInterpreter(
+class LilypondInterpreter(
   lyVersion: String,
   paperSize: String
 ) {

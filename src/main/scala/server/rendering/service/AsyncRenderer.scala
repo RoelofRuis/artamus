@@ -5,19 +5,19 @@ import java.io.File
 import com.typesafe.scalalogging.LazyLogging
 import javax.annotation.concurrent.NotThreadSafe
 import javax.inject.Inject
-import server.rendering.interpret.lilypond.LyFile
-import server.rendering.{RenderingCompleted, RenderingCompletionHandler, RenderingException, RenderingResult}
+import server.rendering.{Renderer, RenderingCompletionHandler}
+import server.interpret.lilypond.LyFile
 
 @NotThreadSafe
-private[rendering] class AsyncRenderingBank @Inject() (
+private[rendering] class AsyncRenderer @Inject() (
   renderingService: LilypondCommandLineExecutor,
   completionHandler: RenderingCompletionHandler
-) extends LazyLogging {
+) extends Renderer with LazyLogging {
 
   private var rendersInProgress = Map[Long, String]()
   private var rendersCompleted = Map[String, File]()
 
-  renderingService.setCompletionHandler(complete)
+  renderingService.setCompletionCallback(complete)
 
   def submit(submitter: String, file: LyFile): Unit = {
     val renderId = renderingService.render(file)
@@ -28,18 +28,22 @@ private[rendering] class AsyncRenderingBank @Inject() (
 
   def shutdown(): Unit = renderingService.shutdown()
 
+  override def getRender(submitter: String): Option[File] = {
+    rendersCompleted.get(submitter)
+  }
+
   private def complete(taskId: Long, renderingResult: Either[RenderingException, RenderingResult]): Unit = {
     rendersInProgress.get(taskId) match {
       case Some(name) =>
         renderingResult match {
           case Right(result) =>
-            logger.debug(s"Rendering successful [$taskId]")
+            logger.debug(s"Rendering [$taskId] successful")
             rendersCompleted += (name -> result.file)
-            completionHandler.renderingCompleted(RenderingCompleted(name, taskId, success = true))
+            completionHandler.renderingCompleted(name, success = true)
 
           case Left(ex) =>
-            logger.warn(s"Rendering failed [$taskId] [$ex]")
-            completionHandler.renderingCompleted(RenderingCompleted(name, taskId, success = false))
+            logger.warn(s"Rendering [$taskId] failed", ex)
+            completionHandler.renderingCompleted(name, success = false)
         }
 
       case None => logger.warn("Received completed render for unknown submitter!")

@@ -1,4 +1,4 @@
-package server.rendering.interpret.lilypond
+package server.interpret.lilypond
 
 import music.spelling.SpelledChord
 
@@ -6,7 +6,7 @@ final case class ChordNames(
   chords: Seq[SpelledChord]
 ) {
 
-  import server.rendering.interpret.lilypond.LilypondFormat._
+  import server.interpret.lilypond.LilypondFormat._
 
   def asString: String = {
     val chordString = chords.map(_.toLilypond).mkString(" ")
