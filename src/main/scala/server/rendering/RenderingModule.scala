@@ -8,7 +8,12 @@ class RenderingModule extends ScalaPrivateModule {
   this: RenderingConfig =>
 
   override def configure(): Unit = {
-    bind[LilypondInterpreter].asEagerSingleton()
+    bind[LilypondInterpreter].toInstance(
+      new LilypondInterpreter(
+        lyVersion,
+        paperSize
+      )
+    )
     bind[LilypondCommandLineExecutor].toInstance(
       new LilypondCommandLineExecutor(
         resourceRootPath,
