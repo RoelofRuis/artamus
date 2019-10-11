@@ -3,6 +3,8 @@ package music.analysis
 import music.analysis.Analysis.{DefinedChords, DefinedFunctions, DefinedIntervals}
 import music.primitives._
 
+import scala.collection.immutable.SortedSet
+
 object TwelveToneEqualTemprament {
 
   implicit val tuning: TuningSystem[TwelveToneEqualTemprament.type] = TuningSystem(Seq(0, 2, 4, 5, 7, 9, 11))
@@ -54,9 +56,9 @@ object TwelveToneEqualTemprament {
 
   implicit object Chords extends DefinedChords[TwelveToneEqualTemprament.type] {
     import Functions._
-    override val functionChordMapping: Seq[(Seq[Function], String)] = Seq(
-      (Seq(ROOT, THREE, FIVE), "Major"),
-      (Seq(ROOT, FLAT_THREE, FIVE), "Minor")
+    override val functionChordMapping: Seq[(SortedSet[Function], String)] = Seq(
+      (SortedSet(ROOT, THREE, FIVE), "Major"),
+      (SortedSet(ROOT, FLAT_THREE, FIVE), "Minor")
     )
   }
 

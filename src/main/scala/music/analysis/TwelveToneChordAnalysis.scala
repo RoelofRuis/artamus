@@ -5,6 +5,8 @@ import music.primitives._
 import music.symbols.Chord
 import server.analysis.Interpretation
 
+import scala.collection.immutable.SortedSet
+
 object TwelveToneChordAnalysis {
 
   import TwelveToneEqualTemprament._
@@ -15,8 +17,8 @@ object TwelveToneChordAnalysis {
       Interpretation.allOf(set)
         .expand(pc => tuning.possibleIntervals(root, pc))
         .expand(tuning.possibleFunctions)
-        .filter(tuning.functionsToName(_).nonEmpty)
-        .data.map(functions => Chord(root, functions))
+        .filter(functions => tuning.functionsToName(SortedSet(functions: _*)).nonEmpty)
+        .data.map(functions => Chord(root, SortedSet(functions: _*)))
     }
   }
 

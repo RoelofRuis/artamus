@@ -1,3 +1,5 @@
 package music.primitives
 
-final case class ChordFunctions(functions: Seq[Function])
+import scala.collection.immutable.SortedSet
+
+final case class ChordFunctions(functions: SortedSet[Function])

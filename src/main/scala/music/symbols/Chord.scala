@@ -1,10 +1,12 @@
 package music.symbols
 
 import music.collection.SymbolProperties
-import music.primitives.{ChordFunctions, ChordRoot, PitchClass, Function}
+import music.primitives.{ChordFunctions, ChordRoot, Function, PitchClass}
+
+import scala.collection.immutable.SortedSet
 
 case object Chord extends SymbolType {
-  def apply(root: PitchClass, functions: Seq[Function]): SymbolProperties[Chord.type] =
+  def apply(root: PitchClass, functions: SortedSet[Function]): SymbolProperties[Chord.type] =
     SymbolProperties[Chord.type]
       .add(ChordRoot(root))
       .add(ChordFunctions(functions))
