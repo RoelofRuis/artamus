@@ -1,12 +1,14 @@
 package client
 
+import client.events.RenderHandler
 import client.operations.{Operation, OperationRegistry}
 import javax.inject.Inject
 import protocol.{ClientInterface, Command}
 
 class Bootstrapper @Inject() (
   client: ClientInterface,
-  registry: OperationRegistry
+  registry: OperationRegistry,
+  renderHandler: RenderHandler
 ) {
 
   def run(): Unit = {
@@ -23,6 +25,7 @@ class Bootstrapper @Inject() (
       if (input == "quit") isRunning = false
     }
 
+    renderHandler.frame.dispose()
     client.close()
   }
 

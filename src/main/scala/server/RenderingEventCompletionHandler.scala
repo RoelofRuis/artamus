@@ -16,10 +16,7 @@ class RenderingEventCompletionHandler @Inject() (
     if (success) {
       logger.debug(s"Rendering successful")
       renderer.getRender(submitter) match {
-        case Some(file) =>
-          val event = RenderingCompleted(file)
-          logger.debug(s"broadcasting [$event]")
-          broadcastEvents.publish(event)
+        case Some(file) => broadcastEvents.publish(RenderingCompleted(file))
         case None => logger.error(s"No rendering for [$submitter] while completed successfully!")
       }
     } else {

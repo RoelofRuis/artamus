@@ -16,15 +16,13 @@ private[server] class ServerConnectionFactory(bindings: ServerBindings) extends 
 
       Success(new Runnable {
         override def run(): Unit = {
-          bindings.connectionAccepted(connectionId)
+          bindings.connectionAccepted(connectionId, event => objectOut.writeObject(event))
 
           try {
             while (socket.isConnected) {
               val request = objectIn.readObject()
 
               val response = bindings.handleRequest(request)
-
-              if (response.data.isLeft) logger.error("Error during processing", response.data.left.get)
 
               objectOut.writeObject(response)
             }

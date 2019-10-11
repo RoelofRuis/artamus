@@ -17,7 +17,7 @@ class RenderHandler @Inject() (
 ) extends LazyLogging {
 
   val frame: JFrame = new JFrame()
-  frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE)
+  frame.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE)
   val image = new ImageIcon()
   val label = new JLabel()
   label.setIcon(image)

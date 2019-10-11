@@ -1,13 +1,11 @@
 package transport.server
 
-import protocol.DataResponse
-
 trait ServerBindings {
 
-  def connectionAccepted(connectionId: String)
+  def connectionAccepted(connectionId: String, callback: Any => Unit)
 
   def connectionDropped(connectionId: String)
 
-  def handleRequest(obj: Object): DataResponse
+  def handleRequest(obj: Object): Any
 
 }

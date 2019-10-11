@@ -11,8 +11,8 @@ final case class ProtocolServerBindings(
   eventSubscriber: Subscriber[String, Event, Unit]
 ) extends ServerBindings {
 
-  def connectionAccepted(connectionId: String): Unit = {
-    eventSubscriber.subscribe(connectionId, EventResponse(_))
+  def connectionAccepted(connectionId: String, callback: Any => Unit): Unit = {
+    eventSubscriber.subscribe(connectionId, event => callback(EventResponse(event)))
   }
 
   def connectionDropped(connectionId: String): Unit = {
