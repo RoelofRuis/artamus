@@ -2,6 +2,7 @@ package server.rendering.interpret.lilypond
 
 final case class LyFile(
   staff: Staff,
+  chords: ChordNames,
   lyVersion: String = "2.18",
   paperSize: String = "a6landscape"
 ) {
@@ -20,6 +21,7 @@ final case class LyFile(
       |\\score {
       |<<
       |${staff.asString}
+      |${chords.asString}
       |>>
       |}
       |""".stripMargin

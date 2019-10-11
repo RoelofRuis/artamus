@@ -15,6 +15,10 @@ object LilypondFormat {
     def toLilypond: String = LilypondFormat[A].toLilypond(a)
   }
 
+  implicit val spelledChordToLilypond: LilypondFormat[SpelledChord] = (chord: SpelledChord) => {
+    chord.root.toLilypond + chord.duration.toLilypond
+  }
+
   implicit val simultaneousNotesToLilypond: LilypondFormat[Seq[SpelledNote]] = (notes: Seq[SpelledNote]) => {
     val dur = notes.map(_.duration).max
     // TODO: no brackets for single notes!
