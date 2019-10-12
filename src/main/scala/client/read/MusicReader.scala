@@ -31,6 +31,10 @@ class MusicReader @Inject() (reader: MidiMessageReader) {
     }
   }
 
+  def readPitchClasses(method: ReadMethod): List[PitchClass] = {
+    readMidiNoteNumbers(method).map(tuning.noteNumberToPc)
+  }
+
   def readMidiNoteNumbers(method: ReadMethod): List[MidiNoteNumber] = {
     val notes = method match {
       case NoteOn(n) => reader.noteOn(n)
@@ -39,7 +43,7 @@ class MusicReader @Inject() (reader: MidiMessageReader) {
     notes.map(s => MidiNoteNumber(s.getData1))
   }
 
-  def numberFromBits(notes: List[MidiNoteNumber]): Int = {
+  private def numberFromBits(notes: List[MidiNoteNumber]): Int = {
     notes.foldRight(0){ case (noteNumber, acc) =>
       acc + (1 << tuning.noteNumberToPc(noteNumber).value)
     }

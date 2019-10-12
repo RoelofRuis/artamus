@@ -4,7 +4,7 @@ import client.read.MusicReader.{NoteOn, Simultaneous}
 import client.read.{MusicReader, StdIOTools}
 import com.google.inject.Inject
 import music.math.Rational
-import music.primitives.{Duration, Key, Position, Scale}
+import music.primitives._
 import music.symbols.{MetaSymbol, Note}
 import server.domain.Commit
 import server.domain.track._
@@ -24,15 +24,28 @@ class TrackOperations @Inject() (
   })
 
   registry.registerOperation(OperationToken("time-signature", "track"), () => {
+    println(s"Reading time signature...")
+    val timeSignature = reader.readTimeSignature
+
     List(
-      CreateMetaSymbol(Position.zero, MetaSymbol.timeSignature(reader.readTimeSignature)),
+      CreateMetaSymbol(Position.zero, MetaSymbol.timeSignature(timeSignature)),
       Commit
     )
   })
 
   registry.registerOperation(OperationToken("key", "track"), () => {
+    println(s"Reading key...")
+    val root = reader.readSpelledPitch
+
+    println(s"Reading key type...")
+    val keyType = reader.readPitchClasses(NoteOn(1)).head match {
+      case PitchClass(3) => Scale.MINOR
+      case PitchClass(4) => Scale.MAJOR
+      case _ => Scale.MAJOR
+    }
+
     List(
-      CreateMetaSymbol(Position.zero, MetaSymbol.key(Key(reader.readSpelledPitch, Scale.MAJOR))),
+      CreateMetaSymbol(Position.zero, MetaSymbol.key(Key(root, keyType))),
       Commit
     )
   })
@@ -43,7 +56,7 @@ class TrackOperations @Inject() (
 
     val elementDuration = Duration(Rational.reciprocal(gridSpacing))
 
-    println(s"Reading [$numNotes][$elementDuration] notes:")
+    println(s"Reading [$numNotes][$elementDuration] notes...")
 
     val messages = reader
       .readMidiNoteNumbers(NoteOn(numNotes))
@@ -67,6 +80,8 @@ class TrackOperations @Inject() (
     val numChords = StdIOTools.readInt("How many chords?")
 
     val elementDuration = Duration(Rational.reciprocal(gridSpacing))
+
+    println(s"Reading [$numChords][$elementDuration] chords...")
 
     val messages = Range(0, numChords).flatMap { i =>
       reader
