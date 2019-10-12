@@ -42,8 +42,8 @@ private[server] class TrackQueryHandler @Inject() (
       case (_, notes) =>
         notes
           .flatMap { symbol =>
-            val pc = symbol.props.get[PitchClass]
-            val oct = symbol.props.get[Octave]
+            val pc = symbol.get[PitchClass]
+            val oct = symbol.get[Octave]
             if (pc.isDefined && oct.isDefined) Some(tuning.octAndPcToNoteNumber(oct.get, pc.get).value)
             else None
           }
