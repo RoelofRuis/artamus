@@ -1,6 +1,6 @@
 package server.analysis
 
-import blackboard.KnowledgeSource
+import server.analysis.blackboard.KnowledgeSource
 import music.symbols.Note
 import music.collection.Track
 import music.primitives.PitchClass

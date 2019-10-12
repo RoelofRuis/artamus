@@ -3,7 +3,7 @@ package server
 import _root_.server.analysis._
 import _root_.server.control.{ChangeHandler, ServerControlHandler}
 import _root_.server.domain.track.{TrackCommandHandler, TrackQueryHandler, TrackState}
-import blackboard.Controller
+import server.analysis.blackboard.Controller
 import com.google.inject.Provides
 import javax.inject.Singleton
 import music.collection.Track

@@ -1,6 +1,6 @@
 package server.control
 
-import blackboard.Controller
+import server.analysis.blackboard.Controller
 import javax.inject.Inject
 import music.collection.Track
 import protocol.Command

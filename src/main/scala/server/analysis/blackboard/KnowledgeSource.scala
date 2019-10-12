@@ -1,4 +1,4 @@
-package blackboard
+package server.analysis.blackboard
 
 trait KnowledgeSource[A] {
 

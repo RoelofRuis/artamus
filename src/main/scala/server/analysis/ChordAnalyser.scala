@@ -1,6 +1,6 @@
 package server.analysis
 
-import blackboard.KnowledgeSource
+import server.analysis.blackboard.KnowledgeSource
 import music.symbols.{Chord, Note}
 import music.analysis.{TwelveToneChordAnalysis, TwelveToneEqualTemprament}
 import music.collection.Track
