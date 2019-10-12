@@ -6,7 +6,7 @@ import com.google.inject.Inject
 import music.math.Rational
 import music.primitives.{Duration, Key, Position, Scale}
 import music.symbols.{MetaSymbol, Note}
-import server.control.Commit
+import server.domain.Commit
 import server.domain.track._
 
 class TrackOperations @Inject() (

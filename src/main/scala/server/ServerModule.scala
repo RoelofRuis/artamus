@@ -1,7 +1,7 @@
 package server
 
 import _root_.server.analysis._
-import _root_.server.control.{ChangeHandler, ServerControlHandler}
+import _root_.server.control.ServerControlHandler
 import _root_.server.domain.track.{TrackCommandHandler, TrackQueryHandler, TrackState}
 import server.analysis.blackboard.Controller
 import com.google.inject.Provides
@@ -10,6 +10,7 @@ import music.collection.Track
 import net.codingwell.scalaguice.ScalaPrivateModule
 import protocol._
 import pubsub.{Dispatcher, EventBus}
+import server.domain.ChangeHandler
 import server.interpret.LilypondInterpreter
 import server.rendering.{RenderingCompletionHandler, RenderingModule}
 

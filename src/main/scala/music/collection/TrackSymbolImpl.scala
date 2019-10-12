@@ -1,5 +1,6 @@
 package music.collection
 
+import javax.annotation.concurrent.Immutable
 import music.symbols.{Property, SymbolType}
 
 import scala.reflect.ClassTag

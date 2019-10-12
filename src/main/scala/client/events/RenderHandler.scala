@@ -8,7 +8,7 @@ import javax.imageio.ImageIO
 import javax.swing.{ImageIcon, JFrame, JLabel, WindowConstants}
 import protocol.Event
 import pubsub.Dispatcher
-import server.control.{ChangesCommitted, RenderingCompleted}
+import server.domain.{ChangesCommitted, RenderingCompleted}
 
 import scala.util.{Failure, Success, Try}
 

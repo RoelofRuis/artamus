@@ -4,7 +4,7 @@ import com.typesafe.scalalogging.LazyLogging
 import javax.inject.Inject
 import protocol.Event
 import pubsub.EventBus
-import server.control.RenderingCompleted
+import server.domain.RenderingCompleted
 import server.rendering.{Renderer, RenderingCompletionHandler}
 
 class RenderingEventCompletionHandler @Inject() (

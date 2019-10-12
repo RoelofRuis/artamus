@@ -1,11 +1,11 @@
-package server.control
+package server.domain
 
-import server.analysis.blackboard.Controller
 import javax.inject.Inject
 import music.collection.Track
 import music.spelling.TrackSpelling
 import protocol.{Command, Event}
 import pubsub.{Dispatcher, EventBus}
+import server.analysis.blackboard.Controller
 import server.domain.track.TrackState
 import server.interpret.LilypondInterpreter
 import server.rendering.Renderer
