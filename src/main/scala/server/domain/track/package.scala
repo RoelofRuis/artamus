@@ -13,6 +13,7 @@ package object track {
   case class CreateMetaSymbol(position: Position, symbol: SymbolProperties[MetaSymbol.type]) extends Command
 
   // Queries
+  case object GetMeta extends Query { type Res = Seq[TrackSymbol[MetaSymbol.type]] }
   case object GetNotes extends Query { type Res = Seq[TrackSymbol[Note.type]] }
   case object GetChords extends Query { type Res = Seq[TrackSymbol[Chord.type]] }
   case object GetMidiPitches extends Query { type Res = List[List[Int]] }
