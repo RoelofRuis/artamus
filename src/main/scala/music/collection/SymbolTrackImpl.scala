@@ -21,6 +21,16 @@ private[collection] final case class SymbolTrackImpl[S <: SymbolType](
     )
   }
 
+  def removeSymbol(id: Long): SymbolTrack[S] = {
+    SymbolTrackImpl(
+      positions
+        .find { case (_, seq) => seq.contains(id) }
+        .fold(positions) { case (pos, seq) => positions.updated(pos, seq.filter(_ == id)) },
+      symbols - id,
+      lastId
+    )
+  }
+
   def readAt(pos: Position): Seq[TrackSymbol[S]] = {
     positions.getOrElse(pos, List()).flatMap { index => symbols.get(index).map(TrackSymbolImpl(index, _)) }
   }

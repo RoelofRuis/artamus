@@ -10,6 +10,7 @@ case class TrackSpelling(track: Track) {
     track
       .getSymbolTrack[MetaSymbol.type]
       .readAt(Position.zero)
+      .reverse
       .flatMap(_.get[TimeSignature])
       .headOption
   }
@@ -18,6 +19,7 @@ case class TrackSpelling(track: Track) {
     track
       .getSymbolTrack[MetaSymbol.type]
       .readAt(Position.zero)
+      .reverse
       .flatMap(_.get[Key])
       .headOption
   }
