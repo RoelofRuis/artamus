@@ -9,16 +9,20 @@ final case class TuningSystem[A](pcSeq: Seq[Int]) {
   val numPitchClasses: Int = pcSeq.last + 1
 
   def step(i: Int): Step = Step(i % numSteps)
+
   def pc(i: Int): PitchClass = PitchClass(i % numPitchClasses)
+
   def pcs: Seq[PitchClass] = Range(0, numPitchClasses).map(PitchClass)
 
-  def pc2step(pc: PitchClass): Option[Step] = {
+  def pcToStep(pc: PitchClass): Option[Step] = {
     pcSeq.indexOf(pc.value) match {
       case i if i >= 0 => Some(Step(i))
       case _ => None
     }
   }
-  def step2pc(step: Step): PitchClass = pc(pcSeq(step.value))
+
+  def stepToPc(step: Step): PitchClass = pc(pcSeq(step.value))
+
   def pcDiff(pc1: PitchClass, pc2: PitchClass): Int = {
     val diff = pc2.value - pc1.value
     if (diff < 0) diff + numPitchClasses
@@ -48,5 +52,7 @@ final case class TuningSystem[A](pcSeq: Seq[Int]) {
 
     SpelledPitch(step(newStep), Accidental(pcDiff))
   }
+
+  def spelledPitchToPc(p: SpelledPitch): PitchClass = pc(pcSeq(p.step.value) + p.accidental.value)
 
 }

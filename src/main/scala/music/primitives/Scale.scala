@@ -4,6 +4,7 @@ final case class Scale(stepSizes: Seq[Int]) {
 
   def numberOfSteps: Int = stepSizes.length
   def numberOfPitches: Int = stepSizes.sum
+  def pcSequence: Seq[Int] = { stepSizes.indices.map { i => stepSizes.take(i).sum } }
 
 }
 

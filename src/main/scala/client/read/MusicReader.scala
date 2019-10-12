@@ -13,7 +13,7 @@ class MusicReader @Inject() (reader: MidiMessageReader) {
 
   def readSpelledPitch: SpelledPitch = {
     val midiNoteNumbers = readMidiNoteNumbers(NoteOn(2))
-    val firstStep = tuning.pc2step(tuning.noteNumberToPc(midiNoteNumbers.head))
+    val firstStep = tuning.pcToStep(tuning.noteNumberToPc(midiNoteNumbers.head))
 
     if (firstStep.isEmpty) readSpelledPitch
     else {

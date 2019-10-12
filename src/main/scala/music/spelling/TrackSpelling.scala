@@ -1,7 +1,7 @@
 package music.spelling
 
 import music.collection.Track
-import music.primitives.{Key, Position, TimeSignature}
+import music.primitives._
 import music.symbols.{Chord, MetaSymbol, Note}
 
 case class TrackSpelling(track: Track) {
@@ -24,17 +24,23 @@ case class TrackSpelling(track: Track) {
       .headOption
   }
 
-  def spelledNotes: Seq[Seq[SpelledNote]] =
+  def spelledNotes: Seq[Seq[SpelledNote]] = {
+    val key = spelledKey.getOrElse(Key(SpelledPitch(Step(0), Accidental(0)), Scale.MAJOR))
+
     track.getSymbolTrack[Note.type].readAllWithPosition
       .map {
-        case (_, symbols) => symbols.flatMap(PitchSpelling.spellNote)
+        case (_, symbols) => symbols.flatMap(note => PitchSpelling.spellNote(note, key))
       }
+  }
 
-  def spelledChords: Seq[SpelledChord] =
+  def spelledChords: Seq[SpelledChord] = {
+    val key = spelledKey.getOrElse(Key(SpelledPitch(Step(0), Accidental(0)), Scale.MAJOR))
+
     track
       .getSymbolTrack[Chord.type]
       .readAllWithPosition.flatMap { case (_, symbols) =>
-      symbols.flatMap(PitchSpelling.spellChord)
-    }
+        symbols.flatMap(chord => PitchSpelling.spellChord(chord, key))
+      }
+  }
 
 }
