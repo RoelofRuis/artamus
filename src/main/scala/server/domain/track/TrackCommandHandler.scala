@@ -12,7 +12,7 @@ private[server] class TrackCommandHandler @Inject() (
 ) {
 
   dispatcher.subscribe[NewTrack.type]{ _ =>
-    state.reset()
+    state.newTrack()
     true
   }
 

@@ -1,22 +1,28 @@
 package server.domain.track
 
+import javax.annotation.concurrent.{GuardedBy, ThreadSafe}
 import music.primitives.Position
 import music.symbols.SymbolType
 import music.collection.{SymbolProperties, Track}
 
 import scala.reflect.ClassTag
 
-/* @NotThreadSafe: synchronize access on `track` */
+@ThreadSafe
 class TrackState() {
 
-  private var track: Track = Track.empty
+  private val trackLock = new Object()
+  @GuardedBy(trackLock) var track: Track = Track.empty
 
-  def reset(): Unit = track = Track.empty
+  def newTrack(): Unit = synchronized(trackLock) {
+    track = Track.empty
+  }
 
-  def createSymbol[S <: SymbolType : ClassTag](pos: Position, props: SymbolProperties[S]): Unit = {
+  def createSymbol[S <: SymbolType : ClassTag](pos: Position, props: SymbolProperties[S]): Unit = synchronized(trackLock) {
     track = track.updateSymbolTrack[S](_.addSymbolAt(pos, props))
   }
 
-  def readState: Track = track
+  def readState: Track = synchronized(trackLock) {
+    track
+  }
 
 }
