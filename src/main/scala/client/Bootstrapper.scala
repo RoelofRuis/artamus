@@ -12,6 +12,7 @@ class Bootstrapper @Inject() (
 ) {
 
   def run(): Unit = {
+    client.open()
     var isRunning = true
 
     while(isRunning) {

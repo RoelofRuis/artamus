@@ -5,5 +5,7 @@ trait ClientInterface {
 
   def sendQuery[A <: Query](message: A): Option[A#Res]
 
+  def open(): Unit
+
   def close(): Unit
 }
