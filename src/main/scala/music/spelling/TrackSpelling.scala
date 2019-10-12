@@ -24,15 +24,15 @@ case class TrackSpelling(track: Track) {
 
   def spelledNotes: Seq[Seq[SpelledNote]] =
     track.getSymbolTrack[Note.type].readAllWithPosition
-      .map { case (_, symbols) =>
-        symbols.flatMap { symbol => PitchSpelling.spellNote(symbol.props) }
+      .map {
+        case (_, symbols) => symbols.flatMap(PitchSpelling.spellNote)
       }
 
   def spelledChords: Seq[SpelledChord] =
     track
       .getSymbolTrack[Chord.type]
       .readAllWithPosition.flatMap { case (_, symbols) =>
-      symbols.flatMap { symbol => PitchSpelling.spellChord(symbol.props) }
+      symbols.flatMap(PitchSpelling.spellChord)
     }
 
 }

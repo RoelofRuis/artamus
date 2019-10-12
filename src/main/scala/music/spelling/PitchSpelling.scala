@@ -1,19 +1,19 @@
 package music.spelling
 
-import music.collection.SymbolProperties
+import music.collection.TrackSymbol
 import music.primitives._
 import music.symbols.{Chord, Note}
 
 object PitchSpelling {
 
-  def spellChord(symbol: SymbolProperties[Chord.type]): Option[SpelledChord] = {
+  def spellChord(symbol: TrackSymbol[Chord.type]): Option[SpelledChord] = {
     for {
       root <- symbol.get[ChordRoot]
       dur <- symbol.get[Duration]
     } yield SpelledChord(dur, spellPc(root.pc))
   }
 
-  def spellNote(symbol: SymbolProperties[Note.type]): Option[SpelledNote] = {
+  def spellNote(symbol: TrackSymbol[Note.type]): Option[SpelledNote] = {
     for {
       pc <- symbol.get[PitchClass]
       oct <- symbol.get[Octave]

@@ -37,8 +37,9 @@ package object collection {
     def apply[S <: SymbolType]: SymbolProperties[S] = SymbolPropertiesImpl[S](Map())
   }
 
-  final case class TrackSymbol[S <: SymbolType](id: Long, props: SymbolProperties[S]) {
-    def get[A : ClassTag](implicit ev: Property[S, A]): Option[A] = props.get[A]
+  trait TrackSymbol[S <: SymbolType] {
+    val id: Long
+    def get[A : ClassTag](implicit ev: Property[S, A]): Option[A]
   }
 
 }

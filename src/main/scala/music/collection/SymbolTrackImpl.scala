@@ -22,16 +22,16 @@ private[collection] final case class SymbolTrackImpl[S <: SymbolType](
   }
 
   def readAt(pos: Position): Seq[TrackSymbol[S]] = {
-    positions.getOrElse(pos, List()).flatMap { index => symbols.get(index).map(TrackSymbol(index, _)) }
+    positions.getOrElse(pos, List()).flatMap { index => symbols.get(index).map(TrackSymbolImpl(index, _)) }
   }
 
   def readAll: Seq[TrackSymbol[S]] = {
-    symbols.map { case (index, properties) => TrackSymbol(index, properties) }.toSeq
+    symbols.map { case (index, properties) => TrackSymbolImpl(index, properties) }.toSeq
   }
 
   def readAllWithPosition: Seq[(Position, Seq[TrackSymbol[S]])] = {
     positions.map { case (position, indices) =>
-      (position, indices.flatMap { index => symbols.get(index).map(TrackSymbol(index, _)) })
+      (position, indices.flatMap { index => symbols.get(index).map(TrackSymbolImpl(index, _)) })
     }.toSeq
   }
 

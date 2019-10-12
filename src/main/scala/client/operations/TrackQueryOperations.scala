@@ -16,7 +16,7 @@ class TrackQueryOperations @Inject() (
     val optionSymbols = client.sendQuery(GetMeta)
     optionSymbols.foreach { syms =>
       syms.sortBy(_.id).foreach { sym =>
-        println(s"[${sym.id}] [${sym.props}]")
+        println(s"[${sym.id}] [$sym]")
       }
     }
     List()
@@ -26,7 +26,7 @@ class TrackQueryOperations @Inject() (
     val optionSymbols = client.sendQuery(GetNotes)
     optionSymbols.foreach { syms =>
       syms.sortBy(_.id).foreach { sym =>
-        println(s"[${sym.id}] [${sym.props}]")
+        println(s"[${sym.id}] [$sym]")
       }
     }
     List()
@@ -36,7 +36,7 @@ class TrackQueryOperations @Inject() (
     val optionSymbols = client.sendQuery(GetChords)
     optionSymbols.foreach { syms =>
       syms.sortBy(_.id).foreach { sym =>
-        println(s"[${sym.id}] [${sym.props}]")
+        println(s"[${sym.id}] [$sym]")
       }
     }
     List()
