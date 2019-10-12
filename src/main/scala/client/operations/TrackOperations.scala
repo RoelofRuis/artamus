@@ -17,15 +17,24 @@ class TrackOperations @Inject() (
   import music.analysis.TwelveToneEqualTemprament._
 
   registry.registerOperation(OperationToken("new", "track"), () => {
-    List(NewTrack)
+    List(
+      NewTrack,
+      Commit
+    )
   })
 
   registry.registerOperation(OperationToken("time-signature", "track"), () => {
-    List(CreateMetaSymbol(Position.zero, MetaSymbol.timeSignature(reader.readTimeSignature)))
+    List(
+      CreateMetaSymbol(Position.zero, MetaSymbol.timeSignature(reader.readTimeSignature)),
+      Commit
+    )
   })
 
   registry.registerOperation(OperationToken("key", "track"), () => {
-    List(CreateMetaSymbol(Position.zero, MetaSymbol.key(Key(reader.readSpelledPitch, Scale.MAJOR))))
+    List(
+      CreateMetaSymbol(Position.zero, MetaSymbol.key(Key(reader.readSpelledPitch, Scale.MAJOR))),
+      Commit
+    )
   })
 
   registry.registerOperation(OperationToken("note-seq", "track"), () => {
