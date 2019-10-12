@@ -17,6 +17,7 @@ package object symbols {
 
   implicit val chordHasRoot: Property[Chord.type, ChordRoot] = Property[Chord.type, ChordRoot]
   implicit val chordHasFunctions: Property[Chord.type, ChordFunctions] = Property[Chord.type, ChordFunctions]
+  implicit val chordHasDuration: Property[Chord.type, Duration] = Property[Chord.type, Duration]
 
   implicit val metaSymbolHasTimeSignature: Property[MetaSymbol.type, TimeSignature] = Property[MetaSymbol.type, TimeSignature]
   implicit val metaSymbolHasKey: Property[MetaSymbol.type, Key] = Property[MetaSymbol.type, Key]

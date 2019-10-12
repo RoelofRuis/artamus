@@ -9,7 +9,8 @@ object PitchSpelling {
   def spellChord(symbol: SymbolProperties[Chord.type]): Option[SpelledChord] = {
     for {
       root <- symbol.get[ChordRoot]
-    } yield SpelledChord(Duration.QUARTER, spellPc(root.pc)) // TODO: no explicit duration!
+      dur <- symbol.get[Duration]
+    } yield SpelledChord(dur, spellPc(root.pc))
   }
 
   def spellNote(symbol: SymbolProperties[Note.type]): Option[SpelledNote] = {

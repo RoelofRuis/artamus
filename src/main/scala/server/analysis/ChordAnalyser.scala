@@ -4,7 +4,7 @@ import server.analysis.blackboard.KnowledgeSource
 import music.symbols.{Chord, Note}
 import music.analysis.{TwelveToneChordAnalysis, TwelveToneEqualTemprament}
 import music.collection.Track
-import music.primitives.{ChordFunctions, ChordRoot, PitchClass}
+import music.primitives.{ChordFunctions, ChordRoot, Duration, PitchClass}
 
 class ChordAnalyser extends KnowledgeSource[Track] {
 
@@ -13,7 +13,8 @@ class ChordAnalyser extends KnowledgeSource[Track] {
   override def execute(track: Track): Track = {
     val possibleChords = track.getSymbolTrack[Note.type].readAllWithPosition.map { case (position, notes) =>
       val pitches = notes.flatMap { symbol => symbol.props.get[PitchClass] }
-      val possibleChords = TwelveToneChordAnalysis.findChords(pitches)
+      val dur = notes.flatMap { symbol => symbol.props.get[Duration] }.max
+      val possibleChords = TwelveToneChordAnalysis.findChords(pitches).map(_.add(dur))
       (position, possibleChords)
     }
 
