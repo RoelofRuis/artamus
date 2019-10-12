@@ -22,13 +22,14 @@ class RenderHandler @Inject() (
   val label = new JLabel()
   label.setIcon(image)
   frame.getContentPane.add(label, BorderLayout.CENTER)
+  frame.setVisible(true)
 
   dispatcher.subscribe[RenderingCompleted]{ event =>
     Try { ImageIO.read(event.file) } match {
       case Success(value) =>
         image.setImage(value)
         frame.pack()
-        frame.setVisible(true)
+        frame.repaint()
 
       case Failure(ex) =>
         logger.warn("Unable to draw rendered result", ex)
