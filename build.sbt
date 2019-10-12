@@ -1,6 +1,7 @@
-name := "streamcompose"
-
+name := "artamus"
 version := "0.1"
+startYear := Some(2019)
+description := "Music analysis client/server application - Photoshop for symbolic music"
 
 scalaVersion := "2.12.8"
 
