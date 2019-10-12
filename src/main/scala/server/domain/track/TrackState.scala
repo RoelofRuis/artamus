@@ -11,17 +11,17 @@ import scala.reflect.ClassTag
 class TrackState() {
 
   private val trackLock = new Object()
-  @GuardedBy(trackLock) var track: Track = Track.empty
+  @GuardedBy("trackLock") var track: Track = Track.empty
 
-  def newTrack(): Unit = synchronized(trackLock) {
+  def newTrack(): Unit = trackLock.synchronized {
     track = Track.empty
   }
 
-  def createSymbol[S <: SymbolType : ClassTag](pos: Position, props: SymbolProperties[S]): Unit = synchronized(trackLock) {
+  def createSymbol[S <: SymbolType : ClassTag](pos: Position, props: SymbolProperties[S]): Unit = trackLock.synchronized {
     track = track.updateSymbolTrack[S](_.addSymbolAt(pos, props))
   }
 
-  def readState: Track = synchronized(trackLock) {
+  def readState: Track = trackLock.synchronized {
     track
   }
 

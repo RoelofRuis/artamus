@@ -8,7 +8,7 @@ import javax.imageio.ImageIO
 import javax.swing.{ImageIcon, JFrame, JLabel, WindowConstants}
 import protocol.Event
 import pubsub.Dispatcher
-import server.control.RenderingCompleted
+import server.control.{ChangesCommitted, RenderingCompleted}
 
 import scala.util.{Failure, Success, Try}
 
@@ -24,10 +24,15 @@ class RenderHandler @Inject() (
   frame.getContentPane.add(label, BorderLayout.CENTER)
   frame.setVisible(true)
 
+  dispatcher.subscribe[ChangesCommitted.type]{ _ =>
+    label.setVisible(false)
+  }
+
   dispatcher.subscribe[RenderingCompleted]{ event =>
     Try { ImageIO.read(event.file) } match {
       case Success(value) =>
         image.setImage(value)
+        label.setVisible(true)
         frame.pack()
         frame.repaint()
 

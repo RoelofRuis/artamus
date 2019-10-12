@@ -14,6 +14,7 @@ package object control {
   case object Disapprove extends Command
 
   // Events
+  final case object ChangesCommitted extends Event
   final case class RenderingCompleted(file: File) extends Event
 
 }

@@ -3,14 +3,15 @@ package server.control
 import server.analysis.blackboard.Controller
 import javax.inject.Inject
 import music.collection.Track
-import protocol.Command
-import pubsub.Dispatcher
+import protocol.{Command, Event}
+import pubsub.{Dispatcher, EventBus}
 import server.domain.track.TrackState
 import server.interpret.LilypondInterpreter
 import server.rendering.Renderer
 
 private[server] class ChangeHandler @Inject() (
   busCommands: Dispatcher[Command],
+  eventBus: EventBus[Event],
   interpreter: LilypondInterpreter,
   state: TrackState,
   analysis: Controller[Track],
@@ -18,6 +19,7 @@ private[server] class ChangeHandler @Inject() (
 ) {
 
   busCommands.subscribe[Commit.type] { _ =>
+    eventBus.publish(ChangesCommitted)
     val analysedTrack = analysis.run(state.readState)
     val lilypondFile = interpreter.interpret(analysedTrack)
     renderer.submit("committed-changes", lilypondFile)
