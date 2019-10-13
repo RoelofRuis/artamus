@@ -2,6 +2,7 @@ name := "artamus"
 version := "0.1"
 startYear := Some(2019)
 description := "Music analysis client/server application - Photoshop for symbolic music"
+licenses := Seq("Apache 2.0" -> new URL("http://www.apache.org/licenses/LICENSE-2.0.txt"))
 
 scalaVersion := "2.12.8"
 
