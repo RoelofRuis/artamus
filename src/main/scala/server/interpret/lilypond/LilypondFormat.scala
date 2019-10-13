@@ -68,14 +68,14 @@ object LilypondFormat {
     s"${duration.value.d}"
   }
 
-  implicit val timeSignatureToLilypond: LilypondFormat[TimeSignature] = (timeSignature: TimeSignature) => {
+  implicit val timeSignatureToLilypond: LilypondFormat[TimeSignatureDivision] = (timeSignature: TimeSignatureDivision) => {
     s"\\time ${timeSignature.num}/${timeSignature.denom}"
   }
 
-  implicit val keyToLilypond: LilypondFormat[Key] = (key: Key) => {
+  implicit val keyToLilypond: LilypondFormat[(SpelledPitch, Scale)] = (key: (SpelledPitch, Scale)) => {
     // TODO: implement http://lilypond.org/doc/v2.18/Documentation/notation/displaying-pitches#key-signature
-    val pitch = key.root.toLilypond
-    val mode = key.scale match {
+    val pitch = key._1.toLilypond
+    val mode = key._2 match {
       case Scale.MAJOR => "\\major"
       case Scale.MINOR => "\\minor"
       case _ => "\\major"

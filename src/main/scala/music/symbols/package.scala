@@ -1,6 +1,7 @@
 package music
 
 import music.primitives._
+import music.spelling.SpelledPitch
 
 package object symbols {
 
@@ -19,7 +20,9 @@ package object symbols {
   implicit val chordHasFunctions: Property[Chord.type, ChordFunctions] = Property[Chord.type, ChordFunctions]
   implicit val chordHasDuration: Property[Chord.type, Duration] = Property[Chord.type, Duration]
 
-  implicit val metaSymbolHasTimeSignature: Property[MetaSymbol.type, TimeSignature] = Property[MetaSymbol.type, TimeSignature]
-  implicit val metaSymbolHasKey: Property[MetaSymbol.type, Key] = Property[MetaSymbol.type, Key]
+  implicit val keyHasRoot: Property[Key.type, SpelledPitch] = Property[Key.type, SpelledPitch]
+  implicit val keyHasScale: Property[Key.type, Scale] = Property[Key.type, Scale]
+
+  implicit val timeSignatureHasDivisino: Property[TimeSignature.type, TimeSignatureDivision] = Property[TimeSignature.type, TimeSignatureDivision]
 
 }

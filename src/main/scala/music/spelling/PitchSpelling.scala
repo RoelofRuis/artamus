@@ -9,22 +9,22 @@ object PitchSpelling {
 
   private val tuning = TwelveToneEqualTemprament.tuning
 
-  def spellChord(symbol: TrackSymbol[Chord.type], key: Key): Option[SpelledChord] = {
+  def spellChord(symbol: TrackSymbol[Chord.type]): Option[SpelledChord] = {
     for {
       root <- symbol.get[ChordRoot]
       dur <- symbol.get[Duration]
-    } yield SpelledChord(dur, spellPc(root.pc, key))
+    } yield SpelledChord(dur, spellPc(root.pc))
   }
 
-  def spellNote(symbol: TrackSymbol[Note.type], key: Key): Option[SpelledNote] = {
+  def spellNote(symbol: TrackSymbol[Note.type]): Option[SpelledNote] = {
     for {
       pc <- symbol.get[PitchClass]
       oct <- symbol.get[Octave]
       dur <- symbol.get[Duration]
-    } yield SpelledNote(dur, oct, spellPc(pc, key))
+    } yield SpelledNote(dur, oct, spellPc(pc))
   }
 
-  private def spellPc(pc: PitchClass, key: Key): SpelledPitch = {
+  private def spellPc(pc: PitchClass): SpelledPitch = {
     // TODO: use Key information!
 
     pc.value match {

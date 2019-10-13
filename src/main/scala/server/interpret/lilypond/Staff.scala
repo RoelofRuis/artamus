@@ -1,11 +1,11 @@
 package server.interpret.lilypond
 
 import music.primitives._
-import music.spelling.SpelledNote
+import music.spelling.{SpelledNote, SpelledPitch}
 
 final case class Staff(
-  key: Option[Key],
-  timeSignature: Option[TimeSignature],
+  key: Option[(SpelledPitch, Scale)],
+  timeSignature: Option[TimeSignatureDivision],
   notes: Seq[Seq[SpelledNote]]
 ) {
 

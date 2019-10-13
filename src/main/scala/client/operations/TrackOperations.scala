@@ -5,7 +5,7 @@ import client.read.{MusicReader, StdIOTools}
 import com.google.inject.Inject
 import music.math.Rational
 import music.primitives._
-import music.symbols.{MetaSymbol, Note}
+import music.symbols.{Key, Note, TimeSignature}
 import server.domain.Commit
 import server.domain.track._
 
@@ -25,10 +25,10 @@ class TrackOperations @Inject() (
 
   registry.registerOperation(OperationToken("time-signature", "track"), () => {
     println(s"Reading time signature...")
-    val timeSignature = reader.readTimeSignature
+    val division = reader.readTimeSignatureDivision
 
     List(
-      CreateMetaSymbol(Position.zero, MetaSymbol.timeSignature(timeSignature)),
+      CreateTimeSignatureSymbol(Position.zero, TimeSignature(division)),
       Commit
     )
   })
@@ -45,7 +45,7 @@ class TrackOperations @Inject() (
     }
 
     List(
-      CreateMetaSymbol(Position.zero, MetaSymbol.key(Key(root, keyType))),
+      CreateKeySymbol(Position.zero, Key(root, keyType)),
       Commit
     )
   })

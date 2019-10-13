@@ -21,7 +21,7 @@ private[server] class TrackCommandHandler @Inject() (
     true
   }
 
-  dispatcher.subscribe[CreateMetaSymbol]{ command =>
+  dispatcher.subscribe[CreateKeySymbol]{ command =>
     state.createSymbol(command.position, command.symbol)
     true
   }
