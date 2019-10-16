@@ -1,5 +1,6 @@
 package music
 
+import music.collection.SymbolTrack.Updater
 import music.primitives.Position
 import music.symbols.{Property, SymbolType}
 
@@ -9,7 +10,7 @@ import scala.reflect.ClassTag
 package object collection {
 
   trait Track {
-    def updateSymbolTrack[S <: SymbolType : ClassTag](update: SymbolTrack[S] => SymbolTrack[S]): Track
+    def updateSymbolTrack[S <: SymbolType : ClassTag](update: Updater[S]): Track
     def getSymbolTrack[S <: SymbolType : ClassTag]: SymbolTrack[S]
   }
 
@@ -26,6 +27,8 @@ package object collection {
   }
 
   object SymbolTrack {
+    trait Updater[S <: SymbolType] extends (SymbolTrack[S] => SymbolTrack[S])
+
     def apply[S <: SymbolType]: SymbolTrack[S] = SymbolTrackImpl[S](SortedMap(), Map(), 0)
   }
 

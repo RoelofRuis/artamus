@@ -1,6 +1,7 @@
 package music.collection
 
 import javax.annotation.concurrent.Immutable
+import music.collection.SymbolTrack.Updater
 import music.symbols.SymbolType
 
 import scala.reflect.{ClassTag, classTag}
@@ -10,7 +11,7 @@ private[collection] final case class TrackImpl (
   private val tracks: Map[String, SymbolTrack[_]]
 ) extends Track {
 
-  def updateSymbolTrack[S <: SymbolType : ClassTag](update: SymbolTrack[S] => SymbolTrack[S]): Track = {
+  def updateSymbolTrack[S <: SymbolType : ClassTag](update: Updater[S]): Track = {
     val key = classTag[S].runtimeClass.getCanonicalName
     TrackImpl(
       tracks.updated(key, update(getSymbolTrack[S]))
