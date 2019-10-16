@@ -1,12 +1,13 @@
-package client.read
+package client.io.midi
 
-import client.read.MusicReader.{NoteOn, ReadMethod, Simultaneous}
+import client.MusicReader
+import client.MusicReader.{NoteOn, ReadMethod, Simultaneous}
 import javax.inject.Inject
 import midi.in.MidiMessageReader
 import music.primitives._
 import music.spelling.SpelledPitch
 
-class MusicReader @Inject() (reader: MidiMessageReader) {
+private[midi] class MidiMusicReader @Inject() (reader: MidiMessageReader) extends MusicReader {
 
   import midi.in.Reading._
   import music.analysis.TwelveToneEqualTemprament._
@@ -48,13 +49,4 @@ class MusicReader @Inject() (reader: MidiMessageReader) {
       acc + (1 << tuning.noteNumberToPc(noteNumber).value)
     }
   }
-
-}
-
-object MusicReader {
-
-  sealed trait ReadMethod
-  case class NoteOn(n: Int) extends ReadMethod
-  case object Simultaneous extends ReadMethod
-
 }

@@ -2,12 +2,9 @@ package client
 
 import client.events.RenderHandler
 import client.operations._
-import client.read.MusicReader
+import client.io.midi.MidiIOModule
 import com.google.inject.Provides
-import com.google.inject.internal.SingletonScope
 import javax.inject.Singleton
-import midi.in.MidiMessageReader
-import midi.out.SequenceWriter
 import net.codingwell.scalaguice.ScalaPrivateModule
 import protocol.{ClientInterface, DefaultClient, Event}
 import pubsub.Dispatcher
@@ -15,17 +12,12 @@ import pubsub.Dispatcher
 class ClientModule extends ScalaPrivateModule with ClientConfig {
 
   override def configure(): Unit = {
-    // TODO: Remove '.get', wrap with resource management!
-    bind[SequenceWriter].toInstance(midi.loadSequenceWriter(midiOut, ticksPerQuarter).get)
-    bind[MidiMessageReader].toInstance(midi.loadReader(midiIn).get)
-
-    bind[MusicReader].in(new SingletonScope)
+    install(new MidiIOModule)
 
     bind[OperationRegistry].toInstance(new ClientOperationRegistry())
     bind[SystemOperations].asEagerSingleton()
     bind[TrackOperations].asEagerSingleton()
     bind[TrackQueryOperations].asEagerSingleton()
-    bind[DevOperations].asEagerSingleton()
 
     bind[Dispatcher[Event]].toInstance(pubsub.createDispatcher[Event]())
     bind[RenderHandler].asEagerSingleton()

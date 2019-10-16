@@ -1,7 +1,9 @@
 package client.operations
 
-import client.read.MusicReader.{NoteOn, Simultaneous}
-import client.read.{MusicReader, StdIOTools}
+import client.MusicReader
+import client.MusicReader.{NoteOn, Simultaneous}
+import client.io.StdIOTools
+import client.io.midi.MidiMusicReader
 import com.google.inject.Inject
 import music.math.Rational
 import music.primitives._

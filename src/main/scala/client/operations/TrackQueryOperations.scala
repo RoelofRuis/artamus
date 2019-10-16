@@ -1,15 +1,14 @@
 package client.operations
 
-import client.write.QuarterNotesFormat
+import client.MusicPlayer
 import javax.inject.Inject
-import midi.out.SequenceWriter
 import protocol.ClientInterface
 import server.domain.track.{GetChords, GetMidiPitches, GetNotes}
 
 class TrackQueryOperations @Inject() (
   registry: OperationRegistry,
   client: ClientInterface,
-  midiOut: SequenceWriter
+  musicPlayer: MusicPlayer
 ){
 
   registry.registerOperation(OperationToken("view-notes", "track-query"), () => {
@@ -35,7 +34,7 @@ class TrackQueryOperations @Inject() (
   registry.registerOperation(OperationToken("play", "track-query"), () => {
     val notes = client.sendQuery(GetMidiPitches)
     notes.foreach { notes =>
-      midiOut.writeFromFormat(QuarterNotesFormat(notes))
+      musicPlayer.play(notes)
     }
     List()
   })

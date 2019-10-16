@@ -1,8 +1,8 @@
-package client.write
+package client.io.midi
 
 import midi.out.{SequenceBuilder, SequenceFormat}
 
-case class QuarterNotesFormat(notes: List[List[Int]]) extends SequenceFormat {
+private[midi] case class QuarterNotesFormat(notes: List[List[Int]]) extends SequenceFormat {
   def modify(builder: SequenceBuilder): Unit = {
     notes
       .zipWithIndex
