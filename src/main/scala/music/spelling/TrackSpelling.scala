@@ -8,23 +8,23 @@ case class TrackSpelling(track: Track) {
 
   def spelledTimeSignature: Option[TimeSignatureDivision] = {
     track
-      .getSymbolTrack[TimeSignature.type]
+      .getSymbolTrack[TimeSignature]
       .readAt(Position.zero)
       .reverse
       .flatMap(_.get[TimeSignatureDivision])
       .headOption
   }
 
-  def spelledKey: Option[TrackSymbol[Key.type]] = {
+  def spelledKey: Option[TrackSymbol[Key]] = {
     track
-      .getSymbolTrack[Key.type]
+      .getSymbolTrack[Key]
       .readAt(Position.zero)
       .reverse
       .headOption
   }
 
   def spelledNotes: Seq[Seq[SpelledNote]] = {
-    track.getSymbolTrack[Note.type].readAllWithPosition
+    track.getSymbolTrack[Note].readAllWithPosition
       .map {
         case (_, symbols) => symbols.flatMap(note => PitchSpelling.spellNote(note))
       }
@@ -32,7 +32,7 @@ case class TrackSpelling(track: Track) {
 
   def spelledChords: Seq[SpelledChord] = {
     track
-      .getSymbolTrack[Chord.type]
+      .getSymbolTrack[Chord]
       .readAllWithPosition.flatMap { case (_, symbols) =>
         symbols.flatMap(chord => PitchSpelling.spellChord(chord))
       }

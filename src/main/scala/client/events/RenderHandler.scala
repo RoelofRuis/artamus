@@ -1,7 +1,7 @@
 package client.events
 
 import java.awt.image.BufferedImage
-import java.awt.{BorderLayout, Color, Graphics}
+import java.awt.{BorderLayout, Color}
 
 import com.google.inject.Inject
 import com.typesafe.scalalogging.LazyLogging

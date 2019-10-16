@@ -16,21 +16,21 @@ private[server] class TrackQueryHandler @Inject() (
   dispatcher.subscribe[GetNotes.type]{ _ =>
     state
       .readState
-      .getSymbolTrack[Note.type]
+      .getSymbolTrack[Note]
       .readAll
   }
 
   dispatcher.subscribe[GetChords.type]{ _ =>
     state
       .readState
-      .getSymbolTrack[Chord.type]
+      .getSymbolTrack[Chord]
       .readAll
   }
 
   dispatcher.subscribe[GetMidiPitches.type]{ _ =>
     state
       .readState
-      .getSymbolTrack[Note.type]
+      .getSymbolTrack[Note]
       .readAllWithPosition.map {
       case (_, notes) =>
         notes

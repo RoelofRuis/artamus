@@ -28,7 +28,7 @@ class PitchHistogramAnalyser extends KnowledgeSource[Track] {
     )
 
     val histogram = track
-      .getSymbolTrack[Note.type]
+      .getSymbolTrack[Note]
       .readAll.flatMap(_.get[PitchClass])
       .foldRight(zero) { case (pc, acc) => acc.updated(pc.value, acc.get(pc.value).map(_ + 1L).get) }
 

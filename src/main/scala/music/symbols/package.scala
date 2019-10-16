@@ -12,17 +12,17 @@ package object symbols {
     def apply[S <: SymbolType, P]: Property[S, P] = new Property[S, P]()
   }
 
-  implicit val noteHasPitchClass: Property[Note.type, PitchClass] = Property[Note.type, PitchClass]
-  implicit val noteHasOctave: Property[Note.type, Octave] = Property[Note.type, Octave]
-  implicit val noteHasDuration: Property[Note.type, Duration] = Property[Note.type, Duration]
+  implicit val noteHasPitchClass: Property[Note, PitchClass] = Property[Note, PitchClass]
+  implicit val noteHasOctave: Property[Note, Octave] = Property[Note, Octave]
+  implicit val noteHasDuration: Property[Note, Duration] = Property[Note, Duration]
 
-  implicit val chordHasRoot: Property[Chord.type, ChordRoot] = Property[Chord.type, ChordRoot]
-  implicit val chordHasFunctions: Property[Chord.type, ChordFunctions] = Property[Chord.type, ChordFunctions]
-  implicit val chordHasDuration: Property[Chord.type, Duration] = Property[Chord.type, Duration]
+  implicit val chordHasRoot: Property[Chord, ChordRoot] = Property[Chord, ChordRoot]
+  implicit val chordHasFunctions: Property[Chord, ChordFunctions] = Property[Chord, ChordFunctions]
+  implicit val chordHasDuration: Property[Chord, Duration] = Property[Chord, Duration]
 
-  implicit val keyHasRoot: Property[Key.type, SpelledPitch] = Property[Key.type, SpelledPitch]
-  implicit val keyHasScale: Property[Key.type, Scale] = Property[Key.type, Scale]
+  implicit val keyHasRoot: Property[Key, SpelledPitch] = Property[Key, SpelledPitch]
+  implicit val keyHasScale: Property[Key, Scale] = Property[Key, Scale]
 
-  implicit val timeSignatureHasDivisino: Property[TimeSignature.type, TimeSignatureDivision] = Property[TimeSignature.type, TimeSignatureDivision]
+  implicit val timeSignatureHasDivisino: Property[TimeSignature, TimeSignatureDivision] = Property[TimeSignature, TimeSignatureDivision]
 
 }

@@ -11,7 +11,7 @@ class ChordAnalyser extends KnowledgeSource[Track] {
   override def canExecute(state: Track): Boolean = true
 
   override def execute(track: Track): Track = {
-    val possibleChords = track.getSymbolTrack[Note.type].readAllWithPosition.map { case (position, notes) =>
+    val possibleChords = track.getSymbolTrack[Note].readAllWithPosition.map { case (position, notes) =>
       val pitches = notes.flatMap { symbol => symbol.get[PitchClass] }
       val dur = notes.flatMap { symbol => symbol.get[Duration] }.max
       val possibleChords = TwelveToneChordAnalysis.findChords(pitches).map(_.add(dur))
@@ -32,7 +32,7 @@ class ChordAnalyser extends KnowledgeSource[Track] {
       .foldLeft(track) { case (acc, (pos, chord)) =>
         chord match {
           case c if c.nonEmpty => acc
-            .updateSymbolTrack[Chord.type](
+            .updateSymbolTrack[Chord](
               _.addSymbolAt(pos, c.head)
             )
           case _ => acc

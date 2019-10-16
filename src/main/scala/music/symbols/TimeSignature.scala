@@ -3,10 +3,12 @@ package music.symbols
 import music.collection.SymbolProperties
 import music.primitives.TimeSignatureDivision
 
-case object TimeSignature extends SymbolType {
+trait TimeSignature extends SymbolType
 
-  def apply(division: TimeSignatureDivision): SymbolProperties[TimeSignature.type] =
-    SymbolProperties[TimeSignature.type]
+object TimeSignature {
+
+  def apply(division: TimeSignatureDivision): SymbolProperties[TimeSignature] =
+    SymbolProperties[TimeSignature]
       .add(division)
 
 

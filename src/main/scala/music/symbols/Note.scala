@@ -3,14 +3,16 @@ package music.symbols
 import music.collection.SymbolProperties
 import music.primitives.{Duration, Octave, PitchClass}
 
-object Note extends SymbolType {
+trait Note extends SymbolType
+
+object Note {
 
   def apply(
     octave: Octave,
     pitchClass: PitchClass,
     duration: Duration
-  ): SymbolProperties[Note.type] =
-    SymbolProperties[Note.type]
+  ): SymbolProperties[Note] =
+    SymbolProperties[Note]
       .add(octave)
       .add(pitchClass)
       .add(duration)

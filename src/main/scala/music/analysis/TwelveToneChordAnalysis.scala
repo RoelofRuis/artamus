@@ -11,7 +11,7 @@ object TwelveToneChordAnalysis {
   import TwelveToneEqualTemprament._
   import music.analysis.Analysis._
 
-  def findChords(set: Seq[PitchClass]): Seq[SymbolProperties[Chord.type]] = {
+  def findChords(set: Seq[PitchClass]): Seq[SymbolProperties[Chord]] = {
     tuning.pcs.flatMap{ root =>
       Interpretation.allOf(set)
         .expand(pc => tuning.possibleIntervals(root, pc))

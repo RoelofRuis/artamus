@@ -4,11 +4,12 @@ import music.collection.SymbolProperties
 import music.primitives.Scale
 import music.spelling.SpelledPitch
 
-// TODO: split these up!
-case object Key extends SymbolType {
+trait Key extends SymbolType
 
-  def apply(root: SpelledPitch, scale: Scale): SymbolProperties[Key.type] =
-    SymbolProperties[Key.type]
+object Key {
+
+  def apply(root: SpelledPitch, scale: Scale): SymbolProperties[Key] =
+    SymbolProperties[Key]
       .add(root)
       .add(scale)
 

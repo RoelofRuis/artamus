@@ -9,14 +9,14 @@ object PitchSpelling {
 
   private val tuning = TwelveToneEqualTemprament.tuning
 
-  def spellChord(symbol: TrackSymbol[Chord.type]): Option[SpelledChord] = {
+  def spellChord(symbol: TrackSymbol[Chord]): Option[SpelledChord] = {
     for {
       root <- symbol.get[ChordRoot]
       dur <- symbol.get[Duration]
     } yield SpelledChord(dur, spellPc(root.pc))
   }
 
-  def spellNote(symbol: TrackSymbol[Note.type]): Option[SpelledNote] = {
+  def spellNote(symbol: TrackSymbol[Note]): Option[SpelledNote] = {
     for {
       pc <- symbol.get[PitchClass]
       oct <- symbol.get[Octave]
