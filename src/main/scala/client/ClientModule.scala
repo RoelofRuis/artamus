@@ -1,8 +1,8 @@
 package client
 
 import client.events.RenderHandler
-import client.operations._
 import client.io.midi.MidiIOModule
+import client.operations._
 import com.google.inject.Provides
 import javax.inject.Singleton
 import net.codingwell.scalaguice.ScalaPrivateModule

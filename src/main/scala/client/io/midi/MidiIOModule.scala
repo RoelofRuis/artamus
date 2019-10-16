@@ -1,12 +1,12 @@
 package client.io.midi
 
-import client.{ClientConfig, MusicPlayer, MusicReader}
+import client.{MusicPlayer, MusicReader}
 import midi.in.MidiMessageReader
 import midi.out.SequenceWriter
 import midi.{DeviceHash, loadReader, loadSequenceWriter}
 import net.codingwell.scalaguice.ScalaPrivateModule
 
-class MidiIOModule extends ScalaPrivateModule with ClientConfig {
+class MidiIOModule extends ScalaPrivateModule {
 
   private object MyDevices {
     val GervillSoftSynt: DeviceHash = "55c8a757"
