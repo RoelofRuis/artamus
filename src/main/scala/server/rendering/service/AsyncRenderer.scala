@@ -42,7 +42,10 @@ private[rendering] class AsyncRenderer @Inject() (
             completionHandler.renderingCompleted(name, success = true)
 
           case Left(ex) =>
-            logger.warn(s"Rendering [$taskId] failed", ex)
+            ex.cause match {
+              case Some(cause) => logger.warn(s"Rendering [$taskId] failed", cause)
+              case None => logger.warn(s"Rendering [$taskId] failed", ex)
+            }
             completionHandler.renderingCompleted(name, success = false)
         }
 
