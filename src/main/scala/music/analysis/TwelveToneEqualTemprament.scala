@@ -3,8 +3,6 @@ package music.analysis
 import music.analysis.Analysis.{DefinedChords, DefinedFunctions, DefinedIntervals}
 import music.primitives._
 
-import scala.collection.immutable.SortedSet
-
 object TwelveToneEqualTemprament {
 
   implicit val tuning: TuningSystem[TwelveToneEqualTemprament.type] = TuningSystem(Seq(0, 2, 4, 5, 7, 9, 11))
@@ -48,17 +46,21 @@ object TwelveToneEqualTemprament {
 
     override val intervalFunctionMapping: PartialFunction[Interval, Set[Function]] = {
       case Intervals.PERFECT_PRIME => Set(ROOT)
+      case Intervals.LARGE_SECOND => Set(TWO)
       case Intervals.SMALL_THIRD => Set(FLAT_THREE)
       case Intervals.LARGE_THIRD => Set(THREE)
+      case Intervals.PERFECT_FOURTH => Set(FOUR)
       case Intervals.PERFECT_FIFTH => Set(FIVE)
+      case Intervals.LARGE_SIXTH => Set(SIX)
+      case Intervals.LARGE_SEVENTH => Set(SEVEN)
     }
   }
 
   implicit object Chords extends DefinedChords[TwelveToneEqualTemprament.type] {
     import Functions._
-    override val functionChordMapping: Seq[(SortedSet[Function], String)] = Seq(
-      (SortedSet(ROOT, THREE, FIVE), "Major"),
-      (SortedSet(ROOT, FLAT_THREE, FIVE), "Minor")
+    override val functionChordMapping: Seq[(Set[Function], String)] = Seq(
+      (Set(ROOT, THREE, FIVE), "Major"),
+      (Set(ROOT, FLAT_THREE, FIVE), "Minor")
     )
   }
 

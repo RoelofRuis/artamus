@@ -2,8 +2,6 @@ package music.analysis
 
 import music.primitives._
 
-import scala.collection.immutable.SortedSet
-
 object Analysis {
 
   trait DefinedFunctions[A] {
@@ -15,7 +13,7 @@ object Analysis {
   }
 
   trait DefinedChords[A] {
-    val functionChordMapping: Seq[(SortedSet[Function], String)]
+    val functionChordMapping: Seq[(Set[Function], String)]
   }
 
   implicit class FunctionAnalysisOps[A : DefinedFunctions](a: TuningSystem[A]) {
@@ -32,7 +30,7 @@ object Analysis {
   }
 
   implicit class ChordAnalysisOps[A : DefinedChords](a: TuningSystem[A]) {
-    def functionsToName(functions: SortedSet[Function]): Option[String] = {
+    def functionsToName(functions: Set[Function]): Option[String] = {
       implicitly[DefinedChords[A]].functionChordMapping.toMap.get(functions)
     }
   }
