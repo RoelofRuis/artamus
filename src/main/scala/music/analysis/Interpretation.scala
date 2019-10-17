@@ -18,7 +18,7 @@ final case class Interpretation[A] private (data: OneOf[AllOf[A]]) {
   /**
     * Each element of type A can be interpreted as multiple elements of type B
     */
-  def expand[B](f: A => Seq[B]): Interpretation[B] = {
+  def expand[B](f: A => Set[B]): Interpretation[B] = {
     val expanded = data
       .map { all: AllOf[A] => expandAllOf[B](all)(f(_)) }
       .reduce(_ ++ _)
@@ -42,44 +42,40 @@ final case class Interpretation[A] private (data: OneOf[AllOf[A]]) {
   /**
     * Multiple elements of type A occurring together can be interpreted as at most 1 element of type B
     */
-  def mapAll[B](f: Seq[A] => Option[B]): Interpretation[B] = {
+  def mapAll[B](f: Set[A] => Option[B]): Interpretation[B] = {
     Interpretation.oneOf(data.flatMap((all: AllOf[A]) => f(all)))
   }
 
-  def filter(f: Seq[A] => Boolean): Interpretation[A] = {
+  def filter(f: Set[A] => Boolean): Interpretation[A] = {
     Interpretation(data.filter(f))
-  }
-
-  def distinct: Interpretation[A] = {
-    Interpretation(data.map((all: AllOf[A]) => all.distinct))
   }
 
   def isEmpty: Boolean = data.headOption.getOrElse(Nil).isEmpty
 
   override def toString: String = data.map(_.mkString(" and ")).map("(" + _ + ")").mkString(" or ")
 
-  private def combineLists[T](l1: Seq[Seq[T]], l2: Seq[T]): Seq[Seq[T]] = {
+  private def combineLists[T](l1: Set[Set[T]], l2: Set[T]): Set[Set[T]] = {
     if (l2.isEmpty) l1
-    else l2.flatMap((elem: T) => l1.map((list: Seq[T]) => elem +: list))
+    else l2.flatMap((elem: T) => l1.map((list: Set[T]) => list + elem))
   }
 
-  private def expandAllOf[T](a: AllOf[A])(f: A => Seq[T]): OneOf[AllOf[T]] = {
-    a.map(f).foldLeft(Seq(Seq[T]()))((res, elem) => combineLists[T](res, elem))
+  private def expandAllOf[T](a: AllOf[A])(f: A => Set[T]): OneOf[AllOf[T]] = {
+    a.map(f).foldLeft(Set(Set[T]()))((res, elem) => combineLists[T](res, elem))
   }
 }
 
 object Interpretation {
 
-  private type OneOf[A] = Seq[A]
-  private type AllOf[A] = Seq[A]
+  private type OneOf[A] = Set[A]
+  private type AllOf[A] = Set[A]
 
   /* Creators */
-  def empty[A]: Interpretation[A] = Interpretation(Seq())
+  def empty[A]: Interpretation[A] = Interpretation(Set())
 
-  def only[A](a: A): Interpretation[A] = Interpretation(Seq(Seq(a)))
+  def only[A](a: A): Interpretation[A] = Interpretation(Set(Set(a)))
 
-  def oneOf[A](l: Seq[A]): Interpretation[A] = Interpretation(l.map(Seq(_)))
+  def oneOf[A](l: Set[A]): Interpretation[A] = Interpretation(l.map(Set(_)))
 
-  def allOf[A](l: Seq[A]): Interpretation[A] = Interpretation(Seq(l))
+  def allOf[A](l: Set[A]): Interpretation[A] = Interpretation(Set(l))
 
 }

@@ -25,7 +25,7 @@ object TwelveToneEqualTemprament {
     val SMALL_SEVENTH = Interval(tuning.pc(10), tuning.step(6))
     val LARGE_SEVENTH = Interval(tuning.pc(11), tuning.step(6))
 
-    override val intervals: Seq[Interval] = Seq(
+    override val intervals: Set[Interval] = Set(
       PERFECT_PRIME,
       SMALL_SECOND, LARGE_SECOND,
       SMALL_THIRD, LARGE_THIRD,
@@ -46,11 +46,11 @@ object TwelveToneEqualTemprament {
     val SIX = Function(tuning.pc(9), tuning.step(5))
     val SEVEN = Function(tuning.pc(11), tuning.step(6))
 
-    override val intervalFunctionMapping: PartialFunction[Interval, Seq[Function]] = {
-      case Intervals.PERFECT_PRIME => Seq(ROOT)
-      case Intervals.SMALL_THIRD => Seq(FLAT_THREE)
-      case Intervals.LARGE_THIRD => Seq(THREE)
-      case Intervals.PERFECT_FIFTH => Seq(FIVE)
+    override val intervalFunctionMapping: PartialFunction[Interval, Set[Function]] = {
+      case Intervals.PERFECT_PRIME => Set(ROOT)
+      case Intervals.SMALL_THIRD => Set(FLAT_THREE)
+      case Intervals.LARGE_THIRD => Set(THREE)
+      case Intervals.PERFECT_FIFTH => Set(FIVE)
     }
   }
 

@@ -13,11 +13,11 @@ object TwelveToneChordAnalysis {
 
   def findChords(set: Seq[PitchClass]): Seq[SymbolProperties[Chord]] = {
     tuning.pcs.flatMap{ root =>
-      Interpretation.allOf(set)
+      Interpretation.allOf(set.toSet)
         .expand(pc => tuning.possibleIntervals(root, pc))
         .expand(tuning.possibleFunctions)
-        .filter(functions => tuning.functionsToName(SortedSet(functions: _*)).nonEmpty)
-        .data.map(functions => Chord(root, SortedSet(functions: _*)))
+        .filter(functions => tuning.functionsToName(SortedSet(functions.toSeq: _*)).nonEmpty)
+        .data.map(functions => Chord(root, SortedSet(functions.toSeq: _*)))
     }
   }
 
