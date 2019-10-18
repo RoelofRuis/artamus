@@ -5,7 +5,7 @@ import resource.Resource._
 import scala.util.{Failure, Success, Try}
 
 /* @NotThreadSafe: synchronize on usage of `state` */
-final class Resource[A] private (acquireRes: => Either[Throwable, A], releaseRes: A => Seq[Throwable]) extends ResourceTransformers[A] {
+final class Resource[A] private (acquireRes: => Either[Throwable, A], releaseRes: A => Seq[Throwable]) {
 
   private var state: State[A] = Empty()
 
