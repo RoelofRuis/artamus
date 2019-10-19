@@ -21,7 +21,7 @@ class ClientMessagingThread(
     client.acquire match {
       case Right(c) =>
         expectsData.set(true)
-        c.send(request)
+        c.send(request) // TODO: secure this call
         val response = queue.take()
         expectsData.set(false)
         response.data match {

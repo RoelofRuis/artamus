@@ -40,7 +40,7 @@ class DefaultClient(
 object DefaultClient {
 
   def apply(port: Int, dispatcher: Dispatcher[Event]): ClientInterface = {
-    new DefaultClient(ClientThread.asResource(port), dispatcher)
+    new DefaultClient(Resource.wrapUnsafe(ClientThread(port), _.interrupt()), dispatcher)
   }
 
 }
