@@ -14,7 +14,7 @@ private[midi] class MidiMusicReader @Inject() (reader: MidiMessageReader) extend
 
   def readSpelledPitch: SpelledPitch = {
     val midiNoteNumbers = readMidiNoteNumbers(NoteOn(2))
-    val firstStep = tuning.pcToStep(tuning.noteNumberToPc(midiNoteNumbers.head))
+    val firstStep = midiNoteNumbers.head.toPc.toStep
 
     if (firstStep.isEmpty) readSpelledPitch
     else {
@@ -33,7 +33,7 @@ private[midi] class MidiMusicReader @Inject() (reader: MidiMessageReader) extend
   }
 
   def readPitchClasses(method: ReadMethod): List[PitchClass] = {
-    readMidiNoteNumbers(method).map(tuning.noteNumberToPc)
+    readMidiNoteNumbers(method).map(_.toPc)
   }
 
   def readMidiNoteNumbers(method: ReadMethod): List[MidiNoteNumber] = {
@@ -46,7 +46,7 @@ private[midi] class MidiMusicReader @Inject() (reader: MidiMessageReader) extend
 
   private def numberFromBits(notes: List[MidiNoteNumber]): Int = {
     notes.foldRight(0){ case (noteNumber, acc) =>
-      acc + (1 << tuning.noteNumberToPc(noteNumber).value)
+      acc + (1 << noteNumber.toPc.value)
     }
   }
 }

@@ -8,10 +8,9 @@ import scala.collection.immutable.SortedSet
 object TwelveToneChordAnalysis {
 
   import TwelveToneEqualTemprament._
-  import music.analysis.Analysis._
 
   def findChords(set: Seq[PitchClass]): Seq[Chord] = {
-    tuning.pcs.flatMap{ root =>
+    PitchClass.listAll.flatMap{ root =>
       Interpretation.allOf(set.toSet)
         .expand(pc => tuning.possibleIntervals(root, pc))
         .expand(tuning.possibleFunctions)

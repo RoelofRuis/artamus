@@ -3,14 +3,15 @@ package client.io.terminal
 import client.MusicReader
 import client.MusicReader.{NoteOn, Simultaneous}
 import client.io.StdIOTools
-import music.analysis.TwelveToneEqualTemprament
-import music.primitives.{Accidental, MidiNoteNumber, PitchClass, TimeSignatureDivision}
+import music.primitives._
 import music.spelling.SpelledPitch
 
 class TerminalMusicReader extends MusicReader {
 
+  import music.analysis.TwelveToneEqualTemprament._
+
   override def readSpelledPitch: SpelledPitch = {
-    val step = TwelveToneEqualTemprament.tuning.step(StdIOTools.readInt("Input step"))
+    val step = Step(StdIOTools.readInt("Input step"))
     val acc = Accidental(StdIOTools.readInt("Input accidental"))
     SpelledPitch(step, acc)
   }
@@ -34,7 +35,7 @@ class TerminalMusicReader extends MusicReader {
       case Simultaneous =>
         StdIOTools.read[Array[Int]]("Input pitch classes separated by spaces", "Invalid input", {
           scala.io.StdIn.readLine.split(" ").map(_.toInt)
-        }).map(TwelveToneEqualTemprament.tuning.pc).toList
+        }).map(PitchClass.apply).toList
 
       case NoteOn(n) =>
         val list = StdIOTools.read[Array[Int]](s"Input [$n] pitch classes separated by spaces", "Invalid input", {
@@ -44,7 +45,7 @@ class TerminalMusicReader extends MusicReader {
           println(s"Expected [$n] values but got [{${list.length}]")
           readPitchClasses(method)
         } else {
-          list.map(TwelveToneEqualTemprament.tuning.pc).toList
+          list.map(PitchClass.apply).toList
         }
     }
   }
@@ -54,7 +55,7 @@ class TerminalMusicReader extends MusicReader {
       case Simultaneous =>
         StdIOTools.read[Array[Int]]("Input midi note numbers separated by spaces", "Invalid input", {
           scala.io.StdIn.readLine.split(" ").map(_.toInt)
-        }).map(MidiNoteNumber).toList
+        }).map(i => MidiNoteNumber(i)).toList
 
       case NoteOn(n) =>
         val list = StdIOTools.read[Array[Int]](s"Input [$n] midi note numbers separated by spaces", "Invalid input", {
@@ -64,7 +65,7 @@ class TerminalMusicReader extends MusicReader {
           println(s"Expected [$n] values but got [{${list.length}]")
           readMidiNoteNumbers(method)
         } else {
-          list.map(MidiNoteNumber).toList
+          list.map(i => MidiNoteNumber(i)).toList
         }
     }
   }
