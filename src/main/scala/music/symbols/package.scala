@@ -23,6 +23,6 @@ package object symbols {
   implicit val keyHasRoot: Property[Key, SpelledPitch] = Property[Key, SpelledPitch]
   implicit val keyHasScale: Property[Key, Scale] = Property[Key, Scale]
 
-  implicit val timeSignatureHasDivisino: Property[TimeSignature, TimeSignatureDivision] = Property[TimeSignature, TimeSignatureDivision]
+  implicit val timeSignatureHasDivision: Property[TimeSignature, TimeSignatureDivision] = Property[TimeSignature, TimeSignatureDivision]
 
 }
