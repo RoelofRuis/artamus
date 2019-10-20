@@ -5,7 +5,8 @@ import music.primitives.{Function, Interval, PitchClass}
 
 final case class TuningSystem(pcSeq: Seq[Int]) {
   val numSteps: Int = pcSeq.size
-  val numPitchClasses: Int = pcSeq.last + 1
+  val span: Int = pcSeq.last
+  val numPitchClasses: Int = span + 1
 
   def possibleIntervals(pc1: PitchClass, pc2: PitchClass)(implicit intervals: Intervals): Set[Interval] = {
     val diff = pc1.diff(pc2)(this)

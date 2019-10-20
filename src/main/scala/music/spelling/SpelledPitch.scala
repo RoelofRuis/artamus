@@ -5,7 +5,9 @@ import music.primitives.{Accidental, Interval, PitchClass, Step}
 
 final case class SpelledPitch(step: Step, accidental: Accidental) {
 
-  def toPc(implicit tuning: TuningSystem): PitchClass = PitchClass(tuning.pcSeq(step.value) + accidental.value)
+  def toPc(implicit tuning: TuningSystem): PitchClass = PitchClass(span)
+
+  def span(implicit tuning: TuningSystem): Int = step.toPc.value + accidental.value
 
   def addInterval(interval: Interval)(implicit tuning: TuningSystem): SpelledPitch = {
     def unboundStepValue(step: Int): Int = {

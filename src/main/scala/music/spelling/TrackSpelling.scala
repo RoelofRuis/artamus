@@ -1,6 +1,5 @@
 package music.spelling
 
-import music.analysis.TuningSystem
 import music.collection.{Track, TrackSymbol}
 import music.primitives._
 import music.symbols.{Chord, Key, Note, TimeSignature}
@@ -56,18 +55,20 @@ object TrackSpelling {
     }
 
     private def spellNote(note: Note, key: Key): SpelledNote = {
+      val spelledPitch = spellPc(note.pitchClass, key)
+
+      val newOctave = if (spelledPitch.span > tuning.span) Octave(note.octave.value - 1) else note.octave
+
       SpelledNote(
         note.duration,
-        note.octave,
-        spellPc(note.pitchClass, key)
+        newOctave,
+        spelledPitch
       )
     }
 
-    private def spellPc(pc: PitchClass, key: Key)(implicit tuning: TuningSystem): SpelledPitch = {
-      val rootPc = key.root.toPc
-
+    private def spellPc(pc: PitchClass, key: Key): SpelledPitch = {
       tuning
-        .possibleIntervals(rootPc, pc)
+        .possibleIntervals(key.root.toPc, pc)
         .map(i => key.root.addInterval(i))
         .toSeq
         .minBy(_.accidental.value.abs)
