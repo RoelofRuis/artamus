@@ -20,7 +20,7 @@ class ChordAnalyser extends KnowledgeSource[Track] {
     // TODO: remove additional printing
     possibleChords.foreach { case (pos, chords) =>
       chords.zipWithIndex.foreach { case (chord, index) =>
-        val name = TwelveToneEqualTemprament.Chords.functionChordMapping.toMap.get(chord.functions)
+        val name = TwelveToneEqualTemprament.TwelveToneChords.functionChordMapping.toMap.get(chord.functions)
         println(s"$pos (option $index): [${chord.root.value}] [$name]")
       }
     }

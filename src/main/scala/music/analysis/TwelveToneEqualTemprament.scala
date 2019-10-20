@@ -1,13 +1,13 @@
 package music.analysis
 
-import music.analysis.Analysis.{DefinedChords, DefinedFunctions, DefinedIntervals}
+import music.analysis.Analysis.{Chords, Functions, Intervals}
 import music.primitives._
 
-object TwelveToneEqualTemprament extends Analysis {
+object TwelveToneEqualTemprament {
 
   implicit val tuning: TuningSystem = TuningSystem(Seq(0, 2, 4, 5, 7, 9, 11))
 
-  implicit object Intervals extends DefinedIntervals {
+  implicit object TwelveToneIntervals extends Intervals {
     val PERFECT_PRIME = Interval(PitchClass(0), Step(0))
     val SMALL_SECOND = Interval(PitchClass(1), Step(1))
     val LARGE_SECOND = Interval(PitchClass(2), Step(1))
@@ -34,7 +34,7 @@ object TwelveToneEqualTemprament extends Analysis {
     )
   }
 
-  implicit object Functions extends DefinedFunctions {
+  implicit object TwelveToneFunctions extends Functions {
     val ROOT = Function(PitchClass(0), Step(0))
     val TWO = Function(PitchClass(2), Step(1))
     val FLAT_THREE = Function(PitchClass(3), Step(2))
@@ -45,19 +45,19 @@ object TwelveToneEqualTemprament extends Analysis {
     val SEVEN = Function(PitchClass(11), Step(6))
 
     override val intervalFunctionMapping: PartialFunction[Interval, Set[Function]] = {
-      case Intervals.PERFECT_PRIME => Set(ROOT)
-      case Intervals.LARGE_SECOND => Set(TWO)
-      case Intervals.SMALL_THIRD => Set(FLAT_THREE)
-      case Intervals.LARGE_THIRD => Set(THREE)
-      case Intervals.PERFECT_FOURTH => Set(FOUR)
-      case Intervals.PERFECT_FIFTH => Set(FIVE)
-      case Intervals.LARGE_SIXTH => Set(SIX)
-      case Intervals.LARGE_SEVENTH => Set(SEVEN)
+      case TwelveToneIntervals.PERFECT_PRIME => Set(ROOT)
+      case TwelveToneIntervals.LARGE_SECOND => Set(TWO)
+      case TwelveToneIntervals.SMALL_THIRD => Set(FLAT_THREE)
+      case TwelveToneIntervals.LARGE_THIRD => Set(THREE)
+      case TwelveToneIntervals.PERFECT_FOURTH => Set(FOUR)
+      case TwelveToneIntervals.PERFECT_FIFTH => Set(FIVE)
+      case TwelveToneIntervals.LARGE_SIXTH => Set(SIX)
+      case TwelveToneIntervals.LARGE_SEVENTH => Set(SEVEN)
     }
   }
 
-  implicit object Chords extends DefinedChords {
-    import Functions._
+  implicit object TwelveToneChords extends Chords {
+    import TwelveToneFunctions._
     override val functionChordMapping: Seq[(Set[Function], String)] = Seq(
       (Set(ROOT, THREE, FIVE), "Major"),
       (Set(ROOT, FLAT_THREE, FIVE), "Minor")

@@ -1,5 +1,6 @@
 package music.spelling
 
+import music.analysis.TuningSystem
 import music.collection.{Track, TrackSymbol}
 import music.primitives._
 import music.symbols.{Chord, Key, Note, TimeSignature}
@@ -34,7 +35,7 @@ object TrackSpelling {
 
       track.getSymbolTrack[Note].readAllWithPosition
         .map {
-          case (_, symbols) => symbols.map(note => PitchSpelling.spellNote(note.symbol, key))
+          case (_, symbols) => symbols.map(note => spellNote(note.symbol, key))
         }
     }
 
@@ -44,8 +45,32 @@ object TrackSpelling {
       track
         .getSymbolTrack[Chord]
         .readAllWithPosition.flatMap { case (_, symbols) =>
-          symbols.flatMap(chord => PitchSpelling.spellChord(chord.symbol, key))
+          symbols.flatMap(chord => spellChord(chord.symbol, key))
         }
+    }
+
+    private def spellChord(chord: Chord, key: Key): Option[SpelledChord] = {
+      for {
+        dur <- chord.duration
+      } yield SpelledChord(dur, spellPc(chord.root, key))
+    }
+
+    private def spellNote(note: Note, key: Key): SpelledNote = {
+      SpelledNote(
+        note.duration,
+        note.octave,
+        spellPc(note.pitchClass, key)
+      )
+    }
+
+    private def spellPc(pc: PitchClass, key: Key)(implicit tuning: TuningSystem): SpelledPitch = {
+      val rootPc = key.root.toPc
+
+      tuning
+        .possibleIntervals(rootPc, pc)
+        .map(i => key.root.addInterval(i))
+        .toSeq
+        .minBy(_.accidental.value.abs)
     }
   }
 
