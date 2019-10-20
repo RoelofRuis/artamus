@@ -1,6 +1,7 @@
 package server.domain.track
 
 import javax.inject.Inject
+import music.primitives.MidiNoteNumber
 import music.symbols.{Chord, Note}
 import protocol.Query
 import pubsub.Dispatcher
@@ -36,7 +37,7 @@ private[server] class TrackQueryHandler @Inject() (
           .flatMap { note =>
             val pc = note.symbol.pitchClass
             val oct = note.symbol.octave
-            Some(tuning.octAndPcToNoteNumber(oct, pc).value)
+            Some(MidiNoteNumber(oct, pc).value)
           }
         .toList
     }.toList

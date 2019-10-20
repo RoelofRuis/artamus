@@ -1,37 +1,42 @@
 package music.analysis
 
+import music.analysis.Analysis.{DefinedChords, DefinedFunctions, DefinedIntervals}
 import music.primitives._
 
 object Analysis {
 
-  trait DefinedIntervals[A] {
+  trait DefinedIntervals {
     val intervals: Set[Interval]
   }
 
-  trait DefinedFunctions[A] {
+  trait DefinedFunctions {
     val intervalFunctionMapping: PartialFunction[Interval, Set[Function]]
   }
 
-  trait DefinedChords[A] {
+  trait DefinedChords {
     val functionChordMapping: Seq[(Set[Function], String)]
   }
 
-  implicit class IntervalAnalysisOps[A : DefinedIntervals](a: TuningSystem[A]) {
+}
+
+trait Analysis {
+
+  implicit class IntervalAnalysisOps(tuning: TuningSystem)(implicit intervals: DefinedIntervals) {
     def possibleIntervals(pc1: PitchClass, pc2: PitchClass): Set[Interval] = {
-      val diff = a.pcDiff(pc1, pc2)
-      implicitly[DefinedIntervals[A]].intervals.filter(_.pc.value == diff)
+      val diff = pc1.diff(pc2)(tuning)
+      intervals.intervals.filter(_.pc.value == diff)
     }
   }
 
-  implicit class FunctionAnalysisOps[A : DefinedFunctions](a: TuningSystem[A]) {
+  implicit class FunctionAnalysisOps(tuning: TuningSystem)(implicit functions: DefinedFunctions) {
     def possibleFunctions(i: Interval): Set[Function] = {
-      implicitly[DefinedFunctions[A]].intervalFunctionMapping.applyOrElse(i, (_: Interval) => Set[Function]())
+      functions.intervalFunctionMapping.applyOrElse(i, (_: Interval) => Set[Function]())
     }
   }
 
-  implicit class ChordAnalysisOps[A : DefinedChords](a: TuningSystem[A]) {
+  implicit class ChordAnalysisOps(tuning: TuningSystem)(implicit chords: DefinedChords) {
     def functionsToName(functions: Set[Function]): Option[String] = {
-      implicitly[DefinedChords[A]].functionChordMapping.toMap.get(functions)
+      chords.functionChordMapping.toMap.get(functions)
     }
   }
 

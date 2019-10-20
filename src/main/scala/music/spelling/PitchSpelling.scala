@@ -6,6 +6,8 @@ import music.symbols.{Chord, Note}
 
 object PitchSpelling {
 
+  import music.analysis.TwelveToneEqualTemprament._
+
   def spellChord(symbol: TrackSymbol[Chord]): Option[SpelledChord] = {
     for {
       dur <- symbol.symbol.duration

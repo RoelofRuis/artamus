@@ -3,7 +3,6 @@ package client.operations
 import client.MusicReader
 import client.MusicReader.{NoteOn, Simultaneous}
 import client.io.StdIOTools
-import client.io.midi.MidiMusicReader
 import com.google.inject.Inject
 import music.math.Rational
 import music.primitives._
@@ -40,9 +39,9 @@ class TrackOperations @Inject() (
     val root = reader.readSpelledPitch
 
     println(s"Reading key type...")
-    val keyType = reader.readPitchClasses(NoteOn(1)).head match {
-      case PitchClass(3) => Scale.MINOR
-      case PitchClass(4) => Scale.MAJOR
+    val keyType = reader.readPitchClasses(NoteOn(1)).head.value match {
+      case 3 => Scale.MINOR
+      case 4 => Scale.MAJOR
       case _ => Scale.MAJOR
     }
 
@@ -64,7 +63,7 @@ class TrackOperations @Inject() (
       .readMidiNoteNumbers(NoteOn(numNotes))
       .zipWithIndex
       .map{ case (midiNoteNumber, index) =>
-        val (oct, pc) = tuning.noteNumberToOctAndPc(midiNoteNumber)
+        val (oct, pc) = (midiNoteNumber.toOct, midiNoteNumber.toPc)
         CreateNoteSymbol(
           Position.apply(elementDuration, index),
           Note(
@@ -89,7 +88,7 @@ class TrackOperations @Inject() (
       reader
         .readMidiNoteNumbers(Simultaneous)
         .map { midiNoteNumber =>
-          val (oct, pc) = tuning.noteNumberToOctAndPc(midiNoteNumber)
+          val (oct, pc) = (midiNoteNumber.toOct, midiNoteNumber.toPc)
           CreateNoteSymbol(
             Position.apply(elementDuration, i),
             Note(
