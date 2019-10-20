@@ -2,7 +2,7 @@ package music
 
 import music.collection.SymbolTrack.Updater
 import music.primitives.Position
-import music.symbols.{Property, SymbolType}
+import music.symbols.SymbolType
 
 import scala.collection.SortedMap
 import scala.reflect.ClassTag
@@ -19,7 +19,7 @@ package object collection {
   }
 
   trait SymbolTrack[S <: SymbolType] {
-    def addSymbolAt(pos: Position, props: SymbolProperties[S]): SymbolTrack[S]
+    def addSymbolAt(pos: Position, symbol: S): SymbolTrack[S]
     def removeSymbol(symbolId: Long): SymbolTrack[S]
     def readAt(pos: Position): Seq[TrackSymbol[S]]
     def readAll: Seq[TrackSymbol[S]]
@@ -32,18 +32,6 @@ package object collection {
     def apply[S <: SymbolType]: SymbolTrack[S] = SymbolTrackImpl[S](SortedMap(), Map(), 0)
   }
 
-  trait SymbolProperties[S <: SymbolType] {
-    def add[A](prop: A)(implicit ev: Property[S, A]): SymbolProperties[S]
-    def get[A : ClassTag](implicit ev: Property[S, A]): Option[A]
-  }
-
-  object SymbolProperties {
-    def apply[S <: SymbolType]: SymbolProperties[S] = SymbolPropertiesImpl[S](Map())
-  }
-
-  trait TrackSymbol[S <: SymbolType] {
-    val id: Long
-    def get[A : ClassTag](implicit ev: Property[S, A]): Option[A]
-  }
+  final case class TrackSymbol[S <: SymbolType](id: Long, symbol: S)
 
 }

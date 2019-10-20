@@ -1,9 +1,9 @@
 package server.domain.track
 
 import javax.annotation.concurrent.{GuardedBy, ThreadSafe}
+import music.collection.Track
 import music.primitives.Position
 import music.symbols.SymbolType
-import music.collection.{SymbolProperties, Track}
 
 import scala.reflect.ClassTag
 
@@ -17,7 +17,7 @@ class TrackState() {
     track = Track.empty
   }
 
-  def createSymbol[S <: SymbolType : ClassTag](pos: Position, props: SymbolProperties[S]): Unit = trackLock.synchronized {
+  def createSymbol[S <: SymbolType: ClassTag](pos: Position, props: S): Unit = trackLock.synchronized {
     track = track.updateSymbolTrack[S](_.addSymbolAt(pos, props))
   }
 

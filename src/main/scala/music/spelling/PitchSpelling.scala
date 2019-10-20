@@ -1,27 +1,23 @@
 package music.spelling
 
-import music.analysis.TwelveToneEqualTemprament
 import music.collection.TrackSymbol
 import music.primitives._
 import music.symbols.{Chord, Note}
 
 object PitchSpelling {
 
-  private val tuning = TwelveToneEqualTemprament.tuning
-
   def spellChord(symbol: TrackSymbol[Chord]): Option[SpelledChord] = {
     for {
-      root <- symbol.get[ChordRoot]
-      dur <- symbol.get[Duration]
-    } yield SpelledChord(dur, spellPc(root.pc))
+      dur <- symbol.symbol.duration
+    } yield SpelledChord(dur, spellPc(symbol.symbol.root))
   }
 
-  def spellNote(symbol: TrackSymbol[Note]): Option[SpelledNote] = {
-    for {
-      pc <- symbol.get[PitchClass]
-      oct <- symbol.get[Octave]
-      dur <- symbol.get[Duration]
-    } yield SpelledNote(dur, oct, spellPc(pc))
+  def spellNote(symbol: TrackSymbol[Note]): SpelledNote = {
+    SpelledNote(
+      symbol.symbol.duration,
+      symbol.symbol.octave,
+      spellPc(symbol.symbol.pitchClass)
+    )
   }
 
   private def spellPc(pc: PitchClass): SpelledPitch = {

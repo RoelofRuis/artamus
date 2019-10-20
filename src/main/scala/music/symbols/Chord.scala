@@ -1,15 +1,24 @@
 package music.symbols
 
-import music.collection.SymbolProperties
-import music.primitives.{ChordFunctions, ChordRoot, Function, PitchClass}
+import music.primitives.{Duration, Function, PitchClass}
 
 import scala.collection.immutable.SortedSet
 
-trait Chord extends SymbolType
+final case class Chord(
+  root: PitchClass,
+  functions: SortedSet[Function],
+  duration: Option[Duration]
+) extends SymbolType {
+
+  def withDuration(dur: Duration): Chord = this.copy(duration = Some(dur))
+
+}
 
 object Chord {
-  def apply(root: PitchClass, functions: SortedSet[Function]): SymbolProperties[Chord] =
-    SymbolProperties[Chord]
-      .add(ChordRoot(root))
-      .add(ChordFunctions(functions))
+
+  def apply(
+    root: PitchClass,
+    functions: SortedSet[Function]
+  ): Chord = Chord(root, functions, None)
+
 }
