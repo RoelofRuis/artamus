@@ -13,13 +13,13 @@ class LilypondInterpreter(
 
   def interpret(track: Track): LyFile = {
     val keyTuple = for {
-      key <- track.spelledKey
+      key <- track.keyAtZero
     } yield (key.symbol.root, key.symbol.scale)
 
     LyFile(
       Staff(
         keyTuple,
-        track.spelledTimeSignature,
+        track.timeSignatureAtZero,
         track.spelledNotes,
       ),
       ChordNames(track.spelledChords),
