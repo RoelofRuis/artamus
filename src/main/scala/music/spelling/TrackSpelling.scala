@@ -11,7 +11,7 @@ object TrackSpelling {
     def spelledTimeSignature: Option[TimeSignatureDivision] = {
       track
         .getSymbolTrack[TimeSignature]
-        .readAt(Position.zero)
+        .readAt(Position.zero) // TODO: read from 'any' position
         .reverse
         .flatMap(_.get[TimeSignatureDivision])
         .headOption
@@ -20,7 +20,7 @@ object TrackSpelling {
     def spelledKey: Option[TrackSymbol[Key]] = {
       track
         .getSymbolTrack[Key]
-        .readAt(Position.zero)
+        .readAt(Position.zero) // TODO: read from 'any' position
         .reverse
         .headOption
     }
