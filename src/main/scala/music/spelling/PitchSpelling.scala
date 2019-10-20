@@ -3,7 +3,7 @@ package music.spelling
 import music.analysis.TwelveToneEqualTemprament
 import music.collection.TrackSymbol
 import music.primitives._
-import music.symbols.{Chord, Note}
+import music.symbols.{Chord, Key, Note}
 
 object PitchSpelling {
 
@@ -22,6 +22,29 @@ object PitchSpelling {
       oct <- symbol.get[Octave]
       dur <- symbol.get[Duration]
     } yield SpelledNote(dur, oct, spellPc(pc))
+  }
+
+  private def spellPc(pc: PitchClass, key: TrackSymbol[Key]): SpelledPitch = {
+    val rootAndScale = for {
+      scale <- key.get[Scale]
+      root <- key.get[SpelledPitch]
+    } yield (root, scale)
+
+    val (root, scale) = rootAndScale.getOrElse(SpelledPitch(Step(0), Accidental(0)), Scale.MAJOR)
+
+    val rootPc = tuning.spelledPitchToPc(root).value
+    val scaleMap = scale
+      .pcSequence
+      .zipWithIndex
+      .map { case (pc, step) => tuning.pc(pc + rootPc) -> tuning.step(step) }
+      .toMap
+
+    // geeft je de step (opzoeken in key)
+    scaleMap.get(pc)
+
+    // else de dichtstbijzijnde
+
+    ???
   }
 
   private def spellPc(pc: PitchClass): SpelledPitch = {
