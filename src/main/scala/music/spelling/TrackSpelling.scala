@@ -13,7 +13,7 @@ object TrackSpelling {
         .getSymbolTrack[TimeSignature]
         .readAt(Position.zero) // TODO: read from 'any' position
         .reverse
-        .flatMap(_.get[TimeSignatureDivision])
+        .map(_.symbol.division)
         .headOption
     }
 
@@ -28,7 +28,7 @@ object TrackSpelling {
     def spelledNotes: Seq[Seq[SpelledNote]] = {
       track.getSymbolTrack[Note].readAllWithPosition
         .map {
-          case (_, symbols) => symbols.flatMap(note => PitchSpelling.spellNote(note))
+          case (_, symbols) => symbols.map(note => PitchSpelling.spellNote(note))
         }
     }
 

@@ -1,8 +1,7 @@
 package server.interpret
 
 import music.collection.Track
-import music.primitives.Scale
-import music.spelling.{SpelledPitch, TrackSpelling}
+import music.spelling.TrackSpelling
 import server.interpret.lilypond.{ChordNames, LyFile, Staff}
 
 class LilypondInterpreter(
@@ -15,9 +14,7 @@ class LilypondInterpreter(
   def interpret(track: Track): LyFile = {
     val keyTuple = for {
       key <- track.spelledKey
-      root <- key.get[SpelledPitch]
-      scale <- key.get[Scale]
-    } yield (root, scale)
+    } yield (key.symbol.root, key.symbol.scale)
 
     LyFile(
       Staff(

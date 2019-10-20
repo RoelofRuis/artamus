@@ -9,14 +9,14 @@ import scala.collection.SortedMap
 @Immutable
 private[collection] final case class SymbolTrackImpl[S <: SymbolType](
   private val positions: SortedMap[Position, Seq[Long]],
-  private val symbols: Map[Long, SymbolProperties[S]],
+  private val symbols: Map[Long, S],
   private val lastId: Long
 ) extends SymbolTrack[S] {
 
-  def addSymbolAt(pos: Position, props: SymbolProperties[S]): SymbolTrack[S] = {
+  def addSymbolAt(pos: Position, symbol: S): SymbolTrack[S] = {
     SymbolTrackImpl(
       positions.updated(pos, positions.getOrElse(pos, List()) :+ lastId),
-      symbols.updated(lastId, props),
+      symbols.updated(lastId, symbol),
       lastId + 1
     )
   }
@@ -32,16 +32,16 @@ private[collection] final case class SymbolTrackImpl[S <: SymbolType](
   }
 
   def readAt(pos: Position): Seq[TrackSymbol[S]] = {
-    positions.getOrElse(pos, List()).flatMap { index => symbols.get(index).map(TrackSymbolImpl(index, _)) }
+    positions.getOrElse(pos, List()).flatMap { index => symbols.get(index).map(TrackSymbol(index, _)) }
   }
 
   def readAll: Seq[TrackSymbol[S]] = {
-    symbols.map { case (index, properties) => TrackSymbolImpl(index, properties) }.toSeq
+    symbols.map { case (index, properties) => TrackSymbol(index, properties) }.toSeq
   }
 
   def readAllWithPosition: Seq[(Position, Seq[TrackSymbol[S]])] = {
     positions.map { case (position, indices) =>
-      (position, indices.flatMap { index => symbols.get(index).map(TrackSymbolImpl(index, _)) })
+      (position, indices.flatMap { index => symbols.get(index).map(TrackSymbol(index, _)) })
     }.toSeq
   }
 
