@@ -31,15 +31,12 @@ private[server] class TrackQueryHandler @Inject() (
     state
       .readState
       .getSymbolTrack[Note]
-      .readAllWithPosition.map {
-      case (_, notes) =>
-        notes
-          .flatMap { note =>
-            val pc = note.symbol.pitchClass
-            val oct = note.symbol.octave
-            Some(MidiNoteNumber(oct, pc).value)
-          }
-        .toList
+      .readAllGrouped.map {
+        _.flatMap { note =>
+          val pc = note.symbol.pitchClass
+          val oct = note.symbol.octave
+          Some(MidiNoteNumber(oct, pc).value)
+        }.toList
     }.toList
   }
 

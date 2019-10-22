@@ -32,10 +32,10 @@ object TrackSpelling {
     def spelledNotes: Seq[Seq[SpelledNote]] = {
       val key = keyAtZero.map(_.symbol).getOrElse(Key(SpelledPitch(Step(0), Accidental(0)), Scale.MAJOR))
 
-      track.getSymbolTrack[Note].readAllWithPosition
-        .map {
-          case (_, symbols) => symbols.map(note => spellNote(note.symbol, key))
-        }
+      track
+        .getSymbolTrack[Note]
+        .readAllGrouped
+        .map(_.map(note => spellNote(note.symbol, key)))
     }
 
     def spelledChords: Seq[SpelledChord] = {
@@ -43,9 +43,7 @@ object TrackSpelling {
 
       track
         .getSymbolTrack[Chord]
-        .readAllWithPosition.flatMap { case (_, symbols) =>
-          symbols.flatMap(chord => spellChord(chord.symbol, key))
-        }
+        .readAll.flatMap { chord => spellChord(chord.symbol, key) }
     }
 
     private def spellChord(chord: Chord, key: Key): Option[SpelledChord] = {

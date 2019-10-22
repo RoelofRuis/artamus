@@ -24,7 +24,7 @@ package object collection {
     def readNext(pos: Position): Seq[TrackSymbol[S]]
     def readAt(pos: Position): Seq[TrackSymbol[S]]
     def readAll: Seq[TrackSymbol[S]]
-    def readAllWithPosition: Seq[(Position, Seq[TrackSymbol[S]])]
+    def readAllGrouped: Seq[Seq[TrackSymbol[S]]]
   }
 
   object SymbolTrack {
@@ -33,6 +33,10 @@ package object collection {
     def apply[S <: SymbolType]: SymbolTrack[S] = SymbolTrackImpl[S](SortedMap(), Map(), 0)
   }
 
-  final case class TrackSymbol[S <: SymbolType](id: Long, symbol: S)
+  final case class TrackSymbol[S <: SymbolType](
+    id: Long,
+    position: Position,
+    symbol: S
+  )
 
 }
