@@ -19,10 +19,13 @@ package object collection {
   }
 
   trait SymbolTrack[S <: SymbolType] {
+    // TODO: might be split into `read` and `write` interface
     def addSymbolAt(pos: Position, symbol: S): SymbolTrack[S]
     def removeSymbol(symbolId: Long): SymbolTrack[S]
     def readNext(pos: Position): Seq[TrackSymbol[S]]
+    def readFirstNext(pos: Position): Option[TrackSymbol[S]]
     def readAt(pos: Position): Seq[TrackSymbol[S]]
+    def readFirstAt(pos: Position): Option[TrackSymbol[S]]
     def readAll: Seq[TrackSymbol[S]]
     def readAllGrouped: Seq[Seq[TrackSymbol[S]]]
   }

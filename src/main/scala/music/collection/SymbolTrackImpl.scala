@@ -39,9 +39,13 @@ private[collection] final case class SymbolTrackImpl[S <: SymbolType](
       .toSeq
   }
 
+  def readFirstNext(pos: Position): Option[TrackSymbol[S]] = readNext(pos).headOption
+
   def readAt(pos: Position): Seq[TrackSymbol[S]] = {
     positions.getOrElse(pos, Seq()).flatMap(id => symbolById(id, pos))
   }
+
+  def readFirstAt(pos: Position): Option[TrackSymbol[S]] = readAt(pos).headOption
 
   def readAllGrouped: Seq[Seq[TrackSymbol[S]]] = {
     positions
