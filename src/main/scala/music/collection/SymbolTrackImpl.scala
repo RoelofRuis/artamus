@@ -15,7 +15,7 @@ private[collection] final case class SymbolTrackImpl[S <: SymbolType](
 
   def addSymbolAt(pos: Position, symbol: S): SymbolTrack[S] = {
     SymbolTrackImpl(
-      positions.updated(pos, positions.getOrElse(pos, List()) :+ lastId),
+      positions.updated(pos, positions.getOrElse(pos, Seq()) :+ lastId),
       symbols.updated(lastId, symbol),
       lastId + 1
     )
@@ -31,8 +31,16 @@ private[collection] final case class SymbolTrackImpl[S <: SymbolType](
     )
   }
 
+  def readNext(pos: Position): Seq[TrackSymbol[S]] = {
+    positions
+      .valuesIteratorFrom(pos)
+      .slice(1, 2)
+      .flatMap(_.flatMap(symbolById))
+      .toSeq
+  }
+
   def readAt(pos: Position): Seq[TrackSymbol[S]] = {
-    positions.getOrElse(pos, List()).flatMap { index => symbols.get(index).map(TrackSymbol(index, _)) }
+    positions.getOrElse(pos, Seq()).flatMap(symbolById)
   }
 
   def readAll: Seq[TrackSymbol[S]] = {
@@ -43,6 +51,10 @@ private[collection] final case class SymbolTrackImpl[S <: SymbolType](
     positions.map { case (position, indices) =>
       (position, indices.flatMap { index => symbols.get(index).map(TrackSymbol(index, _)) })
     }.toSeq
+  }
+
+  private def symbolById(id: Long): Option[TrackSymbol[S]] = {
+    symbols.get(id).map(symbol => TrackSymbol(id, symbol))
   }
 
 }

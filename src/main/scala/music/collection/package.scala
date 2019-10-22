@@ -21,6 +21,7 @@ package object collection {
   trait SymbolTrack[S <: SymbolType] {
     def addSymbolAt(pos: Position, symbol: S): SymbolTrack[S]
     def removeSymbol(symbolId: Long): SymbolTrack[S]
+    def readNext(pos: Position): Seq[TrackSymbol[S]]
     def readAt(pos: Position): Seq[TrackSymbol[S]]
     def readAll: Seq[TrackSymbol[S]]
     def readAllWithPosition: Seq[(Position, Seq[TrackSymbol[S]])]
