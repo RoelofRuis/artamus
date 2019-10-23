@@ -12,13 +12,9 @@ class LilypondInterpreter(
   import TrackSpelling._
 
   def interpret(track: Track): LyFile = {
-    val keyTuple = for {
-      key <- track.keyAtZero
-    } yield (key.symbol.root, key.symbol.scale)
-
     LyFile(
       Staff(
-        keyTuple,
+        track.keyAtZero,
         track.timeSignatureAtZero,
         track.spelledNotes,
       ),

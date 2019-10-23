@@ -2,6 +2,7 @@ package server.interpret.lilypond
 
 import music.primitives._
 import music.spelling.{SpelledChord, SpelledNote, SpelledPitch}
+import music.symbols.{Key, TimeSignature}
 
 // TODO: distribute over classes representing the lilypond structure!
 trait LilypondFormat[A] {
@@ -68,14 +69,15 @@ object LilypondFormat {
     s"${duration.value.d}"
   }
 
-  implicit val timeSignatureToLilypond: LilypondFormat[TimeSignatureDivision] = (timeSignature: TimeSignatureDivision) => {
-    s"\\time ${timeSignature.num}/${timeSignature.denom}"
+  implicit val timeSignatureToLilypond: LilypondFormat[TimeSignature] = (timeSignature: TimeSignature) => {
+    val division = timeSignature.division
+    s"\\time ${division.num}/${division.denom}"
   }
 
-  implicit val keyToLilypond: LilypondFormat[(SpelledPitch, Scale)] = (key: (SpelledPitch, Scale)) => {
+  implicit val keyToLilypond: LilypondFormat[Key] = key => {
     // TODO: implement http://lilypond.org/doc/v2.18/Documentation/notation/displaying-pitches#key-signature
-    val pitch = key._1.toLilypond
-    val mode = key._2 match {
+    val pitch = key.root.toLilypond
+    val mode = key.scale match {
       case Scale.MAJOR => "\\major"
       case Scale.MINOR => "\\minor"
       case _ => "\\major"
