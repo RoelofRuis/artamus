@@ -31,7 +31,7 @@ object Spelling {
       .possibleIntervals(key.root.toPc, pc)
       .map(i => key.root.addInterval(i))
       .toSeq
-      .minBy(_.accidental.value.abs)
+      .minBy(_.accidental.value.abs) // TODO: this decision might be more complex...
   }
 
 }
