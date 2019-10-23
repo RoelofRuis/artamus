@@ -4,16 +4,15 @@ import client.MusicReader
 import client.MusicReader.{NoteOn, Simultaneous}
 import client.io.StdIOTools
 import music.primitives._
-import music.spelling.SpelledPitch
 
 class TerminalMusicReader extends MusicReader {
 
   import music.analysis.TwelveToneEqualTemprament._
 
-  override def readSpelledPitch: SpelledPitch = {
+  override def readPitchSpelling: PitchSpelling = {
     val step = Step(StdIOTools.readInt("Input step"))
     val acc = Accidental(StdIOTools.readInt("Input accidental"))
-    SpelledPitch(step, acc)
+    PitchSpelling(step, acc)
   }
 
   override def readTimeSignatureDivision: TimeSignatureDivision = {

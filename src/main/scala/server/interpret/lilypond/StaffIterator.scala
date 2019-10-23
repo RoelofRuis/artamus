@@ -1,14 +1,13 @@
 package server.interpret.lilypond
 
 import music.collection.{Track, TrackSymbol}
-import music.primitives.{Accidental, Position, Scale, Step, TimeSignatureDivision}
-import music.spelling.SpelledPitch
+import music.primitives._
 import music.symbols.{Key, Note, TimeSignature}
 
 class StaffIterator(track: Track) {
 
-  import server.interpret.lilypond.LilypondFormat._
   import music.analysis.TwelveToneEqualTemprament._
+  import server.interpret.lilypond.LilypondFormat._
 
   private val timeSignatures = track.getSymbolTrack[TimeSignature]
   private val keys = track.getSymbolTrack[Key]
@@ -28,7 +27,7 @@ class StaffIterator(track: Track) {
     val initialKey = keys
       .readFirstAt(pos)
       .map(_.symbol)
-      .getOrElse(Key(SpelledPitch(Step(0), Accidental(0)), Scale.MAJOR))
+      .getOrElse(Key(PitchSpelling(Step(0), Accidental(0)), Scale.MAJOR))
 
     val initialNotes = notes.readAt(pos)
 

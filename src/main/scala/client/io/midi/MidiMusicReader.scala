@@ -5,20 +5,19 @@ import client.MusicReader.{NoteOn, ReadMethod, Simultaneous}
 import javax.inject.Inject
 import midi.in.MidiMessageReader
 import music.primitives._
-import music.spelling.SpelledPitch
 
 private[midi] class MidiMusicReader @Inject() (reader: MidiMessageReader) extends MusicReader {
 
   import midi.in.Reading._
   import music.analysis.TwelveToneEqualTemprament._
 
-  def readSpelledPitch: SpelledPitch = {
+  def readPitchSpelling: PitchSpelling = {
     val midiNoteNumbers = readMidiNoteNumbers(NoteOn(2))
     val firstStep = midiNoteNumbers.head.toPc.toStep
 
-    if (firstStep.isEmpty) readSpelledPitch
+    if (firstStep.isEmpty) readPitchSpelling
     else {
-      SpelledPitch(Step(firstStep.get.value), Accidental(midiNoteNumbers.last.value - midiNoteNumbers.head.value))
+      PitchSpelling(Step(firstStep.get.value), Accidental(midiNoteNumbers.last.value - midiNoteNumbers.head.value))
     }
   }
 

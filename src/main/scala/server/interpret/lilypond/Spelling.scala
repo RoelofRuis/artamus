@@ -2,7 +2,7 @@ package server.interpret.lilypond
 
 import music.collection.TrackSymbol
 import music.primitives._
-import music.spelling.{SpelledNote, SpelledPitch}
+import music.spelling.SpelledNote
 import music.symbols.{Key, Note}
 
 // TODO: move to algorithm
@@ -26,7 +26,7 @@ object Spelling {
     )
   }
 
-  private def spellPc(pc: PitchClass, key: Key): SpelledPitch = {
+  private def spellPc(pc: PitchClass, key: Key): PitchSpelling = {
     tuning
       .possibleIntervals(key.root.toPc, pc)
       .map(i => key.root.addInterval(i))

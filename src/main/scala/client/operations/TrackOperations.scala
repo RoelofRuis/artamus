@@ -36,7 +36,7 @@ class TrackOperations @Inject() (
 
   registry.registerOperation(OperationToken("key", "track"), () => {
     println(s"Reading key...")
-    val root = reader.readSpelledPitch
+    val root = reader.readPitchSpelling
 
     println(s"Reading key type...")
     val keyType = reader.readPitchClasses(NoteOn(1)).head.value match {

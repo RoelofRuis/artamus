@@ -1,5 +1,6 @@
 package music.spelling
 
-import music.primitives.{Duration, Octave}
+import music.primitives.{Duration, Octave, PitchSpelling}
 
-final case class SpelledNote(duration: Duration, octave: Octave, pitch: SpelledPitch)
+@Deprecated // note should have `spelled` property
+final case class SpelledNote(duration: Duration, octave: Octave, pitch: PitchSpelling)

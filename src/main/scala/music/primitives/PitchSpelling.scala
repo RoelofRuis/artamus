@@ -1,15 +1,14 @@
-package music.spelling
+package music.primitives
 
 import music.analysis.TuningSystem
-import music.primitives.{Accidental, Interval, PitchClass, Step}
 
-final case class SpelledPitch(step: Step, accidental: Accidental) {
+final case class PitchSpelling(step: Step, accidental: Accidental) {
 
   def toPc(implicit tuning: TuningSystem): PitchClass = PitchClass(span)
 
   def span(implicit tuning: TuningSystem): Int = step.toPc.value + accidental.value
 
-  def addInterval(interval: Interval)(implicit tuning: TuningSystem): SpelledPitch = {
+  def addInterval(interval: Interval)(implicit tuning: TuningSystem): PitchSpelling = {
     def unboundStepValue(step: Int): Int = {
       if (step >= tuning.numSteps) unboundStepValue(step - tuning.numSteps) + tuning.numPitchClasses
       else tuning.pcSeq(step)
@@ -20,6 +19,6 @@ final case class SpelledPitch(step: Step, accidental: Accidental) {
     val actualPc = unboundStepValue(step.value) + accidental.value + interval.pc.value
     val pcDiff = actualPc - newPc
 
-    SpelledPitch(Step(newStep), Accidental(pcDiff))
+    PitchSpelling(Step(newStep), Accidental(pcDiff))
   }
 }

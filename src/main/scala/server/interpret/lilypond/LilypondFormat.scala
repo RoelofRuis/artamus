@@ -1,7 +1,7 @@
 package server.interpret.lilypond
 
 import music.primitives._
-import music.spelling.{SpelledChord, SpelledNote, SpelledPitch}
+import music.spelling.{SpelledChord, SpelledNote}
 import music.symbols.{Key, TimeSignature}
 
 // TODO: distribute over classes representing the lilypond structure!
@@ -32,7 +32,7 @@ object LilypondFormat {
     }.mkString("<", " ", ">") + dur.toLilypond
   }
 
-  implicit val spelledPitchToLilypond: LilypondFormat[SpelledPitch] = (spelledPitch: SpelledPitch) => {
+  implicit val spelledPitchToLilypond: LilypondFormat[PitchSpelling] = (spelling: PitchSpelling) => {
     def accidentalText(a: Accidental, acc: String = "", suppressE: Boolean = false): String = {
       a match {
         case Accidental(0) => acc
@@ -40,8 +40,8 @@ object LilypondFormat {
         case Accidental(v) if v < 0 => accidentalText(Accidental(v + 1), acc + (if (suppressE) "s" else "es"))
       }
     }
-    val stepValue = spelledPitch.step.value
-    spelledPitch.step.toLilypond + accidentalText(spelledPitch.accidental, suppressE = stepValue == 2 || stepValue == 5)
+    val stepValue = spelling.step.value
+    spelling.step.toLilypond + accidentalText(spelling.accidental, suppressE = stepValue == 2 || stepValue == 5)
   }
 
   implicit val stepToLilypond: LilypondFormat[Step] = (step: Step) => {

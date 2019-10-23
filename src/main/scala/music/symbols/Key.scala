@@ -1,9 +1,8 @@
 package music.symbols
 
-import music.primitives.Scale
-import music.spelling.SpelledPitch
+import music.primitives.{PitchSpelling, Scale}
 
 final case class Key(
-  root: SpelledPitch,
+  root: PitchSpelling,
   scale: Scale
 ) extends SymbolType
