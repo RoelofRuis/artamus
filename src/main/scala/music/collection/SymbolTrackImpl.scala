@@ -13,6 +13,8 @@ private[collection] final case class SymbolTrackImpl[S <: SymbolType](
   private val lastId: Long
 ) extends SymbolTrack[S] {
 
+  // TODO: clean up this class based on information that is now contained in the TrackSymbol
+
   def addSymbolAt(pos: Position, symbol: S): SymbolTrack[S] = {
     SymbolTrackImpl(
       positions.updated(pos, positions.getOrElse(pos, Seq()) :+ lastId),
@@ -29,6 +31,16 @@ private[collection] final case class SymbolTrackImpl[S <: SymbolType](
       symbols - id,
       lastId
     )
+  }
+
+  def updateSymbol(sym: TrackSymbol[S]): SymbolTrack[S] = {
+    if (symbols.isDefinedAt(sym.id)) {
+      SymbolTrackImpl(
+        positions,
+        symbols.updated(sym.id, sym.symbol),
+        lastId
+      )
+    } else this
   }
 
   def readNext(pos: Position): Seq[TrackSymbol[S]] = {

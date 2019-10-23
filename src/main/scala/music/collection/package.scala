@@ -22,6 +22,7 @@ package object collection {
     // TODO: might be split into `read` and `write` interface
     def addSymbolAt(pos: Position, symbol: S): SymbolTrack[S]
     def removeSymbol(symbolId: Long): SymbolTrack[S]
+    def updateSymbol(sym: TrackSymbol[S]): SymbolTrack[S]
     def readNext(pos: Position): Seq[TrackSymbol[S]]
     def readFirstNext(pos: Position): Option[TrackSymbol[S]]
     def readAt(pos: Position): Seq[TrackSymbol[S]]
@@ -40,6 +41,8 @@ package object collection {
     id: Long,
     position: Position,
     symbol: S
-  )
+  ) {
+    def update(s: S): TrackSymbol[S] = this.copy(symbol = s)
+  }
 
 }
