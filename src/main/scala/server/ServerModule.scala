@@ -40,7 +40,11 @@ class ServerModule extends ScalaPrivateModule with ServerConfig {
 
     bind[Controller[Track]]
       .toInstance(new Controller(
-        Seq(new ChordAnalyser(), new PitchHistogramAnalyser()),
+        Seq(
+          new ChordAnalyser(),
+          new PitchAnalyser(),
+          new PitchHistogramAnalyser()
+        ),
       ))
 
     bind[Bootstrapper].asEagerSingleton()

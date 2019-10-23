@@ -1,29 +1,24 @@
-package server.interpret.lilypond
+package music.analysis
 
 import music.collection.TrackSymbol
 import music.primitives._
-import music.spelling.SpelledNote
 import music.symbols.{Key, Note}
 
-// TODO: move to algorithm
-object Spelling {
+object TwelveTonePitchSpelling {
 
   import music.analysis.TwelveToneEqualTemprament._
 
-  def spelledNotes(notes: Seq[TrackSymbol[Note]], key: Key): Seq[SpelledNote] = {
-    notes.map(note => spellNote(note.symbol, key))
+  def spellNotes(notes: Seq[TrackSymbol[Note]], keyOption: Option[Key]): Seq[TrackSymbol[Note]] = {
+    val key = keyOption.getOrElse(Key(PitchSpelling(Step(0), Accidental(0)), Scale.MAJOR))
+    notes.map(note => note.update(note.symbol.withScientificPitch(spell(note.symbol, key))))
   }
 
-  private def spellNote(note: Note, key: Key): SpelledNote = {
+  private def spell(note: Note, key: Key): ScientificPitch = {
     val spelledPitch = spellPc(note.pitchClass, key)
 
     val newOctave = if (spelledPitch.span > tuning.span) Octave(note.octave.value - 1) else note.octave
 
-    SpelledNote(
-      note.duration,
-      newOctave,
-      spelledPitch
-    )
+    ScientificPitch(spelledPitch, newOctave)
   }
 
   private def spellPc(pc: PitchClass, key: Key): PitchSpelling = {

@@ -2,9 +2,9 @@ package server.interpret.lilypond
 
 import music.primitives._
 import music.spelling.{SpelledChord, SpelledNote}
-import music.symbols.{Key, TimeSignature}
+import music.symbols.{Key, Note, TimeSignature}
 
-// TODO: distribute over classes representing the lilypond structure!
+// TODO: distribute over classes representing the lilypond structure?
 trait LilypondFormat[A] {
   def toLilypond(a: A): String
 }
@@ -21,13 +21,13 @@ object LilypondFormat {
     chord.root.toLilypond + chord.duration.toLilypond
   }
 
-  implicit val simultaneousNotesToLilypond: LilypondFormat[Seq[SpelledNote]] = (notes: Seq[SpelledNote]) => {
+  implicit val simultaneousNotesToLilypond: LilypondFormat[Seq[Note]] = (notes: Seq[Note]) => {
     val dur = notes.map(_.duration).max
     // TODO: no brackets for single notes!
     notes.map { note =>
       Seq(
-        note.pitch.toLilypond,
-        note.octave.toLilypond,
+        note.scientificPitch.get.spelling.toLilypond, // TODO: do not spell notes without scientificPitch!
+        note.scientificPitch.get.octave.toLilypond,
       ).mkString("")
     }.mkString("<", " ", ">") + dur.toLilypond
   }

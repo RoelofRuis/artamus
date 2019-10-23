@@ -14,7 +14,7 @@ class StaffIterator(track: Track) {
   private val notes = track.getSymbolTrack[Note]
 
   private def notesToLilypond(notes: Seq[TrackSymbol[Note]], key: Key): Stream[String] = {
-    Stream(Spelling.spelledNotes(notes, key).toLilypond) // TODO: spelling should not be done here
+    Stream(notes.map(_.symbol).toLilypond)
   }
 
   def stream: Stream[String] = { // TODO: make iterator
