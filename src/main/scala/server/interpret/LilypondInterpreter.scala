@@ -1,7 +1,7 @@
 package server.interpret
 
 import music.collection.Track
-import music.spelling.TrackSpelling
+import music.symbols.Chord
 import server.interpret.lilypond.{ChordNames, LyFile, Staff, StaffIterator}
 
 class LilypondInterpreter(
@@ -9,14 +9,12 @@ class LilypondInterpreter(
   paperSize: String
 ) {
 
-  import TrackSpelling._
-
   def interpret(track: Track): LyFile = {
     LyFile(
       Staff(
         new StaffIterator(track).stream
       ),
-      ChordNames(track.spelledChords),
+      ChordNames(track.getSymbolTrack[Chord].readAll),
       lyVersion,
       paperSize,
     )

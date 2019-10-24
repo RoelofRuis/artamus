@@ -1,14 +1,14 @@
 package server.analysis
 
-import music.analysis.TwelveTonePitchSpelling
+import music.analysis.{TwelveToneChordSpelling, TwelveTonePitchSpelling}
 import music.collection
 import music.collection.SymbolTrack.Updater
 import music.collection.Track
 import music.primitives.Position
-import music.symbols.{Key, Note}
+import music.symbols.{Chord, Key, Note}
 import server.analysis.blackboard.KnowledgeSource
 
-class PitchAnalyser extends KnowledgeSource[Track] {
+class PitchSpellingAnalyser extends KnowledgeSource[Track] {
 
   override def canExecute(state: Track): Boolean = true
 
@@ -27,7 +27,18 @@ class PitchAnalyser extends KnowledgeSource[Track] {
       }
     }
 
-    track.updateSymbolTrack(noteSpellingUpdater)
+    val chordSpellingUpdater = new Updater[Chord] {
+      override def apply(symbolTrack: collection.SymbolTrack[Chord]): collection.SymbolTrack[Chord] = {
+        symbolTrack
+          .readAll
+          .map(chord => TwelveToneChordSpelling.spellChord(chord, key))
+          .foldRight(symbolTrack) { case (symbol, track) => track.updateSymbol(symbol) }
+      }
+    }
+
+    track
+      .updateSymbolTrack(noteSpellingUpdater)
+      .updateSymbolTrack(chordSpellingUpdater)
   }
 
 }

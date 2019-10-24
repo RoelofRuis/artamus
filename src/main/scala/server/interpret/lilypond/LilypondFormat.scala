@@ -1,14 +1,13 @@
 package server.interpret.lilypond
 
 import music.primitives._
-import music.spelling.SpelledChord
-import music.symbols.{Key, Note, TimeSignature}
+import music.symbols.{Chord, Key, Note, TimeSignature}
 
 import scala.annotation.tailrec
 
 // TODO: distribute over classes representing the lilypond structure?
 trait LilypondFormat[A] {
-  def toLilypond(a: A): String
+  def toLilypond(a: A): String // TODO: improve the interface type to allow 'unspellables'!
 }
 
 object LilypondFormat {
@@ -19,19 +18,26 @@ object LilypondFormat {
     def toLilypond: String = LilypondFormat[A].toLilypond(a)
   }
 
-  implicit val spelledChordToLilypond: LilypondFormat[SpelledChord] = (chord: SpelledChord) => {
-    chord.root.toLilypond + chord.duration.toLilypond
+  implicit val spelledChordToLilypond: LilypondFormat[Chord] = (chord: Chord) => {
+    val s = for {
+      root <- chord.rootSpelling
+      dur <- chord.duration
+    } yield root.toLilypond + dur.toLilypond
+    s.getOrElse("")
   }
 
   implicit val simultaneousNotesToLilypond: LilypondFormat[Seq[Note]] = (notes: Seq[Note]) => {
-    val dur = notes.map(_.duration).max
-    // TODO: no brackets for single notes!
-    notes.map { note =>
-      Seq(
-        note.scientificPitch.get.spelling.toLilypond, // TODO: do not spell notes without scientificPitch!
-        note.scientificPitch.get.octave.toLilypond,
-      ).mkString("")
-    }.mkString("<", " ", ">") + dur.toLilypond
+    if (notes.isEmpty) ""
+    else {
+      val dur = notes.map(_.duration).max
+      // TODO: no brackets for single notes!
+      notes.map { note =>
+        Seq(
+          note.scientificPitch.get.spelling.toLilypond, // TODO: do not spell notes without scientificPitch!
+          note.scientificPitch.get.octave.toLilypond,
+        ).mkString("")
+      }.mkString("<", " ", ">") + dur.toLilypond
+    }
   }
 
   implicit val spelledPitchToLilypond: LilypondFormat[PitchSpelling] = (spelling: PitchSpelling) => {
