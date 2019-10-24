@@ -1,9 +1,9 @@
 package server.domain.track
 
 import javax.annotation.concurrent.{GuardedBy, ThreadSafe}
-import music.symbols.collection.Track
+import music.symbol.collection.Track
 import music.primitives.Position
-import music.symbols.SymbolType
+import music.symbol.SymbolType
 
 import scala.reflect.ClassTag
 

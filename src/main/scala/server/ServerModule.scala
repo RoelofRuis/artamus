@@ -6,7 +6,7 @@ import _root_.server.domain.track.{TrackCommandHandler, TrackQueryHandler, Track
 import server.analysis.blackboard.Controller
 import com.google.inject.Provides
 import javax.inject.Singleton
-import music.symbols.collection.Track
+import music.symbol.collection.Track
 import net.codingwell.scalaguice.ScalaPrivateModule
 import protocol._
 import pubsub.{Dispatcher, EventBus}

@@ -1,7 +1,7 @@
 package server.analysis
 
-import music.symbols.Note
-import music.symbols.collection.Track
+import music.symbol.Note
+import music.symbol.collection.Track
 import server.analysis.blackboard.KnowledgeSource
 
 import scala.collection.SortedMap

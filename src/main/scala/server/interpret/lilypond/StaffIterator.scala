@@ -1,8 +1,8 @@
 package server.interpret.lilypond
 
-import music.symbols.collection.{Track, TrackSymbol}
+import music.symbol.collection.{Track, TrackSymbol}
 import music.primitives._
-import music.symbols.{Key, Note, TimeSignature}
+import music.symbol.{Key, Note, TimeSignature}
 
 class StaffIterator(track: Track) {
 

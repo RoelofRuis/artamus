@@ -1,8 +1,8 @@
-package music.symbols.collection
+package music.symbol.collection
 
 import javax.annotation.concurrent.Immutable
-import music.symbols.SymbolType
-import music.symbols.collection.SymbolTrack.Updater
+import music.symbol.SymbolType
+import music.symbol.collection.SymbolTrack.Updater
 
 import scala.reflect.{ClassTag, classTag}
 

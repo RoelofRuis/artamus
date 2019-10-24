@@ -1,7 +1,7 @@
 package server.domain
 
 import javax.inject.Inject
-import music.symbols.collection.Track
+import music.symbol.collection.Track
 import protocol.{Command, Event}
 import pubsub.{Dispatcher, EventBus}
 import server.analysis.blackboard.Controller

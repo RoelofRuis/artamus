@@ -6,7 +6,7 @@ import client.io.StdIOTools
 import com.google.inject.Inject
 import music.math.Rational
 import music.primitives._
-import music.symbols.{Key, Note, TimeSignature}
+import music.symbol.{Key, Note, TimeSignature}
 import server.domain.Commit
 import server.domain.track._
 

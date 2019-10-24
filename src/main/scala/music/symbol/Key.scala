@@ -1,4 +1,4 @@
-package music.symbols
+package music.symbol
 
 import music.primitives.{PitchSpelling, Scale}
 

@@ -1,8 +1,8 @@
 package server.interpret.lilypond
 
-import music.symbols.collection.Track
+import music.symbol.collection.Track
 import music.primitives._
-import music.symbols.Chord
+import music.symbol.Chord
 
 class ChordIterator(track: Track) {
 

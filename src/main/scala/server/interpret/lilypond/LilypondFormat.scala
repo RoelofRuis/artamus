@@ -1,7 +1,7 @@
 package server.interpret.lilypond
 
 import music.primitives._
-import music.symbols.{Chord, Key, Note, TimeSignature}
+import music.symbol.{Chord, Key, Note, TimeSignature}
 
 import scala.annotation.tailrec
 

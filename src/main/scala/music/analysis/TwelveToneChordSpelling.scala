@@ -1,8 +1,8 @@
 package music.analysis
 
-import music.symbols.collection.TrackSymbol
+import music.symbol.collection.TrackSymbol
 import music.primitives._
-import music.symbols.{Chord, Key}
+import music.symbol.{Chord, Key}
 
 object TwelveToneChordSpelling {
 

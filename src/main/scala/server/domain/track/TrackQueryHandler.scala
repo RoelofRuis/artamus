@@ -2,7 +2,7 @@ package server.domain.track
 
 import javax.inject.Inject
 import music.primitives.MidiNoteNumber
-import music.symbols.{Chord, Note}
+import music.symbol.{Chord, Note}
 import protocol.Query
 import pubsub.Dispatcher
 
