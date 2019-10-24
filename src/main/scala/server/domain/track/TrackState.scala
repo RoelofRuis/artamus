@@ -1,7 +1,7 @@
 package server.domain.track
 
 import javax.annotation.concurrent.{GuardedBy, ThreadSafe}
-import music.collection.Track
+import music.symbols.collection.Track
 import music.primitives.Position
 import music.symbols.SymbolType
 

@@ -1,6 +1,6 @@
 package music.analysis
 
-import music.collection.TrackSymbol
+import music.symbols.collection.TrackSymbol
 import music.primitives._
 import music.symbols.{Key, Note}
 

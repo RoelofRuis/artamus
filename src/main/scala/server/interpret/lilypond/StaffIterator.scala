@@ -1,6 +1,6 @@
 package server.interpret.lilypond
 
-import music.collection.{Track, TrackSymbol}
+import music.symbols.collection.{Track, TrackSymbol}
 import music.primitives._
 import music.symbols.{Key, Note, TimeSignature}
 

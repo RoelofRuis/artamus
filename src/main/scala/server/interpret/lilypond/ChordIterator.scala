@@ -1,6 +1,6 @@
 package server.interpret.lilypond
 
-import music.collection.Track
+import music.symbols.collection.Track
 import music.primitives._
 import music.symbols.Chord
 

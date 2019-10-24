@@ -1,6 +1,6 @@
 package server.interpret
 
-import music.collection.Track
+import music.symbols.collection.Track
 import server.interpret.lilypond._
 
 class LilypondInterpreter(

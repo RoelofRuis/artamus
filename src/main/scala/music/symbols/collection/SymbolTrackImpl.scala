@@ -1,4 +1,4 @@
-package music.collection
+package music.symbols.collection
 
 import javax.annotation.concurrent.Immutable
 import music.primitives.Position

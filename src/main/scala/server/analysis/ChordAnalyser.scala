@@ -1,7 +1,7 @@
 package server.analysis
 
 import music.analysis.TwelveToneChordAnalysis
-import music.collection.Track
+import music.symbols.collection.Track
 import music.symbols.{Chord, Note}
 import server.analysis.blackboard.KnowledgeSource
 

@@ -1,4 +1,4 @@
-package transport.server
+package protocol.transport.server
 
 import java.io.{EOFException, IOException, ObjectInputStream, ObjectOutputStream}
 import java.net.Socket

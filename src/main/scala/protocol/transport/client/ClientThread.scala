@@ -1,4 +1,4 @@
-package transport.client
+package protocol.transport.client
 
 import java.io.{IOException, ObjectInputStream, ObjectOutputStream}
 import java.net.{InetAddress, Socket}

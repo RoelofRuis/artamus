@@ -1,11 +1,10 @@
 package server.analysis
 
 import music.analysis.{TwelveToneChordSpelling, TwelveTonePitchSpelling}
-import music.collection
-import music.collection.SymbolTrack.Updater
-import music.collection.Track
+import music.symbols.collection.SymbolTrack.Updater
+import music.symbols.collection.Track
 import music.primitives.Position
-import music.symbols.{Chord, Key, Note}
+import music.symbols.{Chord, Key, Note, collection}
 import server.analysis.blackboard.KnowledgeSource
 
 class PitchSpellingAnalyser extends KnowledgeSource[Track] {

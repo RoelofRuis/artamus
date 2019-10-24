@@ -1,6 +1,6 @@
 package server.domain
 
-import music.collection.TrackSymbol
+import music.symbols.collection.TrackSymbol
 import music.primitives._
 import music.symbols.{Chord, Key, Note, TimeSignature}
 import protocol.{Command, Query}

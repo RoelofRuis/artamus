@@ -1,4 +1,4 @@
-package transport.server
+package protocol.transport.server
 
 trait ServerBindings {
 

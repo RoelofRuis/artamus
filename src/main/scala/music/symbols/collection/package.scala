@@ -1,8 +1,7 @@
-package music
+package music.symbols
 
-import music.collection.SymbolTrack.Updater
 import music.primitives.Position
-import music.symbols.SymbolType
+import music.symbols.collection.SymbolTrack.Updater
 
 import scala.collection.SortedMap
 import scala.reflect.ClassTag
