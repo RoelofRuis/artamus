@@ -1,7 +1,7 @@
 package server.interpret.lilypond
 
 import music.primitives._
-import music.spelling.{SpelledChord, SpelledNote}
+import music.spelling.SpelledChord
 import music.symbols.{Key, Note, TimeSignature}
 
 // TODO: distribute over classes representing the lilypond structure?
