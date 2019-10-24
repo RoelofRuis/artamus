@@ -1,8 +1,7 @@
 package server.interpret
 
 import music.collection.Track
-import music.symbols.Chord
-import server.interpret.lilypond.{ChordNames, LyFile, Staff, StaffIterator}
+import server.interpret.lilypond._
 
 class LilypondInterpreter(
   lyVersion: String,
@@ -14,7 +13,9 @@ class LilypondInterpreter(
       Staff(
         new StaffIterator(track).stream
       ),
-      ChordNames(track.getSymbolTrack[Chord].readAll),
+      ChordNames(
+        new ChordIterator(track).stream
+      ),
       lyVersion,
       paperSize,
     )
