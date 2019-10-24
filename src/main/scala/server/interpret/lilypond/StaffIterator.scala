@@ -1,10 +1,12 @@
 package server.interpret.lilypond
 
-import music.symbol.collection.{Track, TrackSymbol}
 import music.primitives._
+import music.symbol.collection.Track
 import music.symbol.{Key, Note, TimeSignature}
 
-class StaffIterator(track: Track) {
+import scala.annotation.tailrec
+
+class StaffIterator(track: Track) extends ContentIterator {
 
   import music.analysis.TwelveToneEqualTemprament._
   import server.interpret.lilypond.LilypondFormat._
@@ -13,8 +15,17 @@ class StaffIterator(track: Track) {
   private val keys = track.getSymbolTrack[Key]
   private val notes = track.getSymbolTrack[Note]
 
-  private def notesToLilypond(notes: Seq[TrackSymbol[Note]], key: Key): Stream[String] = {
-    Stream(notes.map(_.symbol).toLilypond)
+  @tailrec
+  private def readNext(pos: Position): Option[(Position, String)] = {
+    val nextNotes = notes.readNext(pos)
+    if (nextNotes.isEmpty) None
+    else {
+      val nextPos = nextNotes.head.position
+      nextNotes.map(_.symbol).toLilypond match {
+        case Some(lilyString) => Some((nextPos, lilyString))
+        case None => readNext(nextPos)
+      }
+    }
   }
 
   def stream: Stream[String] = { // TODO: make iterator
@@ -29,19 +40,18 @@ class StaffIterator(track: Track) {
       .map(_.symbol)
       .getOrElse(Key(PitchSpelling(Step(0), Accidental(0)), Scale.MAJOR))
 
-    val initialNotes = notes.readAt(pos)
+    val initialNotes = notes.readAt(pos).map(_.symbol).toLilypond.getOrElse("")
 
     def loop(pos: Position, timeSignature: TimeSignature, key: Key): Stream[String] = {
-      val nextNotes = notes.readNext(pos)
-      if (nextNotes.isEmpty) Stream.empty
-      else {
-        val nextPos = nextNotes.head.position
-        // TODO: check of rusten tussengevoegd moeten worden (DIT IS EEN LILYPOND DING!)
-        notesToLilypond(nextNotes, key) #::: loop(nextPos, timeSignature, key)
+      readNext(pos) match {
+        case None => Stream.empty
+        case Some((nextPos, lilyString)) =>
+          // TODO: check of rusten tussengevoegd moeten worden (DIT IS EEN LILYPOND DING!)
+          lilyString #:: loop(nextPos, timeSignature, key)
       }
     }
 
-    initialTimeSignature.toLilypond #:: initialKey.toLilypond #:: notesToLilypond(initialNotes, initialKey) #::: loop(pos, initialTimeSignature, initialKey)
+    initialTimeSignature.toLilypond.get #:: initialKey.toLilypond.get #:: initialNotes #:: loop(pos, initialTimeSignature, initialKey)
   }
 
 }

@@ -10,11 +10,9 @@ class LilypondInterpreter(
 
   def interpret(track: Track): LyFile = {
     LyFile(
-      Staff(
-        new StaffIterator(track).stream
-      ),
-      ChordNames(
-        new ChordIterator(track).stream
+      Seq(
+        Staff(new StaffIterator(track).stream),
+        ChordNames(new ChordIterator(track).stream)
       ),
       lyVersion,
       paperSize,

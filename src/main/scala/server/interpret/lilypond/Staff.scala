@@ -1,13 +1,9 @@
 package server.interpret.lilypond
 
-final case class Staff(elements: Seq[String]) {
-
-  def asString: String = {
-    val staffContents = elements.mkString("\n")
-
+final case class Staff(elements: Seq[String]) extends Container {
+  def asString: String =
     s"""\\new Staff {
        |\\numericTimeSignature
-       |$staffContents
+       |${elements.mkString("\n")}
        |}""".stripMargin
-  }
 }
