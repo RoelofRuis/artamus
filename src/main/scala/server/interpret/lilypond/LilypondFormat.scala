@@ -4,6 +4,8 @@ import music.primitives._
 import music.spelling.SpelledChord
 import music.symbols.{Key, Note, TimeSignature}
 
+import scala.annotation.tailrec
+
 // TODO: distribute over classes representing the lilypond structure?
 trait LilypondFormat[A] {
   def toLilypond(a: A): String
@@ -33,6 +35,7 @@ object LilypondFormat {
   }
 
   implicit val spelledPitchToLilypond: LilypondFormat[PitchSpelling] = (spelling: PitchSpelling) => {
+    @tailrec
     def accidentalText(a: Accidental, acc: String = "", suppressE: Boolean = false): String = {
       a match {
         case Accidental(0) => acc
