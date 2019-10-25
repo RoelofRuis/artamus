@@ -1,3 +1,9 @@
 package music.symbol
 
-trait SymbolType
+import music.primitives.Duration
+
+trait SymbolType {
+
+  def getDuration: Duration = Duration.zero
+
+}

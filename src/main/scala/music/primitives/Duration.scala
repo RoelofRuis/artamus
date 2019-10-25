@@ -8,6 +8,8 @@ final case class Duration(value: Rational) extends Comparable[Duration] {
 
 object Duration {
 
+  lazy val zero: Duration = Duration(Rational(0))
+
   lazy val QUARTER = Duration(Rational(1, 4))
 
 }
