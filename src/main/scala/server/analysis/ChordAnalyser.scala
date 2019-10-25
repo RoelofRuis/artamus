@@ -16,7 +16,7 @@ class ChordAnalyser extends KnowledgeSource[Track] {
       val dur = notes.map { note => note.symbol.duration }.max
       val possibleChords = TwelveToneChordAnalysis.findChords(pitches).map(_.withDuration(dur))
 
-      if (possibleChords.nonEmpty) Some((notes.head.position), possibleChords.head) // TODO: determine best option instead of picking head
+      if (possibleChords.nonEmpty) Some(notes.head.position, possibleChords.head) // TODO: determine best option instead of picking head
       else None
     }
 
