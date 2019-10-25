@@ -6,6 +6,8 @@ final case class Duration private (value: Rational) extends Comparable[Duration]
 
   override def compareTo(o: Duration): Int = value compare o.value
 
+  def isZero: Boolean = this == Duration.zero
+
 }
 
 object Duration {

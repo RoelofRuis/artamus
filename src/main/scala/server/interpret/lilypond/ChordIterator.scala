@@ -19,11 +19,9 @@ class ChordIterator(track: Track) extends ContentIterator {
       readNext(curWindow) match {
         case None => Stream.empty
         case Some((nextWindow, lilyString)) =>
-          val difference = curWindow diff nextWindow
-          if (difference == Duration.zero) lilyString #:: loop(nextWindow)
-          else {
-            restToLilypond(difference, silent=true) #:: lilyString #:: loop(nextWindow)
-          }
+          val difference = curWindow.durationUntil(nextWindow)
+          if (difference.isZero) lilyString #:: loop(nextWindow)
+          else restToLilypond(difference, silent=true) #:: lilyString #:: loop(nextWindow)
       }
     }
 

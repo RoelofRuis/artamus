@@ -2,7 +2,7 @@ package music.primitives
 
 final case class Window(start: Position, end: Position) {
 
-  def diff(that: Window): Duration = end - that.start
+  def durationUntil(that: Window): Duration = that.start - end
 
 }
 
