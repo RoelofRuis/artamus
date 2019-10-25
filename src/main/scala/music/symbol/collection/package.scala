@@ -1,6 +1,6 @@
 package music.symbol
 
-import music.primitives.Position
+import music.primitives.{Position, Window}
 import music.symbol.collection.SymbolTrack.Updater
 
 import scala.collection.SortedMap
@@ -36,12 +36,12 @@ package object collection {
     def apply[S <: SymbolType]: SymbolTrack[S] = SymbolTrackImpl[S](SortedMap(), Map(), 0)
   }
 
-  final case class TrackSymbol[S <: SymbolType](
-    id: Long,
-    position: Position,
-    symbol: S
-  ) {
-    def update(s: S): TrackSymbol[S] = this.copy(symbol = s)
+  trait TrackSymbol[S <: SymbolType] {
+    val id: Long
+    val position: Position
+    val symbol: S
+    def update(s: S): TrackSymbol[S]
+    def window: Window
   }
 
 }

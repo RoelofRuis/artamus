@@ -17,6 +17,11 @@ object LilypondFormat {
     def toLilypond: Option[String] = LilypondFormat[A].toLilypond(a)
   }
 
+  def restToLilypond(duration: Duration, silent: Boolean): String = {
+    if (silent) s"s${duration.toLilypond.get}"
+    else s"r${duration.toLilypond.get}"
+  }
+
   implicit val spelledChordToLilypond: LilypondFormat[Chord] = (chord: Chord) => {
     for {
       root <- chord.rootSpelling

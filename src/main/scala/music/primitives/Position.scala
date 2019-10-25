@@ -2,9 +2,11 @@ package music.primitives
 
 import music.math.Rational
 
-final case class Position(value: Rational) extends Comparable[Position] {
+final case class Position(value: Rational) extends Ordered[Position] {
 
-  override def compareTo(o: Position): Int = value compare o.value
+  override def compare(that: Position): Int = value compare that.value
+
+  def -(that: Position): Duration = Duration(value - that.value)
 
 }
 

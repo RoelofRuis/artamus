@@ -69,7 +69,7 @@ private[collection] final case class SymbolTrackImpl[S <: SymbolType](
   def readAll: Seq[TrackSymbol[S]] = readAllGrouped.flatten
 
   private def symbolById(id: Long, pos: Position): Option[TrackSymbol[S]] = {
-    symbols.get(id).map(symbol => TrackSymbol(id, pos, symbol))
+    symbols.get(id).map(symbol => TrackSymbolImpl(id, pos, symbol))
   }
 
 }
