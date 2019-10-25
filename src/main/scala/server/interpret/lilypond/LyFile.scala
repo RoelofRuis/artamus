@@ -7,7 +7,7 @@ final case class LyFile(
 ) {
 
   def getStringContents: String = {
-    val dynamicContent = containers.map(_.toString).mkString("\n")
+    val dynamicContent = containers.map(_.asString).mkString("\n")
     s"""\\version "$lyVersion"
       |
       |\\paper {

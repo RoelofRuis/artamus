@@ -51,38 +51,13 @@ class TrackOperations @Inject() (
     )
   })
 
-  registry.registerOperation(OperationToken("note-seq", "track"), () => {
+  registry.registerOperation(OperationToken("notes", "track"), () => {
     val gridSpacing = StdIOTools.readInt("Grid spacing of 1/_?")
-    val numNotes = StdIOTools.readInt("How many notes?")
+    val numChords = StdIOTools.readInt("How many grid elements?")
 
     val elementDuration = Duration(Rational.reciprocal(gridSpacing))
 
-    println(s"Reading [$numNotes][$elementDuration] notes...")
-
-    val messages = reader
-      .readMidiNoteNumbers(NoteOn(numNotes))
-      .zipWithIndex
-      .map{ case (midiNoteNumber, index) =>
-        val (oct, pc) = (midiNoteNumber.toOct, midiNoteNumber.toPc)
-        CreateNoteSymbol(
-          Position.apply(elementDuration, index),
-          Note(
-            oct,
-            pc,
-            elementDuration
-          )
-        )}
-
-    messages :+ Commit
-  })
-
-  registry.registerOperation(OperationToken("chords", "track"), () => {
-    val gridSpacing = StdIOTools.readInt("Grid spacing of 1/_?")
-    val numChords = StdIOTools.readInt("How many chords?")
-
-    val elementDuration = Duration(Rational.reciprocal(gridSpacing))
-
-    println(s"Reading [$numChords][$elementDuration] chords...")
+    println(s"Reading [$numChords][$elementDuration] grid elements...")
 
     val messages = Range(0, numChords).flatMap { i =>
       reader

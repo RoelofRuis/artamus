@@ -29,15 +29,17 @@ object LilypondFormat {
   implicit val simultaneousNotesToLilypond: LilypondFormat[Seq[Note]] = (notes: Seq[Note]) => {
     if (notes.isEmpty) None
     else {
-      val dur = notes.map(_.duration).max
-      // TODO: no brackets for single notes!
-      val res = notes.map { note =>
-        Seq(
-          note.scientificPitch.get.spelling.toLilypond, // TODO: do not spell notes without scientificPitch!
-          note.scientificPitch.get.octave.toLilypond,
-        ).mkString("")
-      }.mkString("<", " ", ">") + dur.toLilypond
-      Some(res)
+      val noteString = notes.flatMap { note =>
+        for {
+          scientificPitch <- note.scientificPitch
+          pitchSpelling <- scientificPitch.spelling.toLilypond
+          octaveSpelling <- scientificPitch.octave.toLilypond
+        } yield pitchSpelling + octaveSpelling
+      }
+      val noteColl = if (notes.size == 1) noteString.mkString("") else noteString.mkString("<", " ", ">")
+      for {
+        dur <- notes.map(_.duration).max.toLilypond
+      } yield noteColl + dur
     }
   }
 
