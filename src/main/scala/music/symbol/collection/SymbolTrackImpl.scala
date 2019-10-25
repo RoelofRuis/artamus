@@ -46,7 +46,8 @@ private[collection] final case class SymbolTrackImpl[S <: SymbolType](
   def readNext(pos: Position): Seq[TrackSymbol[S]] = {
     positions
       .iteratorFrom(pos)
-      .slice(1, 2)
+      .filterNot { case (position, _) => position == pos }
+      .take(1)
       .flatMap { case (position, ids) => ids.flatMap(id => symbolById(id, position)) }
       .toSeq
   }
