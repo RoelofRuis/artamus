@@ -1,10 +1,13 @@
 package server.interpret.lilypond
 
+import jdk.nashorn.internal.ir.FunctionNode
+import music.analysis.TwelveToneEqualTemprament.TwelveToneFunctions
 import music.math.Rational
 import music.primitives._
 import music.symbol.{Chord, Key, Note, TimeSignature}
 
 import scala.annotation.tailrec
+import scala.collection.SortedSet
 
 trait LilypondFormat[A] {
   def toLilypond(a: A): Option[String]
@@ -29,7 +32,12 @@ object LilypondFormat {
       dur <- chord.duration
       spelledRoot <- root.toLilypond
       spelledDur <- dur.toLilypond
-    } yield spelledRoot + spelledDur
+    } yield spelledRoot + spelledDur + spellChordFunctions(chord.functions)
+  }
+
+  def spellChordFunctions(functions: SortedSet[Function]): String = {
+    if (functions.contains(TwelveToneFunctions.FLAT_THREE)) ":m"
+    else ""
   }
 
   implicit val simultaneousNotesToLilypond: LilypondFormat[Seq[Note]] = (notes: Seq[Note]) => {
