@@ -25,9 +25,14 @@ class ChordIterator(track: Track) extends ContentIterator {
       }
     }
 
-    chords.readFirstAt(window.start) match {
+    chords.readFirstAt(window.start) match { // TODO: this is comparable to readNext and should be combined
       case None => loop(window)
-      case Some(chord) => chord.symbol.toLilypond.get #:: loop(window)
+      case Some(chord) =>
+        chord.symbol.toLilypond match {
+          case Some(lilyString) => lilyString #:: loop(chord.window)
+          case None => loop(window)
+        }
+
     }
   }
 

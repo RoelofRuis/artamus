@@ -16,42 +16,52 @@ class StaffIterator(track: Track) extends ContentIterator {
   private val notes = track.getSymbolTrack[Note]
 
   @tailrec
-  private def readNext(pos: Position): Option[(Position, String)] = {
-    val nextNotes = notes.readNext(pos)
-    if (nextNotes.isEmpty) None
-    else {
-      val nextPos = nextNotes.head.position
-      nextNotes.map(_.symbol).toLilypond match {
-        case Some(lilyString) => Some((nextPos, lilyString))
-        case None => readNext(nextPos)
-      }
+  private def readNext(window: Window): Option[(Window, String)] = {
+    notes.readNext(window.start) match {
+      case Seq() => None
+      case nextNotes =>
+        val nextWindow = nextNotes.map(_.window).head
+        nextNotes.map(_.symbol).toLilypond match {
+          case Some(lilyString) => Some((nextWindow, lilyString))
+          case None => readNext(nextWindow)
+        }
     }
   }
 
   def stream: Stream[String] = { // TODO: make iterator
-    val pos = Position.zero // TODO: make argument later
+    val window = Window.zero // TODO: make argument later
+
     val initialTimeSignature = timeSignatures
-      .readFirstAt(pos)
+      .readFirstAt(window.start)
       .map(_.symbol)
       .getOrElse(TimeSignature(TimeSignatureDivision.`4/4`))
 
     val initialKey = keys
-      .readFirstAt(pos)
+      .readFirstAt(window.start)
       .map(_.symbol)
       .getOrElse(Key(PitchSpelling(Step(0), Accidental(0)), Scale.MAJOR))
 
-    val initialNotes = notes.readAt(pos).map(_.symbol).toLilypond.getOrElse("")
-
-    def loop(pos: Position, timeSignature: TimeSignature, key: Key): Stream[String] = {
-      readNext(pos) match {
+    def loop(curWindow: Window, timeSignature: TimeSignature, key: Key): Stream[String] = {
+      readNext(curWindow) match {
         case None => Stream.empty
-        case Some((nextPos, lilyString)) =>
-          // TODO: check of rusten tussengevoegd moeten worden (DIT IS EEN LILYPOND DING!)
-          lilyString #:: loop(nextPos, timeSignature, key)
+        case Some((nextWindow, lilyString)) =>
+          // TODO: update time signature and key
+          val difference = curWindow.durationUntil(nextWindow)
+          if (difference.isZero) lilyString #:: loop(nextWindow, timeSignature, key)
+          else restToLilypond(difference, silent=false) #:: lilyString #:: loop(nextWindow, timeSignature, key)
       }
     }
 
-    initialTimeSignature.toLilypond.get #:: initialKey.toLilypond.get #:: initialNotes #:: loop(pos, initialTimeSignature, initialKey)
+    val initialElements = Stream(initialTimeSignature.toLilypond.get, initialKey.toLilypond.get)
+
+    notes.readAt(window.start) match { // TODO: this is comparable to readNext and should be combined
+      case Seq() => loop(window, initialTimeSignature, initialKey)
+      case notes =>
+        notes.map(_.symbol).toLilypond match {
+          case Some(lilyString) => initialElements #::: lilyString #:: loop(notes.head.window, initialTimeSignature, initialKey)
+          case None => loop(window, initialTimeSignature, initialKey)
+        }
+    }
   }
 
 }
