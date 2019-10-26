@@ -53,13 +53,13 @@ class TrackOperations @Inject() (
 
   registry.registerOperation(OperationToken("notes", "track"), () => {
     val gridSpacing = StdIOTools.readInt("Grid spacing of 1/_?")
-    val numChords = StdIOTools.readInt("How many grid elements?")
+    val numElements = StdIOTools.readInt("How many grid elements?")
 
     val elementDuration = Duration(Rational.reciprocal(gridSpacing))
 
-    println(s"Reading [$numChords][$elementDuration] grid elements...")
+    println(s"Reading [$numElements][$elementDuration] grid elements...")
 
-    val messages = Range(0, numChords).flatMap { i =>
+    val messages = Range(0, numElements).flatMap { i =>
       reader
         .readMidiNoteNumbers(Simultaneous)
         .map { midiNoteNumber =>
