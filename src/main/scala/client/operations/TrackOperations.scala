@@ -53,29 +53,46 @@ class TrackOperations @Inject() (
 
   registry.registerOperation(OperationToken("notes", "track"), () => {
     val gridSpacing = StdIOTools.readInt("Grid spacing of 1/_?")
-    val numElements = StdIOTools.readInt("How many grid elements?")
+    val elementLayout = StdIOTools.read("Element layout?\n. : onset\nr : rest", "Invalid input", {
+        val line = scala.io.StdIn.readLine
+        if (! line.matches("[\\.r]*")) throw new Exception("incorrect pattern")
+        else {
+          line.toCharArray.map {
+            case '.' => Onset
+            case 'r' => Rest
+          }
+        }
+      }
+    )
 
     val elementDuration = Duration(Rational.reciprocal(gridSpacing))
+    val numOnsets = elementLayout.count(_ == Onset)
 
-    println(s"Reading [$numElements][$elementDuration] grid elements...")
+    println(s"Reading [$numOnsets][$elementDuration] grid elements...")
 
-    val messages = Range(0, numElements).flatMap { i =>
-      reader
-        .readMidiNoteNumbers(Simultaneous)
-        .map { midiNoteNumber =>
-          val (oct, pc) = (midiNoteNumber.toOct, midiNoteNumber.toPc)
-          CreateNoteSymbol(
-            Position.apply(elementDuration, i),
-            Note(
-              oct,
-              pc,
-              elementDuration
+    val messages = elementLayout.zipWithIndex.flatMap {
+      case (Onset, i) =>
+        reader
+          .readMidiNoteNumbers(Simultaneous)
+          .map { midiNoteNumber =>
+            val (oct, pc) = (midiNoteNumber.toOct, midiNoteNumber.toPc)
+            CreateNoteSymbol(
+              Position.apply(elementDuration, i),
+              Note(
+                oct,
+                pc,
+                elementDuration
+              )
             )
-          )
-        }
-      }.toList
+          }
+      case (Rest, _) => Seq()
+    }.toList
 
     messages :+ Commit
   })
+
+  sealed trait GridElement
+  case object Onset extends GridElement
+  case object Rest extends GridElement
 
 }
