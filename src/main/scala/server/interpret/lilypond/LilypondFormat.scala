@@ -1,6 +1,5 @@
 package server.interpret.lilypond
 
-import jdk.nashorn.internal.ir.FunctionNode
 import music.analysis.TwelveToneEqualTemprament.TwelveToneFunctions
 import music.math.Rational
 import music.primitives._
