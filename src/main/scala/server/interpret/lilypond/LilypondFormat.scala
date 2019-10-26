@@ -1,5 +1,6 @@
 package server.interpret.lilypond
 
+import music.math.Rational
 import music.primitives._
 import music.symbol.{Chord, Key, Note, TimeSignature}
 
@@ -87,7 +88,14 @@ object LilypondFormat {
     }
   }
 
-  implicit val durationToLilypond: LilypondFormat[Duration] = duration => Some(s"${duration.value.d}")
+  implicit val durationToLilypond: LilypondFormat[Duration] = duration => {
+    // TODO: expand with (theoretically infinite) dots and "impossible" durations
+    if (duration.value.n == 3) {
+      val baseDur = duration.value - Rational.reciprocal(duration.value.d)
+      Some(s"${baseDur.d}.")
+    }
+    else Some(s"${duration.value.d}")
+  }
 
   implicit val timeSignatureToLilypond: LilypondFormat[TimeSignature] = timeSignature => {
     val division = timeSignature.division
