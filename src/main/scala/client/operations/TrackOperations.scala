@@ -7,8 +7,11 @@ import com.google.inject.Inject
 import music.math.Rational
 import music.primitives._
 import music.symbol.{Key, Note, TimeSignature}
+import protocol.Command
 import server.domain.Commit
 import server.domain.track._
+
+import scala.annotation.tailrec
 
 class TrackOperations @Inject() (
   registry: OperationRegistry,
@@ -53,46 +56,49 @@ class TrackOperations @Inject() (
 
   registry.registerOperation(OperationToken("notes", "track"), () => {
     val gridSpacing = StdIOTools.readInt("Grid spacing of 1/_?")
-    val elementLayout = StdIOTools.read("Element layout?\n. : onset\nr : rest", "Invalid input", {
+    val elementLayout = StdIOTools.read("Element layout?\n. : onset\n- : continuation\nr : rest", "Invalid input", {
         val line = scala.io.StdIn.readLine
-        if (! line.matches("[\\.r]*")) throw new Exception("incorrect pattern")
+        if (! line.matches("[\\.\\-r]*")) throw new Exception("incorrect pattern")
         else {
           line.toCharArray.map {
             case '.' => Onset
+            case '-' => Continued
             case 'r' => Rest
-          }
+          }.toList
         }
       }
     )
 
-    val elementDuration = Duration(Rational.reciprocal(gridSpacing))
+    val baseDuration = Duration(Rational.reciprocal(gridSpacing))
     val numOnsets = elementLayout.count(_ == Onset)
 
-    println(s"Reading [$numOnsets][$elementDuration] grid elements...")
+    println(s"Reading [$numOnsets][$baseDuration] grid elements...")
 
-    val messages = elementLayout.zipWithIndex.flatMap {
-      case (Onset, i) =>
-        reader
-          .readMidiNoteNumbers(Simultaneous)
-          .map { midiNoteNumber =>
-            val (oct, pc) = (midiNoteNumber.toOct, midiNoteNumber.toPc)
-            CreateNoteSymbol(
-              Position.apply(elementDuration, i),
-              Note(
-                oct,
-                pc,
-                elementDuration
-              )
-            )
-          }
-      case (Rest, _) => Seq()
-    }.toList
+    @tailrec
+    def read(elements: List[GridElement], commands: List[Command] = List(), currentPos: Int = 0): List[Command] = {
+      elements match {
+        case Nil => commands
+        case Onset :: tail =>
+          val elementDuration = Duration(baseDuration.value * (1 + tail.takeWhile(_ == Continued).size))
+          tail.dropWhile(_ == Continued)
+          val newCommands = reader
+            .readMidiNoteNumbers(Simultaneous)
+            .map { midiNoteNumber =>
+              val (oct, pc) = (midiNoteNumber.toOct, midiNoteNumber.toPc)
+              CreateNoteSymbol(Position.apply(baseDuration, currentPos), Note(oct, pc, elementDuration))
+            }
+          read(elements.tail, commands ++ newCommands, currentPos + 1)
+        case Rest :: _ => read(elements.tail, commands, currentPos + 1)
+        case Continued :: _ => read(elements.tail, commands, currentPos + 1)
+      }
+    }
 
-    messages :+ Commit
+    read(elementLayout) :+ Commit
   })
 
   sealed trait GridElement
   case object Onset extends GridElement
+  case object Continued extends GridElement
   case object Rest extends GridElement
 
 }
