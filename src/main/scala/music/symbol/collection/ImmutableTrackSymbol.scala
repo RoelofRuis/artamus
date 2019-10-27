@@ -3,7 +3,7 @@ package music.symbol.collection
 import music.primitives.{Position, Window}
 import music.symbol.SymbolType
 
-final case class TrackSymbolImpl[S <: SymbolType](
+private[collection] final case class ImmutableTrackSymbol[S <: SymbolType](
   id: Long,
   position: Position,
   symbol: S

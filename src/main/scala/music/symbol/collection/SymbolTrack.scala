@@ -7,16 +7,14 @@ import music.symbol.SymbolType
 import scala.collection.SortedMap
 
 @Immutable
-private[collection] final case class SymbolTrackImpl[S <: SymbolType](
+private[collection] final case class SymbolTrack[S <: SymbolType] private (
   private val positions: SortedMap[Position, Seq[Long]],
   private val symbols: Map[Long, S],
   private val lastId: Long
-) extends SymbolTrack[S] {
-
-  // TODO: clean up this class based on information that is now contained in the TrackSymbol
+) extends SymbolSelection[S] {
 
   def addSymbolAt(pos: Position, symbol: S): SymbolTrack[S] = {
-    SymbolTrackImpl(
+    SymbolTrack(
       positions.updated(pos, positions.getOrElse(pos, Seq()) :+ lastId),
       symbols.updated(lastId, symbol),
       lastId + 1
@@ -24,7 +22,7 @@ private[collection] final case class SymbolTrackImpl[S <: SymbolType](
   }
 
   def removeSymbol(id: Long): SymbolTrack[S] = {
-    SymbolTrackImpl(
+    SymbolTrack(
       positions
         .find { case (_, seq) => seq.contains(id) }
         .fold(positions) { case (pos, seq) => positions.updated(pos, seq.filter(_ == id)) },
@@ -35,7 +33,7 @@ private[collection] final case class SymbolTrackImpl[S <: SymbolType](
 
   def updateSymbol(sym: TrackSymbol[S]): SymbolTrack[S] = {
     if (symbols.isDefinedAt(sym.id)) {
-      SymbolTrackImpl(
+      SymbolTrack(
         positions,
         symbols.updated(sym.id, sym.symbol),
         lastId
@@ -43,7 +41,7 @@ private[collection] final case class SymbolTrackImpl[S <: SymbolType](
     } else this
   }
 
-  def readNext(pos: Position): Seq[TrackSymbol[S]] = {
+  def next(pos: Position): Seq[TrackSymbol[S]] = {
     positions
       .iteratorFrom(pos)
       .filterNot { case (position, _) => position == pos }
@@ -52,24 +50,32 @@ private[collection] final case class SymbolTrackImpl[S <: SymbolType](
       .toSeq
   }
 
-  def readFirstNext(pos: Position): Option[TrackSymbol[S]] = readNext(pos).headOption
+  def firstNext(pos: Position): Option[TrackSymbol[S]] = next(pos).headOption
 
-  def readAt(pos: Position): Seq[TrackSymbol[S]] = {
-    positions.getOrElse(pos, Seq()).flatMap(id => symbolById(id, pos))
+  def at(pos: Position): Seq[TrackSymbol[S]] = {
+    positions
+      .getOrElse(pos, Seq())
+      .flatMap(id => symbolById(id, pos))
   }
 
-  def readFirstAt(pos: Position): Option[TrackSymbol[S]] = readAt(pos).headOption
+  def firstAt(pos: Position): Option[TrackSymbol[S]] = at(pos).headOption
 
-  def readAllGrouped: Seq[Seq[TrackSymbol[S]]] = {
+  def allGrouped: Seq[Seq[TrackSymbol[S]]] = {
     positions
       .map { case (position, ids) => ids.flatMap(id => symbolById(id, position)) }
       .toSeq
   }
 
-  def readAll: Seq[TrackSymbol[S]] = readAllGrouped.flatten
+  def all: Seq[TrackSymbol[S]] = allGrouped.flatten
 
   private def symbolById(id: Long, pos: Position): Option[TrackSymbol[S]] = {
-    symbols.get(id).map(symbol => TrackSymbolImpl(id, pos, symbol))
+    symbols.get(id).map(symbol => ImmutableTrackSymbol(id, pos, symbol))
   }
+
+}
+
+object SymbolTrack {
+
+  def apply[S <: SymbolType]: SymbolTrack[S] = new SymbolTrack[S](SortedMap(), Map(), 0)
 
 }

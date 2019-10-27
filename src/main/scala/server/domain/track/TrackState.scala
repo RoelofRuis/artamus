@@ -18,7 +18,7 @@ class TrackState() {
   }
 
   def createSymbol[S <: SymbolType: ClassTag](pos: Position, props: S): Unit = trackLock.synchronized {
-    track = track.updateSymbolTrack[S](_.addSymbolAt(pos, props))
+    track = track.createAll(Seq((pos, props)))
   }
 
   def readState: Track = trackLock.synchronized {

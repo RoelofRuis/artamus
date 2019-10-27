@@ -11,13 +11,13 @@ class StaffIterator(track: Track) extends ContentIterator {
   import music.analysis.TwelveToneEqualTemprament._
   import server.interpret.lilypond.LilypondFormat._
 
-  private val timeSignatures = track.getSymbolTrack[TimeSignature]
-  private val keys = track.getSymbolTrack[Key]
-  private val notes = track.getSymbolTrack[Note]
+  private val timeSignatures = track.select[TimeSignature]
+  private val keys = track.select[Key]
+  private val notes = track.select[Note]
 
   @tailrec
   private def readNext(window: Window): Option[(Window, String)] = {
-    notes.readNext(window.start) match {
+    notes.next(window.start) match {
       case Seq() => None
       case nextNotes =>
         val nextWindow = nextNotes.map(_.window).head
@@ -32,12 +32,12 @@ class StaffIterator(track: Track) extends ContentIterator {
     val window = Window.zero // TODO: make argument later
 
     val initialTimeSignature = timeSignatures
-      .readFirstAt(window.start)
+      .firstAt(window.start)
       .map(_.symbol)
       .getOrElse(TimeSignature(TimeSignatureDivision.`4/4`))
 
     val initialKey = keys
-      .readFirstAt(window.start)
+      .firstAt(window.start)
       .map(_.symbol)
       .getOrElse(Key(PitchSpelling(Step(0), Accidental(0)), Scale.MAJOR))
 
@@ -54,7 +54,7 @@ class StaffIterator(track: Track) extends ContentIterator {
 
     val initialElements = Stream(initialTimeSignature.toLilypond.get, initialKey.toLilypond.get)
 
-    notes.readAt(window.start) match { // TODO: this is comparable to readNext and should be combined
+    notes.at(window.start) match { // TODO: this is comparable to readNext and should be combined
       case Seq() => loop(window, initialTimeSignature, initialKey)
       case notes =>
         notes.map(_.symbol).toLilypond match {

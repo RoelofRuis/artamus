@@ -10,7 +10,7 @@ class ChordIterator(track: Track) extends ContentIterator {
 
   import server.interpret.lilypond.LilypondFormat._
 
-  private val chords = track.getSymbolTrack[Chord]
+  private val chords = track.select[Chord]
 
   def stream: Stream[String] = { // TODO: make iterator
     val window = Window.zero // TODO: make argument later
@@ -25,7 +25,7 @@ class ChordIterator(track: Track) extends ContentIterator {
       }
     }
 
-    chords.readFirstAt(window.start) match { // TODO: this is comparable to readNext and should be combined
+    chords.firstAt(window.start) match { // TODO: this is comparable to readNext and should be combined
       case None => loop(window)
       case Some(chord) =>
         chord.symbol.toLilypond match {
@@ -38,7 +38,7 @@ class ChordIterator(track: Track) extends ContentIterator {
 
   @tailrec
   private def readNext(window: Window): Option[(Window, String)] = {
-    chords.readFirstNext(window.start) match {
+    chords.firstNext(window.start) match {
       case None => None
       case Some(nextChord) =>
         nextChord.symbol.toLilypond match {

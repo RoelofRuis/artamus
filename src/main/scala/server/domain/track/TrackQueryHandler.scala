@@ -16,22 +16,22 @@ private[server] class TrackQueryHandler @Inject() (
   dispatcher.subscribe[GetNotes.type]{ _ =>
     state
       .readState
-      .getSymbolTrack[Note]
-      .readAll
+      .select[Note]
+      .all
   }
 
   dispatcher.subscribe[GetChords.type]{ _ =>
     state
       .readState
-      .getSymbolTrack[Chord]
-      .readAll
+      .select[Chord]
+      .all
   }
 
   dispatcher.subscribe[GetMidiPitches.type]{ _ =>
     state
       .readState
-      .getSymbolTrack[Note]
-      .readAllGrouped.map {
+      .select[Note]
+      .allGrouped.map {
         _.flatMap { note =>
           val pc = note.symbol.pitchClass
           val oct = note.symbol.octave
