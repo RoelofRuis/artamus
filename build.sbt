@@ -9,11 +9,13 @@ scalaVersion := "2.12.8"
 val scalaGuiceVersion = "4.2.2"
 val scalaLoggingVersion = "3.9.2"
 val slf4jSimpleVersion = "1.7.28"
+val scalaSwingVersion = "2.1.1"
 
 libraryDependencies ++= Seq(
   "net.codingwell" %% "scala-guice" % scalaGuiceVersion,
   "com.typesafe.scala-logging" %% "scala-logging" % scalaLoggingVersion,
-  "org.slf4j" % "slf4j-simple" % slf4jSimpleVersion
+  "org.slf4j" % "slf4j-simple" % slf4jSimpleVersion,
+  "org.scala-lang.modules" %% "scala-swing" % scalaSwingVersion
 )
 
 scalacOptions ++= Seq(
