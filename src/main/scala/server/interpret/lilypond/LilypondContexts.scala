@@ -28,13 +28,13 @@ object LilypondContexts {
   def staff(track: Track): String =
     s"""\\new Staff {
        |\\numericTimeSignature
-       |${new StaffIterator(track).stream}
+       |${new StaffIterator(track).iterate.mkString("\n")}
        |}""".stripMargin
 
   def chords(track: Track): String =
     s"""\\new ChordNames {
        |\\chordmode {
-       |${new ChordIterator(track).stream}
+       |${new ChordIterator(track).iterate.mkString("\n")}
        |}
        |}""".stripMargin
 

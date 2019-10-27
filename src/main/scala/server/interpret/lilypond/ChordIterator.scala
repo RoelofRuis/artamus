@@ -12,16 +12,16 @@ class ChordIterator(track: Track) {
 
   private val chords = track.select[Chord]
 
-  def stream: Stream[String] = { // TODO: make iterator
+  def iterate: Iterator[String] = {
     val window = Window.zero // TODO: make argument later
 
-    def loop(curWindow: Window): Stream[String] = {
+    def loop(curWindow: Window): Iterator[String] = {
       readNext(curWindow) match {
-        case None => Stream.empty
+        case None => Iterator.empty
         case Some((nextWindow, lilyString)) =>
           val difference = curWindow.durationUntil(nextWindow)
-          if (difference.isZero) lilyString #:: loop(nextWindow)
-          else restToLilypond(difference, silent=true) #:: lilyString #:: loop(nextWindow)
+          if (difference.isZero) Iterator(lilyString) ++ loop(nextWindow)
+          else Iterator(restToLilypond(difference, silent=true), lilyString) ++ loop(nextWindow)
       }
     }
 
@@ -29,10 +29,9 @@ class ChordIterator(track: Track) {
       case None => loop(window)
       case Some(chord) =>
         chord.symbol.toLilypond match {
-          case Some(lilyString) => lilyString #:: loop(chord.window)
+          case Some(lilyString) => Iterator(lilyString) ++ loop(chord.window)
           case None => loop(window)
         }
-
     }
   }
 

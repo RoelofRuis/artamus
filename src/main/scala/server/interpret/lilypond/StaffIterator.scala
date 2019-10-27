@@ -28,7 +28,7 @@ class StaffIterator(track: Track) {
     }
   }
 
-  def stream: Stream[String] = { // TODO: make iterator
+  def iterate: Iterator[String] = {
     val window = Window.zero // TODO: make argument later
 
     val initialTimeSignature = timeSignatures
@@ -41,24 +41,24 @@ class StaffIterator(track: Track) {
       .map(_.symbol)
       .getOrElse(Key(PitchSpelling(Step(0), Accidental(0)), Scale.MAJOR))
 
-    def loop(curWindow: Window, timeSignature: TimeSignature, key: Key): Stream[String] = {
+    def loop(curWindow: Window, timeSignature: TimeSignature, key: Key): Iterator[String] = {
       readNext(curWindow) match {
-        case None => Stream.empty
+        case None => Iterator.empty
         case Some((nextWindow, lilyString)) =>
           // TODO: update time signature and key
           val difference = curWindow.durationUntil(nextWindow)
-          if (difference.isZero) lilyString #:: loop(nextWindow, timeSignature, key)
-          else restToLilypond(difference, silent=false) #:: lilyString #:: loop(nextWindow, timeSignature, key)
+          if (difference.isZero) Iterator(lilyString) ++ loop(nextWindow, timeSignature, key)
+          else Iterator(restToLilypond(difference, silent=false)) ++ Iterator(lilyString) ++ loop(nextWindow, timeSignature, key)
       }
     }
 
-    val initialElements = Stream(initialTimeSignature.toLilypond.get, initialKey.toLilypond.get)
+    val initialElements = Iterator(initialTimeSignature.toLilypond.get, initialKey.toLilypond.get)
 
     notes.at(window.start) match { // TODO: this is comparable to readNext and should be combined
       case Seq() => loop(window, initialTimeSignature, initialKey)
       case notes =>
         notes.map(_.symbol).toLilypond match {
-          case Some(lilyString) => initialElements #::: lilyString #:: loop(notes.head.window, initialTimeSignature, initialKey)
+          case Some(lilyString) => initialElements ++ Iterator(lilyString) ++ loop(notes.head.window, initialTimeSignature, initialKey)
           case None => loop(window, initialTimeSignature, initialKey)
         }
     }
