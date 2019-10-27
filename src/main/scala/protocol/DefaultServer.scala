@@ -1,5 +1,6 @@
 package protocol
 
+import server.ProtocolServerBindings
 import transport.server.SimpleServer
 
 object DefaultServer {
