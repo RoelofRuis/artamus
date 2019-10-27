@@ -12,8 +12,8 @@ class ChordIterator(track: Track) {
 
   private val chords = track.select[Chord]
 
-  def iterate: Iterator[String] = {
-    val window = Window.zero // TODO: make argument later
+  def iterate(start: Position): Iterator[String] = {
+    val window = Window(start, start)
 
     def loop(curWindow: Window): Iterator[String] = {
       readNext(curWindow) match {

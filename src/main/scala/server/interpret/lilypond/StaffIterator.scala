@@ -28,8 +28,8 @@ class StaffIterator(track: Track) {
     }
   }
 
-  def iterate: Iterator[String] = {
-    val window = Window.zero // TODO: make argument later
+  def iterate(start: Position): Iterator[String] = {
+    val window = Window(start, start)
 
     val initialTimeSignature = timeSignatures
       .firstAt(window.start)
@@ -54,7 +54,7 @@ class StaffIterator(track: Track) {
 
     val initialElements = Iterator(initialTimeSignature.toLilypond.get, initialKey.toLilypond.get)
 
-    notes.at(window.start) match { // TODO: this is comparable to readNext and should be combined
+    notes.at(window.start) match {
       case Seq() => loop(window, initialTimeSignature, initialKey)
       case notes =>
         notes.map(_.symbol).toLilypond match {
