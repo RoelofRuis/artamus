@@ -11,7 +11,7 @@ final case class Chord(
   rootSpelling: Option[PitchSpelling]
 ) extends SymbolType {
 
-  override def getDuration: Duration = duration.getOrElse(Duration.zero)
+  override def getDuration: Duration = duration.getOrElse(Duration.NONE)
 
   def withDuration(dur: Duration): Chord = this.copy(duration = Some(dur))
 

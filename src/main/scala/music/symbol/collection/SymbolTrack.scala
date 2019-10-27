@@ -41,6 +41,8 @@ private[collection] final case class SymbolTrack[S <: SymbolType] private (
     } else this
   }
 
+  def isEmpty: Boolean = symbols.isEmpty
+
   def next(pos: Position): Seq[TrackSymbol[S]] = {
     positions
       .iteratorFrom(pos)

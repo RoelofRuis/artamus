@@ -20,7 +20,7 @@ class ChordIterator(track: Track) {
         case None => Iterator.empty
         case Some((nextWindow, lilyString)) =>
           val difference = curWindow.durationUntil(nextWindow)
-          if (difference.isZero) Iterator(lilyString) ++ loop(nextWindow)
+          if (difference.isNone) Iterator(lilyString) ++ loop(nextWindow)
           else Iterator(restToLilypond(difference, silent=true), lilyString) ++ loop(nextWindow)
       }
     }

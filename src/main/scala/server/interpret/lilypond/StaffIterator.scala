@@ -47,20 +47,23 @@ class StaffIterator(track: Track) {
         case Some((nextWindow, lilyString)) =>
           // TODO: update time signature and key
           val difference = curWindow.durationUntil(nextWindow)
-          if (difference.isZero) Iterator(lilyString) ++ loop(nextWindow, timeSignature, key)
+          if (difference.isNone) Iterator(lilyString) ++ loop(nextWindow, timeSignature, key)
           else Iterator(restToLilypond(difference, silent=false)) ++ Iterator(lilyString) ++ loop(nextWindow, timeSignature, key)
       }
     }
 
     val initialElements = Iterator(initialTimeSignature.toLilypond.get, initialKey.toLilypond.get)
 
-    notes.at(window.start) match {
-      case Seq() => loop(window, initialTimeSignature, initialKey)
-      case notes =>
-        notes.map(_.symbol).toLilypond match {
-          case Some(lilyString) => initialElements ++ Iterator(lilyString) ++ loop(notes.head.window, initialTimeSignature, initialKey)
-          case None => loop(window, initialTimeSignature, initialKey)
-        }
+    if (notes.isEmpty) initialElements ++ Iterator(restToLilypond(Duration.WHOLE, silent=true))
+    else {
+      notes.at(window.start) match {
+        case Seq() => loop(window, initialTimeSignature, initialKey)
+        case notes =>
+          notes.map(_.symbol).toLilypond match {
+            case Some(lilyString) => initialElements ++ Iterator(lilyString) ++ loop(notes.head.window, initialTimeSignature, initialKey)
+            case None => loop(window, initialTimeSignature, initialKey)
+          }
+      }
     }
   }
 

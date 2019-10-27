@@ -4,6 +4,6 @@ import music.primitives.Duration
 
 trait SymbolType {
 
-  def getDuration: Duration = Duration.zero
+  def getDuration: Duration = Duration.NONE
 
 }

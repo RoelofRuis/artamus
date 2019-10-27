@@ -19,6 +19,7 @@ package object collection {
   }
 
   trait SymbolSelection[S <: SymbolType] {
+    def isEmpty: Boolean
     def next(pos: Position): Seq[TrackSymbol[S]]
     def firstNext(pos: Position): Option[TrackSymbol[S]]
     def at(pos: Position): Seq[TrackSymbol[S]]
