@@ -6,7 +6,7 @@ import music.symbol.{Key, Note, TimeSignature}
 
 import scala.annotation.tailrec
 
-class StaffIterator(track: Track) extends ContentIterator {
+class StaffIterator(track: Track) {
 
   import music.analysis.TwelveToneEqualTemprament._
   import server.interpret.lilypond.LilypondFormat._

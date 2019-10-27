@@ -44,7 +44,7 @@ private[rendering] class LilypondCommandLineExecutor(
 
       try {
         val writer = new PrintWriter(sourceFile)
-        writer.write(lilyFile.getStringContents)
+        writer.write(lilyFile.contents)
         writer.close()
 
         import sys.process._

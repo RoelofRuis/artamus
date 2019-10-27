@@ -6,7 +6,7 @@ import music.symbol.Chord
 
 import scala.annotation.tailrec
 
-class ChordIterator(track: Track) extends ContentIterator {
+class ChordIterator(track: Track) {
 
   import server.interpret.lilypond.LilypondFormat._
 
