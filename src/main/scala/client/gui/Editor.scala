@@ -1,10 +1,14 @@
 package client.gui
 
+import scala.swing.event.{Key, KeyTyped}
+
 class Editor {
 
-  val frame = new EditorFrame with EditorBindings
+  val frame = new EditorFrame
 
-  frame.pack
-  frame.visible=true
+  frame.commandLine.textArea.keys.reactions += {
+    case KeyTyped(_, '\n', _, Key.Location.Unknown) =>
+      println(frame.commandLine.textArea.text)
+  }
 
 }

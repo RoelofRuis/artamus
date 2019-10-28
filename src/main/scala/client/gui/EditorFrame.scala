@@ -1,12 +1,20 @@
 package client.gui
 
-import javax.swing.ImageIcon
+import java.awt.{Color, Dimension, Font}
+
+import javax.swing.plaf.metal.MetalLookAndFeel
+import javax.swing.{ImageIcon, UIManager}
 
 import scala.swing.BorderPanel.Position
-import scala.swing.{BorderPanel, Frame, Label, Menu, MenuBar, MenuItem, TextArea}
+import scala.swing.Swing._
+import scala.swing.{BorderPanel, Frame, Label, Menu, MenuBar, MenuItem, ScrollPane, TextArea}
 
-abstract class EditorFrame extends Frame {
+class EditorFrame extends Frame {
   title = "Artamus"
+
+  UIManager.setLookAndFeel(new MetalLookAndFeel)
+
+  final val BG_COLOR: Color = Color.LIGHT_GRAY
 
   object menu extends MenuBar {
     object file extends Menu("File") {
@@ -20,12 +28,21 @@ abstract class EditorFrame extends Frame {
     val image = new ImageIcon()
     val label = new Label()
     label.icon=image
+    label.preferredSize = new Dimension(1000, 600)
     layout(label) = Position.Center
+
+    background = BG_COLOR
+    border = CompoundBorder(EmptyBorder(10, 10, 5, 10), BeveledBorder(Lowered))
   }
 
-  object commandLine extends BorderPanel {
+  object commandLine extends ScrollPane {
     val textArea = new TextArea(6, 0)
-    layout(textArea) = Position.Center
+    textArea.font = new Font(Font.MONOSPACED, Font.PLAIN, 13)
+
+    background = BG_COLOR
+    border = CompoundBorder(EmptyBorder(5, 10, 10, 10), BeveledBorder(Lowered))
+
+    contents = textArea
   }
 
   contents = new BorderPanel {
@@ -33,5 +50,8 @@ abstract class EditorFrame extends Frame {
     layout(workspace) = Position.Center
     layout(commandLine) = Position.South
   }
+
+  pack
+  visible=true
 
 }

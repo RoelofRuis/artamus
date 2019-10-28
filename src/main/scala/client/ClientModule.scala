@@ -1,6 +1,5 @@
 package client
 
-import client.events.RenderHandler
 import client.gui.Editor
 import client.io.midi.MidiIOModule
 import client.operations._
@@ -21,10 +20,11 @@ class ClientModule extends ScalaPrivateModule with ClientConfig {
     bind[TrackQueryOperations].asEagerSingleton()
 
     bind[Dispatcher[Event]].toInstance(pubsub.createDispatcher[Event]())
-    bind[RenderHandler].asEagerSingleton()
 
     bind[Bootstrapper].asEagerSingleton()
+
     bind[Editor].asEagerSingleton()
+
     expose[Bootstrapper]
   }
 
