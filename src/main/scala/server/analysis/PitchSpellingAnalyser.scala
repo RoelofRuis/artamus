@@ -1,6 +1,6 @@
 package server.analysis
 
-import music.analysis.{TwelveToneChordSpelling, TwelveTonePitchSpelling}
+import music.analysis.TwelveTonePitchSpelling
 import music.primitives.Position
 import music.symbol.collection.Track
 import music.symbol.{Chord, Key, Note}
@@ -24,7 +24,7 @@ class PitchSpellingAnalyser extends KnowledgeSource[Track] {
     val spelledChords = track
       .select[Chord]
       .all
-      .map(chord => TwelveToneChordSpelling.spellChord(chord, key))
+      .map(chord => TwelveTonePitchSpelling.spellChord(chord, key))
 
     track
       .updateAll(spelledNotes)
