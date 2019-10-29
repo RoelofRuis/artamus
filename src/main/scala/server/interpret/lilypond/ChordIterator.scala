@@ -25,7 +25,7 @@ class ChordIterator(track: Track) {
       }
     }
 
-    chords.firstAt(window.start) match { // TODO: this is comparable to readNext and should be combined
+    chords.firstAt(window.start) match {
       case None => loop(window)
       case Some(chord) =>
         chord.symbol.toLilypond match {
