@@ -12,17 +12,17 @@ class PitchSpellingAnalyser extends KnowledgeSource[Track] {
 
   override def execute(track: Track): Track = {
     val key = track
-      .select[Key]
+      .read[Key]
       .firstAt(Position.zero)
       .map(_.symbol)
 
     val spelledNotes = track
-      .select[Note]
+      .read[Note]
       .allGrouped
       .flatMap(notes => TwelveTonePitchSpelling.spellNotes(notes, key))
 
     val spelledChords = track
-      .select[Chord]
+      .read[Chord]
       .all
       .map(chord => TwelveTonePitchSpelling.spellChord(chord, key))
 

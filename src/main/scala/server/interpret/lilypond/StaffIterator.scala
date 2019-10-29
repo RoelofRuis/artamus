@@ -11,9 +11,9 @@ class StaffIterator(track: Track) {
   import music.analysis.TwelveToneEqualTemprament._
   import server.interpret.lilypond.LilypondFormat._
 
-  private val timeSignatures = track.select[TimeSignature]
-  private val keys = track.select[Key]
-  private val notes = track.select[Note]
+  private val timeSignatures = track.read[TimeSignature]
+  private val keys = track.read[Key]
+  private val notes = track.read[Note]
 
   @tailrec
   private def readNext(window: Window): Option[(Window, String)] = {

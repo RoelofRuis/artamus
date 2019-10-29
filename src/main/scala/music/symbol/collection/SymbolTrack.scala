@@ -11,9 +11,9 @@ private[collection] final case class SymbolTrack[S <: SymbolType] private (
   private val positions: SortedMap[Position, Seq[Long]],
   private val symbols: Map[Long, S],
   private val lastId: Long
-) extends SymbolSelection[S] {
+) extends SymbolView[S] {
 
-  def addSymbolAt(pos: Position, symbol: S): SymbolTrack[S] = {
+  def createSymbolAt(pos: Position, symbol: S): SymbolTrack[S] = {
     SymbolTrack(
       positions.updated(pos, positions.getOrElse(pos, Seq()) :+ lastId),
       symbols.updated(lastId, symbol),
@@ -21,7 +21,7 @@ private[collection] final case class SymbolTrack[S <: SymbolType] private (
     )
   }
 
-  def removeSymbol(id: Long): SymbolTrack[S] = {
+  def deleteSymbol(id: Long): SymbolTrack[S] = {
     SymbolTrack(
       positions
         .find { case (_, seq) => seq.contains(id) }

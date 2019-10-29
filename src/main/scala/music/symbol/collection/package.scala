@@ -11,14 +11,14 @@ package object collection {
     def createAll[S <: SymbolType : ClassTag](symbols: Seq[(Position, S)]): Track
     def update[S <: SymbolType : ClassTag](symbol: TrackSymbol[S]): Track
     def updateAll[S <: SymbolType : ClassTag](symbols: Seq[TrackSymbol[S]]): Track
-    def select[S <: SymbolType : ClassTag]: SymbolSelection[S]
+    def read[S <: SymbolType : ClassTag]: SymbolView[S]
   }
 
   object Track {
     def empty: Track = ImmutableTrack(Map())
   }
 
-  trait SymbolSelection[S <: SymbolType] {
+  trait SymbolView[S <: SymbolType] {
     def isEmpty: Boolean
     def next(pos: Position): Seq[TrackSymbol[S]]
     def firstNext(pos: Position): Option[TrackSymbol[S]]

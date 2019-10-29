@@ -10,7 +10,7 @@ class ChordIterator(track: Track) {
 
   import server.interpret.lilypond.LilypondFormat._
 
-  private val chords = track.select[Chord]
+  private val chords = track.read[Chord]
 
   def iterate(start: Position): Iterator[String] = {
     val window = Window(start, start)

@@ -16,7 +16,7 @@ private[collection] final case class ImmutableTrack (
   override def createAll[S <: SymbolType : ClassTag](symbols: Seq[(Position, S)]): Track = {
     val key = classTag[S].runtimeClass.getCanonicalName
     ImmutableTrack(
-      tracks.updated(key, symbols.foldLeft(selectRaw[S]) { case (track, (pos, sym)) => track.addSymbolAt(pos, sym) })
+      tracks.updated(key, symbols.foldLeft(readRaw[S]) { case (track, (pos, sym)) => track.createSymbolAt(pos, sym) })
     )
   }
 
@@ -25,13 +25,13 @@ private[collection] final case class ImmutableTrack (
   override def updateAll[S <: SymbolType : ClassTag](symbols: Seq[TrackSymbol[S]]): Track = {
     val key = classTag[S].runtimeClass.getCanonicalName
     ImmutableTrack(
-      tracks.updated(key, symbols.foldLeft(selectRaw[S]) { case (track, symbol) => track.updateSymbol(symbol) })
+      tracks.updated(key, symbols.foldLeft(readRaw[S]) { case (track, symbol) => track.updateSymbol(symbol) })
     )
   }
 
-  override def select[S <: SymbolType : ClassTag]: SymbolSelection[S] = selectRaw[S].asInstanceOf[SymbolSelection[S]]
+  override def read[S <: SymbolType : ClassTag]: SymbolView[S] = readRaw[S].asInstanceOf[SymbolView[S]]
 
-  private def selectRaw[S <: SymbolType : ClassTag]: SymbolTrack[S] = {
+  private def readRaw[S <: SymbolType : ClassTag]: SymbolTrack[S] = {
     val key = classTag[S].runtimeClass.getCanonicalName
     tracks.getOrElse(key, SymbolTrack[S]).asInstanceOf[SymbolTrack[S]]
   }
