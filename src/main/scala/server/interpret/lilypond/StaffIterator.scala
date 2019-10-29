@@ -15,6 +15,8 @@ class StaffIterator(track: Track) {
   private val keys = track.read[Key]
   private val notes = track.read[Note]
 
+  case class Context(timeSignature: TimeSignature, key: Key)
+
   @tailrec
   private def readNext(window: Window): Option[(Window, String)] = {
     notes.next(window.start) match {
@@ -30,7 +32,35 @@ class StaffIterator(track: Track) {
 
   def iterate(start: Position): Iterator[String] = {
     val window = Window(start, start)
+    val context = initialContext(window)
 
+    def loop(curWindow: Window, context: Context): Iterator[String] = {
+      readNext(curWindow) match {
+        case None => Iterator.empty
+        case Some((nextWindow, lilyString)) =>
+
+          val difference = curWindow.durationUntil(nextWindow)
+          if (difference.isNone) Iterator(lilyString) ++ loop(nextWindow, context)
+          else Iterator(restToLilypond(difference, silent=false)) ++ Iterator(lilyString) ++ loop(nextWindow, context)
+      }
+    }
+
+    val initialElements = Iterator(context.timeSignature.toLilypond.get, context.key.toLilypond.get)
+
+    if (notes.isEmpty) initialElements ++ Iterator(restToLilypond(Duration.WHOLE, silent=true))
+    else {
+      notes.at(window.start) match {
+        case Seq() => loop(window, context)
+        case notes =>
+          notes.map(_.symbol).toLilypond match {
+            case Some(lilyString) => initialElements ++ Iterator(lilyString) ++ loop(notes.head.window, context)
+            case None => loop(window, context)
+          }
+      }
+    }
+  }
+
+  def initialContext(window: Window): Context = {
     val initialTimeSignature = timeSignatures
       .firstAt(window.start)
       .map(_.symbol)
@@ -41,30 +71,7 @@ class StaffIterator(track: Track) {
       .map(_.symbol)
       .getOrElse(Key(PitchSpelling(Step(0), Accidental(0)), Scale.MAJOR))
 
-    def loop(curWindow: Window, timeSignature: TimeSignature, key: Key): Iterator[String] = {
-      readNext(curWindow) match {
-        case None => Iterator.empty
-        case Some((nextWindow, lilyString)) =>
-          // TODO: update time signature and key
-          val difference = curWindow.durationUntil(nextWindow)
-          if (difference.isNone) Iterator(lilyString) ++ loop(nextWindow, timeSignature, key)
-          else Iterator(restToLilypond(difference, silent=false)) ++ Iterator(lilyString) ++ loop(nextWindow, timeSignature, key)
-      }
-    }
-
-    val initialElements = Iterator(initialTimeSignature.toLilypond.get, initialKey.toLilypond.get)
-
-    if (notes.isEmpty) initialElements ++ Iterator(restToLilypond(Duration.WHOLE, silent=true))
-    else {
-      notes.at(window.start) match {
-        case Seq() => loop(window, initialTimeSignature, initialKey)
-        case notes =>
-          notes.map(_.symbol).toLilypond match {
-            case Some(lilyString) => initialElements ++ Iterator(lilyString) ++ loop(notes.head.window, initialTimeSignature, initialKey)
-            case None => loop(window, initialTimeSignature, initialKey)
-          }
-      }
-    }
+    Context(initialTimeSignature, initialKey)
   }
 
 }
