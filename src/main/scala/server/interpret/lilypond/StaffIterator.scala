@@ -1,15 +1,17 @@
 package server.interpret.lilypond
 
+import com.typesafe.scalalogging.{LazyLogging, Logger}
 import music.primitives._
 import music.symbol.collection.Track
 import music.symbol.{Key, Note, TimeSignature}
 
 import scala.annotation.tailrec
 
-class StaffIterator(track: Track) {
+class StaffIterator(track: Track) extends LazyLogging {
 
   import music.analysis.TwelveToneEqualTemprament._
   import server.interpret.lilypond.LilypondFormat._
+  import music.analysis.BarAnalysis._
 
   private val timeSignatures = track.read[TimeSignature]
   private val keys = track.read[Key]
@@ -38,6 +40,11 @@ class StaffIterator(track: Track) {
       readNext(curWindow) match {
         case None => Iterator.empty
         case Some((nextWindow, lilyString)) =>
+
+          val bar1 = track.getBarForPosition(curWindow.start)
+          logger.info(bar1.toString)
+          val bar2 = track.getBarForPosition(curWindow.end)
+          logger.info(bar2.toString)
 
           val difference = curWindow.durationUntil(nextWindow)
           if (difference.isNone) Iterator(lilyString) ++ loop(nextWindow, context)
