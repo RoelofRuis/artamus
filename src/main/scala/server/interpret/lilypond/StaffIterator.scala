@@ -15,32 +15,30 @@ class StaffIterator(track: Track) {
   private val notes = track.read[Note]
 
   case class Context(timeSignature: TimeSignature, key: Key)
-  case class PositionIndicator(window: Window, isFirst: Boolean)
 
   def iterate(start: Position): Iterator[String] = {
     val window = Window(start, start)
-    val positionIndicator = PositionIndicator(window, isFirst=true)
     val context = initialContext(window)
 
     val initialElements = Iterator(context.timeSignature.toLilypond.get, context.key.toLilypond.get)
 
     if (notes.isEmpty) initialElements ++ Iterator(restToLilypond(Duration.WHOLE, silent=true))
-    else initialElements ++ read(positionIndicator)
+    else initialElements ++ read(window, readFrom=false)
   }
 
-  private def read(pos: PositionIndicator): Iterator[String] = {
-    val elements = if (pos.isFirst) notes.at(pos.window.start) else notes.next(pos.window.start)
+  private def read(window: Window, readFrom: Boolean = true): Iterator[String] = {
+    val elements = if (readFrom) notes.next(window.start) else notes.at(window.start)
     elements match {
       case Seq() =>
-        if (pos.isFirst) read(PositionIndicator(pos.window, isFirst=false))
-        else Iterator.empty
+        if (readFrom) Iterator.empty
+        else read(window)
 
       case nextNotes =>
         // windowing
         val nextWindow = nextNotes.map(_.window).head
 
         // rests
-        val rests = pos.window.until(nextWindow) match {
+        val rests = window.until(nextWindow) match {
           case None => Iterator.empty
           case Some(diff) =>
             timeSignatures
@@ -59,9 +57,8 @@ class StaffIterator(track: Track) {
           .flatMap(_.toLilypond)
           .toIterator
 
-        val nextPos = PositionIndicator(nextWindow, isFirst=false)
-        if (lilyStrings.isEmpty) rests ++ read(nextPos)
-        else rests ++ lilyStrings ++ read(nextPos)
+        if (lilyStrings.isEmpty) rests ++ read(nextWindow)
+        else rests ++ lilyStrings ++ read(nextWindow)
     }
   }
 
