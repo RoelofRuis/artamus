@@ -39,23 +39,27 @@ object LilypondFormat {
     else ""
   }
 
-  implicit val simultaneousPitchesToLilypond: LilypondFormat[(Duration, Seq[ScientificPitch], Boolean)] =
-    (data: (Duration, Seq[ScientificPitch], Boolean)) => {
-      val notes = data._2
-      val duration = data._1
-      val isTied = data._3
-      if (notes.isEmpty) None
+  implicit val simultaneousPitchesToLilypond: LilypondFormat[NoteGroup] = (noteGroup: NoteGroup) => {
+      if (noteGroup.isEmpty) None
       else {
-        val noteString = notes.flatMap { pitch =>
+        val tie = (if (noteGroup.tieToNext) "~" else "")
+        if (noteGroup.isChord) {
+          val lilyNotes = noteGroup.notes.flatMap { pitch =>
+            for {
+              pitchSpelling <- pitch.spelling.toLilypond
+              octaveSpelling <- pitch.octave.toLilypond
+            } yield pitchSpelling + octaveSpelling + tie
+          }.mkString("<", " ", ">")
           for {
-            pitchSpelling <- pitch.spelling.toLilypond
-            octaveSpelling <- pitch.octave.toLilypond
-          } yield pitchSpelling + octaveSpelling + (if (isTied) "~" else "")
+            dur <- noteGroup.duration.toLilypond
+          } yield lilyNotes + dur
+        } else {
+          for {
+            pitchSpelling <- noteGroup.notes.head.spelling.toLilypond
+            octaveSpelling <- noteGroup.notes.head.octave.toLilypond
+            dur <- noteGroup.duration.toLilypond
+          } yield pitchSpelling + octaveSpelling + dur + tie
         }
-        val noteColl = if (notes.size == 1) noteString.mkString("") else noteString.mkString("<", " ", ">")
-        for {
-          dur <- duration.toLilypond
-        } yield noteColl + dur
       }
     }
 

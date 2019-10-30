@@ -50,18 +50,12 @@ class StaffIterator(track: Track) {
       case nextNotes =>
         val nextWindow = nextNotes.map(_.window).head
 
+        val pitches = nextNotes.map(_.symbol).flatMap(_.scientificPitch)
         val fittedDurations = timeSignatures.fitToBars(nextWindow).map(_.duration)
 
         val lilyStrings = fittedDurations
           .zipWithIndex
-          .map { case (dur, i) =>
-            val isTied = i != (fittedDurations.size - 1)
-            (
-              dur,
-              nextNotes.map(_.symbol).flatMap(_.scientificPitch),
-              isTied
-            )
-          }
+          .map { case (dur, i) => NoteGroup(dur, pitches, i != (fittedDurations.size - 1)) }
           .flatMap(_.toLilypond)
           .toIterator
 
