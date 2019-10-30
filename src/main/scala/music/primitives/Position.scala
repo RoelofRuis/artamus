@@ -8,7 +8,6 @@ final case class Position(value: Rational) extends Ordered[Position] {
 
   def -(that: Position): Duration = Duration(value - that.value)
   def -(that: Duration): Position = Position(value - that.value)
-  def isNegative: Boolean = value < Rational(0)
 
 }
 

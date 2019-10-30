@@ -39,22 +39,25 @@ object LilypondFormat {
     else ""
   }
 
-  implicit val simultaneousNotesToLilypond: LilypondFormat[Seq[Note]] = (notes: Seq[Note]) => {
-    if (notes.isEmpty) None
-    else {
-      val noteString = notes.flatMap { note =>
+  implicit val simultaneousPitchesToLilypond: LilypondFormat[(Duration, Seq[ScientificPitch], Boolean)] =
+    (data: (Duration, Seq[ScientificPitch], Boolean)) => {
+      val notes = data._2
+      val duration = data._1
+      val isTied = data._3
+      if (notes.isEmpty) None
+      else {
+        val noteString = notes.flatMap { pitch =>
+          for {
+            pitchSpelling <- pitch.spelling.toLilypond
+            octaveSpelling <- pitch.octave.toLilypond
+          } yield pitchSpelling + octaveSpelling + (if (isTied) "~" else "")
+        }
+        val noteColl = if (notes.size == 1) noteString.mkString("") else noteString.mkString("<", " ", ">")
         for {
-          scientificPitch <- note.scientificPitch
-          pitchSpelling <- scientificPitch.spelling.toLilypond
-          octaveSpelling <- scientificPitch.octave.toLilypond
-        } yield pitchSpelling + octaveSpelling
+          dur <- duration.toLilypond
+        } yield noteColl + dur
       }
-      val noteColl = if (notes.size == 1) noteString.mkString("") else noteString.mkString("<", " ", ">")
-      for {
-        dur <- notes.map(_.duration).max.toLilypond
-      } yield noteColl + dur
     }
-  }
 
   implicit val spelledPitchToLilypond: LilypondFormat[PitchSpelling] = (spelling: PitchSpelling) => {
     @tailrec

@@ -27,17 +27,12 @@ class StaffIterator(track: Track) {
     def loop(pos: PositionIndicator, context: Context): Iterator[String] = {
       read(pos) match {
         case None => Iterator.empty
-        case Some((nextWindow, lilyString)) =>
-
-          val bar1 = timeSignatures.getBarForPosition(pos.window.start)
-          println(bar1.toString)
-          val bar2 = timeSignatures.getBarForPosition(pos.window.end)
-          println(bar2.toString)
-
+        case Some((nextWindow, lilyStrings)) =>
           val difference = pos.window.durationUntil(nextWindow)
           val nextPos = PositionIndicator(nextWindow, isFirst=false)
-          if (difference.isNone) Iterator(lilyString) ++ loop(nextPos, context)
-          else Iterator(restToLilypond(difference, silent=false)) ++ Iterator(lilyString) ++ loop(nextPos, context)
+
+          if (difference.isNone) lilyStrings ++ loop(nextPos, context)
+          else Iterator(restToLilypond(difference, silent=false)) ++ lilyStrings ++ loop(nextPos, context)
       }
     }
 
@@ -48,16 +43,30 @@ class StaffIterator(track: Track) {
   }
 
   @tailrec
-  private def read(pos: PositionIndicator): Option[(Window, String)] = {
+  private def read(pos: PositionIndicator): Option[(Window, Iterator[String])] = {
     val elements = if (pos.isFirst) notes.at(pos.window.start) else notes.next(pos.window.start)
     elements match {
       case Seq() => None
       case nextNotes =>
         val nextWindow = nextNotes.map(_.window).head
-        nextNotes.map(_.symbol).toLilypond match {
-          case Some(lilyString) => Some((nextWindow, lilyString))
-          case None => read(PositionIndicator(nextWindow, isFirst=false))
-        }
+
+        val fittedDurations = timeSignatures.fitToBars(nextWindow).map(_.duration)
+
+        val lilyStrings = fittedDurations
+          .zipWithIndex
+          .map { case (dur, i) =>
+            val isTied = i != (fittedDurations.size - 1)
+            (
+              dur,
+              nextNotes.map(_.symbol).flatMap(_.scientificPitch),
+              isTied
+            )
+          }
+          .flatMap(_.toLilypond)
+          .toIterator
+
+        if (lilyStrings.isEmpty) read(PositionIndicator(nextWindow, isFirst=false))
+        else Some((nextWindow, lilyStrings))
     }
   }
 
