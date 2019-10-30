@@ -8,12 +8,10 @@ import scala.annotation.tailrec
 
 object BarAnalysis {
 
-  implicit class BarOps(track: Track) {
+  implicit class BarOps(view: SymbolView[TimeSignature]) {
 
-    val timeSignatures: SymbolView[TimeSignature] = track.read[TimeSignature]
-
-    // TODO: later make this dynamice and use all given time signatures
-    val ts: TimeSignature = timeSignatures
+    // TODO: make this dynamic and use all given time signatures
+    val ts: TimeSignature = view
       .firstAt(Position.zero)
       .map(_.symbol)
       .getOrElse(TimeSignature(TimeSignatureDivision.`4/4`))
