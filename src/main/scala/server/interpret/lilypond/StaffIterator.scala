@@ -4,8 +4,6 @@ import music.primitives._
 import music.symbol.collection.Track
 import music.symbol.{Key, Note, TimeSignature}
 
-import scala.annotation.tailrec
-
 class StaffIterator(track: Track) {
 
   import music.analysis.BarAnalysis._
@@ -24,32 +22,33 @@ class StaffIterator(track: Track) {
     val positionIndicator = PositionIndicator(window, isFirst=true)
     val context = initialContext(window)
 
-    def loop(pos: PositionIndicator, context: Context): Iterator[String] = {
-      read(pos) match {
-        case None => Iterator.empty
-        case Some((nextWindow, lilyStrings)) =>
-          val nextPos = PositionIndicator(nextWindow, isFirst=false)
-          pos.window.until(nextWindow) match {
-            case None => lilyStrings ++ loop(nextPos, context)
-            case Some(diff) => Iterator(restToLilypond(diff.duration, silent=false)) ++ lilyStrings ++ loop(nextPos, context)
-          }
-      }
-    }
-
     val initialElements = Iterator(context.timeSignature.toLilypond.get, context.key.toLilypond.get)
 
-    if (notes.isEmpty) initialElements ++ Iterator(restToLilypond(Duration.WHOLE, silent=true))
-    else initialElements ++ loop(positionIndicator, context)
+    initialElements ++ read(positionIndicator)
   }
 
-  @tailrec
-  private def read(pos: PositionIndicator): Option[(Window, Iterator[String])] = {
+  private def read(pos: PositionIndicator): Iterator[String] = {
     val elements = if (pos.isFirst) notes.at(pos.window.start) else notes.next(pos.window.start)
     elements match {
-      case Seq() => None
+      case Seq() =>
+        if (pos.isFirst) Iterator(restToLilypond(Duration.WHOLE, silent=true))
+        else Iterator.empty
+
       case nextNotes =>
+        // windowing
         val nextWindow = nextNotes.map(_.window).head
 
+        // rests
+        val rests = pos.window.until(nextWindow) match {
+          case None => Iterator.empty
+          case Some(diff) =>
+            timeSignatures
+              .fitToBars(diff)
+              .map(window => restToLilypond(window.duration, silent=false))
+              .toIterator
+        }
+
+        // pitches
         val pitches = nextNotes.map(_.symbol).flatMap(_.scientificPitch)
         val fittedDurations = timeSignatures.fitToBars(nextWindow).map(_.duration)
 
@@ -59,8 +58,9 @@ class StaffIterator(track: Track) {
           .flatMap(_.toLilypond)
           .toIterator
 
-        if (lilyStrings.isEmpty) read(PositionIndicator(nextWindow, isFirst=false))
-        else Some((nextWindow, lilyStrings))
+        val nextPos = PositionIndicator(nextWindow, isFirst=false)
+        if (lilyStrings.isEmpty) rests ++ read(nextPos)
+        else rests ++ lilyStrings ++ read(nextPos)
     }
   }
 

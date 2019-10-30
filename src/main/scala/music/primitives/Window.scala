@@ -4,7 +4,7 @@ final case class Window(start: Position, end: Position) {
 
   def duration: Duration = end - start
   def until(that: Window): Option[Window] = {
-    if (that.start < end) None
+    if (that.start <= end) None
     else Some(Window(end, that.start))
   }
   def intersect(that: Window): Option[Window] = {
