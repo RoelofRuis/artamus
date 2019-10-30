@@ -24,14 +24,15 @@ class StaffIterator(track: Track) {
 
     val initialElements = Iterator(context.timeSignature.toLilypond.get, context.key.toLilypond.get)
 
-    initialElements ++ read(positionIndicator)
+    if (notes.isEmpty) initialElements ++ Iterator(restToLilypond(Duration.WHOLE, silent=true))
+    else initialElements ++ read(positionIndicator)
   }
 
   private def read(pos: PositionIndicator): Iterator[String] = {
     val elements = if (pos.isFirst) notes.at(pos.window.start) else notes.next(pos.window.start)
     elements match {
       case Seq() =>
-        if (pos.isFirst) Iterator(restToLilypond(Duration.WHOLE, silent=true))
+        if (pos.isFirst) read(PositionIndicator(pos.window, isFirst=false))
         else Iterator.empty
 
       case nextNotes =>

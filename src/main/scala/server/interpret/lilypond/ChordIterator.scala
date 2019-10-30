@@ -1,49 +1,46 @@
 package server.interpret.lilypond
 
-import music.symbol.collection.Track
 import music.primitives._
-import music.symbol.Chord
-
-import scala.annotation.tailrec
+import music.symbol.{Chord, TimeSignature}
+import music.symbol.collection.Track
 
 class ChordIterator(track: Track) {
 
+  import music.analysis.BarAnalysis._
   import server.interpret.lilypond.LilypondFormat._
 
+  private val timeSignatures = track.read[TimeSignature]
   private val chords = track.read[Chord]
+
+  case class PositionIndicator(window: Window, isFirst: Boolean)
 
   def iterate(start: Position): Iterator[String] = {
     val window = Window(start, start)
+    val positionIndicator = PositionIndicator(window, isFirst=true)
 
-    def loop(curWindow: Window): Iterator[String] = {
-      readNext(curWindow) match {
-        case None => Iterator.empty
-        case Some((nextWindow, lilyString)) =>
-          curWindow.until(nextWindow) match {
-            case None => Iterator(lilyString) ++ loop(nextWindow)
-            case Some(diff) => Iterator(restToLilypond(diff.duration, silent=true), lilyString) ++ loop(nextWindow)
-          }
-      }
-    }
-
-    chords.firstAt(window.start) match {
-      case None => loop(window)
-      case Some(chord) =>
-        chord.symbol.toLilypond match {
-          case Some(lilyString) => Iterator(lilyString) ++ loop(chord.window)
-          case None => loop(window)
-        }
-    }
+    read(positionIndicator)
   }
 
-  @tailrec
-  private def readNext(window: Window): Option[(Window, String)] = {
-    chords.firstNext(window.start) match {
-      case None => None
+  private def read(pos: PositionIndicator): Iterator[String] = {
+    val element = if (pos.isFirst) chords.firstAt(pos.window.start) else chords.firstNext(pos.window.start)
+    element match {
+      case None =>
+        if (pos.isFirst) read(PositionIndicator(pos.window, isFirst=false))
+        else Iterator.empty
+
       case Some(nextChord) =>
+        val rests = pos.window.until(nextChord.window) match {
+          case None => Iterator.empty
+          case Some(diff) =>
+            timeSignatures
+              .fitToBars(diff)
+              .map(window => restToLilypond(window.duration, silent=true))
+              .toIterator
+        }
+
         nextChord.symbol.toLilypond match {
-          case Some(lilyString) => Some(nextChord.window, lilyString)
-          case None => readNext(nextChord.window)
+          case None => rests ++ read(PositionIndicator(nextChord.window, isFirst=false))
+          case Some(lilyString) => rests ++ Iterator(lilyString) ++ read(PositionIndicator(nextChord.window, isFirst=false))
         }
     }
   }
