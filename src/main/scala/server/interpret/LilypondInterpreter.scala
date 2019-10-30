@@ -10,7 +10,7 @@ class LilypondInterpreter(
 
   def interpret(track: Track): LyFile = {
     LyFile(LilypondContexts.file(
-      LilypondContexts.staff(track) + LilypondContexts.chords(track),
+      Seq(LilypondContexts.staff(track), LilypondContexts.chords(track)).mkString("\n"),
       lyVersion,
       paperSize,
     ))
