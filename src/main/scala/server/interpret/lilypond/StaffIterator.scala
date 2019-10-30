@@ -28,11 +28,11 @@ class StaffIterator(track: Track) {
       read(pos) match {
         case None => Iterator.empty
         case Some((nextWindow, lilyStrings)) =>
-          val difference = pos.window.durationUntil(nextWindow)
           val nextPos = PositionIndicator(nextWindow, isFirst=false)
-
-          if (difference.isNone) lilyStrings ++ loop(nextPos, context)
-          else Iterator(restToLilypond(difference, silent=false)) ++ lilyStrings ++ loop(nextPos, context)
+          pos.window.until(nextWindow) match {
+            case None => lilyStrings ++ loop(nextPos, context)
+            case Some(diff) => Iterator(restToLilypond(diff.duration, silent=false)) ++ lilyStrings ++ loop(nextPos, context)
+          }
       }
     }
 

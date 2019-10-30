@@ -19,9 +19,10 @@ class ChordIterator(track: Track) {
       readNext(curWindow) match {
         case None => Iterator.empty
         case Some((nextWindow, lilyString)) =>
-          val difference = curWindow.durationUntil(nextWindow)
-          if (difference.isNone) Iterator(lilyString) ++ loop(nextWindow)
-          else Iterator(restToLilypond(difference, silent=true), lilyString) ++ loop(nextWindow)
+          curWindow.until(nextWindow) match {
+            case None => Iterator(lilyString) ++ loop(nextWindow)
+            case Some(diff) => Iterator(restToLilypond(diff.duration, silent=true), lilyString) ++ loop(nextWindow)
+          }
       }
     }
 
