@@ -20,8 +20,9 @@ object BarAnalysis {
       .getOrElse(TimeSignature(TimeSignatureDivision.`4/4`))
 
     def fitToBars(window: Window): Seq[Window] = {
-      val startBar = getBarForPosition(window.start)
-      val endBar = getBarForPosition(window.end)
+      // if a note starts on bar start, do not include in previous bar TODO: make the code explain this better
+      val startBar = durationFits(window.start, ts.division.barDuration, inclusive=false)
+      val endBar = durationFits(window.end, ts.division.barDuration, inclusive=true)
 
       if (startBar == endBar) Seq(window)
       else Range.inclusive(startBar, endBar)
@@ -29,18 +30,25 @@ object BarAnalysis {
         .flatMap(window.intersect)
     }
 
-    private def getBarForPosition(pos: Position): BarNumber = durationFits(pos, ts.division.barDuration, 0)
-
     private def getBarWindow(bar: BarNumber): Window = Window(
       Position(ts.division.barDuration.value * bar),
       Position(ts.division.barDuration.value * (bar + 1))
     )
 
-    @tailrec
-    private def durationFits(pos: Position, dur: Duration, acc: Int): Int = {
-      val newPos = pos - dur
-      if (newPos.value <= Rational(0)) acc
-      else durationFits(newPos, dur, acc + 1)
+    private def durationFits(pos: Position, dur: Duration, inclusive: Boolean): Int = {
+      @tailrec
+      def loopExclusive(pos: Position, dur: Duration, acc: Int): Int = {
+        val newPos = pos - dur
+        if (newPos.value < Rational(0)) acc
+        else loopExclusive(newPos, dur, acc + 1)
+      }
+      @tailrec
+      def loopInclusive(pos: Position, dur: Duration, acc: Int): Int = {
+        val newPos = pos - dur
+        if (newPos.value <= Rational(0)) acc
+        else loopInclusive(newPos, dur, acc + 1)
+      }
+      if (inclusive) loopInclusive(pos, dur, acc = 0) else loopExclusive(pos, dur, acc = 0)
     }
 
   }
