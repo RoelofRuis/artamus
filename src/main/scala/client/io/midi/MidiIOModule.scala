@@ -15,7 +15,6 @@ class MidiIOModule extends ScalaPrivateModule {
     val iRigUSBMIDI_IN: DeviceHash = "e98b95f2"
   }
 
-  val ticksPerQuarter: Int = 4
   val midiOut: DeviceHash = MyDevices.FocusriteUSBMIDI_OUT
   val midiIn: DeviceHash = MyDevices.iRigUSBMIDI_IN
 
@@ -27,7 +26,7 @@ class MidiIOModule extends ScalaPrivateModule {
 
     // WRITING (playback)
     // TODO: Remove '.get', wrap with resource management!
-    bind[SequenceWriter].toInstance(loadSequenceWriter(midiOut, ticksPerQuarter).get)
+    bind[SequenceWriter].toInstance(loadSequenceWriter(midiOut).get)
     bind[MusicPlayer].to[MidiMusicPlayer].asEagerSingleton()
 
     expose[MusicPlayer]

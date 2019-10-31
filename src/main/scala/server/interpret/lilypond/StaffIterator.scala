@@ -7,7 +7,7 @@ import music.symbol.{Key, Note, TimeSignature}
 class StaffIterator(track: Track) {
 
   import music.analysis.BarAnalysis._
-  import music.analysis.TwelveToneEqualTemprament._
+  import music.analysis.TwelveToneTuning._
   import server.interpret.lilypond.LilypondFormat._
 
   private val timeSignatures = track.read[TimeSignature]

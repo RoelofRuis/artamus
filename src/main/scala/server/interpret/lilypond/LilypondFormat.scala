@@ -1,6 +1,6 @@
 package server.interpret.lilypond
 
-import music.analysis.TwelveToneEqualTemprament.TwelveToneFunctions
+import music.analysis.TwelveToneTuning.TwelveToneFunctions
 import music.math.Rational
 import music.primitives._
 import music.symbol.{Chord, Key, Note, TimeSignature}

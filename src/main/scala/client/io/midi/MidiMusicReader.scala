@@ -9,7 +9,7 @@ import music.primitives._
 private[midi] class MidiMusicReader @Inject() (reader: MidiMessageReader) extends MusicReader {
 
   import midi.in.Reading._
-  import music.analysis.TwelveToneEqualTemprament._
+  import music.analysis.TwelveToneTuning._
 
   def readPitchSpelling: PitchSpelling = {
     val midiNoteNumbers = readMidiNoteNumbers(NoteOn(2))

@@ -16,6 +16,5 @@ package object track {
   // Queries
   case object GetNotes extends Query { type Res = Seq[TrackSymbol[Note]] }
   case object GetChords extends Query { type Res = Seq[TrackSymbol[Chord]] }
-  case object GetMidiPitches extends Query { type Res = List[List[Int]] }
 
 }

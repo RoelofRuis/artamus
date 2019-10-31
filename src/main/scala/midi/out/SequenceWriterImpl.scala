@@ -2,10 +2,9 @@ package midi.out
 
 import javax.sound.midi.{MetaMessage, Receiver, Sequence, Sequencer}
 
-private[midi] class SimpleSequenceWriter private[midi] (
+private[midi] class SequenceWriterImpl private[midi] (
   val receiver: Receiver,
-  val sequencer: Sequencer,
-  val resolution: Int,
+  val sequencer: Sequencer
 ) extends SequenceWriter {
 
   private val END_OF_TRACK = 47
@@ -20,7 +19,7 @@ private[midi] class SimpleSequenceWriter private[midi] (
   sequencer.getTransmitter.setReceiver(receiver)
 
   def writeFromFormat(format: SequenceFormat): Unit = {
-    val builder = new SimpleSequenceBuilder(resolution)
+    val builder = new SequenceBuilderImpl()
     format.modify(builder)
     writeSequence(builder.build())
   }
