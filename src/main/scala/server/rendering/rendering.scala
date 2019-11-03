@@ -2,8 +2,6 @@ package server
 
 import java.io.File
 
-import server.rendering.service.LilypondCommandLineExecutor.LyFile
-
 package object rendering {
 
   trait RenderingConfig {
@@ -11,6 +9,8 @@ package object rendering {
     val cleanupLySources: Boolean
     val pngResolution: Int
   }
+
+  final case class LyFile(contents: String)
 
   trait Renderer {
 

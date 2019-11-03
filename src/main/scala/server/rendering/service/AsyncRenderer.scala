@@ -5,8 +5,7 @@ import java.io.File
 import com.typesafe.scalalogging.LazyLogging
 import javax.annotation.concurrent.NotThreadSafe
 import javax.inject.Inject
-import server.rendering.service.LilypondCommandLineExecutor.LyFile
-import server.rendering.{Renderer, RenderingCompletionHandler}
+import server.rendering.{LyFile, Renderer, RenderingCompletionHandler}
 
 @NotThreadSafe
 private[rendering] class AsyncRenderer @Inject() (
