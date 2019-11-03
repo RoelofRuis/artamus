@@ -30,7 +30,8 @@ class ChordIterator(track: Track) {
           case Some(diff) =>
             timeSignatures
               .fitToBars(diff)
-              .map(window => restToLilypond(window.duration, silent=true))
+              .flatMap(window => WriteableDuration.from(window.duration))
+              .map(duration => restToLilypond(duration, silent=true))
               .toIterator
         }
 

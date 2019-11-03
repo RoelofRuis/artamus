@@ -3,7 +3,7 @@ package server.interpret.lilypond
 import music.analysis.TwelveToneEqualTemprament.TwelveToneFunctions
 import music.math.Rational
 import music.primitives._
-import music.symbol.{Chord, Key, Note, TimeSignature}
+import music.symbol.{Chord, Key, TimeSignature}
 
 import scala.annotation.tailrec
 import scala.collection.SortedSet
@@ -20,7 +20,7 @@ object LilypondFormat {
     def toLilypond: Option[String] = LilypondFormat[A].toLilypond(a)
   }
 
-  def restToLilypond(duration: Duration, silent: Boolean): String = {
+  def restToLilypond(duration: WriteableDuration, silent: Boolean): String = {
     if (silent) s"s${duration.toLilypond.get}"
     else s"r${duration.toLilypond.get}"
   }
@@ -102,8 +102,12 @@ object LilypondFormat {
     }
   }
 
+  implicit val writableDurationToLilypond: LilypondFormat[WriteableDuration] = dur => {
+    Some(s"${dur.base.d}" + ("." * dur.dots))
+  }
+
+  @deprecated("Use WriteableDuration")
   implicit val durationToLilypond: LilypondFormat[Duration] = duration => {
-    // TODO: expand with (theoretically infinite) dots and "impossible" durations
     if (duration.value.n == 3) {
       val baseDur = duration.value - Rational.reciprocal(duration.value.d)
       Some(s"${baseDur.d}.")

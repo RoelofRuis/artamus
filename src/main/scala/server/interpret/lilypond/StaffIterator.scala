@@ -1,5 +1,6 @@
 package server.interpret.lilypond
 
+import music.math.Rational
 import music.primitives._
 import music.symbol.collection.Track
 import music.symbol.{Key, Note, TimeSignature}
@@ -22,7 +23,7 @@ class StaffIterator(track: Track) {
 
     val initialElements = Iterator(context.timeSignature.toLilypond.get, context.key.toLilypond.get)
 
-    if (notes.isEmpty) initialElements ++ Iterator(restToLilypond(Duration.WHOLE, silent=true))
+    if (notes.isEmpty) initialElements ++ Iterator(restToLilypond(WriteableDuration(Rational(1), 0), silent=true))
     else initialElements ++ read(window, readFrom=false)
   }
 
@@ -43,13 +44,17 @@ class StaffIterator(track: Track) {
           case Some(diff) =>
             timeSignatures
               .fitToBars(diff)
-              .map(window => restToLilypond(window.duration, silent=false))
+              .flatMap(window => WriteableDuration.from(window.duration))
+              .map(writableDuration => restToLilypond(writableDuration, silent=false))
               .toIterator
         }
 
         // pitches
         val pitches = nextNotes.map(_.symbol).flatMap(_.scientificPitch)
-        val fittedDurations = timeSignatures.fitToBars(nextWindow).map(_.duration)
+        val fittedDurations =
+          timeSignatures
+            .fitToBars(nextWindow)
+            .flatMap(window => WriteableDuration.from(window.duration))
 
         val lilyStrings = fittedDurations
           .zipWithIndex
