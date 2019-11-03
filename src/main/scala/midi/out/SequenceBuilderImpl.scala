@@ -19,12 +19,10 @@ private[midi] class SequenceBuilderImpl private[midi] extends SequenceBuilder {
 
   def build(): Sequence = {
     val sequence = new Sequence(Sequence.PPQ, resolution, 1)
-    println(s"Resolution [$resolution]")
     val midiTrack = sequence.createTrack()
     buffer.foreach { case x @ BufferedNote(pitch, start, duration, volume) =>
-      println(s"Note [$x]")
-      midiTrack.add(new MidiEvent(new ShortMessage(ShortMessage.NOTE_ON, 0, pitch, volume), start * resolution))
-      midiTrack.add(new MidiEvent(new ShortMessage(ShortMessage.NOTE_OFF, 0, pitch, 0), (start + duration) * resolution))
+      midiTrack.add(new MidiEvent(new ShortMessage(ShortMessage.NOTE_ON, 0, pitch, volume), start))
+      midiTrack.add(new MidiEvent(new ShortMessage(ShortMessage.NOTE_OFF, 0, pitch, 0), start + duration))
     }
     sequence
   }
