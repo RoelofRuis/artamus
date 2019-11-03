@@ -19,6 +19,11 @@ object BarAnalysis {
       .map(_.symbol)
       .getOrElse(TimeSignature(TimeSignatureDivision.`4/4`))
 
+    def fillBarFrom(window: Window): Window = {
+      val bar = durationFits(window.end, ts.division.barDuration, inclusive=true)
+      Window(window.end, getBarWindow(bar).end)
+    }
+
     def fitToBars(window: Window): Seq[Window] = {
       // if a note starts on bar start, do not include in previous bar TODO: make the code explain this better
       val startBar = durationFits(window.start, ts.division.barDuration, inclusive=false)
