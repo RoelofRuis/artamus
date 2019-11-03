@@ -1,5 +1,6 @@
-package server.interpret.lilypond
+package music.glyph
 
+import music.glyph
 import music.primitives._
 import music.symbol.collection.Track
 import music.symbol.{Key, Note, TimeSignature}
@@ -51,7 +52,7 @@ class StaffIterator(track: Track) {
             timeSignatures
               .fitToBars(diff)
               .flatMap(window => PrintableDuration.from(window.duration))
-              .map(RestGlyph(_, silent=false))
+              .map(glyph.RestGlyph(_, silent=false))
               .toIterator
         }
 

@@ -1,8 +1,9 @@
-package server.interpret.lilypond
+package music.glyph
 
+import music.glyph
 import music.primitives._
-import music.symbol.{Chord, TimeSignature}
 import music.symbol.collection.Track
+import music.symbol.{Chord, TimeSignature}
 
 class ChordIterator(track: Track) {
 
@@ -34,7 +35,7 @@ class ChordIterator(track: Track) {
               case head :: Nil =>
                 ChordGlyph(head, spelling, nextChord.symbol.functions) :: Nil
               case head :: tail =>
-                ChordGlyph(head, spelling, nextChord.symbol.functions) :: tail.map(RestGlyph(_, silent=true))
+                glyph.ChordGlyph(head, spelling, nextChord.symbol.functions) :: tail.map(RestGlyph(_, silent=true))
             }
           }
           written.map(_.toIterator).getOrElse(Iterator())
@@ -46,7 +47,7 @@ class ChordIterator(track: Track) {
             timeSignatures
               .fitToBars(diff)
               .flatMap(window => PrintableDuration.from(window.duration))
-              .map(RestGlyph(_, silent=true))
+              .map(glyph.RestGlyph(_, silent=true))
               .toIterator
         }
 

@@ -1,3 +1,3 @@
-package server.interpret.lilypond
+package music.glyph
 
 final case class RestGlyph(duration: PrintableDuration, silent: Boolean) extends Glyph

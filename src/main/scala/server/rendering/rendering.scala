@@ -2,7 +2,7 @@ package server
 
 import java.io.File
 
-import server.interpret.lilypond.LyFile
+import server.rendering.service.LilypondCommandLineExecutor.LyFile
 
 package object rendering {
 

@@ -1,4 +1,4 @@
-package server.interpret.lilypond
+package music.glyph
 
 import music.primitives.{Function, PitchSpelling}
 

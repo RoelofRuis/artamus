@@ -2,6 +2,7 @@ package server.interpret
 
 import music.symbol.collection.Track
 import server.interpret.lilypond._
+import server.rendering.service.LilypondCommandLineExecutor.LyFile
 
 class LilypondInterpreter(
   lyVersion: String,

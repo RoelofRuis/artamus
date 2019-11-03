@@ -5,7 +5,7 @@ import java.util.concurrent.atomic.AtomicLong
 import java.util.concurrent.{ExecutorService, Executors}
 
 import javax.annotation.concurrent.NotThreadSafe
-import server.interpret.lilypond.LyFile
+import server.rendering.service.LilypondCommandLineExecutor.LyFile
 
 @NotThreadSafe
 private[rendering] class LilypondCommandLineExecutor(
@@ -68,5 +68,11 @@ private[rendering] class LilypondCommandLineExecutor(
   private def getLilypondCommand(outputPath: String): String = {
     s"lilypond -fpng -odata -dresolution=$pngResolution $outputPath"
   }
+
+}
+
+object LilypondCommandLineExecutor {
+
+  final case class LyFile(contents: String)
 
 }
