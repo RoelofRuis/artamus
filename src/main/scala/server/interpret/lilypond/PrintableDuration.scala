@@ -4,6 +4,7 @@ import music.math.Rational
 import music.primitives.Duration
 import music.math._
 
+// TODO: where to fit this class? It is more like an algorithm than an actual `Printable` or glyph
 final case class PrintableDuration(base: Rational, dots: Int)
 
 object PrintableDuration {

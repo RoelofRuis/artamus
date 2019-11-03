@@ -8,7 +8,6 @@ class StaffIterator(track: Track) {
 
   import music.analysis.BarAnalysis._
   import music.analysis.TwelveToneTuning._
-  import server.interpret.lilypond.LilypondFormat._ // TODO: remove this dependency!
 
   private val timeSignatures = track.read[TimeSignature]
   private val keys = track.read[Key]
@@ -16,16 +15,19 @@ class StaffIterator(track: Track) {
 
   case class Context(timeSignature: TimeSignature, key: Key)
 
-  def iterate(start: Position): Iterator[String] = {
+  def iterate(start: Position): Iterator[Glyph] = {
     val window = Window(start, start)
     val context = initialContext(window)
 
-    val initialElements = Iterator(context.timeSignature.toLilypond, context.key.toLilypond)
+    val initialElements = Iterator(
+      TimeSignatureGlyph(context.timeSignature.division),
+      KeyGlyph(context.key.root, context.key.scale)
+    )
 
     initialElements ++ read(window, readFrom=false)
   }
 
-  private def read(window: Window, readFrom: Boolean = true): Iterator[String] = {
+  private def read(window: Window, readFrom: Boolean = true): Iterator[Glyph] = {
     val elements = if (readFrom) notes.next(window.start) else notes.at(window.start)
     elements match {
       case Seq() =>
@@ -33,7 +35,7 @@ class StaffIterator(track: Track) {
           // fill bar
           PrintableDuration
             .from(timeSignatures.fillBarFrom(window).duration)
-            .map(PrintableRest(_, silent=false).toLilypond)
+            .map(RestGlyph(_, silent=false))
             .toIterator
 
         else read(window)
@@ -49,7 +51,7 @@ class StaffIterator(track: Track) {
             timeSignatures
               .fitToBars(diff)
               .flatMap(window => PrintableDuration.from(window.duration))
-              .map(PrintableRest(_, silent=false).toLilypond)
+              .map(RestGlyph(_, silent=false))
               .toIterator
         }
 
@@ -62,8 +64,7 @@ class StaffIterator(track: Track) {
 
         val lilyStrings = fittedDurations
           .zipWithIndex
-          .map { case (dur, i) => PrintableNoteGroup(dur, pitches, i != (fittedDurations.size - 1)) }
-          .map(_.toLilypond)
+          .map { case (dur, i) => NoteGroupGlyph(dur, pitches, i != (fittedDurations.size - 1)) }
           .toIterator
 
         if (lilyStrings.isEmpty) rests ++ read(nextWindow)

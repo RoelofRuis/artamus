@@ -5,6 +5,8 @@ import music.symbol.collection.Track
 
 object LilypondContexts {
 
+  import LilypondFormat._
+
   def file(
     contents: String,
     lyVersion: String,
@@ -29,13 +31,13 @@ object LilypondContexts {
   def staff(track: Track): String =
     s"""\\new Staff {
        |\\numericTimeSignature
-       |${new StaffIterator(track).iterate(Position.zero).mkString("\n")}
+       |${new StaffIterator(track).iterate(Position.zero).map(_.toLilypond).mkString("\n")}
        |}""".stripMargin
 
   def chords(track: Track): String =
     s"""\\new ChordNames {
        |\\chordmode {
-       |${new ChordIterator(track).iterate(Position.zero).mkString("\n")}
+       |${new ChordIterator(track).iterate(Position.zero).map(_.toLilypond).mkString("\n")}
        |}
        |}""".stripMargin
 

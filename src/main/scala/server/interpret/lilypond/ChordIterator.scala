@@ -7,17 +7,16 @@ import music.symbol.collection.Track
 class ChordIterator(track: Track) {
 
   import music.analysis.BarAnalysis._
-  import server.interpret.lilypond.LilypondFormat._ // TODO: remove this dependency!
 
   private val timeSignatures = track.read[TimeSignature]
   private val chords = track.read[Chord]
 
-  def iterate(start: Position): Iterator[String] = {
+  def iterate(start: Position): Iterator[Glyph] = {
     val window = Window(start, start)
     read(window, readFrom = false)
   }
 
-  private def read(window: Window, readFrom: Boolean = true): Iterator[String] = {
+  private def read(window: Window, readFrom: Boolean = true): Iterator[Glyph] = {
     val element = if (readFrom) chords.firstNext(window.start) else chords.firstAt(window.start)
     element match {
       case None =>
@@ -33,10 +32,9 @@ class ChordIterator(track: Track) {
              PrintableDuration.from(duration) match {
               case Nil => Seq()
               case head :: Nil =>
-                PrintableChord(head, spelling, nextChord.symbol.functions).toLilypond :: Nil
+                ChordGlyph(head, spelling, nextChord.symbol.functions) :: Nil
               case head :: tail =>
-                PrintableChord(head, spelling, nextChord.symbol.functions).toLilypond ::
-                  tail.map(PrintableRest(_, silent=true).toLilypond)
+                ChordGlyph(head, spelling, nextChord.symbol.functions) :: tail.map(RestGlyph(_, silent=true))
             }
           }
           written.map(_.toIterator).getOrElse(Iterator())
@@ -48,7 +46,7 @@ class ChordIterator(track: Track) {
             timeSignatures
               .fitToBars(diff)
               .flatMap(window => PrintableDuration.from(window.duration))
-              .map(PrintableRest(_, silent=true).toLilypond)
+              .map(RestGlyph(_, silent=true))
               .toIterator
         }
 

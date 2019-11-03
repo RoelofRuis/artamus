@@ -19,12 +19,19 @@ object LilypondFormat {
     def toLilypond: String = LilypondFormat[A].toLilypond(a)
   }
 
-  implicit val restToLilypond: LilypondFormat[PrintableRest] = rest => {
+  implicit val glyphToLilypond: LilypondFormat[Glyph] = {
+    case g: RestGlyph => g.toLilypond
+    case n: NoteGroupGlyph => n.toLilypond
+    case c: ChordGlyph => c.toLilypond
+    case _ => ""
+  }
+
+  implicit val restToLilypond: LilypondFormat[RestGlyph] = rest => {
     val durationString = rest.duration.toLilypond
     if (rest.silent) "s" + durationString else "r" + durationString
   }
 
-  implicit val spelledChordToLilypond: LilypondFormat[PrintableChord] = chord => {
+  implicit val spelledChordToLilypond: LilypondFormat[ChordGlyph] = chord => {
     val spelledRoot = chord.root.toLilypond
     val spelledDur = chord.duration.toLilypond
     spelledRoot + spelledDur + chord.functions.toLilypond
@@ -35,7 +42,7 @@ object LilypondFormat {
     else ""
   }
 
-  implicit val simultaneousPitchesToLilypond: LilypondFormat[PrintableNoteGroup] = noteGroup => {
+  implicit val simultaneousPitchesToLilypond: LilypondFormat[NoteGroupGlyph] = noteGroup => {
       if (noteGroup.isEmpty) ""
       else {
         val tie = (if (noteGroup.tieToNext) "~" else "")
