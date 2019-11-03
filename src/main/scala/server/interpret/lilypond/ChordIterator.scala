@@ -7,7 +7,7 @@ import music.symbol.collection.Track
 class ChordIterator(track: Track) {
 
   import music.analysis.BarAnalysis._
-  import server.interpret.lilypond.LilypondFormat._
+  import server.interpret.lilypond.LilypondFormat._ // TODO: remove this dependency!
 
   private val timeSignatures = track.read[TimeSignature]
   private val chords = track.read[Chord]
@@ -35,7 +35,8 @@ class ChordIterator(track: Track) {
               case head :: Nil =>
                 PrintableChord(head, spelling, nextChord.symbol.functions).toLilypond :: Nil
               case head :: tail =>
-                PrintableChord(head, spelling, nextChord.symbol.functions).toLilypond :: tail.map(restToLilypond(_, silent=true))
+                PrintableChord(head, spelling, nextChord.symbol.functions).toLilypond ::
+                  tail.map(PrintableRest(_, silent=true).toLilypond)
             }
           }
           written.map(_.toIterator).getOrElse(Iterator())
@@ -47,7 +48,7 @@ class ChordIterator(track: Track) {
             timeSignatures
               .fitToBars(diff)
               .flatMap(window => PrintableDuration.from(window.duration))
-              .map(duration => restToLilypond(duration, silent=true))
+              .map(PrintableRest(_, silent=true).toLilypond)
               .toIterator
         }
 

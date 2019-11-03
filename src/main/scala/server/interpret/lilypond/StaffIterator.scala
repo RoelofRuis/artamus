@@ -8,7 +8,7 @@ class StaffIterator(track: Track) {
 
   import music.analysis.BarAnalysis._
   import music.analysis.TwelveToneTuning._
-  import server.interpret.lilypond.LilypondFormat._
+  import server.interpret.lilypond.LilypondFormat._ // TODO: remove this dependency!
 
   private val timeSignatures = track.read[TimeSignature]
   private val keys = track.read[Key]
@@ -33,7 +33,7 @@ class StaffIterator(track: Track) {
           // fill bar
           PrintableDuration
             .from(timeSignatures.fillBarFrom(window).duration)
-            .map(restToLilypond(_, silent=false))
+            .map(PrintableRest(_, silent=false).toLilypond)
             .toIterator
 
         else read(window)
@@ -49,7 +49,7 @@ class StaffIterator(track: Track) {
             timeSignatures
               .fitToBars(diff)
               .flatMap(window => PrintableDuration.from(window.duration))
-              .map(writableDuration => restToLilypond(writableDuration, silent=false))
+              .map(PrintableRest(_, silent=false).toLilypond)
               .toIterator
         }
 

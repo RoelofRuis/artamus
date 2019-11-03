@@ -19,9 +19,9 @@ object LilypondFormat {
     def toLilypond: String = LilypondFormat[A].toLilypond(a)
   }
 
-  def restToLilypond(duration: PrintableDuration, silent: Boolean): String = {
-    if (silent) s"s${duration.toLilypond}"
-    else s"r${duration.toLilypond}"
+  implicit val restToLilypond: LilypondFormat[PrintableRest] = rest => {
+    val durationString = rest.duration.toLilypond
+    if (rest.silent) "s" + durationString else "r" + durationString
   }
 
   implicit val spelledChordToLilypond: LilypondFormat[PrintableChord] = chord => {
