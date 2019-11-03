@@ -20,17 +20,22 @@ class StaffIterator(track: Track) {
     val window = Window(start, start)
     val context = initialContext(window)
 
-    val initialElements = Iterator(context.timeSignature.toLilypond.get, context.key.toLilypond.get)
+    val initialElements = Iterator(context.timeSignature.toLilypond, context.key.toLilypond)
 
-    if (notes.isEmpty) initialElements ++ Iterator(restToLilypond(Duration.WHOLE, silent=true))
-    else initialElements ++ read(window, readFrom=false)
+    initialElements ++ read(window, readFrom=false)
   }
 
   private def read(window: Window, readFrom: Boolean = true): Iterator[String] = {
     val elements = if (readFrom) notes.next(window.start) else notes.at(window.start)
     elements match {
       case Seq() =>
-        if (readFrom) Iterator.empty
+        if (readFrom)
+          // fill bar
+          WriteableDuration
+            .from(timeSignatures.fillBarFrom(window).duration)
+            .map(restToLilypond(_, silent=false))
+            .toIterator
+
         else read(window)
 
       case nextNotes =>
@@ -43,18 +48,22 @@ class StaffIterator(track: Track) {
           case Some(diff) =>
             timeSignatures
               .fitToBars(diff)
-              .map(window => restToLilypond(window.duration, silent=false))
+              .flatMap(window => WriteableDuration.from(window.duration))
+              .map(writableDuration => restToLilypond(writableDuration, silent=false))
               .toIterator
         }
 
         // pitches
         val pitches = nextNotes.map(_.symbol).flatMap(_.scientificPitch)
-        val fittedDurations = timeSignatures.fitToBars(nextWindow).map(_.duration)
+        val fittedDurations =
+          timeSignatures
+            .fitToBars(nextWindow)
+            .flatMap(window => WriteableDuration.from(window.duration))
 
         val lilyStrings = fittedDurations
           .zipWithIndex
-          .map { case (dur, i) => NoteGroup(dur, pitches, i != (fittedDurations.size - 1)) }
-          .flatMap(_.toLilypond)
+          .map { case (dur, i) => WriteableNoteGroup(dur, pitches, i != (fittedDurations.size - 1)) }
+          .map(_.toLilypond)
           .toIterator
 
         if (lilyStrings.isEmpty) rests ++ read(nextWindow)

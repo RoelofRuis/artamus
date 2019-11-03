@@ -25,19 +25,33 @@ class ChordIterator(track: Track) {
         else read(window)
 
       case Some(nextChord) =>
+        val writeableChords = {
+          val written = for {
+            duration <- nextChord.symbol.duration
+            spelling <- nextChord.symbol.rootSpelling
+          } yield {
+             WriteableDuration.from(duration) match {
+              case Nil => Seq()
+              case head :: Nil =>
+                WriteableChord(head, spelling, nextChord.symbol.functions).toLilypond :: Nil
+              case head :: tail =>
+                WriteableChord(head, spelling, nextChord.symbol.functions).toLilypond :: tail.map(restToLilypond(_, silent=true))
+            }
+          }
+          written.map(_.toIterator).getOrElse(Iterator())
+        }
+
         val rests = window.until(nextChord.window) match {
           case None => Iterator.empty
           case Some(diff) =>
             timeSignatures
               .fitToBars(diff)
-              .map(window => restToLilypond(window.duration, silent=true))
+              .flatMap(window => WriteableDuration.from(window.duration))
+              .map(duration => restToLilypond(duration, silent=true))
               .toIterator
         }
 
-        nextChord.symbol.toLilypond match {
-          case None => rests ++ read(nextChord.window)
-          case Some(lilyString) => rests ++ Iterator(lilyString) ++ read(nextChord.window)
-        }
+        rests ++ writeableChords ++ read(nextChord.window)
     }
   }
 
