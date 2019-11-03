@@ -31,7 +31,7 @@ class StaffIterator(track: Track) {
     val elements = if (readFrom) notes.next(window.start) else notes.at(window.start)
     elements match {
       case Seq() =>
-        if (readFrom) Iterator.empty
+        if (readFrom) Iterator.empty // TODO: fill last measure
         else read(window)
 
       case nextNotes =>
