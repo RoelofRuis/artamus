@@ -4,8 +4,8 @@ import music.primitives.{Function, PitchSpelling}
 
 import scala.collection.SortedSet
 
-final case class WriteableChord(
-  duration: WriteableDuration,
+final case class PrintableChord(
+  duration: PrintableDuration,
   root: PitchSpelling,
   functions: SortedSet[Function]
 )

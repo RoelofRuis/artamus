@@ -31,7 +31,7 @@ class StaffIterator(track: Track) {
       case Seq() =>
         if (readFrom)
           // fill bar
-          WriteableDuration
+          PrintableDuration
             .from(timeSignatures.fillBarFrom(window).duration)
             .map(restToLilypond(_, silent=false))
             .toIterator
@@ -48,7 +48,7 @@ class StaffIterator(track: Track) {
           case Some(diff) =>
             timeSignatures
               .fitToBars(diff)
-              .flatMap(window => WriteableDuration.from(window.duration))
+              .flatMap(window => PrintableDuration.from(window.duration))
               .map(writableDuration => restToLilypond(writableDuration, silent=false))
               .toIterator
         }
@@ -58,11 +58,11 @@ class StaffIterator(track: Track) {
         val fittedDurations =
           timeSignatures
             .fitToBars(nextWindow)
-            .flatMap(window => WriteableDuration.from(window.duration))
+            .flatMap(window => PrintableDuration.from(window.duration))
 
         val lilyStrings = fittedDurations
           .zipWithIndex
-          .map { case (dur, i) => WriteableNoteGroup(dur, pitches, i != (fittedDurations.size - 1)) }
+          .map { case (dur, i) => PrintableNoteGroup(dur, pitches, i != (fittedDurations.size - 1)) }
           .map(_.toLilypond)
           .toIterator
 

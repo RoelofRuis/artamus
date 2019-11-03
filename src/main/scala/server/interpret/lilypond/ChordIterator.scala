@@ -30,12 +30,12 @@ class ChordIterator(track: Track) {
             duration <- nextChord.symbol.duration
             spelling <- nextChord.symbol.rootSpelling
           } yield {
-             WriteableDuration.from(duration) match {
+             PrintableDuration.from(duration) match {
               case Nil => Seq()
               case head :: Nil =>
-                WriteableChord(head, spelling, nextChord.symbol.functions).toLilypond :: Nil
+                PrintableChord(head, spelling, nextChord.symbol.functions).toLilypond :: Nil
               case head :: tail =>
-                WriteableChord(head, spelling, nextChord.symbol.functions).toLilypond :: tail.map(restToLilypond(_, silent=true))
+                PrintableChord(head, spelling, nextChord.symbol.functions).toLilypond :: tail.map(restToLilypond(_, silent=true))
             }
           }
           written.map(_.toIterator).getOrElse(Iterator())
@@ -46,7 +46,7 @@ class ChordIterator(track: Track) {
           case Some(diff) =>
             timeSignatures
               .fitToBars(diff)
-              .flatMap(window => WriteableDuration.from(window.duration))
+              .flatMap(window => PrintableDuration.from(window.duration))
               .map(duration => restToLilypond(duration, silent=true))
               .toIterator
         }
