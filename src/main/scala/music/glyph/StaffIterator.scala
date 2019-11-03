@@ -20,7 +20,7 @@ class StaffIterator(track: Track) {
     val window = Window(start, start)
     val context = initialContext(window)
 
-    val initialElements = Iterator(
+    val initialElements = Iterator( // TODO: these should probably come from their own iterator
       TimeSignatureGlyph(context.timeSignature.division),
       KeyGlyph(context.key.root, context.key.scale)
     )

@@ -3,7 +3,7 @@ package music.glyph
 import music.math.{Rational, _}
 import music.primitives.Duration
 
-// TODO: where to fit this class? It is more like an algorithm than an actual `Printable` or glyph
+// TODO: where to fit this class? It is more like an algorithm than an actual `Printable` or glyph, might be moved to analysis
 final case class PrintableDuration(base: Rational, dots: Int) // TODO: rational might not be the correct base type here (think about triplets)
 
 object PrintableDuration {
