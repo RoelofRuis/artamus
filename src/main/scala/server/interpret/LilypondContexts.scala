@@ -1,4 +1,4 @@
-package server.interpret.lilypond
+package server.interpret
 
 import music.glyph.{ChordIterator, StaffIterator}
 import music.primitives.Position
