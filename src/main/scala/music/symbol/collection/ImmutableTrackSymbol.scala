@@ -11,8 +11,6 @@ private[collection] final case class ImmutableTrackSymbol[S <: SymbolType](
 
   def update(s: S): TrackSymbol[S] = this.copy(symbol = s)
 
-  def duration: Duration = symbol.getDuration
-
-  def window: Window = Window.between(position, Position(position.value + duration.value))
+  def window: Window = Window.between(position, Position(position.value + symbol.getDuration.value))
 
 }

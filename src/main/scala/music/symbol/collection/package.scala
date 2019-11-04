@@ -34,7 +34,6 @@ package object collection {
     val symbol: S
     def update(s: S): TrackSymbol[S]
     def window: Window
-    def duration: Duration
   }
 
 }
