@@ -25,7 +25,7 @@ private[collection] final case class ImmutableTrack (
   override def updateAll[S <: SymbolType : ClassTag](symbols: Seq[TrackSymbol[S]]): Track = {
     val key = classTag[S].runtimeClass.getCanonicalName
     ImmutableTrack(
-      tracks.updated(key, symbols.foldLeft(readRaw[S]) { case (track, symbol) => track.updateSymbol(symbol) })
+      tracks.updated(key, symbols.foldLeft(readRaw[S]) { case (track, symbol) => track.updateSymbol(symbol.id, symbol.symbol) })
     )
   }
 

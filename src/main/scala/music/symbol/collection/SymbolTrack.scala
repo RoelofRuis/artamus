@@ -31,14 +31,16 @@ private[collection] final case class SymbolTrack[S <: SymbolType] private (
     )
   }
 
-  def updateSymbol(sym: TrackSymbol[S]): SymbolTrack[S] = { // TODO: see if it is required to get the whole symbol
-    if (symbols.isDefinedAt(sym.id)) {
-      SymbolTrack(
-        positions,
-        symbols.updated(sym.id, sym),
-        lastId
-      )
-    } else this
+  def updateSymbol(id: Long, sym: S): SymbolTrack[S] = {
+    symbols.get(id) match {
+      case Some(currentSymbol) =>
+        SymbolTrack(
+          positions,
+          symbols.updated(id, currentSymbol.update(sym)),
+          lastId
+        )
+      case None => this
+    }
   }
 
   def isEmpty: Boolean = symbols.isEmpty
