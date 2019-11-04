@@ -9,14 +9,14 @@ import scala.collection.SortedMap
 @Immutable
 private[collection] final case class SymbolTrack[S <: SymbolType] private (
   private val positions: SortedMap[Position, Seq[Long]],
-  private val symbols: Map[Long, S],
+  private val symbols: Map[Long, TrackSymbol[S]],
   private val lastId: Long
 ) extends SymbolView[S] {
 
   def createSymbolAt(pos: Position, symbol: S): SymbolTrack[S] = {
     SymbolTrack(
       positions.updated(pos, positions.getOrElse(pos, Seq()) :+ lastId),
-      symbols.updated(lastId, symbol),
+      symbols.updated(lastId, ImmutableTrackSymbol(lastId, pos, symbol)),
       lastId + 1
     )
   }
@@ -31,11 +31,11 @@ private[collection] final case class SymbolTrack[S <: SymbolType] private (
     )
   }
 
-  def updateSymbol(sym: TrackSymbol[S]): SymbolTrack[S] = {
+  def updateSymbol(sym: TrackSymbol[S]): SymbolTrack[S] = { // TODO: see if it is required to get the whole symbol
     if (symbols.isDefinedAt(sym.id)) {
       SymbolTrack(
         positions,
-        symbols.updated(sym.id, sym.symbol),
+        symbols.updated(sym.id, sym),
         lastId
       )
     } else this
@@ -48,7 +48,7 @@ private[collection] final case class SymbolTrack[S <: SymbolType] private (
       .iteratorFrom(pos)
       .filterNot { case (position, _) => position == pos }
       .take(1)
-      .flatMap { case (position, ids) => ids.flatMap(id => symbolById(id, position)) }
+      .flatMap { case (_, ids) => ids.flatMap(id => symbols.get(id)) }
       .toSeq
   }
 
@@ -57,22 +57,18 @@ private[collection] final case class SymbolTrack[S <: SymbolType] private (
   def at(pos: Position): Seq[TrackSymbol[S]] = {
     positions
       .getOrElse(pos, Seq())
-      .flatMap(id => symbolById(id, pos))
+      .flatMap(id => symbols.get(id))
   }
 
   def firstAt(pos: Position): Option[TrackSymbol[S]] = at(pos).headOption
 
   def allGrouped: Seq[Seq[TrackSymbol[S]]] = {
     positions
-      .map { case (position, ids) => ids.flatMap(id => symbolById(id, position)) }
+      .map { case (_, ids) => ids.flatMap(id => symbols.get(id)) }
       .toSeq
   }
 
   def all: Seq[TrackSymbol[S]] = allGrouped.flatten
-
-  private def symbolById(id: Long, pos: Position): Option[TrackSymbol[S]] = {
-    symbols.get(id).map(symbol => ImmutableTrackSymbol(id, pos, symbol))
-  }
 
 }
 
