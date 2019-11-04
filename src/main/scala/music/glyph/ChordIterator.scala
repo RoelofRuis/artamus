@@ -13,7 +13,7 @@ class ChordIterator(track: Track) {
   private val chords = track.read[Chord]
 
   def iterate(start: Position): Iterator[Glyph] = {
-    val window = Window(start, start)
+    val window = Window.instantAt(start)
     read(window, readFrom = false)
   }
 
@@ -27,10 +27,9 @@ class ChordIterator(track: Track) {
       case Some(nextChord) =>
         val writeableChords = {
           val written = for {
-            duration <- nextChord.symbol.duration
             spelling <- nextChord.symbol.rootSpelling
           } yield {
-             PrintableDuration.from(duration) match {
+             PrintableDuration.from(nextChord.duration) match {
               case Nil => Seq()
               case head :: Nil =>
                 ChordGlyph(head, spelling, nextChord.symbol.functions) :: Nil

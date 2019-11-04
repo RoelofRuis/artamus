@@ -17,7 +17,7 @@ class StaffIterator(track: Track) {
   case class Context(timeSignature: TimeSignature, key: Key)
 
   def iterate(start: Position): Iterator[Glyph] = {
-    val window = Window(start, start)
+    val window = Window.instantAt(start)
     val context = initialContext(window)
 
     val initialElements = Iterator( // TODO: these should probably come from their own iterator

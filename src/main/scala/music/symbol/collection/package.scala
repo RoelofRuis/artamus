@@ -1,6 +1,6 @@
 package music.symbol
 
-import music.primitives.{Position, Window}
+import music.primitives.{Duration, Position, Window}
 
 import scala.reflect.ClassTag
 
@@ -34,6 +34,7 @@ package object collection {
     val symbol: S
     def update(s: S): TrackSymbol[S]
     def window: Window
+    def duration: Duration
   }
 
 }

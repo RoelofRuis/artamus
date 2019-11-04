@@ -21,7 +21,7 @@ object BarAnalysis {
 
     def fillBarFrom(window: Window): Window = {
       val bar = durationFits(window.end, ts.division.barDuration, inclusive=true)
-      Window(window.end, getBarWindow(bar).end)
+      Window.between(window.end, getBarWindow(bar).end)
     }
 
     def fitToBars(window: Window): Seq[Window] = {

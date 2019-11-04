@@ -1,21 +1,22 @@
 package music.primitives
 
-final case class Window(start: Position, end: Position) {
+final case class Window private(start: Position, end: Position) {
 
   def duration: Duration = end - start
   def until(that: Window): Option[Window] = {
     if (that.start <= end) None
-    else Some(Window(end, that.start))
+    else Some(Window.between(end, that.start))
   }
   def intersect(that: Window): Option[Window] = {
     if (that.start > this.end || this.start > that.end) None
-    else Some(Window(Seq(this.start, that.start).max, Seq(this.end, that.end).min))
+    else Some(Window.between(Seq(this.start, that.start).max, Seq(this.end, that.end).min))
   }
 
 }
 
 object Window {
 
-  def apply(start: Position, duration: Duration): Window = Window(start, Position(start.value + duration.value))
+  def between(start: Position, end: Position): Window = Window(start, end)
+  def instantAt(pos: Position): Window = Window(pos, pos)
 
 }
