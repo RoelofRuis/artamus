@@ -1,6 +1,8 @@
-package music.glyph
+package music.glyph.iteration
 
+import music.analysis.NoteValueConversion
 import music.glyph
+import music.glyph._
 import music.primitives._
 import music.symbol.collection.Track
 import music.symbol.{Key, Note, TimeSignature}
@@ -31,7 +33,7 @@ class StaffIterator(track: Track) {
   private def read(window: Window): Iterator[Glyph] = {
     notes.nextOption() match {
       case None =>
-        PrintableDuration
+        NoteValueConversion
           .from(track.fillBarFrom(window).duration)
           .map(RestGlyph(_, silent=false))
           .iterator
@@ -46,7 +48,7 @@ class StaffIterator(track: Track) {
           case Some(diff) =>
             track
               .fitToBars(diff)
-              .flatMap(window => PrintableDuration.from(window.duration))
+              .flatMap(window => NoteValueConversion.from(window.duration))
               .map(glyph.RestGlyph(_, silent=false))
               .iterator
         }
@@ -56,7 +58,7 @@ class StaffIterator(track: Track) {
         val fittedDurations =
           track
             .fitToBars(nextWindow)
-            .flatMap(window => PrintableDuration.from(window.duration))
+            .flatMap(window => NoteValueConversion.from(window.duration))
 
         val lilyStrings = fittedDurations
           .zipWithIndex

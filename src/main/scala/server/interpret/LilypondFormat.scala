@@ -98,7 +98,7 @@ object LilypondFormat {
     }
   }
 
-  implicit val writableDurationToLilypond: LilypondFormat[PrintableDuration] = dur => {
+  implicit val writableDurationToLilypond: LilypondFormat[NoteValue] = dur => {
     s"${dur.base.d}" + ("." * dur.dots)
   }
 

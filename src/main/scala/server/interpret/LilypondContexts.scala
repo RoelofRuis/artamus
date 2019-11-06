@@ -1,6 +1,6 @@
 package server.interpret
 
-import music.glyph.{ChordIterator, StaffIterator}
+import music.glyph.iteration.{ChordIterator, StaffIterator}
 import music.primitives.Position
 import music.symbol.collection.Track
 

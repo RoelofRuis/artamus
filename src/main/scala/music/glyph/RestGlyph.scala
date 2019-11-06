@@ -1,3 +1,5 @@
 package music.glyph
 
-final case class RestGlyph(duration: PrintableDuration, silent: Boolean) extends Glyph
+import music.primitives.NoteValue
+
+final case class RestGlyph(duration: NoteValue, silent: Boolean) extends Glyph

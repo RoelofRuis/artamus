@@ -1,9 +1,9 @@
 package music.glyph
 
-import music.primitives.ScientificPitch
+import music.primitives.{NoteValue, ScientificPitch}
 
 final case class NoteGroupGlyph(
-  duration: PrintableDuration,
+  duration: NoteValue,
   notes: Seq[ScientificPitch],
   tieToNext: Boolean
 ) extends Glyph {

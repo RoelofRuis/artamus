@@ -1,11 +1,11 @@
 package music.glyph
 
-import music.primitives.{Function, PitchSpelling}
+import music.primitives.{Function, NoteValue, PitchSpelling}
 
 import scala.collection.SortedSet
 
 final case class ChordGlyph(
-  duration: PrintableDuration,
+  duration: NoteValue,
   root: PitchSpelling,
   functions: SortedSet[Function]
 ) extends Glyph

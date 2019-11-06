@@ -1,6 +1,8 @@
-package music.glyph
+package music.glyph.iteration
 
+import music.analysis.NoteValueConversion
 import music.glyph
+import music.glyph.{ChordGlyph, Glyph, RestGlyph}
 import music.primitives._
 import music.symbol.Chord
 import music.symbol.collection.Track
@@ -26,7 +28,7 @@ class ChordIterator(track: Track) {
             duration <- nextChord.symbol.duration
             spelling <- nextChord.symbol.rootSpelling
           } yield {
-             PrintableDuration.from(duration) match {
+             NoteValueConversion.from(duration) match {
               case Nil => Seq()
               case head :: Nil =>
                 ChordGlyph(head, spelling, nextChord.symbol.functions) :: Nil
@@ -42,7 +44,7 @@ class ChordIterator(track: Track) {
           case Some(diff) =>
             track
               .fitToBars(diff)
-              .flatMap(window => PrintableDuration.from(window.duration))
+              .flatMap(window => NoteValueConversion.from(window.duration))
               .map(glyph.RestGlyph(_, silent=true))
               .iterator
         }
