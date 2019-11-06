@@ -30,13 +30,11 @@ private[collection] final case class ImmutableTrack (
     )
   }
 
-  override def read[S <: SymbolType : ClassTag]: SymbolView[S] = readRaw[S].asInstanceOf[SymbolView[S]]
-
   private def readRaw[S <: SymbolType : ClassTag]: SymbolTrack[S] = {
     val key = classTag[S].runtimeClass.getCanonicalName
     tracks.getOrElse(key, SymbolTrack[S]).asInstanceOf[SymbolTrack[S]]
   }
 
-  override def iterate[S <: SymbolType : ClassTag]: BufferedIterator[TrackSymbol[S]] = read[S].iterate(Position.zero)
-  override def iterateGrouped[S <: SymbolType : ClassTag]: BufferedIterator[Seq[TrackSymbol[S]]] = read[S].iterateGrouped(Position.zero)
+  override def read[S <: SymbolType : ClassTag](pos: Position): BufferedIterator[TrackSymbol[S]] = readRaw[S].iterate(pos)
+  override def readGrouped[S <: SymbolType : ClassTag](pos: Position): BufferedIterator[Seq[TrackSymbol[S]]] = readRaw[S].iterateGrouped(pos)
 }

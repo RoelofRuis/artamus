@@ -12,22 +12,12 @@ package object collection {
     def createAll[S <: SymbolType : ClassTag](symbols: IterableOnce[(Position, S)]): Track
     def update[S <: SymbolType : ClassTag](symbol: TrackSymbol[S]): Track
     def updateAll[S <: SymbolType : ClassTag](symbols: IterableOnce[TrackSymbol[S]]): Track
-    def read[S <: SymbolType : ClassTag]: SymbolView[S]
-    def iterate[S <: SymbolType : ClassTag]: BufferedIterator[TrackSymbol[S]]
-    def iterateGrouped[S <: SymbolType : ClassTag]: BufferedIterator[Seq[TrackSymbol[S]]]
+    def read[S <: SymbolType : ClassTag](from: Position = Position.zero): BufferedIterator[TrackSymbol[S]]
+    def readGrouped[S <: SymbolType : ClassTag](from: Position = Position.zero): BufferedIterator[Seq[TrackSymbol[S]]]
   }
 
   object Track {
     def empty: Track = ImmutableTrack(Map())
-  }
-
-  trait SymbolView[S <: SymbolType] {
-    def next(pos: Position): Seq[TrackSymbol[S]]
-    def firstNext(pos: Position): Option[TrackSymbol[S]]
-    def at(pos: Position): Seq[TrackSymbol[S]]
-    def firstAt(pos: Position): Option[TrackSymbol[S]]
-    def iterate(from: Position): BufferedIterator[TrackSymbol[S]]
-    def iterateGrouped(from: Position): BufferedIterator[Seq[TrackSymbol[S]]]
   }
 
   trait TrackSymbol[S <: SymbolType] {

@@ -12,7 +12,7 @@ private[collection] final case class SymbolTrack[S <: SymbolType] private (
   private val positions: SortedMap[Position, Seq[Long]],
   private val symbols: Map[Long, TrackSymbol[S]],
   private val lastId: Long
-) extends SymbolView[S] {
+) {
 
   def createSymbolAt(pos: Position, symbol: S): SymbolTrack[S] = {
     SymbolTrack(
@@ -57,25 +57,6 @@ private[collection] final case class SymbolTrack[S <: SymbolType] private (
       .map(_.flatMap(symbols.get))
       .buffered
   }
-
-  def next(pos: Position): Seq[TrackSymbol[S]] = {
-    positions
-      .iteratorFrom(pos)
-      .filterNot { case (position, _) => position == pos }
-      .take(1)
-      .flatMap { case (_, ids) => ids.flatMap(id => symbols.get(id)) }
-      .toSeq
-  }
-
-  def firstNext(pos: Position): Option[TrackSymbol[S]] = next(pos).headOption
-
-  def at(pos: Position): Seq[TrackSymbol[S]] = {
-    positions
-      .getOrElse(pos, Seq())
-      .flatMap(id => symbols.get(id))
-  }
-
-  def firstAt(pos: Position): Option[TrackSymbol[S]] = at(pos).headOption
 
 }
 

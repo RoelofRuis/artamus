@@ -3,19 +3,20 @@ package music.analysis
 import music.math.Rational
 import music.primitives.{Duration, Position, TimeSignatureDivision, Window}
 import music.symbol.TimeSignature
-import music.symbol.collection.SymbolView
+import music.symbol.collection.Track
 
 import scala.annotation.tailrec
 
 object BarAnalysis {
 
-  implicit class BarOps(view: SymbolView[TimeSignature]) {
+  implicit class BarOps(track: Track) {
 
     type BarNumber = Int
 
     // TODO: make this dynamic and use all given time signatures
-    val ts: TimeSignature = view
-      .firstAt(Position.zero)
+    val ts: TimeSignature = track
+      .read[TimeSignature]()
+      .headOption
       .map(_.symbol)
       .getOrElse(TimeSignature(TimeSignatureDivision.`4/4`))
 
