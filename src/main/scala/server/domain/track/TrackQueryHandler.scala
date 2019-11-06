@@ -13,15 +13,15 @@ private[server] class TrackQueryHandler @Inject() (
   dispatcher.subscribe[GetNotes.type]{ _ =>
     state
       .readState
-      .read[Note]
-      .all
+      .iterate[Note]
+      .toSeq
   }
 
   dispatcher.subscribe[GetChords.type]{ _ =>
     state
       .readState
-      .read[Chord]
-      .all
+      .iterate[Chord]
+      .toSeq
   }
 
 }

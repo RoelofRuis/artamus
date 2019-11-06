@@ -1,7 +1,6 @@
 package server.analysis
 
 import music.analysis.TwelveTonePitchSpelling
-import music.primitives.Position
 import music.symbol.collection.Track
 import music.symbol.{Chord, Key, Note}
 import server.analysis.blackboard.KnowledgeSource
@@ -12,18 +11,16 @@ class PitchSpellingAnalyser extends KnowledgeSource[Track] {
 
   override def execute(track: Track): Track = {
     val key = track
-      .read[Key]
-      .firstAt(Position.zero)
+      .iterate[Key]
+      .headOption
       .map(_.symbol)
 
     val spelledNotes = track
-      .read[Note]
-      .allGrouped
+      .iterateGrouped[Note]
       .flatMap(notes => TwelveTonePitchSpelling.spellNotes(notes, key))
 
     val spelledChords = track
-      .read[Chord]
-      .all
+      .iterate[Chord]
       .map(chord => TwelveTonePitchSpelling.spellChord(chord, key))
 
     track

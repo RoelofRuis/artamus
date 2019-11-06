@@ -38,7 +38,7 @@ class ChordIterator(track: Track) {
                 glyph.ChordGlyph(head, spelling, nextChord.symbol.functions) :: tail.map(RestGlyph(_, silent=true))
             }
           }
-          written.map(_.toIterator).getOrElse(Iterator())
+          written.map(_.iterator).getOrElse(Iterator())
         }
 
         val rests = window.until(nextChord.window) match {
@@ -48,7 +48,7 @@ class ChordIterator(track: Track) {
               .fitToBars(diff)
               .flatMap(window => PrintableDuration.from(window.duration))
               .map(glyph.RestGlyph(_, silent=true))
-              .toIterator
+              .iterator
         }
 
         rests ++ writeableChords ++ read(nextChord.window)

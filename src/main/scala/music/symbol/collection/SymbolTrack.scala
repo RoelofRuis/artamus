@@ -51,6 +51,13 @@ private[collection] final case class SymbolTrack[S <: SymbolType] private (
       .buffered
   }
 
+  def iterateGrouped(from: Position): BufferedIterator[Seq[TrackSymbol[S]]] = {
+    positions
+      .valuesIteratorFrom(from)
+      .map(_.flatMap(symbols.get))
+      .buffered
+  }
+
   def next(pos: Position): Seq[TrackSymbol[S]] = {
     positions
       .iteratorFrom(pos)
@@ -69,15 +76,6 @@ private[collection] final case class SymbolTrack[S <: SymbolType] private (
   }
 
   def firstAt(pos: Position): Option[TrackSymbol[S]] = at(pos).headOption
-
-  def allGrouped: Seq[Seq[TrackSymbol[S]]] = {
-    positions
-      .values
-      .map{_.flatMap(id => symbols.get(id)) }
-      .toSeq
-  }
-
-  def all: Seq[TrackSymbol[S]] = allGrouped.flatten
 
 }
 

@@ -53,7 +53,7 @@ class StaffIterator(track: Track) {
               .fitToBars(diff)
               .flatMap(window => PrintableDuration.from(window.duration))
               .map(glyph.RestGlyph(_, silent=false))
-              .toIterator
+              .iterator
         }
 
         // pitches
@@ -66,7 +66,7 @@ class StaffIterator(track: Track) {
         val lilyStrings = fittedDurations
           .zipWithIndex
           .map { case (dur, i) => NoteGroupGlyph(dur, pitches, i != (fittedDurations.size - 1)) }
-          .toIterator
+          .iterator
 
         if (lilyStrings.isEmpty) rests ++ read(nextWindow)
         else rests ++ lilyStrings ++ read(nextWindow)

@@ -5,6 +5,7 @@ import music.primitives.Position
 import music.symbol.SymbolType
 
 import scala.reflect.{ClassTag, classTag}
+import scala.collection.BufferedIterator
 
 @Immutable
 private[collection] final case class ImmutableTrack (
@@ -13,19 +14,19 @@ private[collection] final case class ImmutableTrack (
 
   override def create[S <: SymbolType : ClassTag](symbol: (Position, S)): Track = createAll(Seq(symbol))
 
-  override def createAll[S <: SymbolType : ClassTag](symbols: Seq[(Position, S)]): Track = {
+  override def createAll[S <: SymbolType : ClassTag](symbols: IterableOnce[(Position, S)]): Track = {
     val key = classTag[S].runtimeClass.getCanonicalName
     ImmutableTrack(
-      tracks.updated(key, symbols.foldLeft(readRaw[S]) { case (track, (pos, sym)) => track.createSymbolAt(pos, sym) })
+      tracks.updated(key, symbols.iterator.foldLeft(readRaw[S]) { case (track, (pos, sym)) => track.createSymbolAt(pos, sym) })
     )
   }
 
   override def update[S <: SymbolType : ClassTag](symbol: TrackSymbol[S]): Track = updateAll(Seq(symbol))
 
-  override def updateAll[S <: SymbolType : ClassTag](symbols: Seq[TrackSymbol[S]]): Track = {
+  override def updateAll[S <: SymbolType : ClassTag](symbols: IterableOnce[TrackSymbol[S]]): Track = {
     val key = classTag[S].runtimeClass.getCanonicalName
     ImmutableTrack(
-      tracks.updated(key, symbols.foldLeft(readRaw[S]) { case (track, symbol) => track.updateSymbol(symbol.id, symbol.symbol) })
+      tracks.updated(key, symbols.iterator.foldLeft(readRaw[S]) { case (track, symbol) => track.updateSymbol(symbol.id, symbol.symbol) })
     )
   }
 
@@ -36,5 +37,6 @@ private[collection] final case class ImmutableTrack (
     tracks.getOrElse(key, SymbolTrack[S]).asInstanceOf[SymbolTrack[S]]
   }
 
-  override def iterate[S <: SymbolType : ClassTag]: BufferedIterator[TrackSymbol[S]] = read[S].iterate
+  override def iterate[S <: SymbolType : ClassTag]: BufferedIterator[TrackSymbol[S]] = read[S].iterate(Position.zero)
+  override def iterateGrouped[S <: SymbolType : ClassTag]: BufferedIterator[Seq[TrackSymbol[S]]] = read[S].iterateGrouped(Position.zero)
 }
