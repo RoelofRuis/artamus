@@ -5,6 +5,7 @@ import music.primitives.Position
 import music.symbol.SymbolType
 
 import scala.collection.immutable.SortedMap
+import scala.collection.BufferedIterator
 
 @Immutable
 private[collection] final case class SymbolTrack[S <: SymbolType] private (
@@ -41,6 +42,13 @@ private[collection] final case class SymbolTrack[S <: SymbolType] private (
         )
       case None => this
     }
+  }
+
+  def iterate(from: Position): BufferedIterator[TrackSymbol[S]] = {
+    positions
+      .valuesIteratorFrom(from)
+      .flatMap(_.flatMap(symbols.get))
+      .buffered
   }
 
   def isEmpty: Boolean = symbols.isEmpty

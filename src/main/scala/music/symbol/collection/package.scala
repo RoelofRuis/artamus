@@ -3,6 +3,7 @@ package music.symbol
 import music.primitives.{Position, Window}
 
 import scala.reflect.ClassTag
+import scala.collection.BufferedIterator
 
 package object collection {
 
@@ -12,6 +13,7 @@ package object collection {
     def update[S <: SymbolType : ClassTag](symbol: TrackSymbol[S]): Track
     def updateAll[S <: SymbolType : ClassTag](symbols: Seq[TrackSymbol[S]]): Track
     def read[S <: SymbolType : ClassTag]: SymbolView[S]
+    def iterate[S <: SymbolType : ClassTag]: BufferedIterator[TrackSymbol[S]]
   }
 
   object Track {
@@ -26,6 +28,7 @@ package object collection {
     def firstAt(pos: Position): Option[TrackSymbol[S]]
     def all: Seq[TrackSymbol[S]]
     def allGrouped: Seq[Seq[TrackSymbol[S]]]
+    def iterate(from: Position): BufferedIterator[TrackSymbol[S]]
   }
 
   trait TrackSymbol[S <: SymbolType] {

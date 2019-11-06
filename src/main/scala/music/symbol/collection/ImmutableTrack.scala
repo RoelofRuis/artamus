@@ -36,4 +36,5 @@ private[collection] final case class ImmutableTrack (
     tracks.getOrElse(key, SymbolTrack[S]).asInstanceOf[SymbolTrack[S]]
   }
 
+  override def iterate[S <: SymbolType : ClassTag]: BufferedIterator[TrackSymbol[S]] = read[S].iterate
 }
