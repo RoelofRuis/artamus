@@ -4,7 +4,7 @@ import music.symbol.Note
 import music.symbol.collection.Track
 import server.analysis.blackboard.KnowledgeSource
 
-import scala.collection.SortedMap
+import scala.collection.immutable.SortedMap
 
 class PitchHistogramAnalyser extends KnowledgeSource[Track] {
 

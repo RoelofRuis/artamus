@@ -4,7 +4,7 @@ import javax.annotation.concurrent.Immutable
 import music.primitives.Position
 import music.symbol.SymbolType
 
-import scala.collection.SortedMap
+import scala.collection.immutable.SortedMap
 
 @Immutable
 private[collection] final case class SymbolTrack[S <: SymbolType] private (
@@ -66,7 +66,8 @@ private[collection] final case class SymbolTrack[S <: SymbolType] private (
 
   def allGrouped: Seq[Seq[TrackSymbol[S]]] = {
     positions
-      .map { case (_, ids) => ids.flatMap(id => symbols.get(id)) }
+      .values
+      .map{_.flatMap(id => symbols.get(id)) }
       .toSeq
   }
 
