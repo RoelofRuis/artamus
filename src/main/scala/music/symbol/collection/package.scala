@@ -1,6 +1,6 @@
 package music.symbol
 
-import music.primitives.{Duration, Position, Window}
+import music.primitives.{Position, Window}
 
 import scala.reflect.ClassTag
 
