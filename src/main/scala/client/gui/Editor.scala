@@ -6,9 +6,9 @@ class Editor {
 
   val frame = new EditorFrame
 
-  frame.commandLine.textArea.keys.reactions += {
+  frame.commandLine.input.textField.keys.reactions += {
     case KeyTyped(_, '\n', _, Key.Location.Unknown) =>
-      println(frame.commandLine.textArea.text)
+      println(frame.commandLine.input.textField.text)
   }
 
 }

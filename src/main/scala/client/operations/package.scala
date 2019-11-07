@@ -2,7 +2,6 @@ package client
 
 import protocol.Command
 
-// TODO: see if it can be moved to protocol
 package object operations {
 
   case class OperationToken(command: String, registrar: String)

@@ -5,6 +5,7 @@ import client.operations.{Operation, OperationRegistry}
 import javax.inject.Inject
 import protocol.{ClientInterface, Command}
 
+@deprecated
 class Bootstrapper @Inject() (
   client: ClientInterface,
   registry: OperationRegistry,
