@@ -12,6 +12,7 @@ package object collection {
     def createAll[S <: SymbolType : ClassTag](symbols: IterableOnce[(Position, S)]): Track
     def update[S <: SymbolType : ClassTag](symbol: TrackSymbol[S]): Track
     def updateAll[S <: SymbolType : ClassTag](symbols: IterableOnce[TrackSymbol[S]]): Track
+    def deleteAll[S <: SymbolType : ClassTag](): Track
     def read[S <: SymbolType : ClassTag](from: Position = Position.zero): BufferedIterator[TrackSymbol[S]]
     def readGrouped[S <: SymbolType : ClassTag](from: Position = Position.zero): BufferedIterator[Seq[TrackSymbol[S]]]
   }

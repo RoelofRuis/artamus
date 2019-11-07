@@ -1,7 +1,7 @@
 package server.analysis
 
 import music.analysis.TwelveToneChordAnalysis
-import music.symbol.Note
+import music.symbol.{Chord, Note}
 import music.symbol.collection.Track
 import server.analysis.blackboard.KnowledgeSource
 
@@ -19,7 +19,9 @@ class ChordAnalyser extends KnowledgeSource[Track] {
       else None
     }
 
-    track.createAll(possibleChords)
+    track
+      .deleteAll[Chord]()
+      .createAll(possibleChords)
   }
 
 }

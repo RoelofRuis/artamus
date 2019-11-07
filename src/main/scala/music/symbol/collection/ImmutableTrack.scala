@@ -14,27 +14,34 @@ private[collection] final case class ImmutableTrack (
 
   override def create[S <: SymbolType : ClassTag](symbol: (Position, S)): Track = createAll(Seq(symbol))
 
-  override def createAll[S <: SymbolType : ClassTag](symbols: IterableOnce[(Position, S)]): Track = {
-    val key = classTag[S].runtimeClass.getCanonicalName
+  override def createAll[S <: SymbolType : ClassTag](symbols: IterableOnce[(Position, S)]): Track =
     ImmutableTrack(
-      tracks.updated(key, symbols.iterator.foldLeft(readRaw[S]) { case (track, (pos, sym)) => track.createSymbolAt(pos, sym) })
+      tracks.updated(
+          key,
+          symbols.iterator.foldLeft(readRaw[S]) { case (track, (pos, sym)) => track.createSymbolAt(pos, sym) }
+      )
     )
-  }
 
   override def update[S <: SymbolType : ClassTag](symbol: TrackSymbol[S]): Track = updateAll(Seq(symbol))
 
-  override def updateAll[S <: SymbolType : ClassTag](symbols: IterableOnce[TrackSymbol[S]]): Track = {
-    val key = classTag[S].runtimeClass.getCanonicalName
+  override def updateAll[S <: SymbolType : ClassTag](symbols: IterableOnce[TrackSymbol[S]]): Track =
     ImmutableTrack(
-      tracks.updated(key, symbols.iterator.foldLeft(readRaw[S]) { case (track, symbol) => track.updateSymbol(symbol.id, symbol.symbol) })
+      tracks.updated(
+        key,
+        symbols.iterator.foldLeft(readRaw[S]) { case (track, symbol) => track.updateSymbol(symbol.id, symbol.symbol) }
+      )
     )
-  }
+
+  override def deleteAll[S <: SymbolType : ClassTag](): Track = ImmutableTrack(tracks.updated(key, SymbolTrack[S]))
+
+  override def read[S <: SymbolType : ClassTag](pos: Position): BufferedIterator[TrackSymbol[S]] = readRaw[S].iterate(pos)
+
+  override def readGrouped[S <: SymbolType : ClassTag](pos: Position): BufferedIterator[Seq[TrackSymbol[S]]] = readRaw[S].iterateGrouped(pos)
 
   private def readRaw[S <: SymbolType : ClassTag]: SymbolTrack[S] = {
-    val key = classTag[S].runtimeClass.getCanonicalName
     tracks.getOrElse(key, SymbolTrack[S]).asInstanceOf[SymbolTrack[S]]
   }
 
-  override def read[S <: SymbolType : ClassTag](pos: Position): BufferedIterator[TrackSymbol[S]] = readRaw[S].iterate(pos)
-  override def readGrouped[S <: SymbolType : ClassTag](pos: Position): BufferedIterator[Seq[TrackSymbol[S]]] = readRaw[S].iterateGrouped(pos)
+  private def key[S <: SymbolType : ClassTag]: String = classTag[S].runtimeClass.getCanonicalName
+
 }
