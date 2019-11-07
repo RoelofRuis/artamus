@@ -24,11 +24,11 @@ private[collection] final case class ImmutableTrack (
 
   override def update[S <: SymbolType : ClassTag](symbol: TrackSymbol[S]): Track = updateAll(Seq(symbol))
 
-  override def updateAll[S <: SymbolType : ClassTag](symbols: Seq[TrackSymbol[S]]): Track =
+  override def updateAll[S <: SymbolType : ClassTag](symbols: IterableOnce[TrackSymbol[S]]): Track =
     ImmutableTrack(
       tracks.updated(
         key,
-        symbols.foldLeft(readRaw[S]) { case (track, symbol) => track.updateSymbol(symbol) }
+        symbols.iterator.foldLeft(readRaw[S]) { case (track, symbol) => track.updateSymbol(symbol.id, symbol.symbol) }
       )
     )
 
