@@ -7,7 +7,7 @@ import music.primitives._
 
 class TerminalMusicReader extends MusicReader {
 
-  import music.analysis.TwelveToneEqualTemprament._
+  import music.analysis.TwelveToneTuning._
 
   override def readPitchSpelling: PitchSpelling = {
     val step = Step(StdIOTools.readInt("Input step"))

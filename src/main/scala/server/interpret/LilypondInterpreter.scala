@@ -1,7 +1,7 @@
 package server.interpret
 
 import music.symbol.collection.Track
-import server.interpret.lilypond._
+import server.rendering.LyFile
 
 class LilypondInterpreter(
   lyVersion: String,
@@ -10,7 +10,7 @@ class LilypondInterpreter(
 
   def interpret(track: Track): LyFile = {
     LyFile(LilypondContexts.file(
-      LilypondContexts.staff(track) + LilypondContexts.chords(track),
+      Seq(LilypondContexts.staff(track), LilypondContexts.chords(track)).mkString("\n"),
       lyVersion,
       paperSize,
     ))

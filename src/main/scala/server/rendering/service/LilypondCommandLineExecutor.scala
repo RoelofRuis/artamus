@@ -5,7 +5,7 @@ import java.util.concurrent.atomic.AtomicLong
 import java.util.concurrent.{ExecutorService, Executors}
 
 import javax.annotation.concurrent.NotThreadSafe
-import server.interpret.lilypond.LyFile
+import server.rendering.LyFile
 
 @NotThreadSafe
 private[rendering] class LilypondCommandLineExecutor(

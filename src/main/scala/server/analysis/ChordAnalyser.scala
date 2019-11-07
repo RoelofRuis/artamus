@@ -1,7 +1,7 @@
 package server.analysis
 
 import music.analysis.TwelveToneChordAnalysis
-import music.symbol.Note
+import music.symbol.{Chord, Note}
 import music.symbol.collection.Track
 import server.analysis.blackboard.KnowledgeSource
 
@@ -10,7 +10,7 @@ class ChordAnalyser extends KnowledgeSource[Track] {
   override def canExecute(state: Track): Boolean = true
 
   override def execute(track: Track): Track = {
-    val possibleChords = track.select[Note].allGrouped.flatMap { notes =>
+    val possibleChords = track.readGrouped[Note]().flatMap { notes =>
       val pitches = notes.map { note => note.symbol.pitchClass }
       val dur = notes.map { note => note.symbol.duration }.max
       val possibleChords = TwelveToneChordAnalysis.findChords(pitches).map(_.withDuration(dur))
@@ -19,7 +19,9 @@ class ChordAnalyser extends KnowledgeSource[Track] {
       else None
     }
 
-    track.createAll(possibleChords)
+    track
+      .deleteAll[Chord]()
+      .createAll(possibleChords)
   }
 
 }

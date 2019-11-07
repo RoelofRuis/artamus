@@ -7,7 +7,7 @@ import scala.collection.immutable.SortedSet
 
 object TwelveToneChordAnalysis {
 
-  import TwelveToneEqualTemprament._
+  import TwelveToneTuning._
 
   def findChords(set: Seq[PitchClass]): Seq[Chord] = {
     PitchClass.listAll.flatMap{ root =>

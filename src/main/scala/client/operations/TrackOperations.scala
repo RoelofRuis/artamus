@@ -8,7 +8,7 @@ import music.math.Rational
 import music.primitives._
 import music.symbol.{Key, Note, TimeSignature}
 import protocol.Command
-import server.domain.Commit
+import server.domain.{Analyse, Commit, Rollback}
 import server.domain.track._
 
 import scala.annotation.tailrec
@@ -18,12 +18,15 @@ class TrackOperations @Inject() (
   reader: MusicReader
 ) {
 
-  import music.analysis.TwelveToneEqualTemprament._
+  import music.analysis.TwelveToneTuning._
+
+  registry.registerOperation(OperationToken("commit", "track"), () => { List(Commit) })
+  registry.registerOperation(OperationToken("rollback", "track"), () => { List(Rollback) })
 
   registry.registerOperation(OperationToken("new", "track"), () => {
     List(
       NewTrack,
-      Commit
+      Analyse
     )
   })
 
@@ -33,7 +36,7 @@ class TrackOperations @Inject() (
 
     List(
       CreateTimeSignatureSymbol(Position.zero, TimeSignature(division)),
-      Commit
+      Analyse
     )
   })
 
@@ -50,7 +53,7 @@ class TrackOperations @Inject() (
 
     List(
       CreateKeySymbol(Position.zero, Key(root, keyType)),
-      Commit
+      Analyse
     )
   })
 
@@ -93,7 +96,7 @@ class TrackOperations @Inject() (
       }
     }
 
-    read(elementLayout) :+ Commit
+    read(elementLayout) :+ Analyse
   })
 
   sealed trait GridElement

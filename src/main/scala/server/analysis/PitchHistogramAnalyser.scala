@@ -4,7 +4,7 @@ import music.symbol.Note
 import music.symbol.collection.Track
 import server.analysis.blackboard.KnowledgeSource
 
-import scala.collection.SortedMap
+import scala.collection.immutable.SortedMap
 
 class PitchHistogramAnalyser extends KnowledgeSource[Track] {
 
@@ -27,8 +27,8 @@ class PitchHistogramAnalyser extends KnowledgeSource[Track] {
     )
 
     val histogram = track
-      .select[Note]
-      .all.map(_.symbol.pitchClass)
+      .read[Note]()
+      .map(_.symbol.pitchClass)
       .foldRight(zero) { case (pc, acc) => acc.updated(pc.value, acc.get(pc.value).map(_ + 1L).get) }
 
     histogram.foreach { case (bin, count) =>

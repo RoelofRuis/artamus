@@ -10,7 +10,7 @@ import server.interpret.LilypondInterpreter
 import server.rendering.Renderer
 
 private[server] class ChangeHandler @Inject() (
-  busCommands: Dispatcher[Command],
+  changeCommands: Dispatcher[Command],
   eventBus: EventBus[Event],
   interpreter: LilypondInterpreter,
   state: TrackState,
@@ -18,11 +18,23 @@ private[server] class ChangeHandler @Inject() (
   renderer: Renderer,
 ) {
 
-  busCommands.subscribe[Commit.type] { _ =>
-    eventBus.publish(ChangesCommitted)
-    val analysedTrack = analysis.run(state.readState)
+  changeCommands.subscribe[Analyse.type] { _ =>
+    eventBus.publish(AnalysisStarted)
+    val analysedTrack = analysis.run(state.getEditable)
     val lilypondFile = interpreter.interpret(analysedTrack)
     renderer.submit("committed-changes", lilypondFile)
+    state.stage(analysedTrack)
+    true
+  }
+
+  changeCommands.subscribe[Commit.type] { _ =>
+    state.commit()
+    true
+  }
+
+  changeCommands.subscribe[Rollback.type] { _ =>
+    state.rollback()
+    changeCommands.handle(Analyse) // TODO: probably split analyse and handle
     true
   }
 

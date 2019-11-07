@@ -1,8 +1,10 @@
 package client
 
+import music.playback.MidiNote
+
 trait MusicPlayer {
 
-  def play(notes: List[List[Int]]): Unit
+  def play(notes: Seq[MidiNote]): Unit
 
 }
 

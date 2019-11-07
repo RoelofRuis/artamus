@@ -4,24 +4,25 @@ import javax.annotation.concurrent.Immutable
 import music.primitives.Position
 import music.symbol.SymbolType
 
-import scala.collection.SortedMap
+import scala.collection.immutable.SortedMap
+import scala.collection.BufferedIterator
 
 @Immutable
 private[collection] final case class SymbolTrack[S <: SymbolType] private (
   private val positions: SortedMap[Position, Seq[Long]],
-  private val symbols: Map[Long, S],
+  private val symbols: Map[Long, TrackSymbol[S]],
   private val lastId: Long
-) extends SymbolSelection[S] {
+) {
 
-  def addSymbolAt(pos: Position, symbol: S): SymbolTrack[S] = {
+  def createSymbolAt(pos: Position, symbol: S): SymbolTrack[S] = {
     SymbolTrack(
       positions.updated(pos, positions.getOrElse(pos, Seq()) :+ lastId),
-      symbols.updated(lastId, symbol),
+      symbols.updated(lastId, ImmutableTrackSymbol(lastId, pos, symbol)),
       lastId + 1
     )
   }
 
-  def removeSymbol(id: Long): SymbolTrack[S] = {
+  def deleteSymbol(id: Long): SymbolTrack[S] = {
     SymbolTrack(
       positions
         .find { case (_, seq) => seq.contains(id) }
@@ -31,47 +32,30 @@ private[collection] final case class SymbolTrack[S <: SymbolType] private (
     )
   }
 
-  def updateSymbol(sym: TrackSymbol[S]): SymbolTrack[S] = {
-    if (symbols.isDefinedAt(sym.id)) {
-      SymbolTrack(
-        positions,
-        symbols.updated(sym.id, sym.symbol),
-        lastId
-      )
-    } else this
+  def updateSymbol(id: Long, sym: S): SymbolTrack[S] = {
+    symbols.get(id) match {
+      case Some(currentSymbol) =>
+        SymbolTrack(
+          positions,
+          symbols.updated(id, currentSymbol.update(sym)),
+          lastId
+        )
+      case None => this
+    }
   }
 
-  def isEmpty: Boolean = symbols.isEmpty
-
-  def next(pos: Position): Seq[TrackSymbol[S]] = {
+  def iterate(from: Position): BufferedIterator[TrackSymbol[S]] = {
     positions
-      .iteratorFrom(pos)
-      .filterNot { case (position, _) => position == pos }
-      .take(1)
-      .flatMap { case (position, ids) => ids.flatMap(id => symbolById(id, position)) }
-      .toSeq
+      .valuesIteratorFrom(from)
+      .flatMap(_.flatMap(symbols.get))
+      .buffered
   }
 
-  def firstNext(pos: Position): Option[TrackSymbol[S]] = next(pos).headOption
-
-  def at(pos: Position): Seq[TrackSymbol[S]] = {
+  def iterateGrouped(from: Position): BufferedIterator[Seq[TrackSymbol[S]]] = {
     positions
-      .getOrElse(pos, Seq())
-      .flatMap(id => symbolById(id, pos))
-  }
-
-  def firstAt(pos: Position): Option[TrackSymbol[S]] = at(pos).headOption
-
-  def allGrouped: Seq[Seq[TrackSymbol[S]]] = {
-    positions
-      .map { case (position, ids) => ids.flatMap(id => symbolById(id, position)) }
-      .toSeq
-  }
-
-  def all: Seq[TrackSymbol[S]] = allGrouped.flatten
-
-  private def symbolById(id: Long, pos: Position): Option[TrackSymbol[S]] = {
-    symbols.get(id).map(symbol => ImmutableTrackSymbol(id, pos, symbol))
+      .valuesIteratorFrom(from)
+      .map(_.flatMap(symbols.get))
+      .buffered
   }
 
 }

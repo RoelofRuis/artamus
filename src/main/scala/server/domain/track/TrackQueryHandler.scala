@@ -1,7 +1,8 @@
 package server.domain.track
 
 import javax.inject.Inject
-import music.primitives.MidiNoteNumber
+import music.playback.MidiNoteIterator
+import music.primitives.Position
 import music.symbol.{Chord, Note}
 import protocol.Query
 import pubsub.Dispatcher
@@ -11,33 +12,24 @@ private[server] class TrackQueryHandler @Inject() (
   state: TrackState
 ) {
 
-  import music.analysis.TwelveToneEqualTemprament._
-
-  dispatcher.subscribe[GetNotes.type]{ _ =>
+  dispatcher.subscribe[ReadNotes.type]{ _ =>
     state
-      .readState
-      .select[Note]
-      .all
+      .getEditable
+      .read[Note]()
+      .toSeq
   }
 
-  dispatcher.subscribe[GetChords.type]{ _ =>
+  dispatcher.subscribe[ReadChords.type]{ _ =>
     state
-      .readState
-      .select[Chord]
-      .all
+      .getEditable
+      .read[Chord]()
+      .toSeq
   }
 
-  dispatcher.subscribe[GetMidiPitches.type]{ _ =>
-    state
-      .readState
-      .select[Note]
-      .allGrouped.map {
-        _.flatMap { note =>
-          val pc = note.symbol.pitchClass
-          val oct = note.symbol.octave
-          Some(MidiNoteNumber(oct, pc).value)
-        }.toList
-    }.toList
+  dispatcher.subscribe[ReadMidiNotes.type]{ _ =>
+    new MidiNoteIterator(state.getEditable)
+      .iterate(Position.zero)
+      .toSeq
   }
 
 }

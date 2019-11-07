@@ -3,7 +3,7 @@ package music.analysis
 import music.analysis.Analysis.{Chords, Functions, Intervals}
 import music.primitives._
 
-object TwelveToneEqualTemprament {
+object TwelveToneTuning {
 
   implicit val tuning: TuningSystem = TuningSystem(Seq(0, 2, 4, 5, 7, 9, 11))
 

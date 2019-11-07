@@ -5,6 +5,7 @@ import music.primitives.Position
 import music.symbol.SymbolType
 
 import scala.reflect.{ClassTag, classTag}
+import scala.collection.BufferedIterator
 
 @Immutable
 private[collection] final case class ImmutableTrack (
@@ -13,32 +14,34 @@ private[collection] final case class ImmutableTrack (
 
   override def create[S <: SymbolType : ClassTag](symbol: (Position, S)): Track = createAll(Seq(symbol))
 
-  override def createAll[S <: SymbolType : ClassTag](symbols: Seq[(Position, S)]): Track = {
+  override def createAll[S <: SymbolType : ClassTag](symbols: IterableOnce[(Position, S)]): Track =
     ImmutableTrack(
       tracks.updated(
-        key,
-        symbols.foldLeft(selectRaw[S]) { case (track, (pos, sym)) => track.addSymbolAt(pos, sym) }
+          key,
+          symbols.iterator.foldLeft(readRaw[S]) { case (track, (pos, sym)) => track.createSymbolAt(pos, sym) }
       )
     )
-  }
 
   override def update[S <: SymbolType : ClassTag](symbol: TrackSymbol[S]): Track = updateAll(Seq(symbol))
 
-  override def updateAll[S <: SymbolType : ClassTag](symbols: Seq[TrackSymbol[S]]): Track = {
+  override def updateAll[S <: SymbolType : ClassTag](symbols: Seq[TrackSymbol[S]]): Track =
     ImmutableTrack(
       tracks.updated(
         key,
-        symbols.foldLeft(selectRaw[S]) { case (track, symbol) => track.updateSymbol(symbol) }
+        symbols.foldLeft(readRaw[S]) { case (track, symbol) => track.updateSymbol(symbol) }
       )
     )
-  }
 
-  override def select[S <: SymbolType : ClassTag]: SymbolSelection[S] = selectRaw[S].asInstanceOf[SymbolSelection[S]]
+  override def deleteAll[S <: SymbolType : ClassTag](): Track = ImmutableTrack(tracks.updated(key, SymbolTrack[S]))
 
-  private def selectRaw[S <: SymbolType : ClassTag]: SymbolTrack[S] = {
+  override def read[S <: SymbolType : ClassTag](pos: Position): BufferedIterator[TrackSymbol[S]] = readRaw[S].iterate(pos)
+
+  override def readGrouped[S <: SymbolType : ClassTag](pos: Position): BufferedIterator[Seq[TrackSymbol[S]]] = readRaw[S].iterateGrouped(pos)
+
+  private def readRaw[S <: SymbolType : ClassTag]: SymbolTrack[S] = {
     tracks.getOrElse(key, SymbolTrack[S]).asInstanceOf[SymbolTrack[S]]
   }
 
-  private def key[S <: SymbolType : ClassTag]: String = classTag[S].runtimeClass.getTypeName
+  private def key[S <: SymbolType : ClassTag]: String = classTag[S].runtimeClass.getCanonicalName
 
 }

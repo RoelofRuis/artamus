@@ -7,6 +7,8 @@ final case class Position(value: Rational) extends Ordered[Position] {
   override def compare(that: Position): Int = value compare that.value
 
   def -(that: Position): Duration = Duration(value - that.value)
+  def -(that: Duration): Position = Position(value - that.value)
+  def +(that: Duration): Position = Position(value + that.value)
 
 }
 

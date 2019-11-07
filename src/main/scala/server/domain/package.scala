@@ -6,11 +6,11 @@ import protocol.{Command, Event}
 
 package object domain {
 
+  case object Analyse extends Command
   case object Commit extends Command
-  case object Approve extends Command
-  case object Disapprove extends Command
+  case object Rollback extends Command
 
-  final case object ChangesCommitted extends Event
+  final case object AnalysisStarted extends Event
   final case class RenderingCompleted(file: File) extends Event
 
 }
