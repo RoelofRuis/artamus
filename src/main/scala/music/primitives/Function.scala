@@ -1,9 +1,11 @@
 package music.primitives
 
-final case class Function(pc: PitchClass, s: Step) extends Comparable[Function] {
-  override def compareTo(o: Function): Int = {
-    val stepCompare = s.value.compare(o.s.value)
+final case class Function(pc: PitchClass, step: Step) extends Ordered[Function] {
+
+  override def compare(that: Function): Int = {
+    val stepCompare = step.value.compare(that.step.value)
     if (stepCompare != 0) stepCompare
-    else pc.value.compare(o.pc.value)
+    else pc.value.compare(that.pc.value)
   }
+
 }
