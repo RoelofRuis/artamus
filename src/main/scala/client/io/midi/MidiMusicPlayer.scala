@@ -3,13 +3,10 @@ package client.io.midi
 import client.MusicPlayer
 import javax.inject.Inject
 import midi.out.SequenceWriter
-import music.symbol.Note
-import music.symbol.collection.TrackSymbol
+import music.playback.MidiNote
 
-private[midi] class MidiMusicPlayer @Inject() (
-  writer: SequenceWriter
-) extends MusicPlayer {
+private[midi] class MidiMusicPlayer @Inject() (writer: SequenceWriter) extends MusicPlayer {
 
-  override def play(notes: Seq[TrackSymbol[Note]]): Unit = writer.writeFromFormat(NoteFormat(notes))
+  override def play(notes: Seq[MidiNote]): Unit = writer.writeFromFormat(MidiNoteFormat(notes))
 
 }

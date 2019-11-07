@@ -1,11 +1,10 @@
 package client
 
-import music.symbol.Note
-import music.symbol.collection.TrackSymbol
+import music.playback.MidiNote
 
 trait MusicPlayer {
 
-  def play(notes: Seq[TrackSymbol[Note]]): Unit
+  def play(notes: Seq[MidiNote]): Unit
 
 }
 
