@@ -14,20 +14,20 @@ private[server] class TrackQueryHandler @Inject() (
 
   dispatcher.subscribe[ReadNotes.type]{ _ =>
     state
-      .readState
+      .getEditable
       .read[Note]()
       .toSeq
   }
 
   dispatcher.subscribe[ReadChords.type]{ _ =>
     state
-      .readState
+      .getEditable
       .read[Chord]()
       .toSeq
   }
 
   dispatcher.subscribe[ReadMidiNotes.type]{ _ =>
-    new MidiNoteIterator(state.readState)
+    new MidiNoteIterator(state.getEditable)
       .iterate(Position.zero)
       .toSeq
   }

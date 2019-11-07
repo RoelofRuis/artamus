@@ -10,19 +10,36 @@ import scala.reflect.ClassTag
 @ThreadSafe
 class TrackState() {
 
-  private val trackLock = new Object()
-  @GuardedBy("trackLock") var track: Track = Track.empty
+  // TODO: rethink this as a state machine and clean up
 
-  def newTrack(): Unit = trackLock.synchronized {
-    track = Track.empty
+  private val trackLock = new Object()
+  @GuardedBy("trackLock") private var stagedTrack: Track = Track.empty
+  @GuardedBy("trackLock") private var savepoint: Track = Track.empty
+  @GuardedBy("trackLock") private var editableTrack: Track = Track.empty
+
+  def clear(): Unit = trackLock.synchronized {
+    savepoint = Track.empty
+    rollback()
   }
 
   def createSymbol[S <: SymbolType: ClassTag](pos: Position, props: S): Unit = trackLock.synchronized {
-    track = track.createAll(Seq((pos, props)))
+    editableTrack = editableTrack.create(pos, props)
   }
 
-  def readState: Track = trackLock.synchronized {
-    track
+  def getEditable: Track = trackLock.synchronized { editableTrack }
+
+  def getStaged: Track = trackLock.synchronized { stagedTrack }
+
+  def stage(track: Track): Unit = trackLock.synchronized { stagedTrack = track }
+
+  def commit(): Unit = trackLock.synchronized {
+    savepoint = stagedTrack
+    editableTrack = stagedTrack
+  }
+
+  def rollback(): Unit = trackLock.synchronized {
+    editableTrack = savepoint
+    stagedTrack = savepoint
   }
 
 }

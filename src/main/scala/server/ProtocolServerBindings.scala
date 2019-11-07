@@ -3,7 +3,7 @@ package server
 import protocol.transport.server.ServerBindings
 import protocol._
 import pubsub.{Dispatcher, Subscriber}
-import server.domain.Commit
+import server.domain.Analyse
 
 import scala.util.{Failure, Success, Try}
 
@@ -15,7 +15,7 @@ final case class ProtocolServerBindings(
 
   def connectionAccepted(connectionId: String, callback: Any => Unit): Unit = {
     eventSubscriber.subscribe(connectionId, event => callback(EventResponse(event)))
-    Try { commandDispatcher.handle(Commit) } // TODO: remove hard coded first render when server acceptance logic is improved
+    Try { commandDispatcher.handle(Analyse) } // TODO: remove hard coded first render when server acceptance logic is improved
   }
 
   def connectionDropped(connectionId: String): Unit = {
