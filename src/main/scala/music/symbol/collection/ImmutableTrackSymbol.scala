@@ -1,6 +1,6 @@
 package music.symbol.collection
 
-import music.primitives.{Duration, Position, Window}
+import music.primitives.{Position, Window}
 import music.symbol.SymbolType
 
 private[collection] final case class ImmutableTrackSymbol[S <: SymbolType](
@@ -10,7 +10,6 @@ private[collection] final case class ImmutableTrackSymbol[S <: SymbolType](
 ) extends TrackSymbol[S] {
 
   def update(s: S): TrackSymbol[S] = this.copy(symbol = s)
-
-  def window: Window = Window.between(position, Position(position.value + symbol.getDuration.value))
+  def window: Window = Window(position, symbol.getDuration)
 
 }
