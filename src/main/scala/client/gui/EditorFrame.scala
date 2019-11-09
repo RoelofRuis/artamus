@@ -31,8 +31,8 @@ class EditorFrame extends Frame {
   object workspace extends BorderPanel {
     val image = new ImageIcon()
     val label = new Label()
-    label.icon=image
-    label.preferredSize = new Dimension(1000, 600)
+    label.icon = image
+    label.preferredSize = new Dimension(1200, 800)
     layout(label) = Position.Center
 
     background = MID_COLOR

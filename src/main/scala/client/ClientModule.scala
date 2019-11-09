@@ -21,11 +21,10 @@ class ClientModule extends ScalaPrivateModule with ClientConfig {
 
     bind[Dispatcher[Event]].toInstance(pubsub.createDispatcher[Event]())
 
-    bind[Bootstrapper].asEagerSingleton()
+    bind[CommandExecutor].asEagerSingleton()
 
     bind[Editor].asEagerSingleton()
-
-    expose[Bootstrapper]
+    expose[Editor]
   }
 
   @Provides @Singleton
