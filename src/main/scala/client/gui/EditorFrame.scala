@@ -7,7 +7,7 @@ import javax.swing.{ImageIcon, UIManager}
 
 import scala.swing.BorderPanel.Position
 import scala.swing.Swing._
-import scala.swing.{BorderPanel, Frame, Label, Menu, MenuBar, MenuItem, ScrollPane, TextArea, TextField}
+import scala.swing.{BorderPanel, BoxPanel, FlowPanel, Frame, Label, Menu, MenuBar, MenuItem, Orientation, ScrollPane, TextArea, TextField}
 
 class EditorFrame extends Frame {
   title = "Artamus"
@@ -36,19 +36,28 @@ class EditorFrame extends Frame {
     layout(label) = Position.Center
 
     background = MID_COLOR
-    border = CompoundBorder(EmptyBorder(6, 6, 3, 6), LineBorder(DARK_COLOR))
+    border = CompoundBorder(EmptyBorder(6, 6, 6, 6), LineBorder(DARK_COLOR))
   }
 
   object commandLine extends BorderPanel {
-    object input extends BorderPanel {
+    object input extends BoxPanel(Orientation.Horizontal) {
+      val commandLabel = new Label(">")
+      commandLabel.border = EmptyBorder(0, 3, 0, 3)
+
       val textField = new TextField()
       textField.font = FONT
-      textField.border = EmptyBorder
+      textField.border = LineBorder(DARK_COLOR)
       textField.background = LIGHT_COLOR
-      layout(textField) = Position.Center
+
+      val statusLabel = new Label("Unconnected")
+      statusLabel.border = EmptyBorder(0, 3, 0, 3)
+
+      contents += commandLabel
+      contents += textField
+      contents += statusLabel
 
       background = MID_COLOR
-      border = CompoundBorder(EmptyBorder(3, 6, 0, 6), LineBorder(DARK_COLOR))
+      border = EmptyBorder(0, 6, 1, 6)
     }
 
     object output extends ScrollPane {
