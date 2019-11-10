@@ -6,7 +6,7 @@ final case class Window(start: Position, duration: Duration) {
 
   def until(that: Window): Option[Window] = {
     val durationDiff = that.start - end
-    if (durationDiff == Duration.NONE) None
+    if (durationDiff == Duration.ZERO) None
     else Some(Window(end, durationDiff))
   }
 
@@ -23,6 +23,6 @@ final case class Window(start: Position, duration: Duration) {
 
 object Window {
 
-  def instantAt(pos: Position): Window = Window(pos, Duration.NONE)
+  def instantAt(pos: Position): Window = Window(pos, Duration.ZERO)
 
 }

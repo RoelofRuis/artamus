@@ -28,7 +28,7 @@ private[server] class TrackQueryHandler @Inject() (
 
   dispatcher.subscribe[ReadMidiNotes.type]{ _ =>
     new MidiNoteIterator(state.getEditable)
-      .iterate(Position.zero)
+      .iterate(Position.ZERO)
       .toSeq
   }
 
