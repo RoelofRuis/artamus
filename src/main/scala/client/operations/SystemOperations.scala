@@ -20,12 +20,8 @@ class SystemOperations @Inject() (
     List()
   })
 
-  registry.registerOperation(OperationToken("quit", "system"), () => {
-    println("Shutdown server? (y/n)")
-    scala.io.StdIn.readLine() match {
-      case "y" => List(Disconnect(true))
-      case _ => List(Disconnect(false))
-    }
+  registry.registerOperation(OperationToken("stop-server", "system"), () => {
+    List(Disconnect(true))
   })
 
 }
