@@ -25,10 +25,9 @@ class ChordIterator(track: Track) {
       case Some(nextChord) =>
         val writeableChords = {
           val written = for {
-            duration <- nextChord.symbol.duration
             spelling <- nextChord.symbol.rootSpelling
           } yield {
-             NoteValueConversion.from(duration) match {
+             NoteValueConversion.from(nextChord.window.duration) match {
               case Nil => Seq()
               case head :: Nil =>
                 ChordGlyph(head, spelling, nextChord.symbol.functions) :: Nil

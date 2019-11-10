@@ -1,7 +1,7 @@
 package music.symbol.collection
 
 import javax.annotation.concurrent.Immutable
-import music.primitives.Position
+import music.primitives.{Position, Window}
 import music.symbol.SymbolType
 
 import scala.reflect.{ClassTag, classTag}
@@ -12,9 +12,9 @@ private[collection] final case class ImmutableTrack (
   private val tracks: Map[String, SymbolTrack[_ <: SymbolType]]
 ) extends Track {
 
-  override def create[S <: SymbolType : ClassTag](symbol: (Position, S)): Track = createAll(Seq(symbol))
+  override def create[S <: SymbolType : ClassTag](symbol: (Window, S)): Track = createAll(Seq(symbol))
 
-  override def createAll[S <: SymbolType : ClassTag](symbols: IterableOnce[(Position, S)]): Track =
+  override def createAll[S <: SymbolType : ClassTag](symbols: IterableOnce[(Window, S)]): Track =
     ImmutableTrack(
       tracks.updated(
           key,

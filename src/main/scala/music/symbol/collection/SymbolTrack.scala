@@ -1,7 +1,7 @@
 package music.symbol.collection
 
 import javax.annotation.concurrent.Immutable
-import music.primitives.Position
+import music.primitives.{Position, Window}
 import music.symbol.SymbolType
 
 import scala.collection.immutable.SortedMap
@@ -14,10 +14,10 @@ private[collection] final case class SymbolTrack[S <: SymbolType] private (
   private val lastId: Long
 ) {
 
-  def createSymbolAt(pos: Position, symbol: S): SymbolTrack[S] = {
+  def createSymbolAt(window: Window, symbol: S): SymbolTrack[S] = {
     SymbolTrack(
-      positions.updated(pos, positions.getOrElse(pos, Seq()) :+ lastId),
-      symbols.updated(lastId, ImmutableTrackSymbol(lastId, pos, symbol)),
+      positions.updated(window.start, positions.getOrElse(window.start, Seq()) :+ lastId),
+      symbols.updated(lastId, ImmutableTrackSymbol(lastId, window, symbol)),
       lastId + 1
     )
   }

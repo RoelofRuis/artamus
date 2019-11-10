@@ -8,8 +8,8 @@ import scala.collection.BufferedIterator
 package object collection {
 
   trait Track {
-    def create[S <: SymbolType : ClassTag](symbol: (Position, S)): Track
-    def createAll[S <: SymbolType : ClassTag](symbols: IterableOnce[(Position, S)]): Track
+    def create[S <: SymbolType : ClassTag](symbol: (Window, S)): Track
+    def createAll[S <: SymbolType : ClassTag](symbols: IterableOnce[(Window, S)]): Track
     def update[S <: SymbolType : ClassTag](symbol: TrackSymbol[S]): Track
     def updateAll[S <: SymbolType : ClassTag](symbols: IterableOnce[TrackSymbol[S]]): Track
     def deleteAll[S <: SymbolType : ClassTag](): Track
@@ -23,10 +23,9 @@ package object collection {
 
   trait TrackSymbol[S <: SymbolType] {
     val id: Long
-    val position: Position
+    val window: Window
     val symbol: S
     def update(s: S): TrackSymbol[S]
-    def window: Window
   }
 
 }

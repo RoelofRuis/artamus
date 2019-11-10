@@ -12,10 +12,9 @@ class ChordAnalyser extends KnowledgeSource[Track] {
   override def execute(track: Track): Track = {
     val possibleChords = track.readGrouped[Note]().flatMap { notes =>
       val pitches = notes.map { note => note.symbol.pitchClass }
-      val dur = notes.map { note => note.symbol.duration }.max
-      val possibleChords = TwelveToneChordAnalysis.findChords(pitches).map(_.withDuration(dur))
+      val possibleChords = TwelveToneChordAnalysis.findChords(pitches)
 
-      if (possibleChords.nonEmpty) Some(notes.head.position, possibleChords.head) // TODO: determine best option instead of picking head
+      if (possibleChords.nonEmpty) Some(notes.head.window, possibleChords.head) // TODO: determine best option instead of picking head
       else None
     }
 

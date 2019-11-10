@@ -88,7 +88,7 @@ class TrackOperations @Inject() (
             .readMidiNoteNumbers(Simultaneous)
             .map { midiNoteNumber =>
               val (oct, pc) = (midiNoteNumber.toOct, midiNoteNumber.toPc)
-              CreateNoteSymbol(Position.apply(baseDuration, currentPos), Note(oct, pc, elementDuration))
+              CreateNoteSymbol(Window(Position.apply(baseDuration, currentPos), elementDuration), Note(oct, pc))
             }
           read(elements.tail, commands ++ newCommands, currentPos + 1)
         case Rest :: _ => read(elements.tail, commands, currentPos + 1)
