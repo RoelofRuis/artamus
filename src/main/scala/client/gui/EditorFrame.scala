@@ -16,7 +16,7 @@ class EditorFrame extends Frame {
 
   final val LIGHT_COLOR: Color = new Color(82, 82, 82)
   final val MID_COLOR: Color = new Color(65, 65, 65)
-  final val DARK_COLOR: Color = new Color(49, 49, 49)
+  final val DARK_COLOR: Color = new Color(29, 29, 29)
   final val ACCENT_COLOR: Color = new Color(202, 62, 71)
   final val FONT = new Font(Font.MONOSPACED, Font.PLAIN, 13)
 
@@ -35,13 +35,14 @@ class EditorFrame extends Frame {
     label.preferredSize = new Dimension(1200, 800)
     layout(label) = Position.Center
 
-    background = MID_COLOR
-    border = CompoundBorder(EmptyBorder(6, 6, 6, 6), LineBorder(DARK_COLOR))
+    background = LIGHT_COLOR
+    border = CompoundBorder(MatteBorder(6, 6, 6, 6, MID_COLOR), LineBorder(DARK_COLOR))
   }
 
   object commandLine extends BorderPanel {
     object input extends BoxPanel(Orientation.Horizontal) {
       val commandLabel = new Label(">")
+      commandLabel.foreground = DARK_COLOR
       commandLabel.border = EmptyBorder(0, 3, 0, 3)
 
       val textField = new TextField()
@@ -50,6 +51,7 @@ class EditorFrame extends Frame {
       textField.background = LIGHT_COLOR
 
       val statusLabel = new Label("Unconnected")
+      statusLabel.foreground = DARK_COLOR
       statusLabel.border = EmptyBorder(0, 3, 0, 3)
 
       contents += commandLabel
@@ -57,7 +59,7 @@ class EditorFrame extends Frame {
       contents += statusLabel
 
       background = MID_COLOR
-      border = EmptyBorder(0, 6, 1, 6)
+      border = EmptyBorder(0, 6, 6, 6)
     }
 
     object output extends ScrollPane {
