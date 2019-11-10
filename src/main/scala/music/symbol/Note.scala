@@ -9,8 +9,6 @@ final case class Note(
   scientificPitch: Option[ScientificPitch]
 ) extends SymbolType {
 
-  override def getDuration: Duration = duration
-
   def withScientificPitch(pitch: ScientificPitch): Note = this.copy(scientificPitch = Some(pitch))
 
 }

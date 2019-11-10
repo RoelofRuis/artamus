@@ -10,7 +10,7 @@ package object track {
 
   // Commands
   case object NewTrack extends Command
-  case class CreateNoteSymbol(position: Position, symbol: Note) extends Command
+  case class CreateNoteSymbol(window: Window, symbol: Note) extends Command
   case class CreateKeySymbol(position: Position, symbol: Key) extends Command
   case class CreateTimeSignatureSymbol(position: Position, symbol: TimeSignature) extends Command
 
