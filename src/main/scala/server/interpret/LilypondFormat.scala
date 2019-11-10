@@ -24,6 +24,8 @@ object LilypondFormat {
     case g: RestGlyph => g.toLilypond
     case n: NoteGroupGlyph => n.toLilypond
     case c: ChordGlyph => c.toLilypond
+    case ts: TimeSignatureGlyph => ts.toLilypond
+    case k: KeyGlyph => k.toLilypond
     case _ => ""
   }
 
