@@ -1,11 +1,10 @@
 package music.symbol
 
-import music.primitives.{Duration, Octave, PitchClass, ScientificPitch}
+import music.primitives.{Octave, PitchClass, ScientificPitch}
 
 final case class Note(
   octave: Octave,
   pitchClass: PitchClass,
-  duration: Duration,
   scientificPitch: Option[ScientificPitch]
 ) extends SymbolType {
 
@@ -18,7 +17,6 @@ object Note {
   def apply(
     octave: Octave,
     pitchClass: PitchClass,
-    duration: Duration
-  ): Note = Note(octave, pitchClass, duration, None)
+  ): Note = Note(octave, pitchClass, None)
 
 }
