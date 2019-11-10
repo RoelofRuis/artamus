@@ -1,38 +1,41 @@
 package client.gui
 
+import java.awt.event.{WindowAdapter, WindowEvent}
+
 import client.CommandExecutor
-import javax.imageio.ImageIO
 import javax.inject.Inject
 import protocol.Event
 import pubsub.Dispatcher
-import server.domain.RenderingCompleted
 
-import scala.swing.event.{Key, KeyTyped}
-import scala.util.{Success, Try}
+import scala.swing.Swing
 
-// TODO: proper GUI threading
 class Editor @Inject() (
   executor: CommandExecutor,
   dispatcher: Dispatcher[Event]
-) {
+) extends Thread {
 
-  private val frame = new EditorFrame
-
-  frame.commandLine.input.textField.keys.reactions += {
-    case KeyTyped(_, '\n', _, Key.Location.Unknown) =>
-      val command = frame.commandLine.input.textField.text
-      executor.execute(command)
-  }
-
-  dispatcher.subscribe[RenderingCompleted]{ event =>
-    Try { ImageIO.read(event.file) } match {
-      case Success(loadedImage) =>
-        frame.workspace.image.setImage(loadedImage)
-        frame.repaint()
-      case _ =>
+  override def run(): Unit = {
+    val frameLock = new Object
+    Swing.onEDT {
+      val frame = new EditorLogic(executor, dispatcher)
+      frame.peer.setDefaultCloseOperation(javax.swing.WindowConstants.HIDE_ON_CLOSE)
+      frame.peer.addWindowListener(new WindowAdapter {
+        override def windowClosing(e: WindowEvent): Unit = {
+          frameLock.synchronized {
+            frameLock.notifyAll()
+            frame.dispose()
+          }
+        }
+      })
+    }
+    frameLock.synchronized {
+      try {
+        frameLock.wait()
+      } catch {
+        case ex: InterruptedException => ex.printStackTrace()
+      } finally {
+        executor.exit()
+      }
     }
   }
-
-  def getThread: FrameThread = new FrameThread(frame, () => {frame.dispose(); executor.exit()})
-
 }

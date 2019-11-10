@@ -7,7 +7,7 @@ import javax.swing.{ImageIcon, UIManager}
 
 import scala.swing.BorderPanel.Position
 import scala.swing.Swing._
-import scala.swing.{BorderPanel, BoxPanel, FlowPanel, Frame, Label, Menu, MenuBar, MenuItem, Orientation, ScrollPane, TextArea, TextField}
+import scala.swing.{BorderPanel, BoxPanel, Frame, Label, Menu, MenuBar, MenuItem, Orientation, ScrollPane, TextArea, TextField}
 
 class EditorFrame extends Frame {
   title = "Artamus"

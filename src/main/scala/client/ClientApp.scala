@@ -11,7 +11,7 @@ object ClientApp extends App {
 
   import net.codingwell.scalaguice.InjectorExtensions._
 
-  val editorThread = injector.instance[Editor].getThread
+  val editorThread = injector.instance[Editor]
   editorThread.start()
   editorThread.join()
 
