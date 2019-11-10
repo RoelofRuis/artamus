@@ -35,7 +35,7 @@ class TrackOperations @Inject() (
     val division = reader.readTimeSignatureDivision
 
     List(
-      CreateTimeSignatureSymbol(Position.zero, TimeSignature(division)),
+      CreateTimeSignatureSymbol(Position.ZERO, TimeSignature(division)),
       Analyse
     )
   })
@@ -52,7 +52,7 @@ class TrackOperations @Inject() (
     }
 
     List(
-      CreateKeySymbol(Position.zero, Key(root, keyType)),
+      CreateKeySymbol(Position.ZERO, Key(root, keyType)),
       Analyse
     )
   })

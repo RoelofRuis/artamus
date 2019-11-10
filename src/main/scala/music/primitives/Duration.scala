@@ -11,13 +11,10 @@ final case class Duration private (value: Rational) extends Comparable[Duration]
 object Duration {
 
   def apply(r: Rational): Duration = {
-    if (r < Rational(0)) NONE
+    if (r < Rational(0)) ZERO
     else new Duration(r)
   }
 
-  lazy val NONE: Duration = Duration(Rational(0))
-
-  lazy val QUARTER = Duration(Rational(1, 4))
-  lazy val WHOLE = Duration(Rational(1))
+  lazy val ZERO: Duration = Duration(Rational(0))
 
 }

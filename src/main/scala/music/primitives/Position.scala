@@ -14,7 +14,7 @@ final case class Position(value: Rational) extends Ordered[Position] {
 
 object Position {
 
-  lazy val zero: Position = Position(Rational(0))
+  lazy val ZERO: Position = Position(Rational(0))
 
   def apply(duration: Duration, offset: Int): Position = Position(duration.value * offset)
 
