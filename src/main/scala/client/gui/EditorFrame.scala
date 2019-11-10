@@ -48,6 +48,7 @@ class EditorFrame extends Frame {
       val textField = new TextField()
       textField.font = FONT
       textField.border = LineBorder(DARK_COLOR)
+      textField.foreground = DARK_COLOR
       textField.background = LIGHT_COLOR
 
       val statusLabel = new Label("Unconnected")
@@ -65,6 +66,7 @@ class EditorFrame extends Frame {
     object output extends ScrollPane {
       val textArea = new TextArea(6, 0)
       textArea.font = FONT
+      textArea.foreground = DARK_COLOR
       textArea.background = LIGHT_COLOR
       textArea.editable = false
       contents = textArea
