@@ -24,6 +24,8 @@ object LilypondFormat {
     case g: RestGlyph => g.toLilypond
     case n: NoteGroupGlyph => n.toLilypond
     case c: ChordGlyph => c.toLilypond
+    case ts: TimeSignatureGlyph => ts.toLilypond
+    case k: KeyGlyph => k.toLilypond
     case _ => ""
   }
 
@@ -102,12 +104,12 @@ object LilypondFormat {
     s"${dur.base.d}" + ("." * dur.dots)
   }
 
-  implicit val timeSignatureToLilypond: LilypondFormat[TimeSignature] = timeSignature => {
+  implicit val timeSignatureToLilypond: LilypondFormat[TimeSignatureGlyph] = timeSignature => {
     val division = timeSignature.division
     s"\\time ${division.num}/${division.denom}"
   }
 
-  implicit val keyToLilypond: LilypondFormat[Key] = key => {
+  implicit val keyToLilypond: LilypondFormat[KeyGlyph] = key => {
     // TODO: implement http://lilypond.org/doc/v2.18/Documentation/notation/displaying-pitches#key-signature
     val mode = key.scale match {
       case Scale.MAJOR => "\\major"
