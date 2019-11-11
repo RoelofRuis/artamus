@@ -9,6 +9,13 @@ import scala.swing.BorderPanel.Position
 import scala.swing.Swing._
 import scala.swing.{BorderPanel, BoxPanel, Frame, Label, Menu, MenuBar, MenuItem, Orientation, ScrollPane, TextArea, TextField}
 
+/*
+ * TODO: make borderless and draggable
+ * https://tips4java.wordpress.com/2009/06/14/moving-windows/
+ *
+ * TODO: Look into internal frame
+ * https://docs.oracle.com/javase/tutorial/uiswing/components/internalframe.html
+ */
 class EditorFrame extends Frame {
   title = "Artamus"
 
