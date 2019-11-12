@@ -9,7 +9,8 @@ import scala.collection.BufferedIterator
 
 @Immutable
 private[collection] final case class ImmutableTrack (
-  private val tracks: Map[String, SymbolTrack[_]]
+  private val tracks: Map[String, SymbolTrack[_]],
+  id: Long
 ) extends Track {
 
   override def create[S <: SymbolType : ClassTag](symbol: (Window, S)): Track = createAll(Seq(symbol))
@@ -19,7 +20,8 @@ private[collection] final case class ImmutableTrack (
       tracks.updated(
           key,
           symbols.iterator.foldLeft(readRaw[S]) { case (track, (pos, sym)) => track.createSymbolAt(pos, sym) }
-      )
+      ),
+      id
     )
 
   override def update[S <: SymbolType : ClassTag](symbol: TrackSymbol[S]): Track = updateAll(Seq(symbol))
@@ -29,10 +31,20 @@ private[collection] final case class ImmutableTrack (
       tracks.updated(
         key,
         symbols.iterator.foldLeft(readRaw[S]) { case (track, symbol) => track.updateSymbol(symbol.id, symbol.symbol) }
-      )
+      ),
+      id
     )
 
-  override def deleteAll[S <: SymbolType : ClassTag](): Track = ImmutableTrack(tracks.updated(key, SymbolTrack[S]))
+  override def delete[S <: SymbolType : ClassTag](symbol: TrackSymbol[S]): Track =
+    ImmutableTrack(
+      tracks.updated(
+        key,
+        readRaw[S].deleteSymbol(symbol.id)
+      ),
+      id
+    )
+
+  override def deleteAll[S <: SymbolType : ClassTag](): Track = ImmutableTrack(tracks.updated(key, SymbolTrack[S]), id)
 
   override def read[S <: SymbolType : ClassTag](pos: Position): BufferedIterator[TrackSymbol[S]] = readRaw[S].iterate(pos)
 

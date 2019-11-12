@@ -11,6 +11,7 @@ import scala.reflect.ClassTag
 class TrackState() {
 
   // TODO: rethink this as a state machine and clean up
+  // TrackState should only reference track ID
 
   private val trackLock = new Object()
   @GuardedBy("trackLock") private var stagedTrack: Track = Track.empty
