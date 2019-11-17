@@ -1,8 +1,8 @@
 package server.domain.track
 
 import javax.annotation.concurrent.{GuardedBy, ThreadSafe}
-import music.math.temporal.Window
-import music.symbol.SymbolType
+import music.math.temporal.{Position, Window}
+import music.symbol.{SymbolType, TimeSignature}
 import music.symbol.collection.Track
 
 import scala.reflect.ClassTag
@@ -21,6 +21,11 @@ class TrackState() {
   def clear(): Unit = trackLock.synchronized {
     savepoint = Track.empty
     rollback()
+  }
+
+  // TODO: try to pull editable functions out as (Track => Track)
+  def createTimeSignature(position: Position, ts: TimeSignature): Unit = trackLock.synchronized {
+    editableTrack = editableTrack.writeTimeSignature(position, ts)
   }
 
   def createSymbol[S <: SymbolType: ClassTag](window: Window, props: S): Unit = trackLock.synchronized {

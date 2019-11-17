@@ -4,13 +4,10 @@ import music.analysis.NoteValueConversion
 import music.glyph
 import music.glyph.{ChordGlyph, Glyph, RestGlyph}
 import music.math.temporal.{Position, Window}
-import music.primitives._
 import music.symbol.Chord
 import music.symbol.collection.Track
 
 class ChordIterator(track: Track) {
-
-  import music.analysis.BarAnalysis._
 
   private val chords = track.read[Chord]()
 
@@ -43,7 +40,8 @@ class ChordIterator(track: Track) {
           case None => Iterator.empty
           case Some(diff) =>
             track
-              .fitToBars(diff)
+              .bars
+              .fit(diff)
               .flatMap(window => NoteValueConversion.from(window.duration))
               .map(glyph.RestGlyph(_, silent=true))
               .iterator

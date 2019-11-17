@@ -3,7 +3,6 @@ package server.domain
 import music.math.temporal.{Position, Window}
 import music.playback.MidiNote
 import music.symbol.collection.TrackSymbol
-import music.primitives._
 import music.symbol.{Chord, Key, Note, TimeSignature}
 import protocol.{Command, Query}
 

@@ -23,7 +23,7 @@ private[server] class TrackCommandHandler @Inject() (
   }
 
   dispatcher.subscribe[CreateTimeSignatureSymbol]{ command =>
-    state.createSymbol(Window.instantAt(command.position), command.symbol)
+    state.createTimeSignature(command.position, command.symbol)
     true
   }
 
