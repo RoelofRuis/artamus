@@ -18,17 +18,17 @@ private[server] class TrackCommandHandler @Inject() (
   }
 
   dispatcher.subscribe[CreateNoteSymbol]{ command =>
-    state.createSymbol(command.window, command.symbol)
+    state.edit(_.create(command.window, command.symbol))
     true
   }
 
   dispatcher.subscribe[CreateTimeSignatureSymbol]{ command =>
-    state.createTimeSignature(command.position, command.symbol)
+    state.edit(_.writeTimeSignature(command.position, command.ts))
     true
   }
 
   dispatcher.subscribe[CreateKeySymbol]{ command =>
-    state.createSymbol(Window.instantAt(command.position), command.symbol)
+    state.edit(_.create(Window.instantAt(command.position), command.symbol))
     true
   }
 
