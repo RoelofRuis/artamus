@@ -2,7 +2,15 @@ package music.math
 
 import scala.annotation.tailrec
 
-case class Rational private (n: Int, d: Int) extends Ordered[Rational] {
+/**
+  * Models a rational numbers that can be used to express exact fractional calculations.
+  *
+  * @see https://en.wikipedia.org/wiki/rational_number
+  *
+  * @param n The numerator
+  * @param d The denominator
+  */
+final case class Rational private (n: Int, d: Int) extends Ordered[Rational] {
   def *(a: Int): Rational = Rational.apply(a * n, d)
   def *(that: Rational): Rational = Rational.apply(n * that.n, d * that.d)
 

@@ -1,6 +1,7 @@
 package music.playback
 
-import music.primitives.{MidiNoteNumber, Position, Loudness}
+import music.math.temporal.Position
+import music.primitives.{Loudness, MidiNoteNumber}
 import music.symbol.Note
 import music.symbol.collection.Track
 

@@ -3,28 +3,28 @@ package music.glyph.iteration
 import music.analysis.NoteValueConversion
 import music.glyph
 import music.glyph._
+import music.math.temporal.{Position, Window}
 import music.primitives._
 import music.symbol.collection.Track
-import music.symbol.{Key, Note, TimeSignature}
+import music.symbol.{Key, Note}
 
 class StaffIterator(track: Track) {
 
-  import music.analysis.BarAnalysis._
   import music.analysis.TwelveToneTuning._
 
-  private val timeSignatures = track.read[TimeSignature]()
   private val keys = track.read[Key]()
   private val notes = track.readGrouped[Note]()
 
-  case class Context(timeSignature: TimeSignature, key: Key)
-
   def iterate(start: Position): Iterator[Glyph] = {
     val window = Window.instantAt(start)
-    val context = initialContext(window)
+    val initialKey = keys
+      .headOption
+      .map(_.symbol)
+      .getOrElse(Key(PitchSpelling(Step(0), Accidental(0)), Scale.MAJOR))
 
     val initialElements = Iterator( // TODO: these should probably come from their own iterator
-      TimeSignatureGlyph(context.timeSignature.division),
-      KeyGlyph(context.key.root, context.key.scale)
+      TimeSignatureGlyph(track.bars.initialTimeSignature.division),
+      KeyGlyph(initialKey.root, initialKey.scale)
     )
 
     initialElements ++ read(window)
@@ -34,7 +34,7 @@ class StaffIterator(track: Track) {
     notes.nextOption() match {
       case None =>
         NoteValueConversion
-          .from(track.fillBarFrom(window).duration)
+          .from(track.bars.fillBarFrom(window).duration)
           .map(RestGlyph(_, silent=false))
           .iterator
 
@@ -47,7 +47,8 @@ class StaffIterator(track: Track) {
           case None => Iterator.empty
           case Some(diff) =>
             track
-              .fitToBars(diff)
+              .bars
+              .fit(diff)
               .flatMap(window => NoteValueConversion.from(window.duration))
               .map(glyph.RestGlyph(_, silent=false))
               .iterator
@@ -57,7 +58,8 @@ class StaffIterator(track: Track) {
         val pitches = nextNotes.map(_.symbol).flatMap(_.scientificPitch)
         val fittedDurations =
           track
-            .fitToBars(nextWindow)
+            .bars
+            .fit(nextWindow)
             .flatMap(window => NoteValueConversion.from(window.duration))
 
         val lilyStrings = fittedDurations
@@ -68,20 +70,6 @@ class StaffIterator(track: Track) {
         if (lilyStrings.isEmpty) rests ++ read(nextWindow)
         else rests ++ lilyStrings ++ read(nextWindow)
     }
-  }
-
-  private def initialContext(window: Window): Context = {
-    val initialTimeSignature = timeSignatures
-      .headOption
-      .map(_.symbol)
-      .getOrElse(TimeSignature(TimeSignatureDivision.`4/4`))
-
-    val initialKey = keys
-      .headOption
-      .map(_.symbol)
-      .getOrElse(Key(PitchSpelling(Step(0), Accidental(0)), Scale.MAJOR))
-
-    Context(initialTimeSignature, initialKey)
   }
 
 }

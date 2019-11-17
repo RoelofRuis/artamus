@@ -1,6 +1,6 @@
 package music.symbol.collection
 
-import music.primitives.Window
+import music.math.temporal.Window
 import music.symbol.SymbolType
 
 private[collection] final case class ImmutableTrackSymbol[S <: SymbolType](

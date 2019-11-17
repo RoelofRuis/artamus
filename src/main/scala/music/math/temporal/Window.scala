@@ -1,5 +1,12 @@
-package music.primitives
+package music.math.temporal
 
+/**
+  * A time window expressed by a position with a duration. The duration might be zero, expressing an instantaneous
+  * moment.
+  *
+  * @param start The window start position.
+  * @param duration The duration.
+  */
 final case class Window(start: Position, duration: Duration) {
 
   def end: Position = start + duration

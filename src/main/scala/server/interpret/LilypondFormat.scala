@@ -3,7 +3,6 @@ package server.interpret
 import music.analysis.TwelveToneTuning.TwelveToneFunctions
 import music.glyph._
 import music.primitives._
-import music.symbol.{Key, TimeSignature}
 
 import scala.annotation.tailrec
 import scala.collection.SortedSet
