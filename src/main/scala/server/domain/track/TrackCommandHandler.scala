@@ -1,7 +1,7 @@
 package server.domain.track
 
 import javax.inject.Inject
-import music.primitives.Window
+import music.math.temporal.Window
 import protocol.Command
 import pubsub.Dispatcher
 

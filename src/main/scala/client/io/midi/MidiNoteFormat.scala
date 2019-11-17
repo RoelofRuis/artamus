@@ -12,8 +12,8 @@ private[midi] case class MidiNoteFormat(symbols: Seq[MidiNote]) extends Sequence
     symbols.foreach { midiNote =>
       builder.addNote(
         midiNote.noteNumber.value,
-        (midiNote.window.start.value * TICKS_PER_WHOLE).n,
-        (midiNote.window.duration.value * TICKS_PER_WHOLE).n,
+        (midiNote.window.start * TICKS_PER_WHOLE).v.n,
+        (midiNote.window.duration * TICKS_PER_WHOLE).v.n,
         midiNote.loudness.value
       )
     }

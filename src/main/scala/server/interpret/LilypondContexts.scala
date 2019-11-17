@@ -1,7 +1,7 @@
 package server.interpret
 
 import music.glyph.iteration.{ChordIterator, StaffIterator}
-import music.primitives.Position
+import music.math.temporal.Position
 import music.symbol.collection.Track
 
 object LilypondContexts {

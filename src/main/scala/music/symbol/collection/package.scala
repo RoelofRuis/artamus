@@ -1,6 +1,6 @@
 package music.symbol
 
-import music.primitives.{Position, Window}
+import music.math.temporal.{Position, Window}
 
 import scala.reflect.ClassTag
 import scala.collection.BufferedIterator

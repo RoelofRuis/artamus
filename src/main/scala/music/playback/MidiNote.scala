@@ -1,6 +1,7 @@
 package music.playback
 
-import music.primitives.{MidiNoteNumber, Loudness, Window}
+import music.math.temporal.Window
+import music.primitives.{Loudness, MidiNoteNumber}
 
 final case class MidiNote(
   noteNumber: MidiNoteNumber,

@@ -1,7 +1,7 @@
 package music.analysis
 
-import music.math.Rational
-import music.primitives.{Duration, Position, TimeSignatureDivision, Window}
+import music.math.temporal.{Duration, Position, Window}
+import music.primitives.TimeSignatureDivision
 import music.symbol.TimeSignature
 import music.symbol.collection.Track
 
@@ -37,7 +37,7 @@ object BarAnalysis {
     }
 
     private def getBarWindow(bar: BarNumber): Window = Window(
-      Position(ts.division.barDuration.value * bar),
+      Position.at(ts.division.barDuration * bar),
       ts.division.barDuration
     )
 
@@ -45,13 +45,13 @@ object BarAnalysis {
       @tailrec
       def loopExclusive(pos: Position, dur: Duration, acc: Int): Int = {
         val newPos = pos - dur
-        if (newPos.value < Rational(0)) acc
+        if (newPos < Position.ZERO) acc
         else loopExclusive(newPos, dur, acc + 1)
       }
       @tailrec
       def loopInclusive(pos: Position, dur: Duration, acc: Int): Int = {
         val newPos = pos - dur
-        if (newPos.value <= Rational(0)) acc
+        if (newPos <= Position.ZERO) acc
         else loopInclusive(newPos, dur, acc + 1)
       }
       if (inclusive) loopInclusive(pos, dur, acc = 0) else loopExclusive(pos, dur, acc = 0)

@@ -3,6 +3,7 @@ package music.glyph.iteration
 import music.analysis.NoteValueConversion
 import music.glyph
 import music.glyph.{ChordGlyph, Glyph, RestGlyph}
+import music.math.temporal.{Position, Window}
 import music.primitives._
 import music.symbol.Chord
 import music.symbol.collection.Track

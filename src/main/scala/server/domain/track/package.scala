@@ -1,5 +1,6 @@
 package server.domain
 
+import music.math.temporal.{Position, Window}
 import music.playback.MidiNote
 import music.symbol.collection.TrackSymbol
 import music.primitives._

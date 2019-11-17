@@ -1,7 +1,7 @@
 package music.symbol.collection
 
 import javax.annotation.concurrent.Immutable
-import music.primitives.{Position, Window}
+import music.math.temporal.{Position, Window}
 import music.symbol.SymbolType
 
 import scala.reflect.{ClassTag, classTag}
