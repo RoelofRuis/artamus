@@ -2,11 +2,12 @@ package music.primitives
 
 import music.math
 import music.math.Rational
+import music.math.temporal.Duration
 
 final case class TimeSignatureDivision private (num: Int, denom: Int) {
 
   def beatDuration: Duration = Duration(Rational.reciprocal(denom))
-  def barDuration: Duration = Duration(beatDuration.value * num)
+  def barDuration: Duration = beatDuration * num
 
 }
 

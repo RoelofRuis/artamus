@@ -1,11 +1,7 @@
 package server.domain.track
 
 import javax.annotation.concurrent.{GuardedBy, ThreadSafe}
-import music.primitives.Window
-import music.symbol.SymbolType
 import music.symbol.collection.Track
-
-import scala.reflect.ClassTag
 
 @ThreadSafe
 class TrackState() {
@@ -23,13 +19,11 @@ class TrackState() {
     rollback()
   }
 
-  def createSymbol[S <: SymbolType: ClassTag](window: Window, props: S): Unit = trackLock.synchronized {
-    editableTrack = editableTrack.create(window, props)
+  def edit(editFunc: Track => Track): Unit = trackLock.synchronized {
+    editableTrack = editFunc(editableTrack)
   }
 
   def getEditable: Track = trackLock.synchronized { editableTrack }
-
-  def getStaged: Track = trackLock.synchronized { stagedTrack }
 
   def stage(track: Track): Unit = trackLock.synchronized { stagedTrack = track }
 

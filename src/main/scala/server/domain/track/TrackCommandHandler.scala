@@ -1,7 +1,7 @@
 package server.domain.track
 
 import javax.inject.Inject
-import music.primitives.Window
+import music.math.temporal.Window
 import protocol.Command
 import pubsub.Dispatcher
 
@@ -18,17 +18,17 @@ private[server] class TrackCommandHandler @Inject() (
   }
 
   dispatcher.subscribe[CreateNoteSymbol]{ command =>
-    state.createSymbol(command.window, command.symbol)
+    state.edit(_.create(command.window, command.symbol))
     true
   }
 
   dispatcher.subscribe[CreateTimeSignatureSymbol]{ command =>
-    state.createSymbol(Window.instantAt(command.position), command.symbol)
+    state.edit(_.writeTimeSignature(command.position, command.ts))
     true
   }
 
   dispatcher.subscribe[CreateKeySymbol]{ command =>
-    state.createSymbol(Window.instantAt(command.position), command.symbol)
+    state.edit(_.create(Window.instantAt(command.position), command.symbol))
     true
   }
 

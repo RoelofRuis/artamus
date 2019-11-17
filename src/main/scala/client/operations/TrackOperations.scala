@@ -5,11 +5,12 @@ import client.MusicReader.{NoteOn, Simultaneous}
 import client.io.StdIOTools
 import com.google.inject.Inject
 import music.math.Rational
+import music.math.temporal.{Duration, Position, Window}
 import music.primitives._
 import music.symbol.{Key, Note, TimeSignature}
 import protocol.Command
-import server.domain.{Analyse, Commit, Rollback}
 import server.domain.track._
+import server.domain.{Analyse, Commit, Rollback}
 
 import scala.annotation.tailrec
 
@@ -82,13 +83,13 @@ class TrackOperations @Inject() (
       elements match {
         case Nil => commands
         case Onset :: tail =>
-          val elementDuration = Duration(baseDuration.value * (1 + tail.takeWhile(_ == Continued).size))
+          val elementDuration = baseDuration * (1 + tail.takeWhile(_ == Continued).size)
           tail.dropWhile(_ == Continued)
           val newCommands = reader
             .readMidiNoteNumbers(Simultaneous)
             .map { midiNoteNumber =>
               val (oct, pc) = (midiNoteNumber.toOct, midiNoteNumber.toPc)
-              CreateNoteSymbol(Window(Position.apply(baseDuration, currentPos), elementDuration), Note(oct, pc))
+              CreateNoteSymbol(Window(Position.at(baseDuration * currentPos), elementDuration), Note(oct, pc))
             }
           read(elements.tail, commands ++ newCommands, currentPos + 1)
         case Rest :: _ => read(elements.tail, commands, currentPos + 1)
