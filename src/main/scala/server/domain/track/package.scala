@@ -1,9 +1,9 @@
 package server.domain
 
-import music.domain.track.TrackSymbol2
+import music.domain.track.{TimeSignature, TrackSymbol2}
 import music.math.temporal.{Position, Window}
 import music.playback.MidiNote
-import music.symbol.{Chord, Key, Note, TimeSignature}
+import music.domain.track.symbol.{Chord, Key, Note}
 import protocol.{Command, Query}
 
 package object track {

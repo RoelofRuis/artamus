@@ -3,7 +3,7 @@ package server.domain.track
 import javax.inject.Inject
 import music.math.temporal.Position
 import music.playback.MidiNoteIterator
-import music.symbol.{Chord, Note}
+import music.domain.track.symbol.{Chord, Note}
 import protocol.Query
 import pubsub.Dispatcher
 

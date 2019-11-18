@@ -1,7 +1,7 @@
 package music.analysis
 
 import music.primitives._
-import music.symbol.Chord
+import music.domain.track.symbol.Chord
 
 import scala.collection.immutable.SortedSet
 

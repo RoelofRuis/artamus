@@ -1,7 +1,7 @@
 package server.analysis
 
 import music.domain.track.Track2
-import music.symbol.Note
+import music.domain.track.symbol.Note
 import server.analysis.blackboard.KnowledgeSource
 
 import scala.collection.immutable.SortedMap

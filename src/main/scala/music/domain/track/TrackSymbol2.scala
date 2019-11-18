@@ -1,7 +1,7 @@
 package music.domain.track
 
 import music.math.temporal.Window
-import music.symbol.SymbolType
+import music.domain.track.symbol.SymbolType
 
 trait TrackSymbol2[S <: SymbolType] {
   val id: Long

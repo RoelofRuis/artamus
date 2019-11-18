@@ -1,4 +1,4 @@
-package music.symbol
+package music.domain.track
 
 import music.math.temporal.{Duration, Position, Window}
 import music.primitives.TimeSignatureDivision

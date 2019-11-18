@@ -2,7 +2,7 @@ package server.analysis
 
 import music.analysis.TwelveTonePitchSpelling
 import music.domain.track.Track2
-import music.symbol.{Chord, Key, Note}
+import music.domain.track.symbol.{Chord, Key, Note}
 import server.analysis.blackboard.KnowledgeSource
 
 class PitchSpellingAnalyser extends KnowledgeSource[Track2] {

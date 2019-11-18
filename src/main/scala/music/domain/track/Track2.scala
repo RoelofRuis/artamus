@@ -2,7 +2,7 @@ package music.domain.track
 
 import music.domain.track.Track2.TrackId
 import music.math.temporal.{Position, Window}
-import music.symbol.{Bars, SymbolType, TimeSignature}
+import music.domain.track.symbol.SymbolType
 
 import scala.collection.BufferedIterator
 import scala.collection.immutable.SortedMap

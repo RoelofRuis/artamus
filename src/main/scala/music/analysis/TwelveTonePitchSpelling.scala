@@ -2,7 +2,7 @@ package music.analysis
 
 import music.domain.track.TrackSymbol2
 import music.primitives._
-import music.symbol.{Chord, Key, Note}
+import music.domain.track.symbol.{Chord, Key, Note}
 
 object TwelveTonePitchSpelling {
 

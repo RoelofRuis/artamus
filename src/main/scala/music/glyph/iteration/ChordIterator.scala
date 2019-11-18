@@ -5,7 +5,7 @@ import music.domain.track.Track2
 import music.glyph
 import music.glyph.{ChordGlyph, Glyph, RestGlyph}
 import music.math.temporal.{Position, Window}
-import music.symbol.Chord
+import music.domain.track.symbol.Chord
 
 class ChordIterator(track: Track2) {
 

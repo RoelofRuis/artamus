@@ -2,7 +2,7 @@ package server.analysis
 
 import music.analysis.TwelveToneChordAnalysis
 import music.domain.track.Track2
-import music.symbol.{Chord, Note}
+import music.domain.track.symbol.{Chord, Note}
 import server.analysis.blackboard.KnowledgeSource
 
 class ChordAnalyser extends KnowledgeSource[Track2] {

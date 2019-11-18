@@ -6,7 +6,7 @@ import music.glyph
 import music.glyph._
 import music.math.temporal.{Position, Window}
 import music.primitives._
-import music.symbol.{Key, Note}
+import music.domain.track.symbol.{Key, Note}
 
 class StaffIterator(track: Track2) {
 
