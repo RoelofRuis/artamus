@@ -1,8 +1,8 @@
 package server.domain
 
+import music.domain.track.TrackSymbol2
 import music.math.temporal.{Position, Window}
 import music.playback.MidiNote
-import music.symbol.collection.TrackSymbol
 import music.symbol.{Chord, Key, Note, TimeSignature}
 import protocol.{Command, Query}
 
@@ -15,8 +15,8 @@ package object track {
   case class CreateTimeSignatureSymbol(position: Position, ts: TimeSignature) extends Command
 
   // Queries
-  case object ReadNotes extends Query { type Res = Seq[TrackSymbol[Note]] }
+  case object ReadNotes extends Query { type Res = Seq[TrackSymbol2[Note]] }
   case object ReadMidiNotes extends Query { type Res = Seq[MidiNote] }
-  case object ReadChords extends Query { type Res = Seq[TrackSymbol[Chord]] }
+  case object ReadChords extends Query { type Res = Seq[TrackSymbol2[Chord]] }
 
 }

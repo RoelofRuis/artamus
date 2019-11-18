@@ -1,14 +1,14 @@
 package music.glyph.iteration
 
 import music.analysis.NoteValueConversion
+import music.domain.track.Track2
 import music.glyph
 import music.glyph._
 import music.math.temporal.{Position, Window}
 import music.primitives._
-import music.symbol.collection.Track
 import music.symbol.{Key, Note}
 
-class StaffIterator(track: Track) {
+class StaffIterator(track: Track2) {
 
   import music.analysis.TwelveToneTuning._
 

@@ -9,25 +9,25 @@ import pubsub.Dispatcher
 
 private[server] class TrackQueryHandler @Inject() (
   dispatcher: Dispatcher[Query],
-  state: TrackState
+  savepoint: Savepoint
 ) {
 
   dispatcher.subscribe[ReadNotes.type]{ _ =>
-    state
-      .getEditable
+    savepoint
+      .getCurrentTrack
       .read[Note]()
       .toSeq
   }
 
   dispatcher.subscribe[ReadChords.type]{ _ =>
-    state
-      .getEditable
+    savepoint
+      .getCurrentTrack
       .read[Chord]()
       .toSeq
   }
 
   dispatcher.subscribe[ReadMidiNotes.type]{ _ =>
-    new MidiNoteIterator(state.getEditable)
+    new MidiNoteIterator(savepoint.getCurrentTrack)
       .iterate(Position.ZERO)
       .toSeq
   }

@@ -1,15 +1,15 @@
 package server.analysis
 
 import music.analysis.TwelveToneChordAnalysis
+import music.domain.track.Track2
 import music.symbol.{Chord, Note}
-import music.symbol.collection.Track
 import server.analysis.blackboard.KnowledgeSource
 
-class ChordAnalyser extends KnowledgeSource[Track] {
+class ChordAnalyser extends KnowledgeSource[Track2] {
 
-  override def canExecute(state: Track): Boolean = true
+  override def canExecute(state: Track2): Boolean = true
 
-  override def execute(track: Track): Track = {
+  override def execute(track: Track2): Track2 = {
     val possibleChords = track.readGrouped[Note]().flatMap { notes =>
       val pitches = notes.map { note => note.symbol.pitchClass }
       val possibleChords = TwelveToneChordAnalysis.findChords(pitches)

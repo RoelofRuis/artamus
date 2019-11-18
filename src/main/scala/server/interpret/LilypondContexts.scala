@@ -1,8 +1,8 @@
 package server.interpret
 
+import music.domain.track.Track2
 import music.glyph.iteration.{ChordIterator, StaffIterator}
 import music.math.temporal.Position
-import music.symbol.collection.Track
 
 object LilypondContexts {
 
@@ -29,13 +29,13 @@ object LilypondContexts {
        |}
        |""".stripMargin
 
-  def staff(track: Track): String =
+  def staff(track: Track2): String =
     s"""\\new Staff {
        |\\numericTimeSignature
        |${new StaffIterator(track).iterate(Position.ZERO).map(_.toLilypond).mkString("\n")}
        |}""".stripMargin
 
-  def chords(track: Track): String =
+  def chords(track: Track2): String =
     s"""\\new ChordNames {
        |\\chordmode {
        |${new ChordIterator(track).iterate(Position.ZERO).map(_.toLilypond).mkString("\n")}

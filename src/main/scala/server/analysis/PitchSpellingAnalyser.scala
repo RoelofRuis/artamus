@@ -1,15 +1,15 @@
 package server.analysis
 
 import music.analysis.TwelveTonePitchSpelling
-import music.symbol.collection.Track
+import music.domain.track.Track2
 import music.symbol.{Chord, Key, Note}
 import server.analysis.blackboard.KnowledgeSource
 
-class PitchSpellingAnalyser extends KnowledgeSource[Track] {
+class PitchSpellingAnalyser extends KnowledgeSource[Track2] {
 
-  override def canExecute(state: Track): Boolean = true
+  override def canExecute(state: Track2): Boolean = true
 
-  override def execute(track: Track): Track = {
+  override def execute(track: Track2): Track2 = {
     val key = track
       .read[Key]()
       .headOption

@@ -1,16 +1,16 @@
 package server.analysis
 
+import music.domain.track.Track2
 import music.symbol.Note
-import music.symbol.collection.Track
 import server.analysis.blackboard.KnowledgeSource
 
 import scala.collection.immutable.SortedMap
 
-class PitchHistogramAnalyser extends KnowledgeSource[Track] {
+class PitchHistogramAnalyser extends KnowledgeSource[Track2] {
 
-  override def canExecute(state: Track): Boolean = true
+  override def canExecute(state: Track2): Boolean = true
 
-  override def execute(track: Track): Track = {
+  override def execute(track: Track2): Track2 = {
     val zero = SortedMap(
       0 -> 0L,
       1 -> 0L,

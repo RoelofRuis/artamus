@@ -1,6 +1,7 @@
 package server.domain.track
 
 import javax.inject.Inject
+import music.domain.track.TrackRepository
 import music.math.temporal.Window
 import protocol.Command
 import pubsub.Dispatcher
@@ -9,26 +10,38 @@ import scala.language.existentials
 
 private[server] class TrackCommandHandler @Inject() (
   dispatcher: Dispatcher[Command],
-  state: TrackState
+  savepoint: Savepoint
 ) {
 
   dispatcher.subscribe[NewTrack.type]{ _ =>
-    state.clear()
+    savepoint.clear()
     true
   }
 
   dispatcher.subscribe[CreateNoteSymbol]{ command =>
-    state.edit(_.create(command.window, command.symbol))
+    val edited = savepoint
+      .getCurrentTrack
+      .create(command.window, command.symbol)
+
+    savepoint.writeEdit(edited)
     true
   }
 
   dispatcher.subscribe[CreateTimeSignatureSymbol]{ command =>
-    state.edit(_.writeTimeSignature(command.position, command.ts))
+    val edited = savepoint
+      .getCurrentTrack
+      .writeTimeSignature(command.position, command.ts)
+
+    savepoint.writeEdit(edited)
     true
   }
 
   dispatcher.subscribe[CreateKeySymbol]{ command =>
-    state.edit(_.create(Window.instantAt(command.position), command.symbol))
+    val edited = savepoint
+      .getCurrentTrack
+      .create(Window.instantAt(command.position), command.symbol)
+
+    savepoint.writeEdit(edited)
     true
   }
 

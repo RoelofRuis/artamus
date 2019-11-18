@@ -2,14 +2,14 @@ package server
 
 import _root_.server.analysis._
 import _root_.server.control.ServerControlHandler
-import _root_.server.domain.track.{TrackCommandHandler, TrackQueryHandler, TrackState}
-import server.analysis.blackboard.Controller
+import _root_.server.domain.track.{Savepoint, TrackCommandHandler, TrackQueryHandler}
 import com.google.inject.Provides
 import javax.inject.Singleton
-import music.symbol.collection.Track
+import music.domain.track.Track2
 import net.codingwell.scalaguice.ScalaPrivateModule
 import protocol._
 import pubsub.{Dispatcher, EventBus}
+import server.analysis.blackboard.Controller
 import server.domain.ChangeHandler
 import server.interpret.LilypondInterpreter
 import server.rendering.{RenderingCompletionHandler, RenderingModule}
@@ -35,10 +35,10 @@ class ServerModule extends ScalaPrivateModule with ServerConfig {
     bind[Dispatcher[Query]].toInstance(pubsub.createDispatcher[Query]())
     bind[TrackQueryHandler].asEagerSingleton()
 
-    bind[TrackState].asEagerSingleton()
+    bind[Savepoint].asEagerSingleton()
     bind[EventBus[Event]].toInstance(new EventBus[Event])
 
-    bind[Controller[Track]]
+    bind[Controller[Track2]]
       .toInstance(new Controller(
         Seq(
           new ChordAnalyser(),

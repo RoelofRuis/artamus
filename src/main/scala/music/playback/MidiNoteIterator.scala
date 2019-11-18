@@ -1,11 +1,11 @@
 package music.playback
 
+import music.domain.track.Track2
 import music.math.temporal.Position
 import music.primitives.{Loudness, MidiNoteNumber}
 import music.symbol.Note
-import music.symbol.collection.Track
 
-class MidiNoteIterator(track: Track) {
+class MidiNoteIterator(track: Track2) {
 
   import music.analysis.TwelveToneTuning._
 
