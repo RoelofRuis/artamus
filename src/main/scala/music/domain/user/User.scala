@@ -12,5 +12,3 @@ object User {
   final case class UserId(id: Long) extends AnyVal
 
 }
-
-
