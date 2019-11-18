@@ -8,7 +8,7 @@ import music.math.temporal.{Position, Window}
 import music.primitives._
 import music.domain.track.symbol.{Key, Note}
 
-class StaffIterator(track: Track2) {
+private[glyph] class StaffIterator(track: Track2) {
 
   import music.analysis.TwelveToneTuning._
 

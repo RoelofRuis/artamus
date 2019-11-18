@@ -1,12 +1,11 @@
 package server.interpret
 
 import music.domain.track.Track2
-import music.glyph.iteration.{ChordIterator, StaffIterator}
-import music.math.temporal.Position
 
 object LilypondContexts {
 
   import LilypondFormat._
+  import music.glyph._
 
   def file(
     contents: String,
@@ -32,13 +31,13 @@ object LilypondContexts {
   def staff(track: Track2): String =
     s"""\\new Staff {
        |\\numericTimeSignature
-       |${new StaffIterator(track).iterate(Position.ZERO).map(_.toLilypond).mkString("\n")}
+       |${track.iterateStaffGlyphs.map(_.toLilypond).mkString("\n")}
        |}""".stripMargin
 
   def chords(track: Track2): String =
     s"""\\new ChordNames {
        |\\chordmode {
-       |${new ChordIterator(track).iterate(Position.ZERO).map(_.toLilypond).mkString("\n")}
+       |${track.iterateChordGlyphs.map(_.toLilypond).mkString("\n")}
        |}
        |}""".stripMargin
 

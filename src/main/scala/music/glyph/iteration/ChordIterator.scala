@@ -7,7 +7,7 @@ import music.glyph.{ChordGlyph, Glyph, RestGlyph}
 import music.math.temporal.{Position, Window}
 import music.domain.track.symbol.Chord
 
-class ChordIterator(track: Track2) {
+private[glyph] class ChordIterator(track: Track2) {
 
   private val chords = track.read[Chord]()
 

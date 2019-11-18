@@ -1,9 +1,8 @@
 package server.domain.track
 
 import javax.inject.Inject
-import music.math.temporal.Position
-import music.playback.MidiNoteIterator
 import music.domain.track.symbol.{Chord, Note}
+import music.math.temporal.Position
 import protocol.Query
 import pubsub.Dispatcher
 
@@ -27,7 +26,9 @@ private[server] class TrackQueryHandler @Inject() (
   }
 
   dispatcher.subscribe[ReadMidiNotes.type]{ _ =>
-    new MidiNoteIterator(savepoint.getCurrentTrack)
+    import music.playback._
+
+    savepoint.getCurrentTrack
       .iterate(Position.ZERO)
       .toSeq
   }
