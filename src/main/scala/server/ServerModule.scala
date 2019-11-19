@@ -1,7 +1,7 @@
 package server
 
 import _root_.server.analysis._
-import _root_.server.control.ServerControlHandler
+import _root_.server.control.{DispatchingServerAPI, ServerControlHandler}
 import _root_.server.domain.track.{Savepoint, TrackCommandHandler, TrackQueryHandler}
 import com.google.inject.Provides
 import javax.inject.Singleton
@@ -36,6 +36,8 @@ class ServerModule extends ScalaPrivateModule with ServerConfig {
     bind[TrackQueryHandler].asEagerSingleton()
 
     bind[Savepoint].asEagerSingleton()
+
+    bind[ServerBindings].asEagerSingleton()
     bind[EventBus[Event]].toInstance(new EventBus[Event])
 
     bind[Controller[Track2]]
@@ -52,18 +54,10 @@ class ServerModule extends ScalaPrivateModule with ServerConfig {
   }
 
   @Provides @Singleton
-  def serverConnectionFactory(
-    commandDispatcher: Dispatcher[Command],
-    queryDispatcher: Dispatcher[Query],
-    eventBus: EventBus[Event],
-  ): ServerInterface = {
+  def serverConnectionFactory(serverBindings: ServerBindings): ServerInterface = {
     DefaultServer.apply(
       port,
-      ProtocolServerBindings(
-        commandDispatcher,
-        queryDispatcher,
-        eventBus
-      )
+      new DispatchingServerAPI(serverBindings)
     )
   }
 

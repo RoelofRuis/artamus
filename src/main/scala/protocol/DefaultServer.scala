@@ -1,11 +1,11 @@
 package protocol
 
-import server.ProtocolServerBindings
+import server.control.DispatchingServerAPI
 import transport.server.SimpleServer
 
 object DefaultServer {
 
-  def apply(port: Int, bindings: ProtocolServerBindings): ServerInterface = {
+  def apply(port: Int, bindings: DispatchingServerAPI): ServerInterface = {
     new ServerAdaptor(SimpleServer.apply(port, bindings))
   }
 
