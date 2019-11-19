@@ -1,6 +1,6 @@
 package protocol
 
-import server.DispatchingServerAPI
+import server.control.DispatchingServerAPI
 import transport.server.SimpleServer
 
 object DefaultServer {

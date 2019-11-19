@@ -1,7 +1,7 @@
 package server
 
 import _root_.server.analysis._
-import _root_.server.control.ServerControlHandler
+import _root_.server.control.{DispatchingServerAPI, ServerControlHandler}
 import _root_.server.domain.track.{TrackCommandHandler, TrackQueryHandler, TrackState}
 import server.analysis.blackboard.Controller
 import com.google.inject.Provides
@@ -57,7 +57,7 @@ class ServerModule extends ScalaPrivateModule with ServerConfig {
   def serverConnectionFactory(serverBindings: ServerBindings): ServerInterface = {
     DefaultServer.apply(
       port,
-      DispatchingServerAPI(serverBindings)
+      new DispatchingServerAPI(serverBindings)
     )
   }
 
