@@ -1,7 +1,7 @@
 package server
 
 import protocol._
-import protocol.transport.server.ServerAPI
+import protocol.transport.server.{Connection, ServerAPI}
 
 import scala.util.{Failure, Success, Try}
 
@@ -9,12 +9,12 @@ final case class DispatchingServerAPI(
   server: ServerBindings,
 ) extends ServerAPI {
 
-  def connectionAccepted(connectionId: String, callback: Any => Unit): Unit = {
-    server.subscribeEvents(connectionId, callback)
+  def connectionAccepted(connection: Connection, callback: Any => Unit): Unit = {
+    server.subscribeEvents(connection.name, callback)
   }
 
-  def connectionDropped(connectionId: String): Unit = {
-    server.unsubscribeEvents(connectionId)
+  def connectionDropped(connection: Connection): Unit = {
+    server.unsubscribeEvents(connection.name)
   }
 
   def handleRequest(request: Object): DataResponse = {

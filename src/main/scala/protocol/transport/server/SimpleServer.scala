@@ -18,7 +18,6 @@ class SimpleServer (
   private val executor: ExecutorService = Executors.newFixedThreadPool(1)
 
   private var connectionId: Long = 0
-  private val SERVER_SUB_KEY = "server-out"
 
   def accept(): Unit = {
     while ( ! executor.isShutdown ) {
@@ -60,10 +59,10 @@ class SimpleServer (
     Try { executor.execute(connection) }
   }
 
-  private def nextConnectionId: String = {
-    val subId = s"${SERVER_SUB_KEY}_$connectionId"
-    connectionId+=1
-    subId
+  private def nextConnectionId: Connection = {
+    val subId = connectionId
+    connectionId += 1
+    Connection(subId)
   }
 
 }

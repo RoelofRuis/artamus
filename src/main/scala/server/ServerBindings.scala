@@ -10,12 +10,12 @@ class ServerBindings @Inject() (
   eventSubscriber: EventBus[Event]
 ) {
 
-  def subscribeEvents(connectionId: String, callback: Any => Unit): Unit = {
-    eventSubscriber.subscribe(connectionId, event => callback(EventResponse(event)))
+  def subscribeEvents(subscribeKey: String, callback: Any => Unit): Unit = {
+    eventSubscriber.subscribe(subscribeKey, event => callback(EventResponse(event)))
   }
 
-  def unsubscribeEvents(connectionId: String): Unit = {
-    eventSubscriber.unsubscribe(connectionId)
+  def unsubscribeEvents(subscribeKey: String): Unit = {
+    eventSubscriber.unsubscribe(subscribeKey)
   }
 
   def handleCommand(command: Command): Option[Command#Res] = {
