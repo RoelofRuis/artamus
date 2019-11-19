@@ -9,20 +9,20 @@ import scala.util.{Failure, Success, Try}
 
 private[server] class ServerConnectionFactory(server: ServerAPI) extends LazyLogging {
 
-  def connect(socket: Socket, connectionId: Connection): Try[Runnable] = {
+  def connect(socket: Socket, connection: Connection): Try[Runnable] = {
     try {
       lazy val objectIn = new ObjectInputStream(socket.getInputStream)
       val objectOut = new ObjectOutputStream(socket.getOutputStream)
 
       Success(new Runnable {
         override def run(): Unit = {
-          server.connectionAccepted(connectionId, event => objectOut.writeObject(event))
+          server.connectionAccepted(connection, event => objectOut.writeObject(event))
 
           try {
             while (socket.isConnected) {
               val request = objectIn.readObject()
 
-              val response = server.handleRequest(request)
+              val response = server.handleRequest(connection, request)
 
               objectOut.writeObject(response)
             }
@@ -30,7 +30,7 @@ private[server] class ServerConnectionFactory(server: ServerAPI) extends LazyLog
             case _: EOFException => logger.info("EOF: Client hang up")
             case ex: IOException => logger.error("Connection thread encountered IOException", ex)
           } finally {
-            server.connectionDropped(connectionId)
+            server.connectionDropped(connection)
             socket.close()
           }
         }

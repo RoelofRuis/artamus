@@ -2,10 +2,10 @@ package protocol.transport.server
 
 trait ServerAPI {
 
-  def connectionAccepted(connectionId: Connection, callback: Any => Unit): Unit
+  def connectionAccepted(connection: Connection, callback: Any => Unit): Unit
 
-  def connectionDropped(connectionId: Connection): Unit
+  def connectionDropped(connection: Connection): Unit
 
-  def handleRequest(obj: Object): Any
+  def handleRequest(connection: Connection, obj: Object): Any
 
 }

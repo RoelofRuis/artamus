@@ -3,7 +3,7 @@ package server
 import protocol._
 import protocol.transport.server.{Connection, ServerAPI}
 
-import scala.util.{Failure, Success, Try}
+import scala.util.Try
 
 final case class DispatchingServerAPI(
   server: ServerBindings,
@@ -17,27 +17,10 @@ final case class DispatchingServerAPI(
     server.unsubscribeEvents(connection.name)
   }
 
-  def handleRequest(request: Object): DataResponse = {
+  def handleRequest(connection: Connection, request: Object): DataResponse = {
     val result = tryRead[ServerRequest](request).toEither match {
-      case Right(CommandRequest(command)) =>
-        Try { server.handleCommand(command) } match {
-          case Success(response) => response match {
-            case Some(res) => Right(res)
-            case None => Left(s"No handler defined for command [$command]")
-          }
-          case Failure(ex) => Left(s"Error during command execution [$ex]")
-        }
-
-      case Right(QueryRequest(query)) =>
-        Try { server.handleQuery(query) } match {
-          case Success(response) => response match {
-            case Some(res) => Right(res)
-            case None => Left(s"No handler defined for query [$query]")
-          }
-          case Failure(ex) => Left(s"Error during query execution [$ex]")
-        }
-
-
+      case Right(CommandRequest(command)) => server.handleCommand(command)
+      case Right(QueryRequest(query)) => server.handleQuery(query)
       case Left(ex) => Left(s"Unable to determine message type. [$ex]")
     }
     DataResponse(result)

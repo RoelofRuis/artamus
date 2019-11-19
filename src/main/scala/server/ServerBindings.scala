@@ -1,8 +1,10 @@
 package server
 
 import javax.inject.Inject
-import protocol.{Command, Event, EventResponse, Query}
+import protocol.{Command, Event, EventResponse, Query, ServerException}
 import pubsub.{Dispatcher, EventBus}
+
+import scala.util.{Failure, Success, Try}
 
 class ServerBindings @Inject() (
   commandDispatcher: Dispatcher[Command],
@@ -18,12 +20,24 @@ class ServerBindings @Inject() (
     eventSubscriber.unsubscribe(subscribeKey)
   }
 
-  def handleCommand(command: Command): Option[Command#Res] = {
-    commandDispatcher.handle(command)
+  def handleCommand(command: Command): Either[ServerException, Command#Res] = {
+    Try { commandDispatcher.handle(command) } match {
+      case Success(response) => response match {
+        case Some(res) => Right(res)
+        case None => Left(s"No handler defined for command [$command]")
+      }
+      case Failure(ex) => Left(s"Error during command execution [$ex]")
+    }
   }
 
-  def handleQuery(query: Query): Option[Query#Res] = {
-    queryDispatcher.handle(query)
+  def handleQuery(query: Query): Either[ServerException, Query#Res] = {
+    Try { queryDispatcher.handle(query) } match {
+      case Success(response) => response match {
+        case Some(res) => Right(res)
+        case None => Left(s"No handler defined for query [$query]")
+      }
+      case Failure(ex) => Left(s"Error during query execution [$ex]")
+    }
   }
 
 }
