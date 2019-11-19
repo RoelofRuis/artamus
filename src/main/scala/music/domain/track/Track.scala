@@ -1,6 +1,6 @@
 package music.domain.track
 
-import music.domain.track.Track2.TrackId
+import music.domain.track.Track.TrackId
 import music.math.temporal.{Position, Window}
 import music.domain.track.symbol.SymbolType
 
@@ -8,24 +8,24 @@ import scala.collection.BufferedIterator
 import scala.collection.immutable.SortedMap
 import scala.reflect.{ClassTag, classTag}
 
-trait Track2 {
+trait Track {
   val id: Option[TrackId]
   val bars: Bars
 
-  def setId(id: TrackId): Track2
-  def writeTimeSignature(pos: Position, timeSignature: TimeSignature): Track2
+  def setId(id: TrackId): Track
+  def writeTimeSignature(pos: Position, timeSignature: TimeSignature): Track
 
-  def create[S <: SymbolType : ClassTag](symbol: (Window, S)): Track2
-  def createAll[S <: SymbolType : ClassTag](symbols: IterableOnce[(Window, S)]): Track2
-  def updateAll[S <: SymbolType : ClassTag](symbols: IterableOnce[TrackSymbol2[S]]): Track2
-  def deleteAll[S <: SymbolType : ClassTag](): Track2
-  def read[S <: SymbolType : ClassTag](from: Position = Position.ZERO): BufferedIterator[TrackSymbol2[S]]
-  def readGrouped[S <: SymbolType : ClassTag](from: Position = Position.ZERO): BufferedIterator[Seq[TrackSymbol2[S]]]
+  def create[S <: SymbolType : ClassTag](symbol: (Window, S)): Track
+  def createAll[S <: SymbolType : ClassTag](symbols: IterableOnce[(Window, S)]): Track
+  def updateAll[S <: SymbolType : ClassTag](symbols: IterableOnce[TrackSymbol[S]]): Track
+  def deleteAll[S <: SymbolType : ClassTag](): Track
+  def read[S <: SymbolType : ClassTag](from: Position = Position.ZERO): BufferedIterator[TrackSymbol[S]]
+  def readGrouped[S <: SymbolType : ClassTag](from: Position = Position.ZERO): BufferedIterator[Seq[TrackSymbol[S]]]
 }
 
-object Track2 {
+object Track {
 
-  def apply(): Track2 = TrackImpl(None, Map(), Bars())
+  def apply(): Track = TrackImpl(None, Map(), Bars())
 
   final case class TrackId(id: Long) extends AnyVal
 
@@ -33,11 +33,11 @@ object Track2 {
     id: Option[TrackId],
     private val tracks: Map[String, SymbolTrack[_]],
     bars: Bars
-  ) extends Track2 {
+  ) extends Track {
 
-    override def setId(id: TrackId): Track2 = TrackImpl(Some(id), tracks, bars)
+    override def setId(id: TrackId): Track = TrackImpl(Some(id), tracks, bars)
 
-    override def writeTimeSignature(pos: Position, timeSignature: TimeSignature): Track2 = {
+    override def writeTimeSignature(pos: Position, timeSignature: TimeSignature): Track = {
       TrackImpl(
         id,
         tracks,
@@ -45,9 +45,9 @@ object Track2 {
       )
     }
 
-    override def create[S <: SymbolType : ClassTag](symbol: (Window, S)): Track2 = createAll(Seq(symbol))
+    override def create[S <: SymbolType : ClassTag](symbol: (Window, S)): Track = createAll(Seq(symbol))
 
-    override def createAll[S <: SymbolType : ClassTag](symbols: IterableOnce[(Window, S)]): Track2 =
+    override def createAll[S <: SymbolType : ClassTag](symbols: IterableOnce[(Window, S)]): Track =
       TrackImpl(
         id,
         tracks.updated(
@@ -57,7 +57,7 @@ object Track2 {
         bars
       )
 
-    override def updateAll[S <: SymbolType : ClassTag](symbols: IterableOnce[TrackSymbol2[S]]): Track2 =
+    override def updateAll[S <: SymbolType : ClassTag](symbols: IterableOnce[TrackSymbol[S]]): Track =
       TrackImpl(
         id,
         tracks.updated(
@@ -67,11 +67,11 @@ object Track2 {
         bars
       )
 
-    override def deleteAll[S <: SymbolType : ClassTag](): Track2 = TrackImpl(id, tracks.updated(key, SymbolTrack[S]), bars)
+    override def deleteAll[S <: SymbolType : ClassTag](): Track = TrackImpl(id, tracks.updated(key, SymbolTrack[S]), bars)
 
-    override def read[S <: SymbolType : ClassTag](pos: Position): BufferedIterator[TrackSymbol2[S]] = readRaw[S].iterate(pos)
+    override def read[S <: SymbolType : ClassTag](pos: Position): BufferedIterator[TrackSymbol[S]] = readRaw[S].iterate(pos)
 
-    override def readGrouped[S <: SymbolType : ClassTag](pos: Position): BufferedIterator[Seq[TrackSymbol2[S]]] = readRaw[S].iterateGrouped(pos)
+    override def readGrouped[S <: SymbolType : ClassTag](pos: Position): BufferedIterator[Seq[TrackSymbol[S]]] = readRaw[S].iterateGrouped(pos)
 
     private def readRaw[S <: SymbolType : ClassTag]: SymbolTrack[S] = {
       tracks.getOrElse(key, SymbolTrack[S]).asInstanceOf[SymbolTrack[S]]
@@ -83,14 +83,14 @@ object Track2 {
 
   private[track] final case class SymbolTrack[S <: SymbolType] private (
     private val positions: SortedMap[Position, Seq[Long]],
-    private val symbols: Map[Long, TrackSymbol2[S]],
+    private val symbols: Map[Long, TrackSymbol[S]],
     private val lastId: Long
   ) {
 
     def createSymbolAt(window: Window, symbol: S): SymbolTrack[S] = {
       SymbolTrack(
         positions.updated(window.start, positions.getOrElse(window.start, Seq()) :+ lastId),
-        symbols.updated(lastId, TrackSymbol2(lastId, window, symbol)),
+        symbols.updated(lastId, TrackSymbol(lastId, window, symbol)),
         lastId + 1
       )
     }
@@ -117,14 +117,14 @@ object Track2 {
       }
     }
 
-    def iterate(from: Position): BufferedIterator[TrackSymbol2[S]] = {
+    def iterate(from: Position): BufferedIterator[TrackSymbol[S]] = {
       positions
         .valuesIteratorFrom(from)
         .flatMap(_.flatMap(symbols.get))
         .buffered
     }
 
-    def iterateGrouped(from: Position): BufferedIterator[Seq[TrackSymbol2[S]]] = {
+    def iterateGrouped(from: Position): BufferedIterator[Seq[TrackSymbol[S]]] = {
       positions
         .valuesIteratorFrom(from)
         .map(_.flatMap(symbols.get))

@@ -1,6 +1,6 @@
 package server.interpret
 
-import music.domain.track.Track2
+import music.domain.track.Track
 
 object LilypondContexts {
 
@@ -28,13 +28,13 @@ object LilypondContexts {
        |}
        |""".stripMargin
 
-  def staff(track: Track2): String =
+  def staff(track: Track): String =
     s"""\\new Staff {
        |\\numericTimeSignature
        |${track.iterateStaffGlyphs.map(_.toLilypond).mkString("\n")}
        |}""".stripMargin
 
-  def chords(track: Track2): String =
+  def chords(track: Track): String =
     s"""\\new ChordNames {
        |\\chordmode {
        |${track.iterateChordGlyphs.map(_.toLilypond).mkString("\n")}

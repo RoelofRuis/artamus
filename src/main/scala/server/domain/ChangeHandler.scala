@@ -1,7 +1,7 @@
 package server.domain
 
 import javax.inject.Inject
-import music.domain.track.Track2
+import music.domain.track.Track
 import protocol.{Command, Event}
 import pubsub.{Dispatcher, EventBus}
 import server.analysis.blackboard.Controller
@@ -14,7 +14,7 @@ private[server] class ChangeHandler @Inject() (
   eventBus: EventBus[Event],
   interpreter: LilypondInterpreter,
   savepoint: Savepoint,
-  analysis: Controller[Track2],
+  analysis: Controller[Track],
   renderer: Renderer,
 ) {
 

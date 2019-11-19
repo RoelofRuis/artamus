@@ -1,15 +1,15 @@
 package music.domain.track
 
 import javax.annotation.concurrent.GuardedBy
-import music.domain.track.Track2.TrackId
+import music.domain.track.Track.TrackId
 
 class TrackRepository {
 
   private val trackLock = new Object()
   @GuardedBy("trackLock") private var nextId: Long = 0L
-  @GuardedBy("trackLock") private var tracks: Map[TrackId, Track2] = Map()
+  @GuardedBy("trackLock") private var tracks: Map[TrackId, Track] = Map()
 
-  def getById(id: TrackId): Option[Track2] = tracks.get(id)
+  def getById(id: TrackId): Option[Track] = tracks.get(id)
 
   def getNextId: TrackId = trackLock.synchronized {
     val id = nextId
@@ -17,7 +17,7 @@ class TrackRepository {
     TrackId(id)
   }
 
-  def write(track2: Track2): TrackId = trackLock.synchronized {
+  def write(track2: Track): TrackId = trackLock.synchronized {
     track2.id match {
       case None =>
         val id = getNextId

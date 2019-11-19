@@ -1,13 +1,13 @@
 package music.glyph.iteration
 
 import music.analysis.NoteValueConversion
-import music.domain.track.Track2
+import music.domain.track.Track
 import music.glyph
 import music.glyph.{ChordGlyph, Glyph, RestGlyph}
 import music.math.temporal.{Position, Window}
 import music.domain.track.symbol.Chord
 
-private[glyph] class ChordIterator(track: Track2) {
+private[glyph] class ChordIterator(track: Track) {
 
   private val chords = track.read[Chord]()
 

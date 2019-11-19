@@ -5,7 +5,7 @@ import _root_.server.control.{DispatchingServerAPI, ServerControlHandler}
 import _root_.server.domain.track.{Savepoint, TrackCommandHandler, TrackQueryHandler}
 import com.google.inject.Provides
 import javax.inject.Singleton
-import music.domain.track.Track2
+import music.domain.track.Track
 import net.codingwell.scalaguice.ScalaPrivateModule
 import protocol._
 import pubsub.{Dispatcher, EventBus}
@@ -40,7 +40,7 @@ class ServerModule extends ScalaPrivateModule with ServerConfig {
     bind[ServerBindings].asEagerSingleton()
     bind[EventBus[Event]].toInstance(new EventBus[Event])
 
-    bind[Controller[Track2]]
+    bind[Controller[Track]]
       .toInstance(new Controller(
         Seq(
           new ChordAnalyser(),
