@@ -4,6 +4,7 @@ import java.io.{EOFException, IOException, ObjectInputStream, ObjectOutputStream
 import java.net.Socket
 
 import com.typesafe.scalalogging.LazyLogging
+import protocol.transport.server.ServerConnectionFactory.ServerConnection
 
 import scala.util.{Failure, Success, Try}
 
@@ -14,7 +15,7 @@ private[server] class ServerConnectionFactory(server: ServerAPI) extends LazyLog
 
       lazy val objectIn = new ObjectInputStream(socket.getInputStream)
       val objectOut = new ObjectOutputStream(socket.getOutputStream)
-      val connection = Connection(connectionId, objectOut)
+      val connection = ServerConnection(connectionId, objectOut)
 
       Success(new Runnable {
         override def run(): Unit = {
@@ -41,4 +42,16 @@ private[server] class ServerConnectionFactory(server: ServerAPI) extends LazyLog
       case ex: Exception => Failure(ex)
     }
   }
+}
+
+object ServerConnectionFactory {
+
+  private[ServerConnectionFactory] final case class ServerConnection (
+    id: Long,
+    private val eventOut: ObjectOutputStream
+  ) extends Connection {
+    def name: String = s"connection_$id"
+    def sendEvent(event: Any): Unit = eventOut.writeObject(event)
+  }
+
 }
