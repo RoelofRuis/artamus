@@ -1,31 +1,26 @@
 package server
 
-import protocol.transport.server.ServerBindings
 import protocol._
-import pubsub.{Dispatcher, Subscriber}
-import server.domain.Analyse
+import protocol.transport.server.ServerAPI
 
 import scala.util.{Failure, Success, Try}
 
-final case class ProtocolServerBindings(
-  commandDispatcher: Dispatcher[Command],
-  queryDispatcher: Dispatcher[Query],
-  eventSubscriber: Subscriber[String, Event, Unit]
-) extends ServerBindings {
+final case class DispatchingServerAPI(
+  server: ServerBindings,
+) extends ServerAPI {
 
   def connectionAccepted(connectionId: String, callback: Any => Unit): Unit = {
-    eventSubscriber.subscribe(connectionId, event => callback(EventResponse(event)))
-    Try { commandDispatcher.handle(Analyse) } // TODO: remove hard coded first render when server acceptance logic is improved
+    server.subscribeEvents(connectionId, callback)
   }
 
   def connectionDropped(connectionId: String): Unit = {
-    eventSubscriber.unsubscribe(connectionId)
+    server.unsubscribeEvents(connectionId)
   }
 
   def handleRequest(request: Object): DataResponse = {
     val result = tryRead[ServerRequest](request).toEither match {
       case Right(CommandRequest(command)) =>
-        Try { commandDispatcher.handle(command) } match {
+        Try { server.handleCommand(command) } match {
           case Success(response) => response match {
             case Some(res) => Right(res)
             case None => Left(s"No handler defined for command [$command]")
@@ -34,7 +29,7 @@ final case class ProtocolServerBindings(
         }
 
       case Right(QueryRequest(query)) =>
-        Try { queryDispatcher.handle(query) } match {
+        Try { server.handleQuery(query) } match {
           case Success(response) => response match {
             case Some(res) => Right(res)
             case None => Left(s"No handler defined for query [$query]")

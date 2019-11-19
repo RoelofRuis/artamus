@@ -70,10 +70,10 @@ class SimpleServer (
 
 object SimpleServer {
 
-  def apply(port: Int, bindings: ServerBindings): SimpleServer = {
+  def apply(port: Int, serverAPI: ServerAPI): SimpleServer = {
     new SimpleServer(
       Resource.wrapUnsafe[ServerSocket](new ServerSocket(port), _.close()),
-      new ServerConnectionFactory(bindings)
+      new ServerConnectionFactory(serverAPI)
     )
   }
 

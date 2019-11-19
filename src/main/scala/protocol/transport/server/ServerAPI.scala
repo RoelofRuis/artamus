@@ -1,6 +1,6 @@
 package protocol.transport.server
 
-trait ServerBindings {
+trait ServerAPI {
 
   def connectionAccepted(connectionId: String, callback: Any => Unit): Unit
 
