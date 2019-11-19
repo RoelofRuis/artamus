@@ -59,10 +59,10 @@ class SimpleServer (
     Try { executor.execute(connection) }
   }
 
-  private def nextConnectionId: Connection = {
+  private def nextConnectionId: Long = {
     val subId = connectionId
     connectionId += 1
-    Connection(subId)
+    subId
   }
 
 }

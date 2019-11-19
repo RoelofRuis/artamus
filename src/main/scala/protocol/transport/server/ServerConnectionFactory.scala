@@ -9,14 +9,16 @@ import scala.util.{Failure, Success, Try}
 
 private[server] class ServerConnectionFactory(server: ServerAPI) extends LazyLogging {
 
-  def connect(socket: Socket, connection: Connection): Try[Runnable] = {
+  def connect(socket: Socket, connectionId: Long): Try[Runnable] = {
     try {
+
       lazy val objectIn = new ObjectInputStream(socket.getInputStream)
       val objectOut = new ObjectOutputStream(socket.getOutputStream)
+      val connection = Connection(connectionId, objectOut)
 
       Success(new Runnable {
         override def run(): Unit = {
-          server.connectionAccepted(connection, event => objectOut.writeObject(event))
+          server.connectionAccepted(connection)
 
           try {
             while (socket.isConnected) {

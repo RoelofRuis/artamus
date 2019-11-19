@@ -9,8 +9,8 @@ final case class DispatchingServerAPI(
   server: ServerBindings,
 ) extends ServerAPI {
 
-  def connectionAccepted(connection: Connection, callback: Any => Unit): Unit = {
-    server.subscribeEvents(connection.name, callback)
+  def connectionAccepted(connection: Connection): Unit = {
+    server.subscribeEvents(connection.name, connection.sendEvent)
   }
 
   def connectionDropped(connection: Connection): Unit = {
