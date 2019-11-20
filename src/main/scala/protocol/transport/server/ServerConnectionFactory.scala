@@ -19,7 +19,7 @@ private[server] class ServerConnectionFactory(server: ServerAPI) extends LazyLog
 
       Success(new Runnable {
         override def run(): Unit = {
-          server.connectionAccepted(connection)
+          server.connectionOpened(connection)
 
           try {
             while (socket.isConnected) {
@@ -33,7 +33,7 @@ private[server] class ServerConnectionFactory(server: ServerAPI) extends LazyLog
             case _: EOFException => logger.info("EOF: Client hang up")
             case ex: IOException => logger.error("Connection thread encountered IOException", ex)
           } finally {
-            server.connectionDropped(connection)
+            server.connectionClosed(connection)
             socket.close()
           }
         }

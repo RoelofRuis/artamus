@@ -14,11 +14,11 @@ final class DispatchingServerAPI(
 
   private var connections: Map[Connection, Option[User]] = Map()
 
-  def connectionAccepted(connection: Connection): Unit = {
+  def connectionOpened(connection: Connection): Unit = {
     connections += (connection -> None)
   }
 
-  def connectionDropped(connection: Connection): Unit = {
+  def connectionClosed(connection: Connection): Unit = {
     connections -= connection
     server.unsubscribeEvents(connection.name)
   }
@@ -45,7 +45,7 @@ final class DispatchingServerAPI(
         userRepository.getByName(userName) match {
           case None => Left(s"User [$userName] not found")
           case Some(user) =>
-            server.subscribeEvents(connection.name, connection.sendEvent)
+            server.subscribeEvents(connection.name, event => connection.sendEvent(EventResponse(event)))
             connections = connections.updated(connection, Some(user))
             Right(true)
         }
