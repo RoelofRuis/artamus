@@ -1,5 +1,6 @@
 package server.control
 
+import music.domain.user.{User, UserRepository}
 import protocol._
 import protocol.transport.server.{Connection, ServerAPI}
 import server.ServerBindings
@@ -7,10 +8,11 @@ import server.ServerBindings
 import scala.util.{Failure, Success, Try}
 
 final class DispatchingServerAPI(
+  userRepository: UserRepository,
   server: ServerBindings,
 ) extends ServerAPI {
 
-  private var connections: Map[Connection, Option[String]] = Map()
+  private var connections: Map[Connection, Option[User]] = Map()
 
   def connectionAccepted(connection: Connection): Unit = {
     connections += (connection -> None)
@@ -40,9 +42,13 @@ final class DispatchingServerAPI(
   def authenticate(connection: Connection, request: ServerRequest): Either[ServerException, Any] = {
     request match {
       case CommandRequest(Authenticate(userName)) =>
-        server.subscribeEvents(connection.name, connection.sendEvent)
-        connections = connections.updated(connection, Some(userName))
-        Right(true)
+        userRepository.getByName(userName) match {
+          case None => Left(s"User [$userName] not found")
+          case Some(user) =>
+            server.subscribeEvents(connection.name, connection.sendEvent)
+            connections = connections.updated(connection, Some(user))
+            Right(true)
+        }
       case _ => Left("Unauthorized")
     }
   }
