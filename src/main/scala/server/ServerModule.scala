@@ -34,11 +34,11 @@ class ServerModule extends ScalaPrivateModule with ServerConfig {
     bind[ServerControlHandler].asEagerSingleton()
     bind[ChangeHandler].asEagerSingleton()
 
-    bind[Dispatcher[Command]].toInstance(pubsub.createDispatcher[Command]())
-    bind[TrackCommandHandler].asEagerSingleton()
-
     bind[Dispatcher[Query]].toInstance(pubsub.createDispatcher[Query]())
     bind[TrackQueryHandler].asEagerSingleton()
+
+    bind[Dispatcher[Command]].toInstance(pubsub.createDispatcher[Command]())
+    bind[TrackCommandHandler].asEagerSingleton()
 
     bind[Savepoint].asEagerSingleton()
 
