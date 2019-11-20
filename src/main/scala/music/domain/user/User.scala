@@ -1,11 +1,13 @@
 package music.domain.user
 
 import music.domain.user.User.UserId
+import music.domain.workspace.Workspace
 
-final case class User(
-  id: UserId,
-  name: String
-)
+trait User {
+  val id: UserId
+  val name: String
+  def workspace: Workspace
+}
 
 object User {
 

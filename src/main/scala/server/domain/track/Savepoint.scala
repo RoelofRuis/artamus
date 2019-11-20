@@ -5,7 +5,7 @@ import javax.inject.Inject
 import music.domain.track.Track.TrackId
 import music.domain.track.{Track, TrackRepository}
 
-// TODO: clean up / incorporate into domain
+@Deprecated //Will become workspace in the domain
 @ThreadSafe
 class Savepoint @Inject() (
   repository: TrackRepository

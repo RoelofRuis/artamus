@@ -5,6 +5,7 @@ import _root_.server.control.{DispatchingServerAPI, ServerControlHandler}
 import _root_.server.domain.track.{Savepoint, TrackCommandHandler, TrackQueryHandler}
 import com.google.inject.Provides
 import javax.inject.Singleton
+import music.domain.DomainModule
 import music.domain.track.{Track, TrackRepository}
 import music.domain.user.UserRepository
 import net.codingwell.scalaguice.ScalaPrivateModule
@@ -18,17 +19,15 @@ import server.rendering.{RenderingCompletionHandler, RenderingModule}
 class ServerModule extends ScalaPrivateModule with ServerConfig {
 
   override def configure(): Unit = {
-    // DOMAIN TODO: move to separate module
-    bind[UserRepository].toInstance(new UserRepository)
-    bind[TrackRepository].toInstance(new TrackRepository)
+    install(new DomainModule)
 
-    // OTHER
     bind[LilypondInterpreter].toInstance(
       new LilypondInterpreter(
         lyVersion,
         paperSize
       )
     )
+
     bind[RenderingCompletionHandler].to[RenderingEventCompletionHandler]
     install(new RenderingModule with ServerConfig)
 
