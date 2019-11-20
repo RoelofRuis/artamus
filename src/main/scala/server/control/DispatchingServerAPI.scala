@@ -10,7 +10,7 @@ final class DispatchingServerAPI(
   server: ServerBindings,
 ) extends ServerAPI {
 
-  private var connections: Map[Connection, Option[Int]] = Map()
+  private var connections: Map[Connection, Option[String]] = Map()
 
   def connectionAccepted(connection: Connection): Unit = {
     connections += (connection -> None)
@@ -39,9 +39,9 @@ final class DispatchingServerAPI(
 
   def authenticate(connection: Connection, request: ServerRequest): Either[ServerException, Any] = {
     request match {
-      case CommandRequest(Authenticate(userId)) =>
+      case CommandRequest(Authenticate(userName)) =>
         server.subscribeEvents(connection.name, connection.sendEvent)
-        connections = connections.updated(connection, Some(userId))
+        connections = connections.updated(connection, Some(userName))
         Right(true)
       case _ => Left("Unauthorized")
     }

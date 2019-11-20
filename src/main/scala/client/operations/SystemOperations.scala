@@ -11,8 +11,8 @@ class SystemOperations @Inject() (
 ) {
 
   registry.registerOperation(OperationToken("auth", "system"), () => {
-    val userId = StdIOTools.readInt("User ID:")
-    List(Authenticate(userId))
+    val userName = StdIOTools.readString("User Name:")
+    List(Authenticate(userName))
   })
 
   registry.registerOperation(OperationToken("help", "system"), () => {
