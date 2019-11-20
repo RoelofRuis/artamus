@@ -11,26 +11,32 @@ private[server] class TrackQueryHandler @Inject() (
   savepoint: Savepoint
 ) {
 
-  dispatcher.subscribe[ReadNotes.type]{ _ =>
+  type Action[A <: { type Res }] = A => A#Res
+
+  val readNotes: Action[ReadNotes.type] = { _: ReadNotes.type =>
     savepoint
       .getCurrentTrack
       .read[Note]()
       .toSeq
   }
 
-  dispatcher.subscribe[ReadChords.type]{ _ =>
+  val readChords: Action[ReadChords.type] = { _: ReadChords.type =>
     savepoint
       .getCurrentTrack
       .read[Chord]()
       .toSeq
   }
 
-  dispatcher.subscribe[ReadMidiNotes.type]{ _ =>
+  val readMidiNotes: Action[ReadMidiNotes.type] = { _: ReadMidiNotes.type =>
     import music.playback._
 
     savepoint.getCurrentTrack
       .iterate(Position.ZERO)
       .toSeq
   }
+
+  dispatcher.subscribe(readNotes)
+  dispatcher.subscribe(readChords)
+  dispatcher.subscribe(readMidiNotes)
 
 }
