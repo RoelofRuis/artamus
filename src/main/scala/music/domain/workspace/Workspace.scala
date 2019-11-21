@@ -1,12 +1,12 @@
 package music.domain.workspace
 
-import music.domain.track.Track.TrackId
+import music.domain.track.Track
 import music.domain.user.User.UserId
 
-final case class Workspace(
-  owner: UserId,
-  editedTrack: TrackId
-)
+trait Workspace {
+  val owner: UserId
+  def editedTrack: Option[Track]
+}
 
 object Workspace {
 
