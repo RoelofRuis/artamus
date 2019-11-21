@@ -26,6 +26,10 @@ class WorkspaceRepository @Inject() (trackRepository: TrackRepository) {
     }
   }
 
+  def write(workspace: Workspace): Unit = workspaceLock.synchronized {
+    workspaces = workspaces.updated(workspace.owner, workspace)
+  }
+
 }
 
 object WorkspaceRepository {
@@ -35,8 +39,12 @@ object WorkspaceRepository {
     trackRepository: TrackRepository,
     editedTrackId: TrackId
   ) extends Workspace {
-    override def editedTrack: Track = {
+    override def getEditedTrack: Track = {
       trackRepository.getById(editedTrackId).get // TODO: try to remove 'get'
+    }
+    override def startNewEdit: Workspace = {
+      val newTrackId = trackRepository.write(Track())
+      WorkspaceImpl(owner, trackRepository, newTrackId)
     }
   }
 

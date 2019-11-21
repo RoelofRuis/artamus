@@ -21,7 +21,7 @@ private[server] class ChangeHandler @Inject() (
 
   changeCommands.subscribe[Analyse.type] { req =>
     eventBus.publish(AnalysisStarted)
-    val analysedTrack = analysis.run(req.user.workspace.editedTrack)
+    val analysedTrack = analysis.run(req.user.workspace.getEditedTrack)
     val lilypondFile = interpreter.interpret(analysedTrack)
     renderer.submit("committed-changes", lilypondFile)
     savepoint.writeStaged(analysedTrack)

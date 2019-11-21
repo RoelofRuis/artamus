@@ -17,7 +17,7 @@ private[server] class TrackQueryHandler @Inject() (
     req
       .user
       .workspace
-      .editedTrack
+      .getEditedTrack
       .read[Note]()
       .toSeq
   }
@@ -26,7 +26,7 @@ private[server] class TrackQueryHandler @Inject() (
     req
       .user
       .workspace
-      .editedTrack
+      .getEditedTrack
       .read[Chord]()
       .toSeq
   }
@@ -37,7 +37,7 @@ private[server] class TrackQueryHandler @Inject() (
     req
       .user
       .workspace
-      .editedTrack
+      .getEditedTrack
       .iterate(Position.ZERO)
       .toSeq
   }

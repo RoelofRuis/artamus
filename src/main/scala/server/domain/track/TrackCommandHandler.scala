@@ -2,6 +2,7 @@ package server.domain.track
 
 import javax.inject.Inject
 import music.domain.track.TrackRepository
+import music.domain.workspace.WorkspaceRepository
 import music.math.temporal.Window
 import protocol.Command
 import pubsub.Dispatcher
@@ -10,15 +11,19 @@ import server.Request
 import scala.language.existentials
 
 private[server] class TrackCommandHandler @Inject() (
-  repository: TrackRepository,
+  trackRepo: TrackRepository,
+  workspaceRepo: WorkspaceRepository,
   dispatcher: Dispatcher[Request, Command],
-  savepoint: Savepoint
 ) {
   // TODO: refactor duplicate parts
 
-  dispatcher.subscribe[NewTrack.type]{ _ =>
-    // workspace clear
-    savepoint.clear()
+  dispatcher.subscribe[NewTrack.type]{ req =>
+    val edited = req
+      .user
+      .workspace
+      .startNewEdit
+
+    workspaceRepo.write(edited)
     true
   }
 
@@ -26,10 +31,10 @@ private[server] class TrackCommandHandler @Inject() (
     val edited = req
       .user
       .workspace
-      .editedTrack
+      .getEditedTrack
       .create(req.attributes.window, req.attributes.symbol)
 
-    repository.write(edited)
+    trackRepo.write(edited)
     true
   }
 
@@ -37,10 +42,10 @@ private[server] class TrackCommandHandler @Inject() (
     val edited = req
       .user
       .workspace
-      .editedTrack
+      .getEditedTrack
       .writeTimeSignature(req.attributes.position, req.attributes.ts)
 
-    repository.write(edited)
+    trackRepo.write(edited)
     true
   }
 
@@ -48,10 +53,10 @@ private[server] class TrackCommandHandler @Inject() (
     val edited = req
       .user
       .workspace
-      .editedTrack
+      .getEditedTrack
       .create(Window.instantAt(req.attributes.position), req.attributes.symbol)
 
-    repository.write(edited)
+    trackRepo.write(edited)
     true
   }
 

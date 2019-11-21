@@ -22,12 +22,6 @@ class Savepoint @Inject() (
   }
 
   @deprecated
-  def clear(): Unit = trackLock.synchronized {
-    savepoint = None
-    rollback()
-  }
-
-  @deprecated
   def commit(): Unit = trackLock.synchronized {
     savepoint = stagedTrack
     editedTrack = stagedTrack
