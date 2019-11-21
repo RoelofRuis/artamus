@@ -3,7 +3,7 @@ package server.control
 import music.domain.user.{User, UserRepository}
 import protocol._
 import protocol.transport.server.{Connection, ServerAPI}
-import server.ServerBindings
+import server.{Request, ServerBindings}
 
 import scala.util.{Failure, Success, Try}
 
@@ -31,7 +31,7 @@ final class DispatchingServerAPI(
           case Success(request) =>
             identifier match {
               case None => authenticate(connection, request)
-              case Some(_) => handleRequest(request)
+              case Some(user) => handleRequest(user, request)
             }
           case Failure(ex) => Left(s"Unable to read message. [$ex]")
         }
@@ -53,10 +53,10 @@ final class DispatchingServerAPI(
     }
   }
 
-  def handleRequest(request: ServerRequest): Either[ServerException, Any] = {
+  def handleRequest(user: User, request: ServerRequest): Either[ServerException, Any] = {
     request match {
       case CommandRequest(command) => server.handleCommand(command)
-      case QueryRequest(query) => server.handleQuery(query)
+      case QueryRequest(query) => server.handleQuery(Request(user, query))
     }
   }
 }

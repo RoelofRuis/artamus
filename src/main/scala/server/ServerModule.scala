@@ -6,7 +6,7 @@ import _root_.server.domain.track.{Savepoint, TrackCommandHandler, TrackQueryHan
 import com.google.inject.Provides
 import javax.inject.Singleton
 import music.domain.DomainModule
-import music.domain.track.{Track, TrackRepository}
+import music.domain.track.Track
 import music.domain.user.UserRepository
 import net.codingwell.scalaguice.ScalaPrivateModule
 import protocol._

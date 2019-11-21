@@ -11,21 +11,21 @@ private[server] class TrackQueryHandler @Inject() (
   savepoint: Savepoint
 ) {
 
-  dispatcher.subscribe[ReadNotes.type]{ _ =>
+  dispatcher.subscribeRequest[ReadNotes.type]{ _ =>
     savepoint
       .getCurrentTrack
       .read[Note]()
       .toSeq
   }
 
-  dispatcher.subscribe[ReadChords.type]{ _ =>
+  dispatcher.subscribeRequest[ReadChords.type]{ _ =>
     savepoint
       .getCurrentTrack
       .read[Chord]()
       .toSeq
   }
 
-  dispatcher.subscribe[ReadMidiNotes.type]{ _ =>
+  dispatcher.subscribeRequest[ReadMidiNotes.type]{ _ =>
     import music.playback._
 
     savepoint.getCurrentTrack

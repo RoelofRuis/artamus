@@ -30,11 +30,11 @@ class ServerBindings @Inject() (
     }
   }
 
-  def handleQuery(query: Query): Either[ServerException, Query#Res] = {
-    Try { queryDispatcher.handle(query) } match {
+  def handleQuery(request: Request[Query]): Either[ServerException, Query#Res] = {
+    Try { queryDispatcher.handleRequest(request) } match {
       case Success(response) => response match {
         case Some(res) => Right(res)
-        case None => Left(s"No handler defined for query [$query]")
+        case None => Left(s"No handler defined for query [$request]")
       }
       case Failure(ex) => Left(s"Error during query execution [$ex]")
     }
