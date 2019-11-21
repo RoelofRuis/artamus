@@ -4,11 +4,12 @@ import javax.inject.Inject
 import music.math.temporal.Window
 import protocol.Command
 import pubsub.Dispatcher
+import server.Request
 
 import scala.language.existentials
 
 private[server] class TrackCommandHandler @Inject() (
-  dispatcher: Dispatcher[Command],
+  dispatcher: Dispatcher[Request, Command],
   savepoint: Savepoint
 ) {
 
@@ -17,28 +18,28 @@ private[server] class TrackCommandHandler @Inject() (
     true
   }
 
-  dispatcher.subscribe[CreateNoteSymbol]{ command =>
+  dispatcher.subscribe[CreateNoteSymbol]{ req =>
     val edited = savepoint
       .getCurrentTrack
-      .create(command.window, command.symbol)
+      .create(req.attributes.window, req.attributes.symbol)
 
     savepoint.writeEdit(edited)
     true
   }
 
-  dispatcher.subscribe[CreateTimeSignatureSymbol]{ command =>
+  dispatcher.subscribe[CreateTimeSignatureSymbol]{ req =>
     val edited = savepoint
       .getCurrentTrack
-      .writeTimeSignature(command.position, command.ts)
+      .writeTimeSignature(req.attributes.position, req.attributes.ts)
 
     savepoint.writeEdit(edited)
     true
   }
 
-  dispatcher.subscribe[CreateKeySymbol]{ command =>
+  dispatcher.subscribe[CreateKeySymbol]{ req =>
     val edited = savepoint
       .getCurrentTrack
-      .create(Window.instantAt(command.position), command.symbol)
+      .create(Window.instantAt(req.attributes.position), req.attributes.symbol)
 
     savepoint.writeEdit(edited)
     true

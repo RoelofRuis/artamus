@@ -4,13 +4,14 @@ import javax.inject.Inject
 import music.domain.track.Track
 import protocol.{Command, Event}
 import pubsub.{Dispatcher, EventBus}
+import server.Request
 import server.analysis.blackboard.Controller
 import server.domain.track.Savepoint
 import server.interpret.LilypondInterpreter
 import server.rendering.Renderer
 
 private[server] class ChangeHandler @Inject() (
-  changeCommands: Dispatcher[Command],
+  changeCommands: Dispatcher[Request, Command],
   eventBus: EventBus[Event],
   interpreter: LilypondInterpreter,
   savepoint: Savepoint,
@@ -32,9 +33,9 @@ private[server] class ChangeHandler @Inject() (
     true
   }
 
-  changeCommands.subscribe[Rollback.type] { _ =>
+  changeCommands.subscribe[Rollback.type] { req: Request[Rollback.type] =>
     savepoint.rollback()
-    changeCommands.handle(Analyse) // TODO: probably split analyse and handle
+    changeCommands.handle(Request(req.user, Analyse)) // TODO: probably split analyse and handle
     true
   }
 

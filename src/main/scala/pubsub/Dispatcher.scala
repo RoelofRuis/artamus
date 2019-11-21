@@ -1,21 +1,13 @@
 package pubsub
 
-import server.Request // TODO: make this abstract!
-
 import scala.reflect.ClassTag
-import scala.language.reflectiveCalls
+import scala.language.{higherKinds, reflectiveCalls}
 
-trait Dispatcher[A <: { type Res }] {
+trait Dispatcher[R[_] <: RequestContainer[_], A <: { type Res }] {
 
-  def handleRequest[B <: A : ClassTag](msg: Request[B]): Option[B#Res]
+  def handle[B <: A : ClassTag](req: R[B]): Option[B#Res]
 
-  @deprecated
-  def handle[B <: A : ClassTag](msg: B): Option[B#Res]
-
-  def subscribeRequest[B <: A : ClassTag](f: Request[B] => B#Res): Unit
-
-  @deprecated
-  def subscribe[B <: A : ClassTag](f: B => B#Res): Unit
+  def subscribe[B <: A : ClassTag](f: R[B] => B#Res): Unit
 
   def getSubscriptions: List[String]
 

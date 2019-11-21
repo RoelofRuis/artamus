@@ -9,14 +9,14 @@ import javax.annotation.concurrent.NotThreadSafe
 import javax.imageio.ImageIO
 import javax.swing.{ImageIcon, JFrame, JLabel, WindowConstants}
 import protocol.Event
-import pubsub.Dispatcher
+import pubsub.{Callback, Dispatcher}
 import server.domain.{AnalysisStarted, RenderingCompleted}
 
 import scala.util.{Failure, Success, Try}
 
 @NotThreadSafe // TODO: proper GUI
 class RenderHandler @Inject() (
-  dispatcher: Dispatcher[Event],
+  dispatcher: Dispatcher[Callback, Event],
 ) extends LazyLogging {
 
   val frame: JFrame = new JFrame()
@@ -43,7 +43,7 @@ class RenderHandler @Inject() (
   }
 
   dispatcher.subscribe[RenderingCompleted]{ event =>
-    Try { ImageIO.read(event.file) } match {
+    Try { ImageIO.read(event.attributes.file) } match {
       case Success(value) =>
         lastImage = Some(value)
         image.setImage(value)

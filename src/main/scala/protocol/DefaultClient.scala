@@ -3,13 +3,13 @@ package protocol
 import java.util.concurrent.{ArrayBlockingQueue, BlockingQueue}
 
 import com.typesafe.scalalogging.LazyLogging
-import pubsub.{DispatchThread, Dispatcher}
+import pubsub.{Callback, DispatchThread, Dispatcher}
 import resource.Resource
 import transport.client.ClientThread
 
 class DefaultClient(
   client: Resource[ClientThread],
-  eventDispatcher: Dispatcher[Event],
+  eventDispatcher: Dispatcher[Callback, Event],
 ) extends ClientInterface with LazyLogging {
 
   private val eventQueue: BlockingQueue[Event] = new ArrayBlockingQueue[Event](64)
@@ -39,7 +39,7 @@ class DefaultClient(
 
 object DefaultClient {
 
-  def apply(port: Int, dispatcher: Dispatcher[Event]): ClientInterface = {
+  def apply(port: Int, dispatcher: Dispatcher[Callback, Event]): ClientInterface = {
     new DefaultClient(Resource.wrapUnsafe(ClientThread(port), _.interrupt()), dispatcher)
   }
 

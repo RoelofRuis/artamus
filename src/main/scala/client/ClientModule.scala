@@ -7,7 +7,7 @@ import com.google.inject.Provides
 import javax.inject.Singleton
 import net.codingwell.scalaguice.ScalaPrivateModule
 import protocol.{ClientInterface, DefaultClient, Event}
-import pubsub.Dispatcher
+import pubsub.{Callback, Dispatcher}
 
 class ClientModule extends ScalaPrivateModule with ClientConfig {
 
@@ -19,7 +19,7 @@ class ClientModule extends ScalaPrivateModule with ClientConfig {
     bind[TrackOperations].asEagerSingleton()
     bind[TrackQueryOperations].asEagerSingleton()
 
-    bind[Dispatcher[Event]].toInstance(pubsub.createDispatcher[Event]())
+    bind[Dispatcher[Callback, Event]].toInstance(pubsub.createDispatcher[Callback, Event]())
     bind[RenderHandler].asEagerSingleton()
 
     bind[Bootstrapper].asEagerSingleton()
@@ -27,6 +27,6 @@ class ClientModule extends ScalaPrivateModule with ClientConfig {
   }
 
   @Provides @Singleton
-  def client(dispatcher: Dispatcher[Event]): ClientInterface = DefaultClient(port, dispatcher)
+  def client(dispatcher: Dispatcher[Callback, Event]): ClientInterface = DefaultClient(port, dispatcher)
 
 }

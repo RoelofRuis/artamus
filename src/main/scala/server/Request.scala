@@ -1,5 +1,8 @@
 package server
 
 import music.domain.user.User
+import pubsub.RequestContainer
 
-final case class Request[+A](user: User, data: A)
+import scala.reflect.ClassTag
+
+final case class Request[+A : ClassTag](user: User, attributes: A) extends RequestContainer[A]

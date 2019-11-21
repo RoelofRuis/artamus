@@ -7,8 +7,8 @@ import pubsub.{Dispatcher, EventBus}
 import scala.util.{Failure, Success, Try}
 
 class ServerBindings @Inject() (
-  commandDispatcher: Dispatcher[Command],
-  queryDispatcher: Dispatcher[Query],
+  commandDispatcher: Dispatcher[Request, Command],
+  queryDispatcher: Dispatcher[Request, Query],
   eventSubscriber: EventBus[Event]
 ) {
 
@@ -20,21 +20,21 @@ class ServerBindings @Inject() (
     eventSubscriber.unsubscribe(subscribeKey)
   }
 
-  def handleCommand(command: Command): Either[ServerException, Command#Res] = {
-    Try { commandDispatcher.handle(command) } match {
+  def handleCommand(request: Request[Command]): Either[ServerException, Command#Res] = {
+    Try { commandDispatcher.handle(request) } match {
       case Success(response) => response match {
         case Some(res) => Right(res)
-        case None => Left(s"No handler defined for command [$command]")
+        case None => Left(s"No handler defined for command [${request.attributes}]")
       }
       case Failure(ex) => Left(s"Error during command execution [$ex]")
     }
   }
 
   def handleQuery(request: Request[Query]): Either[ServerException, Query#Res] = {
-    Try { queryDispatcher.handleRequest(request) } match {
+    Try { queryDispatcher.handle(request) } match {
       case Success(response) => response match {
         case Some(res) => Right(res)
-        case None => Left(s"No handler defined for query [$request]")
+        case None => Left(s"No handler defined for query [${request.attributes}]")
       }
       case Failure(ex) => Left(s"Error during query execution [$ex]")
     }

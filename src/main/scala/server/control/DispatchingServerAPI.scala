@@ -55,7 +55,7 @@ final class DispatchingServerAPI(
 
   def handleRequest(user: User, request: ServerRequest): Either[ServerException, Any] = {
     request match {
-      case CommandRequest(command) => server.handleCommand(command)
+      case CommandRequest(command) => server.handleCommand(Request(user, command))
       case QueryRequest(query) => server.handleQuery(Request(user, query))
     }
   }
