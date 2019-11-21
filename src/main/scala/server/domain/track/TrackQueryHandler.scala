@@ -14,19 +14,19 @@ private[server] class TrackQueryHandler @Inject() (
 ) {
 
   dispatcher.subscribe[ReadNotes.type]{ req =>
-    val trackId = req.user.workspace.editedTrack
-
-    trackRepository
-      .getById(trackId)
-        .map(_.read[Note]().toSeq)
-        .getOrElse(Seq())
+    req
+      .user
+      .workspace
+      .editedTrack
+      .map(_.read[Note]().toSeq)
+      .getOrElse(Seq())
   }
 
   dispatcher.subscribe[ReadChords.type]{ req =>
-    val trackId = req.user.workspace.editedTrack
-
-    trackRepository
-      .getById(trackId)
+    req
+      .user
+      .workspace
+      .editedTrack
       .map(_.read[Chord]().toSeq)
       .getOrElse(Seq())
   }
@@ -34,10 +34,10 @@ private[server] class TrackQueryHandler @Inject() (
   dispatcher.subscribe[ReadMidiNotes.type]{ req =>
     import music.playback._
 
-    val trackId = req.user.workspace.editedTrack
-
-    trackRepository
-      .getById(trackId)
+    req
+      .user
+      .workspace
+      .editedTrack
       .map(_.iterate(Position.ZERO).toSeq)
       .getOrElse(Seq())
   }

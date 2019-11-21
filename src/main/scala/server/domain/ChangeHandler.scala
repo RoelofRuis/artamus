@@ -19,13 +19,18 @@ private[server] class ChangeHandler @Inject() (
   renderer: Renderer,
 ) {
 
-  changeCommands.subscribe[Analyse.type] { _ =>
+  changeCommands.subscribe[Analyse.type] { req =>
     eventBus.publish(AnalysisStarted)
-    val analysedTrack = analysis.run(savepoint.getCurrentTrack)
-    val lilypondFile = interpreter.interpret(analysedTrack)
-    renderer.submit("committed-changes", lilypondFile)
-    savepoint.writeStaged(analysedTrack)
-    true
+    val workspace = req.user.workspace
+    workspace.editedTrack match {
+      case None => false
+      case Some(track) =>
+        val analysedTrack = analysis.run(track)
+        val lilypondFile = interpreter.interpret(analysedTrack)
+        renderer.submit("committed-changes", lilypondFile)
+        savepoint.writeStaged(analysedTrack)
+        true
+    }
   }
 
   changeCommands.subscribe[Commit.type] { _ =>
