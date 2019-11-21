@@ -27,12 +27,9 @@ private[server] class TrackCommandHandler @Inject() (
       .user
       .workspace
       .editedTrack
-      .map(_.create(req.attributes.window, req.attributes.symbol))
+      .create(req.attributes.window, req.attributes.symbol)
 
-    edited match {
-      case None =>
-      case Some(track) => repository.write(track)
-    }
+    repository.write(edited)
     true
   }
 
@@ -41,12 +38,9 @@ private[server] class TrackCommandHandler @Inject() (
       .user
       .workspace
       .editedTrack
-      .map(_.writeTimeSignature(req.attributes.position, req.attributes.ts))
+      .writeTimeSignature(req.attributes.position, req.attributes.ts)
 
-    edited match {
-      case None =>
-      case Some(track) => repository.write(track)
-    }
+    repository.write(edited)
     true
   }
 
@@ -55,12 +49,9 @@ private[server] class TrackCommandHandler @Inject() (
       .user
       .workspace
       .editedTrack
-      .map(_.create(Window.instantAt(req.attributes.position), req.attributes.symbol))
+      .create(Window.instantAt(req.attributes.position), req.attributes.symbol)
 
-    edited match {
-      case None =>
-      case Some(track) => repository.write(track)
-    }
+    repository.write(edited)
     true
   }
 

@@ -18,8 +18,8 @@ private[server] class TrackQueryHandler @Inject() (
       .user
       .workspace
       .editedTrack
-      .map(_.read[Note]().toSeq)
-      .getOrElse(Seq())
+      .read[Note]()
+      .toSeq
   }
 
   dispatcher.subscribe[ReadChords.type]{ req =>
@@ -27,8 +27,8 @@ private[server] class TrackQueryHandler @Inject() (
       .user
       .workspace
       .editedTrack
-      .map(_.read[Chord]().toSeq)
-      .getOrElse(Seq())
+      .read[Chord]()
+      .toSeq
   }
 
   dispatcher.subscribe[ReadMidiNotes.type]{ req =>
@@ -38,8 +38,8 @@ private[server] class TrackQueryHandler @Inject() (
       .user
       .workspace
       .editedTrack
-      .map(_.iterate(Position.ZERO).toSeq)
-      .getOrElse(Seq())
+      .iterate(Position.ZERO)
+      .toSeq
   }
 
 }

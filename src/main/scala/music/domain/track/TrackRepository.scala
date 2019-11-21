@@ -9,22 +9,17 @@ class TrackRepository {
   @GuardedBy("trackLock") private var nextId: Long = 0L
   @GuardedBy("trackLock") private var tracks: Map[TrackId, Track] = Map()
 
-  def getById(id: TrackId): Option[Track] = tracks.get(id)
+  def getById(id: TrackId): Option[Track] = trackLock.synchronized { tracks.get(id) }
 
-  def getNextId: TrackId = trackLock.synchronized {
-    val id = nextId
-    nextId += 1
-    TrackId(id)
-  }
-
-  def write(track2: Track): TrackId = trackLock.synchronized {
-    track2.id match {
+  def write(track: Track): TrackId = trackLock.synchronized {
+    track.id match {
       case None =>
-        val id = getNextId
-        tracks = tracks.updated(id, track2)
+        val id = TrackId(nextId)
+        tracks = tracks.updated(id, track.setId(id))
+        nextId += 1
         id
       case Some(id) =>
-        tracks = tracks.updated(id, track2)
+        tracks = tracks.updated(id, track)
         id
     }
   }

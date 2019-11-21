@@ -5,7 +5,7 @@ import music.domain.user.User.UserId
 
 trait Workspace {
   val owner: UserId
-  def editedTrack: Option[Track]
+  def editedTrack: Track
 }
 
 object Workspace {

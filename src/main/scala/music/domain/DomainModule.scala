@@ -8,9 +8,9 @@ import net.codingwell.scalaguice.ScalaPrivateModule
 class DomainModule extends ScalaPrivateModule {
 
   override def configure(): Unit = {
-    bind[UserRepository]
-    bind[TrackRepository]
-    bind[WorkspaceRepository]
+    bind[UserRepository].asEagerSingleton()
+    bind[TrackRepository].asEagerSingleton()
+    bind[WorkspaceRepository].asEagerSingleton()
 
     expose[UserRepository]
     expose[TrackRepository]

@@ -15,10 +15,11 @@ class WorkspaceRepository @Inject() (trackRepository: TrackRepository) {
   def getByOwner(userId: UserId): Workspace = workspaceLock.synchronized {
     if (workspaces.isDefinedAt(userId)) workspaces(userId)
     else {
+      val trackId = trackRepository.write(Track())
       val newWorkspace = WorkspaceImpl(
         userId,
         trackRepository,
-        None
+        trackId
       )
       workspaces += (userId -> newWorkspace)
       newWorkspace
@@ -32,10 +33,10 @@ object WorkspaceRepository {
   final case class WorkspaceImpl(
     owner: UserId,
     trackRepository: TrackRepository,
-    editedTrackId: Option[TrackId]
+    editedTrackId: TrackId
   ) extends Workspace {
-    override def editedTrack: Option[Track] = {
-      editedTrackId.flatMap(trackRepository.getById)
+    override def editedTrack: Track = {
+      trackRepository.getById(editedTrackId).get // TODO: try to remove 'get'
     }
   }
 
