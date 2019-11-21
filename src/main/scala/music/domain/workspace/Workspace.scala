@@ -1,9 +1,11 @@
 package music.domain.workspace
 
+import music.domain.track.Track.TrackId
 import music.domain.user.User.UserId
 
 final case class Workspace(
-  owner: UserId
+  owner: UserId,
+  editedTrack: TrackId
 )
 
 object Workspace {
