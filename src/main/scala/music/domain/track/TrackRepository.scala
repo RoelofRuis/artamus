@@ -1,8 +1,10 @@
 package music.domain.track
 
 import javax.annotation.concurrent.GuardedBy
+import javax.inject.Singleton
 import music.domain.track.Track.TrackId
 
+@Singleton
 class TrackRepository {
 
   private val trackLock = new Object()

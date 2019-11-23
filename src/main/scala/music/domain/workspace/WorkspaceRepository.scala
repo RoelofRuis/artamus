@@ -1,12 +1,13 @@
 package music.domain.workspace
 
 import javax.annotation.concurrent.GuardedBy
-import javax.inject.Inject
+import javax.inject.{Inject, Singleton}
 import music.domain.track.Track.TrackId
 import music.domain.track.{Track, TrackRepository}
 import music.domain.user.User.UserId
 import music.domain.workspace.WorkspaceRepository.WorkspaceImpl
 
+@Singleton
 class WorkspaceRepository @Inject() (trackRepository: TrackRepository) {
 
   private val workspaceLock = new Object()
