@@ -36,10 +36,18 @@ object WorkspaceRepository {
 
   final case class WorkspaceImpl(
     owner: UserId,
-    editedTrack: Track
+    editedTrack: Track,
+    annotatedTrack: Option[Track] = None
   ) extends Workspace {
-    override def startNewEdit: Workspace = WorkspaceImpl(owner, Track())
-    override def makeEdit(track: Track): Workspace = WorkspaceImpl(owner, track)
+    override def startNewEdit: Workspace = copy(editedTrack = Track())
+    override def makeEdit(track: Track): Workspace = copy(editedTrack = track)
+    override def makeAnnotations(track: Track): Workspace = copy(annotatedTrack = Some(track))
+    override def useAnnotations: Workspace = {
+      annotatedTrack match {
+        case None => this
+        case Some(annotated) => copy(editedTrack = annotated)
+      }
+    }
   }
 
 }

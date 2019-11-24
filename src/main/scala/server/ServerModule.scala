@@ -2,7 +2,7 @@ package server
 
 import _root_.server.analysis._
 import _root_.server.control.{DispatchingServerAPI, ServerControlHandler}
-import _root_.server.domain.track.{Savepoint, TrackCommandHandler, TrackQueryHandler}
+import _root_.server.domain.track.{TrackCommandHandler, TrackQueryHandler}
 import com.google.inject.Provides
 import javax.inject.Singleton
 import music.domain.DomainModule
@@ -39,8 +39,6 @@ class ServerModule extends ScalaPrivateModule with ServerConfig {
 
     bind[Dispatcher[Request, Command]].toInstance(pubsub.createDispatcher[Request, Command]())
     bind[TrackCommandHandler].asEagerSingleton()
-
-    bind[Savepoint].asEagerSingleton()
 
     bind[ServerBindings].asEagerSingleton()
     bind[EventBus[Event]].toInstance(new EventBus[Event])

@@ -5,13 +5,13 @@ import client.MusicReader.{NoteOn, Simultaneous}
 import client.io.StdIOTools
 import com.google.inject.Inject
 import music.domain.track.TimeSignature
+import music.domain.track.symbol.{Key, Note}
 import music.math.Rational
 import music.math.temporal.{Duration, Position, Window}
 import music.primitives._
-import music.domain.track.symbol.{Key, Note}
 import protocol.Command
 import server.domain.track._
-import server.domain.{Analyse, Commit, Rollback}
+import server.domain.{Analyse, Commit}
 
 import scala.annotation.tailrec
 
@@ -23,7 +23,6 @@ class TrackOperations @Inject() (
   import music.analysis.TwelveToneTuning._
 
   registry.registerOperation(OperationToken("commit", "track"), () => { List(Commit) })
-  registry.registerOperation(OperationToken("rollback", "track"), () => { List(Rollback) })
 
   registry.registerOperation(OperationToken("new", "track"), () => {
     List(
