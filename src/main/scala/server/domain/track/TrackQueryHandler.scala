@@ -1,7 +1,6 @@
 package server.domain.track
 
 import javax.inject.Inject
-import music.domain.track.TrackRepository
 import music.domain.track.symbol.{Chord, Note}
 import music.math.temporal.Position
 import protocol.Query
@@ -9,8 +8,7 @@ import pubsub.Dispatcher
 import server.Request
 
 private[server] class TrackQueryHandler @Inject() (
-  dispatcher: Dispatcher[Request, Query],
-  trackRepository: TrackRepository,
+  dispatcher: Dispatcher[Request, Query]
 ) {
 
   dispatcher.subscribe[ReadNotes.type]{ req =>
