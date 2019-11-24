@@ -18,7 +18,7 @@ class Savepoint @Inject() (
 
   @deprecated
   def writeStaged(track: Track): Unit = trackLock.synchronized {
-    stagedTrack = Some(repository.write(track))
+    stagedTrack = Some(repository.write(track).id.get)
   }
 
   @deprecated

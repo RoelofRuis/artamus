@@ -11,16 +11,14 @@ import server.Request
 import scala.language.existentials
 
 private[server] class TrackCommandHandler @Inject() (
-  trackRepo: TrackRepository,
   workspaceRepo: WorkspaceRepository,
   dispatcher: Dispatcher[Request, Command],
 ) {
   // TODO: refactor duplicate parts
 
   dispatcher.subscribe[NewTrack.type]{ req =>
-    val edited = req
-      .user
-      .workspace
+    val edited = workspaceRepo
+      .getByOwner(req.user)
       .startNewEdit
 
     workspaceRepo.write(edited)
@@ -28,35 +26,35 @@ private[server] class TrackCommandHandler @Inject() (
   }
 
   dispatcher.subscribe[CreateNoteSymbol]{ req =>
-    val edited = req
-      .user
-      .workspace
-      .getEditedTrack
+    val workspace = workspaceRepo.getByOwner(req.user)
+
+    val edited = workspace
+      .editedTrack
       .create(req.attributes.window, req.attributes.symbol)
 
-    trackRepo.write(edited)
+    workspaceRepo.write(workspace.makeEdit(edited))
     true
   }
 
   dispatcher.subscribe[CreateTimeSignatureSymbol]{ req =>
-    val edited = req
-      .user
-      .workspace
-      .getEditedTrack
+    val workspace = workspaceRepo.getByOwner(req.user)
+
+    val edited = workspace
+      .editedTrack
       .writeTimeSignature(req.attributes.position, req.attributes.ts)
 
-    trackRepo.write(edited)
+    workspaceRepo.write(workspace.makeEdit(edited))
     true
   }
 
   dispatcher.subscribe[CreateKeySymbol]{ req =>
-    val edited = req
-      .user
-      .workspace
-      .getEditedTrack
+    val workspace = workspaceRepo.getByOwner(req.user)
+
+    val edited = workspace
+      .editedTrack
       .create(Window.instantAt(req.attributes.position), req.attributes.symbol)
 
-    trackRepo.write(edited)
+    workspaceRepo.write(workspace.makeEdit(edited))
     true
   }
 

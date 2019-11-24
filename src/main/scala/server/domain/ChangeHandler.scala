@@ -2,6 +2,7 @@ package server.domain
 
 import javax.inject.Inject
 import music.domain.track.Track
+import music.domain.workspace.WorkspaceRepository
 import protocol.{Command, Event}
 import pubsub.{Dispatcher, EventBus}
 import server.Request
@@ -11,6 +12,7 @@ import server.interpret.LilypondInterpreter
 import server.rendering.Renderer
 
 private[server] class ChangeHandler @Inject() (
+  workspaces: WorkspaceRepository,
   changeCommands: Dispatcher[Request, Command],
   eventBus: EventBus[Event],
   interpreter: LilypondInterpreter,
@@ -21,7 +23,7 @@ private[server] class ChangeHandler @Inject() (
 
   changeCommands.subscribe[Analyse.type] { req =>
     eventBus.publish(AnalysisStarted)
-    val analysedTrack = analysis.run(req.user.workspace.getEditedTrack)
+    val analysedTrack = analysis.run(workspaces.getByOwner(req.user).editedTrack)
     val lilypondFile = interpreter.interpret(analysedTrack)
     renderer.submit("committed-changes", lilypondFile)
     savepoint.writeStaged(analysedTrack)

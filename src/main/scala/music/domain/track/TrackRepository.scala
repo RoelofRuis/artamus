@@ -13,16 +13,17 @@ class TrackRepository {
 
   def getById(id: TrackId): Option[Track] = trackLock.synchronized { tracks.get(id) }
 
-  def write(track: Track): TrackId = trackLock.synchronized {
+  def write(track: Track): Track = trackLock.synchronized {
     track.id match {
       case None =>
         val id = TrackId(nextId)
-        tracks = tracks.updated(id, track.setId(id))
+        val trackWithId = track.setId(id)
+        tracks = tracks.updated(id, trackWithId)
         nextId += 1
-        id
+        trackWithId
       case Some(id) =>
         tracks = tracks.updated(id, track)
-        id
+        track
     }
   }
 
