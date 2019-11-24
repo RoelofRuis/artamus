@@ -8,7 +8,6 @@ package object domain {
 
   case object Analyse extends Command
   case object Commit extends Command
-  case object Rollback extends Command
 
   final case object AnalysisStarted extends Event
   final case class RenderingCompleted(file: File) extends Event

@@ -1,5 +1,9 @@
 package object pubsub {
 
-  def createDispatcher[A <: { type Res }](): Dispatcher[A] = new SimpleDispatcher[A]
+  trait RequestContainer[+A] { val attributes: A }
+
+  def createDispatcher[R[_] <: RequestContainer[_], A <: { type Res }](): Dispatcher[R, A] = new SimpleDispatcher[R, A]
+
+  type Action[A <: { type Res }] = A => A#Res
 
 }

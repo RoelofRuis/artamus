@@ -5,13 +5,13 @@ import java.awt.event.{WindowAdapter, WindowEvent}
 import client.CommandExecutor
 import javax.inject.Inject
 import protocol.Event
-import pubsub.Dispatcher
+import pubsub.{Callback, Dispatcher}
 
 import scala.swing.Swing
 
 class Editor @Inject() (
   executor: CommandExecutor,
-  dispatcher: Dispatcher[Event]
+  dispatcher: Dispatcher[Callback, Event]
 ) extends Thread {
 
   override def run(): Unit = {

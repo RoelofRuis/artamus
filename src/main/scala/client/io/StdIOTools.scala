@@ -2,6 +2,10 @@ package client.io
 
 object StdIOTools {
 
+  def readString(message: String): String = {
+    read[String](message, "Not a valid string", scala.io.StdIn.readLine())
+  }
+
   def readInt(message: String): Int = {
     read[Int](message, "Not a valid int", scala.io.StdIn.readInt())
   }

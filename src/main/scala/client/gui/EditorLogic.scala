@@ -3,7 +3,7 @@ package client.gui
 import client.CommandExecutor
 import javax.imageio.ImageIO
 import protocol.Event
-import pubsub.Dispatcher
+import pubsub.{Callback, Dispatcher}
 import server.domain.RenderingCompleted
 
 import scala.swing.Swing
@@ -12,7 +12,7 @@ import scala.util.{Success, Try}
 
 class EditorLogic (
   executor: CommandExecutor,
-  dispatcher: Dispatcher[Event]
+  dispatcher: Dispatcher[Callback, Event]
 ) extends EditorFrame {
 
   commandLine.input.textField.keys.reactions += {
@@ -23,7 +23,7 @@ class EditorLogic (
   }
 
   dispatcher.subscribe[RenderingCompleted]{ event =>
-    Try { ImageIO.read(event.file) } match {
+    Try { ImageIO.read(event.attributes.file) } match {
       case Success(loadedImage) => Swing.onEDT {
           workspace.image.setImage(loadedImage)
           repaint()

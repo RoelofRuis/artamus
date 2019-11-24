@@ -1,22 +1,24 @@
 package server.control
 
+import music.domain.user.{User, UserRepository}
 import protocol._
 import protocol.transport.server.{Connection, ServerAPI}
-import server.ServerBindings
+import server.{Request, ServerBindings}
 
 import scala.util.{Failure, Success, Try}
 
 final class DispatchingServerAPI(
+  userRepository: UserRepository,
   server: ServerBindings,
 ) extends ServerAPI {
 
-  private var connections: Map[Connection, Option[Int]] = Map()
+  private var connections: Map[Connection, Option[User]] = Map()
 
-  def connectionAccepted(connection: Connection): Unit = {
+  def connectionOpened(connection: Connection): Unit = {
     connections += (connection -> None)
   }
 
-  def connectionDropped(connection: Connection): Unit = {
+  def connectionClosed(connection: Connection): Unit = {
     connections -= connection
     server.unsubscribeEvents(connection.name)
   }
@@ -29,7 +31,7 @@ final class DispatchingServerAPI(
           case Success(request) =>
             identifier match {
               case None => authenticate(connection, request)
-              case Some(_) => handleRequest(request)
+              case Some(user) => handleRequest(user, request)
             }
           case Failure(ex) => Left(s"Unable to read message. [$ex]")
         }
@@ -39,18 +41,22 @@ final class DispatchingServerAPI(
 
   def authenticate(connection: Connection, request: ServerRequest): Either[ServerException, Any] = {
     request match {
-      case CommandRequest(Authenticate(userId)) =>
-        server.subscribeEvents(connection.name, connection.sendEvent)
-        connections = connections.updated(connection, Some(userId))
-        Right(true)
+      case CommandRequest(Authenticate(userName)) =>
+        userRepository.getByName(userName) match {
+          case None => Left(s"User [$userName] not found")
+          case Some(user) =>
+            server.subscribeEvents(connection.name, event => connection.sendEvent(EventResponse(event)))
+            connections = connections.updated(connection, Some(user))
+            Right(true)
+        }
       case _ => Left("Unauthorized")
     }
   }
 
-  def handleRequest(request: ServerRequest): Either[ServerException, Any] = {
+  def handleRequest(user: User, request: ServerRequest): Either[ServerException, Any] = {
     request match {
-      case CommandRequest(command) => server.handleCommand(command)
-      case QueryRequest(query) => server.handleQuery(query)
+      case CommandRequest(command) => server.handleCommand(Request(user, command))
+      case QueryRequest(query) => server.handleQuery(Request(user, query))
     }
   }
 }

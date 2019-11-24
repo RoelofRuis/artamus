@@ -6,12 +6,13 @@ import scala.reflect.ClassTag
 
 class DispatchThread[A <: { type Res } : ClassTag](
   eventQueue: BlockingQueue[A],
-  dispatcher: Dispatcher[A]
+  dispatcher: Dispatcher[Callback, A]
 ) extends Thread {
   override def run(): Unit = {
     try {
       while (! Thread.currentThread().isInterrupted) {
-        dispatcher.handle(eventQueue.take())
+        val callback = Callback(eventQueue.take())
+        dispatcher.handle(callback)
       }
     } catch {
       case _: InterruptedException =>

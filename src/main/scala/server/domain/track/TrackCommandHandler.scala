@@ -1,34 +1,60 @@
 package server.domain.track
 
 import javax.inject.Inject
+import music.domain.track.TrackRepository
+import music.domain.workspace.WorkspaceRepository
 import music.math.temporal.Window
 import protocol.Command
 import pubsub.Dispatcher
+import server.Request
 
 import scala.language.existentials
 
 private[server] class TrackCommandHandler @Inject() (
-  dispatcher: Dispatcher[Command],
-  state: TrackState
+  workspaceRepo: WorkspaceRepository,
+  dispatcher: Dispatcher[Request, Command],
 ) {
+  // TODO: refactor duplicate parts
 
-  dispatcher.subscribe[NewTrack.type]{ _ =>
-    state.clear()
+  dispatcher.subscribe[NewTrack.type]{ req =>
+    val edited = workspaceRepo
+      .getByOwner(req.user)
+      .startNewEdit
+
+    workspaceRepo.write(edited)
     true
   }
 
-  dispatcher.subscribe[CreateNoteSymbol]{ command =>
-    state.edit(_.create(command.window, command.symbol))
+  dispatcher.subscribe[CreateNoteSymbol]{ req =>
+    val workspace = workspaceRepo.getByOwner(req.user)
+
+    val edited = workspace
+      .editedTrack
+      .create(req.attributes.window, req.attributes.symbol)
+
+    workspaceRepo.write(workspace.makeEdit(edited))
     true
   }
 
-  dispatcher.subscribe[CreateTimeSignatureSymbol]{ command =>
-    state.edit(_.writeTimeSignature(command.position, command.ts))
+  dispatcher.subscribe[CreateTimeSignatureSymbol]{ req =>
+    val workspace = workspaceRepo.getByOwner(req.user)
+
+    val edited = workspace
+      .editedTrack
+      .writeTimeSignature(req.attributes.position, req.attributes.ts)
+
+    workspaceRepo.write(workspace.makeEdit(edited))
     true
   }
 
-  dispatcher.subscribe[CreateKeySymbol]{ command =>
-    state.edit(_.create(Window.instantAt(command.position), command.symbol))
+  dispatcher.subscribe[CreateKeySymbol]{ req =>
+    val workspace = workspaceRepo.getByOwner(req.user)
+
+    val edited = workspace
+      .editedTrack
+      .create(Window.instantAt(req.attributes.position), req.attributes.symbol)
+
+    workspaceRepo.write(workspace.makeEdit(edited))
     true
   }
 

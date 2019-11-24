@@ -1,23 +1,23 @@
 package pubsub
 
-import scala.reflect.{ClassTag, classTag}
 import scala.language.reflectiveCalls
+import scala.reflect.{ClassTag, classTag}
 
 /* @NotThreadSafe */
-class SimpleDispatcher[A <: Object { type Res }] extends Dispatcher[A] {
+class SimpleDispatcher[R[_] <: RequestContainer[_], A <: Object { type Res }] extends Dispatcher[R, A] {
 
-  private var handlers = Map[String, Any]()
+  private var request = Map[String, Any]()
 
-  def handle[B <: A : ClassTag](msg: B): Option[B#Res] = {
-    val key = msg.getClass.getCanonicalName
-    handlers.get(key).map(_.asInstanceOf[B => B#Res](msg))
+  def handle[B <: A : ClassTag](req: R[B]): Option[B#Res] = {
+    val key = req.attributes.getClass.getCanonicalName
+    request.get(key).map(_.asInstanceOf[R[B] => B#Res](req))
   }
 
-  def subscribe[B <: A : ClassTag](f: B => B#Res): Unit = {
+  def subscribe[B <: A : ClassTag](f: R[B] => B#Res): Unit = {
     val key = classTag[B].runtimeClass.getCanonicalName
-    handlers = handlers.updated(key, f)
+    request = request.updated(key, f)
   }
 
-  def getSubscriptions: List[String] = handlers.keys.toList
+  def getSubscriptions: List[String] = request.keys.toList
 
 }

@@ -1,4 +1,4 @@
-package music.symbol
+package music.domain.track.symbol
 
 import music.primitives.{Octave, PitchClass, ScientificPitch}
 

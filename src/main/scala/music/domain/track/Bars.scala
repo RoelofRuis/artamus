@@ -1,4 +1,4 @@
-package music.symbol
+package music.domain.track
 
 import music.math.temporal.{Duration, Position, Window}
 import music.primitives.TimeSignatureDivision
@@ -8,7 +8,7 @@ import scala.collection.immutable.SortedMap
 
 // TODO: extract interface
 // TODO: see whether this integrates as SymbolTrack[TimeSignature] or some related implementation
-class Bars private (
+final case class Bars private (
   timeSignatures: SortedMap[Position, TimeSignature]
 ) {
 
