@@ -19,7 +19,7 @@ private[server] class TrackCommandHandler @Inject() (
       .getByOwner(req.user)
       .startNewEdit
 
-    workspaceRepo.write(edited)
+    workspaceRepo.put(edited)
     true
   }
 
@@ -30,7 +30,7 @@ private[server] class TrackCommandHandler @Inject() (
       .editedTrack
       .create(req.attributes.window, req.attributes.symbol)
 
-    workspaceRepo.write(workspace.makeEdit(edited))
+    workspaceRepo.put(workspace.makeEdit(edited))
     true
   }
 
@@ -41,7 +41,7 @@ private[server] class TrackCommandHandler @Inject() (
       .editedTrack
       .writeTimeSignature(req.attributes.position, req.attributes.ts)
 
-    workspaceRepo.write(workspace.makeEdit(edited))
+    workspaceRepo.put(workspace.makeEdit(edited))
     true
   }
 
@@ -52,7 +52,7 @@ private[server] class TrackCommandHandler @Inject() (
       .editedTrack
       .writeKey(req.attributes.position, req.attributes.symbol)
 
-    workspaceRepo.write(workspace.makeEdit(edited))
+    workspaceRepo.put(workspace.makeEdit(edited))
     true
   }
 

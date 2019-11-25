@@ -26,14 +26,14 @@ private[server] class ChangeHandler @Inject() (
     val lilypondFile = interpreter.interpret(analysedTrack)
     renderer.submit("committed-changes", lilypondFile)
 
-    workspaceRepo.write(workspace.makeAnnotations(analysedTrack))
+    workspaceRepo.put(workspace.makeAnnotations(analysedTrack))
     true
   }
 
   changeCommands.subscribe[Commit.type] { req =>
     val workspace = workspaceRepo.getByOwner(req.user)
 
-    workspaceRepo.write(workspace.useAnnotations)
+    workspaceRepo.put(workspace.useAnnotations)
     true
   }
 
