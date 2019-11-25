@@ -4,11 +4,10 @@ import client.MusicReader
 import client.MusicReader.{NoteOn, Simultaneous}
 import client.io.StdIOTools
 import com.google.inject.Inject
-import music.domain.track.TimeSignature
-import music.domain.track.symbol.{Key, Note}
+import music.domain.track.symbol.Note
 import music.math.Rational
 import music.math.temporal.{Duration, Position, Window}
-import music.primitives._
+import music.primitives.{TimeSignature, _}
 import protocol.Command
 import server.domain.track._
 import server.domain.{Analyse, Commit}
@@ -36,7 +35,7 @@ class TrackOperations @Inject() (
     val division = reader.readTimeSignatureDivision
 
     List(
-      CreateTimeSignatureSymbol(Position.ZERO, TimeSignature(division)),
+      WriteTimeSignature(Position.ZERO, TimeSignature(division)),
       Analyse
     )
   })
@@ -53,7 +52,7 @@ class TrackOperations @Inject() (
     }
 
     List(
-      CreateKeySymbol(Position.ZERO, Key(root, keyType)),
+      WriteKey(Position.ZERO, Key(root, keyType)),
       Analyse
     )
   })
@@ -89,7 +88,7 @@ class TrackOperations @Inject() (
             .readMidiNoteNumbers(Simultaneous)
             .map { midiNoteNumber =>
               val (oct, pc) = (midiNoteNumber.toOct, midiNoteNumber.toPc)
-              CreateNoteSymbol(Window(Position.at(baseDuration * currentPos), elementDuration), Note(oct, pc))
+              WriteNote(Window(Position.at(baseDuration * currentPos), elementDuration), Note(oct, pc))
             }
           read(elements.tail, commands ++ newCommands, currentPos + 1)
         case Rest :: _ => read(elements.tail, commands, currentPos + 1)

@@ -2,25 +2,18 @@ package music.glyph.iteration
 
 import music.analysis.NoteValueConversion
 import music.domain.track.Track
+import music.domain.track.symbol.Note
 import music.glyph
 import music.glyph._
 import music.math.temporal.{Position, Window}
-import music.primitives._
-import music.domain.track.symbol.{Key, Note}
 
 private[glyph] class StaffIterator(track: Track) {
 
-  import music.analysis.TwelveToneTuning._
-
-  private val keys = track.read[Key]()
   private val notes = track.readGrouped[Note]()
 
   def iterate(start: Position): Iterator[Glyph] = {
     val window = Window.instantAt(start)
-    val initialKey = keys
-      .headOption
-      .map(_.symbol)
-      .getOrElse(Key(PitchSpelling(Step(0), Accidental(0)), Scale.MAJOR))
+    val initialKey = track.keys.initialKey
 
     val initialElements = Iterator( // TODO: these should probably come from their own iterator
       TimeSignatureGlyph(track.bars.initialTimeSignature.division),

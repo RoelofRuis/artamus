@@ -1,7 +1,7 @@
 package music.domain.track
 
 import music.math.temporal.{Duration, Position, Window}
-import music.primitives.TimeSignatureDivision
+import music.primitives.{TimeSignature, TimeSignatureDivision}
 
 import scala.annotation.tailrec
 import scala.collection.immutable.SortedMap
@@ -18,7 +18,7 @@ final case class Bars private (
 
   type BarNumber = Int
 
-  def writeTimeSignature(pos: Position, ts: TimeSignature): Bars = new Bars(timeSignatures.updated(pos, ts))
+  def writeTimeSignature(pos: Position, ts: TimeSignature): Bars = copy(timeSignatures = timeSignatures.updated(pos, ts))
 
   def fillBarFrom(window: Window): Window = {
     val bar = durationFits(window.end, ts.division.barDuration, inclusive=true)

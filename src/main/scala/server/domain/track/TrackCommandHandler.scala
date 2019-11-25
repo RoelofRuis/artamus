@@ -1,9 +1,7 @@
 package server.domain.track
 
 import javax.inject.Inject
-import music.domain.track.TrackRepository
 import music.domain.workspace.WorkspaceRepository
-import music.math.temporal.Window
 import protocol.Command
 import pubsub.Dispatcher
 import server.Request
@@ -25,7 +23,7 @@ private[server] class TrackCommandHandler @Inject() (
     true
   }
 
-  dispatcher.subscribe[CreateNoteSymbol]{ req =>
+  dispatcher.subscribe[WriteNote]{ req =>
     val workspace = workspaceRepo.getByOwner(req.user)
 
     val edited = workspace
@@ -36,7 +34,7 @@ private[server] class TrackCommandHandler @Inject() (
     true
   }
 
-  dispatcher.subscribe[CreateTimeSignatureSymbol]{ req =>
+  dispatcher.subscribe[WriteTimeSignature]{ req =>
     val workspace = workspaceRepo.getByOwner(req.user)
 
     val edited = workspace
@@ -47,12 +45,12 @@ private[server] class TrackCommandHandler @Inject() (
     true
   }
 
-  dispatcher.subscribe[CreateKeySymbol]{ req =>
+  dispatcher.subscribe[WriteKey]{ req =>
     val workspace = workspaceRepo.getByOwner(req.user)
 
     val edited = workspace
       .editedTrack
-      .create(Window.instantAt(req.attributes.position), req.attributes.symbol)
+      .writeKey(req.attributes.position, req.attributes.symbol)
 
     workspaceRepo.write(workspace.makeEdit(edited))
     true

@@ -2,7 +2,7 @@ package server.analysis
 
 import music.analysis.TwelveTonePitchSpelling
 import music.domain.track.Track
-import music.domain.track.symbol.{Chord, Key, Note}
+import music.domain.track.symbol.{Chord, Note}
 import server.analysis.blackboard.KnowledgeSource
 
 class PitchSpellingAnalyser extends KnowledgeSource[Track] {
@@ -10,10 +10,7 @@ class PitchSpellingAnalyser extends KnowledgeSource[Track] {
   override def canExecute(state: Track): Boolean = true
 
   override def execute(track: Track): Track = {
-    val key = track
-      .read[Key]()
-      .headOption
-      .map(_.symbol)
+    val key = track.keys.initialKey
 
     val spelledNotes = track
       .readGrouped[Note]()
