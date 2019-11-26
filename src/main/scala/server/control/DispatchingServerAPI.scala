@@ -38,7 +38,7 @@ final class DispatchingServerAPI(
               case Some(user) => handleRequest(user, request)
             }
           case Failure(ex) =>
-            logger.error(s"Unable to read message.", ex)
+            logger.warn(s"Unable to read message.", ex)
             Left(s"Unable to read message")
         }
     }
@@ -59,7 +59,7 @@ final class DispatchingServerAPI(
             Right(true)
         }
       case _ =>
-        logger.info("Received unauthorized request")
+        logger.warn("Received unauthorized request")
         Left("Unauthorized")
     }
   }
