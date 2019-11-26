@@ -10,6 +10,8 @@ import server.analysis.blackboard.Controller
 import server.interpret.LilypondInterpreter
 import server.rendering.Renderer
 
+import scala.util.Success
+
 private[server] class ChangeHandler @Inject() (
   workspaceRepo: WorkspaceRepository,
   changeCommands: Dispatcher[Request, Command],
@@ -27,14 +29,14 @@ private[server] class ChangeHandler @Inject() (
     renderer.submit("committed-changes", lilypondFile)
 
     workspaceRepo.put(workspace.makeAnnotations(analysedTrack))
-    true
+    Success(true)
   }
 
   changeCommands.subscribe[Commit.type] { req =>
     val workspace = workspaceRepo.getByOwner(req.user)
 
     workspaceRepo.put(workspace.useAnnotations)
-    true
+    Success(true)
   }
 
 }

@@ -7,6 +7,7 @@ import pubsub.Dispatcher
 import server.Request
 
 import scala.language.existentials
+import scala.util.Success
 
 private[server] class TrackCommandHandler @Inject() (
   workspaceRepo: WorkspaceRepository,
@@ -20,7 +21,7 @@ private[server] class TrackCommandHandler @Inject() (
       .startNewEdit
 
     workspaceRepo.put(edited)
-    true
+    Success(true)
   }
 
   dispatcher.subscribe[WriteNote]{ req =>
@@ -31,7 +32,7 @@ private[server] class TrackCommandHandler @Inject() (
       .create(req.attributes.window, req.attributes.symbol)
 
     workspaceRepo.put(workspace.makeEdit(edited))
-    true
+    Success(true)
   }
 
   dispatcher.subscribe[WriteTimeSignature]{ req =>
@@ -42,7 +43,7 @@ private[server] class TrackCommandHandler @Inject() (
       .writeTimeSignature(req.attributes.position, req.attributes.ts)
 
     workspaceRepo.put(workspace.makeEdit(edited))
-    true
+    Success(true)
   }
 
   dispatcher.subscribe[WriteKey]{ req =>
@@ -53,7 +54,7 @@ private[server] class TrackCommandHandler @Inject() (
       .writeKey(req.attributes.position, req.attributes.symbol)
 
     workspaceRepo.put(workspace.makeEdit(edited))
-    true
+    Success(true)
   }
 
 }

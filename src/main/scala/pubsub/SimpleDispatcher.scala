@@ -2,18 +2,22 @@ package pubsub
 
 import scala.language.reflectiveCalls
 import scala.reflect.{ClassTag, classTag}
+import scala.util.{Failure, Try}
 
 /* @NotThreadSafe */
 class SimpleDispatcher[R[_] <: RequestContainer[_], A <: Object { type Res }] extends Dispatcher[R, A] {
 
   private var request = Map[String, Any]()
 
-  def handle[B <: A : ClassTag](req: R[B]): Option[B#Res] = {
+  def handle[B <: A : ClassTag](req: R[B]): Try[B#Res] = {
     val key = req.attributes.getClass.getCanonicalName
-    request.get(key).map(_.asInstanceOf[R[B] => B#Res](req))
+    request
+      .get(key)
+      .map(_.asInstanceOf[R[B] => Try[B#Res]](req))
+      .getOrElse(Failure(new Exception("Missing handler")))
   }
 
-  def subscribe[B <: A : ClassTag](f: R[B] => B#Res): Unit = {
+  def subscribe[B <: A : ClassTag](f: R[B] => Try[B#Res]): Unit = {
     val key = classTag[B].runtimeClass.getCanonicalName
     request = request.updated(key, f)
   }
