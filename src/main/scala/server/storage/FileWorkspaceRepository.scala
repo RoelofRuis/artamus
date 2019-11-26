@@ -29,6 +29,8 @@ class FileWorkspaceRepository @Inject() (
     implicit val workspaceMapFormat = jsonFormat1(WorkspaceMapModel)
   }
 
+  // TODO: get new track instances via repository!
+
   import MyJsonProtocol._
 
   override def put(workspace: Workspace): Try[Unit] = {
@@ -52,11 +54,13 @@ class FileWorkspaceRepository @Inject() (
       case Failure(ex) => Failure(ex)
       case Success(storage) => storage.workspaces.get(user.id.id.toString) match {
         case None => Success(Workspace(user.id, Track()))
-        case Some(model) => Success(Workspace(
-          model.userId,
-          trackRepository.getById(model.trackId.get).get,
-          model.annotatedTrackId.flatMap(trackRepository.getById)
-        ))
+        case Some(model) if model.trackId.isEmpty => Success(Workspace(user.id, Track()))
+        case Some(model) =>
+          Success(Workspace(
+            model.userId,
+            trackRepository.getById(model.trackId.get).get,
+            model.annotatedTrackId.flatMap(trackRepository.getById)
+          ))
       }
     }
   }
