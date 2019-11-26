@@ -2,10 +2,12 @@ package music.domain.workspace
 
 import music.domain.user.User
 
+import scala.util.Try
+
 trait WorkspaceRepository {
 
-  def getByOwner(user: User): Workspace
+  def getByOwner(user: User): Try[Workspace]
 
-  def put(workspace: Workspace): Unit
+  def put(workspace: Workspace): Try[Unit]
 
 }

@@ -5,7 +5,7 @@ import music.domain.track.Track.TrackId
 import music.domain.track.{Track, TrackRepository}
 import music.domain.user.User
 import music.domain.user.User.UserId
-import music.domain.workspace.{TryWorkspaceRepository, Workspace}
+import music.domain.workspace.{WorkspaceRepository, Workspace}
 import server.storage.io.JsonIO
 import spray.json.DefaultJsonProtocol
 
@@ -15,7 +15,7 @@ import scala.util.{Failure, Success, Try}
 class FileWorkspaceRepository @Inject() (
   jsonIO: JsonIO,
   trackRepository: TrackRepository
-) extends TryWorkspaceRepository {
+) extends WorkspaceRepository {
 
   private val PATH = "data/store/workspaces.json"
 

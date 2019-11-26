@@ -7,7 +7,6 @@ import pubsub.Dispatcher
 import server.Request
 
 import scala.language.existentials
-import scala.util.Success
 
 private[server] class TrackCommandHandler @Inject() (
   workspaceRepo: WorkspaceRepository,
@@ -16,45 +15,35 @@ private[server] class TrackCommandHandler @Inject() (
   // TODO: refactor duplicate parts
 
   dispatcher.subscribe[NewTrack.type]{ req =>
-    val edited = workspaceRepo
-      .getByOwner(req.user)
-      .startNewEdit
-
-    workspaceRepo.put(edited)
-    Success(true)
+    for {
+      workspace <- workspaceRepo.getByOwner(req.user)
+      newWorkspace = workspace.startNewEdit
+      _ <- workspaceRepo.put(newWorkspace)
+    } yield true
   }
 
   dispatcher.subscribe[WriteNote]{ req =>
-    val workspace = workspaceRepo.getByOwner(req.user)
-
-    val edited = workspace
-      .editedTrack
-      .create(req.attributes.window, req.attributes.symbol)
-
-    workspaceRepo.put(workspace.makeEdit(edited))
-    Success(true)
+    for {
+      workspace <- workspaceRepo.getByOwner(req.user)
+      editedWorkspace = workspace.editedTrack.create(req.attributes.window, req.attributes.symbol)
+      _ <- workspaceRepo.put(workspace.makeEdit(editedWorkspace))
+    }  yield true
   }
 
   dispatcher.subscribe[WriteTimeSignature]{ req =>
-    val workspace = workspaceRepo.getByOwner(req.user)
-
-    val edited = workspace
-      .editedTrack
-      .writeTimeSignature(req.attributes.position, req.attributes.ts)
-
-    workspaceRepo.put(workspace.makeEdit(edited))
-    Success(true)
+    for {
+      workspace <- workspaceRepo.getByOwner(req.user)
+      editedTrack = workspace.editedTrack.writeTimeSignature(req.attributes.position, req.attributes.ts)
+      _ <- workspaceRepo.put(workspace.makeEdit(editedTrack))
+    } yield true
   }
 
   dispatcher.subscribe[WriteKey]{ req =>
-    val workspace = workspaceRepo.getByOwner(req.user)
-
-    val edited = workspace
-      .editedTrack
-      .writeKey(req.attributes.position, req.attributes.symbol)
-
-    workspaceRepo.put(workspace.makeEdit(edited))
-    Success(true)
+    for {
+      workspace <- workspaceRepo.getByOwner(req.user)
+      editedTrack = workspace.editedTrack.writeKey(req.attributes.position, req.attributes.symbol)
+      _ <- workspaceRepo.put(workspace.makeEdit(editedTrack))
+    } yield true
   }
 
 }

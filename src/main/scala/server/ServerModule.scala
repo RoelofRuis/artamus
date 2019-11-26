@@ -16,7 +16,7 @@ import server.analysis.blackboard.Controller
 import server.domain.ChangeHandler
 import server.interpret.LilypondInterpreter
 import server.rendering.{RenderingCompletionHandler, RenderingModule}
-import server.storage.InMemoryWorkspaceRepository
+import server.storage.FileWorkspaceRepository
 import server.storage.io.{FileIO, JsonIO}
 
 class ServerModule extends ScalaPrivateModule with ServerConfig {
@@ -28,7 +28,7 @@ class ServerModule extends ScalaPrivateModule with ServerConfig {
         compactJson
       )
     )
-    bind[WorkspaceRepository].to[InMemoryWorkspaceRepository]
+    bind[WorkspaceRepository].to[FileWorkspaceRepository]
 
     install(new DomainModule)
 
