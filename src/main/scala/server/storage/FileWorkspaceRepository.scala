@@ -20,7 +20,7 @@ class FileWorkspaceRepository @Inject() (
   private val PATH = "data/store/workspaces.json"
 
   final case class WorkspaceModel(userId: UserId, trackId: Option[TrackId], annotatedTrackId: Option[TrackId])
-  final case class WorkspaceMapModel(workspaces: Map[String, WorkspaceModel])
+  final case class WorkspaceMapModel(workspaces: Map[String, WorkspaceModel] = Map())
 
   object MyJsonProtocol extends DefaultJsonProtocol {
     implicit val trackId = jsonFormat1(TrackId)
@@ -32,7 +32,7 @@ class FileWorkspaceRepository @Inject() (
   import MyJsonProtocol._
 
   override def put(workspace: Workspace): Try[Unit] = {
-    jsonIO.read[WorkspaceMapModel](PATH) match {
+    jsonIO.read[WorkspaceMapModel](PATH, WorkspaceMapModel()) match {
       case Failure(ex) => Failure(ex)
       case Success(storage) =>
         val newWorkspaces = storage.workspaces.updated(
@@ -43,12 +43,12 @@ class FileWorkspaceRepository @Inject() (
             workspace.annotatedTrack.flatMap(_.id)
           )
         )
-        jsonIO.write(PATH, newWorkspaces)
+        jsonIO.write(PATH, WorkspaceMapModel(newWorkspaces))
     }
   }
 
   def getByOwner(user: User): Try[Workspace] = {
-    jsonIO.read[WorkspaceMapModel](PATH) match {
+    jsonIO.read[WorkspaceMapModel](PATH, WorkspaceMapModel()) match {
       case Failure(ex) => Failure(ex)
       case Success(storage) => storage.workspaces.get(user.id.id.toString) match {
         case None => Success(Workspace(user.id, Track()))

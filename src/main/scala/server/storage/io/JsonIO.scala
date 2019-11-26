@@ -1,5 +1,7 @@
 package server.storage.io
 
+import java.io.FileNotFoundException
+
 import javax.inject.Inject
 import spray.json.{JsonReader, JsonWriter, _}
 
@@ -12,10 +14,11 @@ class JsonIO @Inject() (fileIO: FileIO, compact: Boolean = true) {
     fileIO.write(path, json)
   }
 
-  def read[A : JsonReader](path: String): Try[A] = {
+  def read[A : JsonReader](path: String, newA: => A): Try[A] = {
     fileIO.read(path) match {
-      case Success(content) => Try { content.parseJson.convertTo[A] }
+      case Failure(_: FileNotFoundException) => Success(newA)
       case Failure(ex) => Failure(ex)
+      case Success(content) => Try { content.parseJson.convertTo[A] }
     }
   }
 

@@ -1,20 +1,21 @@
 package server.storage.io
 
-import java.io.{BufferedWriter, File, FileWriter, IOException}
+import java.io._
 
 import scala.io.Source
-import scala.util.{Failure, Try}
+import scala.util.{Failure, Success, Try}
 
 class FileIO() {
 
   def read(path: String): Try[String] = {
-    val bufferedSource = Try { Source.fromFile(path) }
-    try {
-      bufferedSource.map(_.getLines.mkString)
-    } catch {
-      case ex: IOException => Failure(ex)
-    } finally {
-      bufferedSource.map(_.close())
+    Try { Source.fromFile(path) }.flatMap { source =>
+      try {
+        Success(source.getLines.mkString)
+      } catch {
+        case ex: IOException => Failure(ex)
+      } finally {
+        source.close()
+      }
     }
   }
 

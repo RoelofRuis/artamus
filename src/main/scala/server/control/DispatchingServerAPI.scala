@@ -65,15 +65,21 @@ final class DispatchingServerAPI(
   }
 
   def handleRequest(user: User, request: ServerRequest): Either[ServerException, Any] = {
-    val response = request match {
-      case CommandRequest(command) => server.handleCommand(Request(user, command))
-      case QueryRequest(query) => server.handleQuery(Request(user, query))
-    }
-    response match {
-      case err @ Left(ex) =>
-        logger.error("Internal server error", ex)
-        err
-      case response => response
+    try {
+      val response = request match {
+        case CommandRequest(command) => server.handleCommand(Request(user, command))
+        case QueryRequest(query) => server.handleQuery(Request(user, query))
+      }
+      response match {
+        case Failure(ex) =>
+          logger.error("Error in server logic", ex)
+          Left("Server error")
+        case Success(response) => Right(response)
+      }
+    } catch {
+      case ex: Exception =>
+        logger.error("Unexpected server error", ex)
+        Left("Server error")
     }
   }
 }
