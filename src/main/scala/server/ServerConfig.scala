@@ -12,4 +12,6 @@ trait ServerConfig extends RenderingConfig {
   val lyVersion: String = "2.18"
   val paperSize: String = "a6landscape"
 
+  val compactJson: Boolean = false
+
 }

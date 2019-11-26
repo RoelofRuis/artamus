@@ -8,6 +8,7 @@ import javax.inject.Singleton
 import music.domain.DomainModule
 import music.domain.track.Track
 import music.domain.user.UserRepository
+import music.domain.workspace.WorkspaceRepository
 import net.codingwell.scalaguice.ScalaPrivateModule
 import protocol._
 import pubsub.{Dispatcher, EventBus}
@@ -15,10 +16,20 @@ import server.analysis.blackboard.Controller
 import server.domain.ChangeHandler
 import server.interpret.LilypondInterpreter
 import server.rendering.{RenderingCompletionHandler, RenderingModule}
+import server.storage.InMemoryWorkspaceRepository
+import server.storage.io.{FileIO, JsonIO}
 
 class ServerModule extends ScalaPrivateModule with ServerConfig {
 
   override def configure(): Unit = {
+    bind[JsonIO].toInstance(
+      new JsonIO(
+        new FileIO,
+        compactJson
+      )
+    )
+    bind[WorkspaceRepository].to[InMemoryWorkspaceRepository]
+
     install(new DomainModule)
 
     bind[LilypondInterpreter].toInstance(

@@ -2,10 +2,10 @@ package music.domain.user
 
 import music.domain.user.User.UserId
 
-trait User {
-  val id: UserId
-  val name: String
-}
+final case class User(
+  id: UserId,
+  name: String,
+)
 
 object User {
 

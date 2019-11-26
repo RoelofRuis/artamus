@@ -1,11 +1,11 @@
-package music.domain.workspace
+package server.storage
 
 import javax.annotation.concurrent.GuardedBy
 import javax.inject.{Inject, Singleton}
 import music.domain.track.{Track, TrackRepository}
 import music.domain.user.User
 import music.domain.user.User.UserId
-import music.domain.workspace.WorkspaceRepository.WorkspaceImpl
+import music.domain.workspace.{Workspace, WorkspaceRepository}
 
 @Singleton
 class InMemoryWorkspaceRepository @Inject() (trackRepository: TrackRepository) extends WorkspaceRepository {
@@ -16,7 +16,7 @@ class InMemoryWorkspaceRepository @Inject() (trackRepository: TrackRepository) e
   def getByOwner(user: User): Workspace = workspaceLock.synchronized {
     if (workspaces.isDefinedAt(user.id)) workspaces(user.id)
     else {
-      val newWorkspace = WorkspaceImpl(
+      val newWorkspace = Workspace(
         user.id,
         Track()
       )

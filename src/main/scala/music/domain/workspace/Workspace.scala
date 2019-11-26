@@ -3,14 +3,20 @@ package music.domain.workspace
 import music.domain.track.Track
 import music.domain.user.User.UserId
 
-trait Workspace {
-  val owner: UserId
-  val editedTrack: Track
-  val annotatedTrack: Option[Track]
-  def startNewEdit: Workspace
-  def makeEdit(track: Track): Workspace
-  def makeAnnotations(track: Track): Workspace
-  def useAnnotations: Workspace
+final case class Workspace(
+  owner: UserId,
+  editedTrack: Track,
+  annotatedTrack: Option[Track] = None
+) {
+  def startNewEdit: Workspace = copy(editedTrack = Track())
+  def makeEdit(track: Track): Workspace = copy(editedTrack = track)
+  def makeAnnotations(track: Track): Workspace = copy(annotatedTrack = Some(track))
+  def useAnnotations: Workspace = {
+    annotatedTrack match {
+      case None => this
+      case Some(annotated) => copy(editedTrack = annotated)
+    }
+  }
 }
 
 object Workspace {
