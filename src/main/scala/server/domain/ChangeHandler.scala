@@ -1,7 +1,7 @@
 package server.domain
 
 import javax.inject.Inject
-import music.domain.track.Track
+import music.domain.track.{Track, TrackRepository}
 import music.domain.workspace.WorkspaceRepository
 import protocol.{Command, Event}
 import pubsub.{Dispatcher, EventBus}
@@ -12,6 +12,7 @@ import server.rendering.Renderer
 
 private[server] class ChangeHandler @Inject() (
   workspaceRepo: WorkspaceRepository,
+  trackRepo: TrackRepository,
   changeCommands: Dispatcher[Request, Command],
   eventBus: EventBus[Event],
   interpreter: LilypondInterpreter,
@@ -23,10 +24,13 @@ private[server] class ChangeHandler @Inject() (
     eventBus.publish(AnalysisStarted)
     for {
       workspace <- workspaceRepo.getByOwner(req.user)
-      analysedTrack = analysis.run(workspace.editedTrack)
+      track <- workspace.editedTrack.flatMap(trackRepo.getById).getOrElse(trackRepo.put(Track()))
+      analysedTrack = analysis.run(track)
       lilypondFile = interpreter.interpret(analysedTrack)
       _ = renderer.submit("committed-changes", lilypondFile)
-      _ <- workspaceRepo.put(workspace.makeAnnotations(analysedTrack))
+      editedWorkspace = workspace.setTrackToAnnotate(analysedTrack)
+      _ <- trackRepo.put(analysedTrack)
+      _ <- workspaceRepo.put(editedWorkspace)
     } yield true
   }
 

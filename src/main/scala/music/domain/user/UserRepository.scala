@@ -1,13 +1,9 @@
 package music.domain.user
 
-import javax.inject.{Inject, Singleton}
-import music.domain.user.User.UserId
+import scala.util.Try
 
-@Singleton
-class UserRepository @Inject() () {
+trait UserRepository {
 
-  private val users: Array[User] = Array[User](User(UserId(0), "artamus"))
-
-  def getByName(name: String): Option[User] = users.find(_.name == name)
+  def getByName(name: String): Try[Option[User]]
 
 }

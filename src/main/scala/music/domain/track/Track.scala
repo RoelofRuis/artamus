@@ -10,7 +10,7 @@ import scala.collection.immutable.SortedMap
 import scala.reflect.{ClassTag, classTag}
 
 trait Track {
-  val id: Option[TrackId]
+  val id: Option[TrackId] // TODO: should it be option?
   val bars: Bars
   val keys: Keys
 

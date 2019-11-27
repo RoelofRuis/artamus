@@ -6,7 +6,7 @@ import _root_.server.domain.track.{TrackCommandHandler, TrackQueryHandler}
 import com.google.inject.Provides
 import javax.inject.Singleton
 import music.domain.DomainModule
-import music.domain.track.Track
+import music.domain.track.{Track, TrackRepository}
 import music.domain.user.UserRepository
 import music.domain.workspace.WorkspaceRepository
 import net.codingwell.scalaguice.ScalaPrivateModule
@@ -16,7 +16,7 @@ import server.analysis.blackboard.Controller
 import server.domain.ChangeHandler
 import server.interpret.LilypondInterpreter
 import server.rendering.{RenderingCompletionHandler, RenderingModule}
-import server.storage.FileWorkspaceRepository
+import server.storage.{FileWorkspaceRepository, InMemoryTrackRepository, InMemoryUserRepository}
 import server.storage.io.{FileIO, JsonIO}
 
 class ServerModule extends ScalaPrivateModule with ServerConfig {
@@ -29,6 +29,8 @@ class ServerModule extends ScalaPrivateModule with ServerConfig {
       )
     )
     bind[WorkspaceRepository].to[FileWorkspaceRepository]
+    bind[UserRepository].to[InMemoryUserRepository]
+    bind[TrackRepository].to[InMemoryTrackRepository]
 
     install(new DomainModule)
 

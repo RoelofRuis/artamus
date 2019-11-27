@@ -49,14 +49,18 @@ final class DispatchingServerAPI(
     request match {
       case CommandRequest(Authenticate(userName)) =>
         userRepository.getByName(userName) match {
-          case None =>
+          case Success(None) =>
             logger.info(s"User [$userName] not found")
             Left(s"User not found")
 
-          case Some(user) =>
+          case Success(Some(user)) =>
             server.subscribeEvents(connection.name, event => connection.sendEvent(EventResponse(event)))
             connections = connections.updated(connection, Some(user))
             Right(true)
+
+          case Failure(ex) =>
+            logger.error("Error in server logic", ex)
+            Left("Server error")
         }
       case _ =>
         logger.warn("Received unauthorized request")

@@ -1,20 +1,21 @@
 package music.domain.workspace
 
 import music.domain.track.Track
+import music.domain.track.Track.TrackId
 import music.domain.user.User.UserId
 
 final case class Workspace(
   owner: UserId,
-  editedTrack: Track,
-  annotatedTrack: Option[Track] = None
+  editedTrack: Option[TrackId],
+  annotatedTrack: Option[TrackId]
 ) {
-  def startNewEdit: Workspace = copy(editedTrack = Track())
-  def makeEdit(track: Track): Workspace = copy(editedTrack = track)
-  def makeAnnotations(track: Track): Workspace = copy(annotatedTrack = Some(track))
+  def startNewEdit: Workspace = copy(editedTrack = None)
+  def setTrackToEdit(track: Track): Workspace = copy(editedTrack = track.id)
+  def setTrackToAnnotate(track: Track): Workspace = copy(annotatedTrack = track.id)
   def useAnnotations: Workspace = {
     annotatedTrack match {
       case None => this
-      case Some(annotated) => copy(editedTrack = annotated)
+      case annotatedTrackId @ Some(trackId) => copy(editedTrack = annotatedTrackId)
     }
   }
 }
