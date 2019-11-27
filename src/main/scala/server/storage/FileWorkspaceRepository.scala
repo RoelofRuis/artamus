@@ -1,11 +1,14 @@
 package server.storage
 
+import java.io.File
+
+import com.typesafe.scalalogging.LazyLogging
 import javax.inject.{Inject, Singleton}
 import music.domain.track.Track.TrackId
 import music.domain.track.{Track, TrackRepository}
 import music.domain.user.User
 import music.domain.user.User.UserId
-import music.domain.workspace.{WorkspaceRepository, Workspace}
+import music.domain.workspace.{Workspace, WorkspaceRepository}
 import server.storage.io.JsonIO
 import spray.json.DefaultJsonProtocol
 
@@ -15,9 +18,9 @@ import scala.util.{Failure, Success, Try}
 class FileWorkspaceRepository @Inject() (
   jsonIO: JsonIO,
   trackRepository: TrackRepository
-) extends WorkspaceRepository {
+) extends WorkspaceRepository with LazyLogging {
 
-  private val PATH = "data/store/workspaces.json"
+  private val PATH = new File("data/store/workspaces.json")
 
   final case class WorkspaceModel(userId: UserId, trackId: Option[TrackId], annotatedTrackId: Option[TrackId])
   final case class WorkspaceMapModel(workspaces: Map[String, WorkspaceModel] = Map())
@@ -29,23 +32,22 @@ class FileWorkspaceRepository @Inject() (
     implicit val workspaceMapFormat = jsonFormat1(WorkspaceMapModel)
   }
 
-  // TODO: get new track instances via repository!
+  // TODO: improve fetching/writing the data
 
   import MyJsonProtocol._
 
   override def put(workspace: Workspace): Try[Unit] = {
-    jsonIO.read[WorkspaceMapModel](PATH, WorkspaceMapModel()) match {
-      case Failure(ex) => Failure(ex)
-      case Success(storage) =>
-        val newWorkspaces = storage.workspaces.updated(
+    jsonIO.update(PATH, WorkspaceMapModel()) { storage =>
+      WorkspaceMapModel(
+        storage.workspaces.updated(
           workspace.owner.id.toString,
           WorkspaceModel(
             workspace.owner,
-            workspace.editedTrack.id,
-            workspace.annotatedTrack.flatMap(_.id)
+            trackRepository.write(workspace.editedTrack).id,
+            workspace.annotatedTrack.flatMap(trackRepository.write(_).id)
           )
         )
-        jsonIO.write(PATH, WorkspaceMapModel(newWorkspaces))
+      )
     }
   }
 
@@ -53,8 +55,8 @@ class FileWorkspaceRepository @Inject() (
     jsonIO.read[WorkspaceMapModel](PATH, WorkspaceMapModel()) match {
       case Failure(ex) => Failure(ex)
       case Success(storage) => storage.workspaces.get(user.id.id.toString) match {
-        case None => Success(Workspace(user.id, Track()))
-        case Some(model) if model.trackId.isEmpty => Success(Workspace(user.id, Track()))
+        case None => Success(Workspace(user.id, trackRepository.write(Track())))
+        case Some(model) if model.trackId.isEmpty => Success(Workspace(user.id, trackRepository.write(Track())))
         case Some(model) =>
           Success(Workspace(
             model.userId,

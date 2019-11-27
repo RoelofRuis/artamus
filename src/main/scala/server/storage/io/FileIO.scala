@@ -7,8 +7,8 @@ import scala.util.{Failure, Success, Try}
 
 class FileIO() {
 
-  def read(path: String): Try[String] = {
-    Try { Source.fromFile(path) }.flatMap { source =>
+  def read(file: File): Try[String] = {
+    Try { Source.fromFile(file) }.flatMap { source =>
       try {
         Success(source.getLines.mkString)
       } catch {
@@ -19,8 +19,7 @@ class FileIO() {
     }
   }
 
-  def write(path: String, contents: String): Try[Unit] = {
-    val file = new File(path)
+  def write(file: File, contents: String): Try[Unit] = {
     val writer = Try { new BufferedWriter(new FileWriter(file)) }
     try {
       writer.map(_.write(contents))

@@ -25,8 +25,8 @@ private[server] class TrackCommandHandler @Inject() (
   dispatcher.subscribe[WriteNote]{ req =>
     for {
       workspace <- workspaceRepo.getByOwner(req.user)
-      editedWorkspace = workspace.editedTrack.create(req.attributes.window, req.attributes.symbol)
-      _ <- workspaceRepo.put(workspace.makeEdit(editedWorkspace))
+      editedTrack = workspace.editedTrack.create(req.attributes.window, req.attributes.symbol)
+      _ <- workspaceRepo.put(workspace.makeEdit(editedTrack))
     }  yield true
   }
 
