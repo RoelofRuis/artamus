@@ -9,8 +9,8 @@ import music.math.Rational
 import music.math.temporal.{Duration, Position, Window}
 import music.primitives.{TimeSignature, _}
 import protocol.Command
+import server.domain.Analyse
 import server.domain.track._
-import server.domain.{Analyse, Commit}
 
 import scala.annotation.tailrec
 
@@ -20,8 +20,6 @@ class TrackOperations @Inject() (
 ) {
 
   import music.analysis.TwelveToneTuning._
-
-  registry.registerOperation(OperationToken("commit", "track"), () => { List(Commit) })
 
   registry.registerOperation(OperationToken("new", "track"), () => {
     List(

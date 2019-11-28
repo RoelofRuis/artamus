@@ -28,16 +28,7 @@ private[server] class ChangeHandler @Inject() (
       analysedTrack = analysis.run(track)
       lilypondFile = interpreter.interpret(analysedTrack)
       _ = renderer.submit("committed-changes", lilypondFile)
-      editedWorkspace = workspace.setTrackToAnnotate(analysedTrack)
       _ <- trackRepo.put(analysedTrack)
-      _ <- workspaceRepo.put(editedWorkspace)
-    } yield true
-  }
-
-  changeCommands.subscribe[Commit.type] { req =>
-    for {
-      workspace <- workspaceRepo.getByOwner(req.user)
-      _ <- workspaceRepo.put(workspace.useAnnotations)
     } yield true
   }
 

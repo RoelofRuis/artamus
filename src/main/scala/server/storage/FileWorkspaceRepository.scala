@@ -20,13 +20,13 @@ class FileWorkspaceRepository @Inject() (
 
   private val PATH = new File("data/store/workspaces.json")
 
-  final case class WorkspaceModel(userId: UserId, trackId: Option[TrackId], annotatedTrackId: Option[TrackId])
+  final case class WorkspaceModel(userId: UserId, trackId: Option[TrackId])
   final case class WorkspaceMapModel(workspaces: Map[String, WorkspaceModel] = Map())
 
   object MyJsonProtocol extends DefaultJsonProtocol {
     implicit val trackId = jsonFormat1(TrackId)
     implicit val userId = jsonFormat1(UserId)
-    implicit val workspaceFormat = jsonFormat3(WorkspaceModel)
+    implicit val workspaceFormat = jsonFormat2(WorkspaceModel)
     implicit val workspaceMapFormat = jsonFormat1(WorkspaceMapModel)
   }
 
@@ -41,8 +41,7 @@ class FileWorkspaceRepository @Inject() (
           workspace.owner.id.toString,
           WorkspaceModel(
             workspace.owner,
-            workspace.editedTrack,
-            workspace.annotatedTrack
+            workspace.editedTrack
           )
         )
       )
@@ -53,13 +52,12 @@ class FileWorkspaceRepository @Inject() (
     jsonIO.read[WorkspaceMapModel](PATH, WorkspaceMapModel()) match {
       case Failure(ex) => Failure(ex)
       case Success(storage) => storage.workspaces.get(user.id.id.toString) match {
-        case None => Success(Workspace(user.id, None, None))
-        case Some(model) if model.trackId.isEmpty => Success(Workspace(user.id, None, None))
+        case None => Success(Workspace(user.id, None))
+        case Some(model) if model.trackId.isEmpty => Success(Workspace(user.id, None))
         case Some(model) =>
           Success(Workspace(
             model.userId,
-            model.trackId,
-            model.annotatedTrackId
+            model.trackId
           ))
       }
     }

@@ -17,7 +17,7 @@ class InMemoryWorkspaceRepository @Inject() extends WorkspaceRepository {
   def getByOwner(user: User): Try[Workspace] = workspaceLock.synchronized {
     if (workspaces.isDefinedAt(user.id)) Success(workspaces(user.id))
     else {
-      val newWorkspace = Workspace(user.id, None, None)
+      val newWorkspace = Workspace(user.id, None)
       workspaces += (user.id -> newWorkspace)
       Success(newWorkspace)
     }
