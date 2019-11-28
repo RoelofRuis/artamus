@@ -24,7 +24,7 @@ private[server] class ChangeHandler @Inject() (
     eventBus.publish(AnalysisStarted)
     for {
       workspace <- workspaceRepo.getByOwner(req.user)
-      track <- workspace.editedTrack.flatMap(trackRepo.getById).getOrElse(trackRepo.put(Track()))
+      track <- trackRepo.getById(workspace.editedTrack)
       analysedTrack = analysis.run(track)
       lilypondFile = interpreter.interpret(analysedTrack)
       _ = renderer.submit("committed-changes", lilypondFile)

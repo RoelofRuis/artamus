@@ -1,7 +1,7 @@
 package server.domain.track
 
 import javax.inject.Inject
-import music.domain.track.{Track, TrackRepository}
+import music.domain.track.TrackRepository
 import music.domain.workspace.WorkspaceRepository
 import protocol.Command
 import pubsub.Dispatcher
@@ -18,8 +18,8 @@ private[server] class TrackCommandHandler @Inject() (
 
   dispatcher.subscribe[NewTrack.type]{ req =>
     for {
+      track <- trackRepo.create
       workspace <- workspaceRepo.getByOwner(req.user)
-      track <- trackRepo.put(Track())
       newWorkspace = workspace.setTrackToEdit(track)
       _ <- workspaceRepo.put(newWorkspace)
     } yield true
@@ -28,7 +28,7 @@ private[server] class TrackCommandHandler @Inject() (
   dispatcher.subscribe[WriteNote]{ req =>
     for {
       workspace <- workspaceRepo.getByOwner(req.user)
-      track <- workspace.editedTrack.flatMap(trackRepo.getById).getOrElse(trackRepo.put(Track()))
+      track <- trackRepo.getById(workspace.editedTrack)
       editedWorkspace = workspace.setTrackToEdit(track)
       editedTrack = track.create(req.attributes.window, req.attributes.symbol)
       _ <- trackRepo.put(editedTrack)
@@ -39,7 +39,7 @@ private[server] class TrackCommandHandler @Inject() (
   dispatcher.subscribe[WriteTimeSignature]{ req =>
     for {
       workspace <- workspaceRepo.getByOwner(req.user)
-      track <- workspace.editedTrack.flatMap(trackRepo.getById).getOrElse(trackRepo.put(Track()))
+      track <- trackRepo.getById(workspace.editedTrack)
       editedWorkspace = workspace.setTrackToEdit(track)
       editedTrack = track.writeTimeSignature(req.attributes.position, req.attributes.ts)
       _ <- trackRepo.put(editedTrack)
@@ -50,7 +50,7 @@ private[server] class TrackCommandHandler @Inject() (
   dispatcher.subscribe[WriteKey]{ req =>
     for {
       workspace <- workspaceRepo.getByOwner(req.user)
-      track <- workspace.editedTrack.flatMap(trackRepo.getById).getOrElse(trackRepo.put(Track()))
+      track <- trackRepo.getById(workspace.editedTrack)
       editedWorkspace = workspace.setTrackToEdit(track)
       editedTrack = track.writeKey(req.attributes.position, req.attributes.symbol)
       _ <- workspaceRepo.put(editedWorkspace)

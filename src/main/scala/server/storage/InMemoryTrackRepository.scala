@@ -5,7 +5,7 @@ import javax.inject.Singleton
 import music.domain.track.{Track, TrackRepository}
 import music.domain.track.Track.TrackId
 
-import scala.util.{Success, Try}
+import scala.util.{Failure, Success, Try}
 
 @Singleton
 class InMemoryTrackRepository() extends TrackRepository {
@@ -14,20 +14,24 @@ class InMemoryTrackRepository() extends TrackRepository {
   @GuardedBy("trackLock") private var nextId: Long = 0L
   @GuardedBy("trackLock") private var tracks: Map[TrackId, Track] = Map()
 
-  override def getById(id: TrackId): Option[Try[Track]] = trackLock.synchronized { tracks.get(id).map(Success(_)) }
+  override def create: Try[Track] = trackLock.synchronized {
+    val id = TrackId(nextId)
+    val trackWithId = Track(id)
+    tracks = tracks.updated(id, trackWithId)
+    nextId += 1
+    Success(trackWithId)
+  }
+
+  override def getById(id: TrackId): Try[Track] = trackLock.synchronized {
+    tracks.get(id) match {
+      case Some(id) => Success(id)
+      case None => Failure(EntityNotFoundException("Track"))
+    }
+  }
 
   override def put(track: Track): Try[Track] = trackLock.synchronized {
-    track.id match {
-      case None =>
-        val id = TrackId(nextId)
-        val trackWithId = track.setId(id)
-        tracks = tracks.updated(id, trackWithId)
-        nextId += 1
-        Success(trackWithId)
-      case Some(id) =>
-        tracks = tracks.updated(id, track)
-        Success(track)
-    }
+    tracks = tracks.updated(track.id, track)
+    Success(track)
   }
 
 }

@@ -20,7 +20,7 @@ class FileWorkspaceRepository @Inject() (
 
   private val PATH = new File("data/store/workspaces.json")
 
-  final case class WorkspaceModel(userId: UserId, trackId: Option[TrackId])
+  final case class WorkspaceModel(userId: UserId, trackId: TrackId)
   final case class WorkspaceMapModel(workspaces: Map[String, WorkspaceModel] = Map())
 
   object MyJsonProtocol extends DefaultJsonProtocol {
@@ -52,8 +52,7 @@ class FileWorkspaceRepository @Inject() (
     jsonIO.read[WorkspaceMapModel](PATH, WorkspaceMapModel()) match {
       case Failure(ex) => Failure(ex)
       case Success(storage) => storage.workspaces.get(user.id.id.toString) match {
-        case None => Success(Workspace(user.id, None))
-        case Some(model) if model.trackId.isEmpty => Success(Workspace(user.id, None))
+        case None => Failure(EntityNotFoundException("Workspace"))
         case Some(model) =>
           Success(Workspace(
             model.userId,

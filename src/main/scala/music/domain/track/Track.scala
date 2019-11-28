@@ -10,7 +10,7 @@ import scala.collection.immutable.SortedMap
 import scala.reflect.{ClassTag, classTag}
 
 trait Track {
-  val id: Option[TrackId] // TODO: should it be option?
+  val id: TrackId
   val bars: Bars
   val keys: Keys
 
@@ -28,18 +28,18 @@ trait Track {
 
 object Track {
 
-  def apply(): Track = TrackImpl(None, Map(), Bars(), Keys())
+  def apply(id: TrackId): Track = TrackImpl(id, Map(), Bars(), Keys())
 
   final case class TrackId(id: Long) extends AnyVal
 
   private[track] final case class TrackImpl(
-    id: Option[TrackId],
+    id: TrackId,
     private val tracks: Map[String, SymbolTrack[_]],
     bars: Bars,
     keys: Keys
   ) extends Track {
 
-    override def setId(id: TrackId): Track = copy(id = Some(id))
+    override def setId(id: TrackId): Track = copy(id = id)
 
     override def writeTimeSignature(pos: Position, timeSignature: TimeSignature): Track = copy(
       bars = bars.writeTimeSignature(pos, timeSignature)

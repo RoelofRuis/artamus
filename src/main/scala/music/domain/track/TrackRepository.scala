@@ -6,7 +6,9 @@ import scala.util.Try
 
 trait TrackRepository {
 
-  def getById(id: TrackId): Option[Try[Track]]
+  def create: Try[Track]
+
+  def getById(id: TrackId): Try[Track]
 
   def put(track: Track): Try[Track]
 
