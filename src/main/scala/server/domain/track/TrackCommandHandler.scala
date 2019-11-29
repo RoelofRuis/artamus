@@ -29,10 +29,8 @@ private[server] class TrackCommandHandler @Inject() (
     for {
       workspace <- workspaceRepo.getByOwner(req.user)
       track <- trackRepo.getById(workspace.editedTrack)
-      editedWorkspace = workspace.setTrackToEdit(track)
       editedTrack = track.create(req.attributes.window, req.attributes.symbol)
       _ <- trackRepo.put(editedTrack)
-      _ <- workspaceRepo.put(editedWorkspace)
     }  yield true
   }
 
@@ -40,10 +38,8 @@ private[server] class TrackCommandHandler @Inject() (
     for {
       workspace <- workspaceRepo.getByOwner(req.user)
       track <- trackRepo.getById(workspace.editedTrack)
-      editedWorkspace = workspace.setTrackToEdit(track)
       editedTrack = track.writeTimeSignature(req.attributes.position, req.attributes.ts)
       _ <- trackRepo.put(editedTrack)
-      _ <- workspaceRepo.put(editedWorkspace)
     } yield true
   }
 
@@ -51,9 +47,7 @@ private[server] class TrackCommandHandler @Inject() (
     for {
       workspace <- workspaceRepo.getByOwner(req.user)
       track <- trackRepo.getById(workspace.editedTrack)
-      editedWorkspace = workspace.setTrackToEdit(track)
       editedTrack = track.writeKey(req.attributes.position, req.attributes.symbol)
-      _ <- workspaceRepo.put(editedWorkspace)
       _ <- trackRepo.put(editedTrack)
     } yield true
   }

@@ -18,44 +18,40 @@ private[server] class TrackQueryHandler @Inject() (
   dispatcher: Dispatcher[Request, Query]
 ) {
 
+  // TODO: try to rewrite as for-comprehension (and move to service?)
+
   dispatcher.subscribe[ReadNotes.type]{ req =>
-    workspaceRepo.getByOwner(req.user) match {
-      case Success(workspace) =>
-        trackRepo.getById(workspace.editedTrack) match {
-          case Success(track) => Success(track.read[Note]().toSeq)
-          case Failure(_: EntityNotFoundException) => Success(Seq())
-          case Failure(ex) => Failure(ex)
-        }
-      case Failure(_: EntityNotFoundException) => Success(Seq())
-      case Failure(ex) => Failure(ex)
+    val res = for {
+      workspace <- workspaceRepo.getByOwner(req.user)
+      track <- trackRepo.getById(workspace.editedTrack)
+    } yield track.read[Note]().toSeq
+
+    res.recover {
+      case _: EntityNotFoundException => Seq()
     }
   }
 
   dispatcher.subscribe[ReadChords.type]{ req =>
-    workspaceRepo.getByOwner(req.user) match {
-      case Success(workspace) =>
-        trackRepo.getById(workspace.editedTrack) match {
-          case Success(track) => Success(track.read[Chord]().toSeq)
-          case Failure(ex) => Failure(ex)
-          case Failure(_: EntityNotFoundException) => Success(Seq())
-        }
-      case Failure(_: EntityNotFoundException) => Success(Seq())
-      case Failure(ex) => Failure(ex)
+    val res = for {
+      workspace <- workspaceRepo.getByOwner(req.user)
+      track <- trackRepo.getById(workspace.editedTrack)
+    } yield track.read[Chord]().toSeq
+
+    res.recover {
+      case _: EntityNotFoundException => Seq()
     }
   }
 
   dispatcher.subscribe[ReadMidiNotes.type]{ req =>
     import music.playback._
 
-    workspaceRepo.getByOwner(req.user) match {
-      case Success(workspace) =>
-        trackRepo.getById(workspace.editedTrack) match {
-          case Failure(ex) => Failure(ex)
-          case Success(track) => Success(track.iterate(Position.ZERO).toSeq)
-          case Failure(_: EntityNotFoundException) => Success(Seq())
-        }
-      case Failure(_: EntityNotFoundException) => Success(Seq())
-      case Failure(ex) => Failure(ex)
+    val res = for {
+      workspace <- workspaceRepo.getByOwner(req.user)
+      track <- trackRepo.getById(workspace.editedTrack)
+    } yield track.iterate(Position.ZERO).toSeq
+
+    res.recover {
+      case _: EntityNotFoundException => Seq()
     }
   }
 
