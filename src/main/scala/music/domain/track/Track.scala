@@ -14,7 +14,6 @@ trait Track {
   val bars: Bars
   val keys: Keys
 
-  def setId(id: TrackId): Track
   def writeTimeSignature(pos: Position, timeSignature: TimeSignature): Track
   def writeKey(pos: Position, key: Key): Track
 
@@ -38,8 +37,6 @@ object Track {
     bars: Bars,
     keys: Keys
   ) extends Track {
-
-    override def setId(id: TrackId): Track = copy(id = id)
 
     override def writeTimeSignature(pos: Position, timeSignature: TimeSignature): Track = copy(
       bars = bars.writeTimeSignature(pos, timeSignature)
