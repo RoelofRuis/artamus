@@ -11,15 +11,13 @@ import scala.util.{Failure, Success, Try}
 class InMemoryTrackRepository() extends TrackRepository {
 
   private val trackLock = new Object()
-  @GuardedBy("trackLock") private var nextId: Long = 0L
+  @GuardedBy("trackLock") private var idCounter: Long = 0L
   @GuardedBy("trackLock") private var tracks: Map[TrackId, Track] = Map()
 
-  override def create: Try[Track] = trackLock.synchronized {
-    val id = TrackId(nextId)
-    val trackWithId = Track(id)
-    tracks = tracks.updated(id, trackWithId)
-    nextId += 1
-    Success(trackWithId)
+  override def nextId: Try[TrackId] = trackLock.synchronized {
+    val id = idCounter
+    idCounter += 1
+    Success(TrackId(id))
   }
 
   override def getById(id: TrackId): Try[Track] = trackLock.synchronized {
