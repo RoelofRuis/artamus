@@ -2,7 +2,7 @@ package server.domain.track
 
 import javax.inject.Inject
 import music.domain.track.TrackRepository
-import music.domain.workspace.WorkspaceRepository
+import music.domain.workspace.{Workspace, WorkspaceRepository}
 import protocol.Command
 import pubsub.Dispatcher
 import server.Request
@@ -16,10 +16,10 @@ private[server] class TrackCommandHandler @Inject() (
 ) {
   // TODO: refactor duplicate parts
 
-  dispatcher.subscribe[NewTrack.type]{ req =>
+  dispatcher.subscribe[NewWorkspace.type]{ req =>
     for {
       track <- trackRepo.create
-      workspace <- workspaceRepo.getByOwner(req.user)
+      workspace = Workspace(req.user.id, track.id)
       newWorkspace = workspace.setTrackToEdit(track)
       _ <- workspaceRepo.put(newWorkspace)
     } yield true

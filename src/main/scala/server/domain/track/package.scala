@@ -10,7 +10,7 @@ import protocol.{Command, Query}
 package object track {
 
   // Commands
-  case object NewTrack extends Command
+  case object NewWorkspace extends Command
   case class WriteNote(window: Window, symbol: Note) extends Command
   case class WriteKey(position: Position, symbol: Key) extends Command
   case class WriteTimeSignature(position: Position, ts: TimeSignature) extends Command

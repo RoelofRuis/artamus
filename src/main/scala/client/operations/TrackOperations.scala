@@ -21,9 +21,9 @@ class TrackOperations @Inject() (
 
   import music.analysis.TwelveToneTuning._
 
-  registry.registerOperation(OperationToken("new", "track"), () => {
+  registry.registerOperation(OperationToken("new", "workspace"), () => {
     List(
-      NewTrack,
+      NewWorkspace,
       Analyse
     )
   })
