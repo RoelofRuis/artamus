@@ -23,16 +23,14 @@ class FileWorkspaceRepository @Inject() (
   final case class WorkspaceModel(userId: UserId, trackId: TrackId)
   final case class WorkspaceMapModel(workspaces: Map[String, WorkspaceModel] = Map())
 
-  object MyJsonProtocol extends DefaultJsonProtocol {
+  object WorkspaceJsonProtocol extends DefaultJsonProtocol {
     implicit val trackId = jsonFormat1(TrackId)
     implicit val userId = jsonFormat1(UserId)
     implicit val workspaceFormat = jsonFormat2(WorkspaceModel)
     implicit val workspaceMapFormat = jsonFormat1(WorkspaceMapModel)
   }
 
-  // TODO: improve fetching/writing the data
-
-  import MyJsonProtocol._
+  import WorkspaceJsonProtocol._
 
   override def put(workspace: Workspace): Try[Unit] = {
     jsonIO.update(PATH, WorkspaceMapModel()) { storage =>

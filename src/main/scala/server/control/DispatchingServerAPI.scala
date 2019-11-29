@@ -4,6 +4,7 @@ import com.typesafe.scalalogging.LazyLogging
 import music.domain.user.{User, UserRepository}
 import protocol._
 import protocol.transport.server.{Connection, ServerAPI}
+import server.storage.EntityNotFoundException
 import server.{Request, ServerBindings}
 
 import scala.util.{Failure, Success, Try}
@@ -49,14 +50,14 @@ final class DispatchingServerAPI(
     request match {
       case CommandRequest(Authenticate(userName)) =>
         userRepository.getByName(userName) match {
-          case Success(None) =>
-            logger.info(s"User [$userName] not found")
-            Left(s"User not found")
-
-          case Success(Some(user)) =>
+          case Success(user) =>
             server.subscribeEvents(connection.name, event => connection.sendEvent(EventResponse(event)))
             connections = connections.updated(connection, Some(user))
             Right(true)
+
+          case Failure(_: EntityNotFoundException) =>
+            logger.info(s"User [$userName] not found")
+            Left(s"User not found")
 
           case Failure(ex) =>
             logger.error("Error in server logic", ex)

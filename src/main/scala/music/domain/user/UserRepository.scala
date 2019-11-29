@@ -4,6 +4,6 @@ import scala.util.Try
 
 trait UserRepository {
 
-  def getByName(name: String): Try[Option[User]]
+  def getByName(name: String): Try[User]
 
 }

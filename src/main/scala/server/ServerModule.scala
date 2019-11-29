@@ -16,8 +16,8 @@ import server.analysis.blackboard.Controller
 import server.domain.ChangeHandler
 import server.interpret.LilypondInterpreter
 import server.rendering.{RenderingCompletionHandler, RenderingModule}
-import server.storage.{FileWorkspaceRepository, InMemoryTrackRepository, InMemoryUserRepository}
 import server.storage.io.{FileIO, JsonIO}
+import server.storage.{FileWorkspaceRepository, InMemoryTrackRepository, InMemoryUserRepository}
 
 class ServerModule extends ScalaPrivateModule with ServerConfig {
 
