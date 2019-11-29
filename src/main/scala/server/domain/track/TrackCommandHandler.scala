@@ -2,19 +2,20 @@ package server.domain.track
 
 import javax.inject.Inject
 import music.domain.track.{Track, TrackRepository}
+import music.domain.user.User
 import music.domain.workspace.{Workspace, WorkspaceRepository}
 import protocol.Command
 import pubsub.Dispatcher
 import server.Request
 
 import scala.language.existentials
+import scala.util.Try
 
 private[server] class TrackCommandHandler @Inject() (
   workspaceRepo: WorkspaceRepository,
   trackRepo: TrackRepository,
   dispatcher: Dispatcher[Request, Command],
 ) {
-  // TODO: refactor duplicate parts
 
   dispatcher.subscribe[NewWorkspace.type]{ req =>
     for {
@@ -28,29 +29,22 @@ private[server] class TrackCommandHandler @Inject() (
   }
 
   dispatcher.subscribe[WriteNote]{ req =>
-    for {
-      workspace <- workspaceRepo.getByOwner(req.user)
-      track <- trackRepo.getById(workspace.editedTrack)
-      editedTrack = track.create(req.attributes.window, req.attributes.symbol)
-      _ <- trackRepo.put(editedTrack)
-    }  yield true
+    updateTrack(req.user, _.create(req.attributes.window, req.attributes.symbol))
   }
 
   dispatcher.subscribe[WriteTimeSignature]{ req =>
-    for {
-      workspace <- workspaceRepo.getByOwner(req.user)
-      track <- trackRepo.getById(workspace.editedTrack)
-      editedTrack = track.writeTimeSignature(req.attributes.position, req.attributes.ts)
-      _ <- trackRepo.put(editedTrack)
-    } yield true
+    updateTrack(req.user, _.writeTimeSignature(req.attributes.position, req.attributes.ts))
   }
 
   dispatcher.subscribe[WriteKey]{ req =>
+    updateTrack(req.user, _.writeKey(req.attributes.position, req.attributes.symbol))
+  }
+
+  def updateTrack(user: User, f: Track => Track): Try[Boolean] = {
     for {
-      workspace <- workspaceRepo.getByOwner(req.user)
+      workspace <- workspaceRepo.getByOwner(user)
       track <- trackRepo.getById(workspace.editedTrack)
-      editedTrack = track.writeKey(req.attributes.position, req.attributes.symbol)
-      _ <- trackRepo.put(editedTrack)
+      _ <- trackRepo.put(f(track))
     } yield true
   }
 
