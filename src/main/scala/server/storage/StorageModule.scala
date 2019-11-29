@@ -1,0 +1,24 @@
+package server.storage
+
+import music.domain.track.TrackRepository
+import music.domain.user.UserRepository
+import music.domain.workspace.WorkspaceRepository
+import net.codingwell.scalaguice.ScalaPrivateModule
+import server.storage.io.{FileIO, JsonIO}
+
+class StorageModule extends ScalaPrivateModule {
+  this: StorageConfig =>
+
+  override def configure(): Unit = {
+    bind[JsonIO].toInstance(
+      new JsonIO(
+        new FileIO,
+        compactJson
+      )
+    )
+    bind[WorkspaceRepository].to[FileWorkspaceRepository]
+    bind[UserRepository].to[InMemoryUserRepository]
+    bind[TrackRepository].to[InMemoryTrackRepository]
+  }
+
+}

@@ -1,8 +1,9 @@
 package server
 
 import server.rendering.RenderingConfig
+import server.storage.StorageConfig
 
-trait ServerConfig extends RenderingConfig {
+trait ServerConfig extends RenderingConfig with StorageConfig {
 
   val port = 9999
 

@@ -6,9 +6,8 @@ import _root_.server.domain.track.{TrackCommandHandler, TrackQueryHandler}
 import com.google.inject.Provides
 import javax.inject.Singleton
 import music.domain.DomainModule
-import music.domain.track.{Track, TrackRepository}
+import music.domain.track.Track
 import music.domain.user.UserRepository
-import music.domain.workspace.WorkspaceRepository
 import net.codingwell.scalaguice.ScalaPrivateModule
 import protocol._
 import pubsub.{Dispatcher, EventBus}
@@ -16,22 +15,12 @@ import server.analysis.blackboard.Controller
 import server.domain.ChangeHandler
 import server.interpret.LilypondInterpreter
 import server.rendering.{RenderingCompletionHandler, RenderingModule}
-import server.storage.io.{FileIO, JsonIO}
-import server.storage.{FileWorkspaceRepository, InMemoryTrackRepository, InMemoryUserRepository}
+import server.storage.StorageModule
 
 class ServerModule extends ScalaPrivateModule with ServerConfig {
 
   override def configure(): Unit = {
-    bind[JsonIO].toInstance(
-      new JsonIO(
-        new FileIO,
-        compactJson
-      )
-    )
-    bind[WorkspaceRepository].to[FileWorkspaceRepository]
-    bind[UserRepository].to[InMemoryUserRepository]
-    bind[TrackRepository].to[InMemoryTrackRepository]
-
+    install(new StorageModule with ServerConfig)
     install(new DomainModule)
 
     bind[LilypondInterpreter].toInstance(
