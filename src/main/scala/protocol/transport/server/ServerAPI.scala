@@ -6,6 +6,9 @@ trait ServerAPI {
 
   def connectionClosed(connection: Connection): Unit
 
+  // TODO: add beforeRequest
+  // TODO: add afterRequest
+
   def handleRequest(connection: Connection, obj: Object): Any
 
 }
