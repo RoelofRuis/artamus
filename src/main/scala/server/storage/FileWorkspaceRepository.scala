@@ -8,14 +8,14 @@ import music.domain.track.Track.TrackId
 import music.domain.user.User
 import music.domain.user.User.UserId
 import music.domain.workspace.{Workspace, WorkspaceRepository}
-import server.storage.io.JsonIO
+import server.storage.io.JsonStorage
 import spray.json.DefaultJsonProtocol
 
 import scala.util.{Failure, Success, Try}
 
 @Singleton
 class FileWorkspaceRepository @Inject() (
-  jsonIO: JsonIO,
+  storage: JsonStorage,
 ) extends WorkspaceRepository with LazyLogging {
 
   private val PATH = new File("data/store/workspaces.json")
@@ -33,7 +33,7 @@ class FileWorkspaceRepository @Inject() (
   import WorkspaceJsonProtocol._
 
   override def put(workspace: Workspace): Try[Unit] = {
-    jsonIO.update(PATH, WorkspaceMapModel()) { storage =>
+    storage.update(PATH, WorkspaceMapModel()) { storage =>
       WorkspaceMapModel(
         storage.workspaces.updated(
           workspace.owner.id.toString,
@@ -47,7 +47,7 @@ class FileWorkspaceRepository @Inject() (
   }
 
   def getByOwner(user: User): Try[Workspace] = {
-    jsonIO.read[WorkspaceMapModel](PATH, WorkspaceMapModel()) match {
+    storage.read[WorkspaceMapModel](PATH, WorkspaceMapModel()) match {
       case Failure(ex) => Failure(ex)
       case Success(storage) => storage.workspaces.get(user.id.id.toString) match {
         case None => Failure(EntityNotFoundException("Workspace"))

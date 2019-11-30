@@ -7,7 +7,7 @@ import spray.json.{JsonReader, JsonWriter, _}
 
 import scala.util.{Failure, Success, Try}
 
-class JsonIO @Inject() (fileIO: FileIO, compact: Boolean = true) {
+private [storage] class BasicJsonStorage @Inject() (fileIO: FileIO, compact: Boolean = true) extends JsonStorage {
 
   def write[A : JsonWriter](file: File, model: A): Try[Unit] = {
     val json = if (compact) model.toJson.compactPrint else model.toJson.prettyPrint

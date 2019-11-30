@@ -6,14 +6,14 @@ import com.typesafe.scalalogging.LazyLogging
 import javax.inject.{Inject, Singleton}
 import music.domain.user.User.UserId
 import music.domain.user.{User, UserRepository}
-import server.storage.io.JsonIO
+import server.storage.io.JsonStorage
 import spray.json.DefaultJsonProtocol
 
 import scala.util.{Failure, Success, Try}
 
 @Singleton
 class FileUserRepository @Inject() (
-  jsonIO: JsonIO,
+  storage: JsonStorage,
 ) extends UserRepository with LazyLogging {
 
   private val PATH = new File("data/store/users.json")
@@ -29,7 +29,7 @@ class FileUserRepository @Inject() (
   import UserJsonProtocol._
 
   def getByName(name: String): Try[User] = {
-    jsonIO.read[UserListModel](PATH, UserListModel()) match {
+    storage.read[UserListModel](PATH, UserListModel()) match {
       case Failure(ex) => Failure(ex)
       case Success(storage) =>
         storage.users.find(_.name == name) match {
