@@ -4,6 +4,4 @@ package object pubsub {
 
   def createDispatcher[R[_] <: RequestContainer[_], A <: { type Res }](): Dispatcher[R, A] = new SimpleDispatcher[R, A]
 
-  type Action[A <: { type Res }] = A => A#Res
-
 }
