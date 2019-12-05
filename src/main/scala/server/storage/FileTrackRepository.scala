@@ -63,7 +63,7 @@ class FileTrackRepository @Inject() (
       override def read(json: JsValue): Position = json match {
         case JsString(format(num, denom)) => Position(Rational(num.toInt, denom.toInt))
       }
-      override def write(obj: Position): JsValue = JsString(s"""${obj.v.d}/${obj.v.n}""")
+      override def write(obj: Position): JsValue = JsString(s"""${obj.v.n}/${obj.v.d}""")
     }
     implicit val timeSignatureFormat = jsonFormat1(TimeSignature)
     implicit val accidentalFormat = jsonFormat1(Accidental)
