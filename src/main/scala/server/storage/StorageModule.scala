@@ -19,6 +19,10 @@ class StorageModule extends ScalaPrivateModule {
     bind[WorkspaceRepository].to[FileWorkspaceRepository]
     bind[UserRepository].to[InMemoryUserRepository]
     bind[TrackRepository].to[InMemoryTrackRepository]
+
+    expose[WorkspaceRepository]
+    expose[UserRepository]
+    expose[TrackRepository]
   }
 
 }

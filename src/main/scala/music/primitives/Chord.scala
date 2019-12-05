@@ -1,6 +1,4 @@
-package music.domain.track.symbol
-
-import music.primitives.{Function, PitchClass, PitchSpelling}
+package music.primitives
 
 import scala.collection.immutable.SortedSet
 
@@ -8,7 +6,7 @@ final case class Chord(
   root: PitchClass,
   functions: SortedSet[Function],
   rootSpelling: Option[PitchSpelling]
-) extends SymbolType {
+) {
 
   def withRootSpelling(spelling: PitchSpelling): Chord = this.copy(rootSpelling = Some(spelling))
 

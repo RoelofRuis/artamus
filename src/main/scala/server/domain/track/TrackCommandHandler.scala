@@ -28,8 +28,8 @@ private[server] class TrackCommandHandler @Inject() (
     } yield true
   }
 
-  dispatcher.subscribe[WriteNote]{ req =>
-    updateTrack(req.user, _.create(req.attributes.window, req.attributes.symbol))
+  dispatcher.subscribe[WriteNoteGroup]{ req =>
+    updateTrack(req.user, _.writeNoteGroup(req.attributes.group))
   }
 
   dispatcher.subscribe[WriteTimeSignature]{ req =>

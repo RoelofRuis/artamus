@@ -1,7 +1,6 @@
 package server.domain.track
 
 import javax.inject.Inject
-import music.domain.track.symbol.{Chord, Note}
 import music.domain.track.{Track, TrackRepository}
 import music.domain.user.User
 import music.domain.workspace.WorkspaceRepository
@@ -20,11 +19,11 @@ private[server] class TrackQueryHandler @Inject() (
 ) {
 
   dispatcher.subscribe[ReadNotes.type]{ req =>
-    readTrack(req.user, _.read[Note]().toSeq, Seq())
+    readTrack(req.user, _.notes.readGroups.flatMap(_.notes).toSeq, Seq())
   }
 
   dispatcher.subscribe[ReadChords.type]{ req =>
-    readTrack(req.user, _.read[Chord]().toSeq, Seq())
+    readTrack(req.user, _.chords.chords.values.toSeq, Seq())
   }
 
   dispatcher.subscribe[ReadMidiNotes.type]{ req =>

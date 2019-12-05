@@ -5,11 +5,10 @@ import music.domain.track.Track
 import music.glyph
 import music.glyph.{ChordGlyph, Glyph, RestGlyph}
 import music.math.temporal.{Position, Window}
-import music.domain.track.symbol.Chord
 
 private[glyph] class ChordIterator(track: Track) {
 
-  private val chords = track.read[Chord]()
+  private val chords = track.chords.read
 
   def iterate(start: Position): Iterator[Glyph] = {
     val window = Window.instantAt(start)
@@ -20,23 +19,23 @@ private[glyph] class ChordIterator(track: Track) {
     chords.nextOption match {
       case None => Iterator.empty
 
-      case Some(nextChord) =>
+      case Some((window, nextChord)) =>
         val writeableChords = {
           val written = for {
-            spelling <- nextChord.symbol.rootSpelling
+            spelling <- nextChord.rootSpelling
           } yield {
-             NoteValueConversion.from(nextChord.window.duration) match {
+             NoteValueConversion.from(window.duration) match {
               case Nil => Seq()
               case head :: Nil =>
-                ChordGlyph(head, spelling, nextChord.symbol.functions) :: Nil
+                ChordGlyph(head, spelling, nextChord.functions) :: Nil
               case head :: tail =>
-                glyph.ChordGlyph(head, spelling, nextChord.symbol.functions) :: tail.map(RestGlyph(_, silent=true))
+                glyph.ChordGlyph(head, spelling, nextChord.functions) :: tail.map(RestGlyph(_, silent=true))
             }
           }
           written.map(_.iterator).getOrElse(Iterator())
         }
 
-        val rests = window.until(nextChord.window) match {
+        val rests = window.until(window) match {
           case None => Iterator.empty
           case Some(diff) =>
             track
@@ -47,7 +46,7 @@ private[glyph] class ChordIterator(track: Track) {
               .iterator
         }
 
-        rests ++ writeableChords ++ read(nextChord.window)
+        rests ++ writeableChords ++ read(window)
     }
   }
 
