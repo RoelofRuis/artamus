@@ -13,19 +13,15 @@ final case class Notes private (
   def readGroups: BufferedIterator[NoteGroup] = notes.valuesIterator.buffered
   def read: BufferedIterator[Note] = notes.valuesIterator.flatMap(_.notes).buffered
 
-  def writeNoteGroup(noteGroup: NoteGroup): Notes = {
-    copy(
+  def writeNoteGroup(noteGroup: NoteGroup): Notes = copy(
       notes = notes.updated(noteGroup.window.start, noteGroup)
     )
-  }
 
-  def mapNotes(f: Note => Note): Notes = {
-    copy(
+  def mapNotes(f: Note => Note): Notes = copy(
       notes = notes.map {
         case (position, noteGroup) => (position, NoteGroup(noteGroup.window, noteGroup.notes.map(f)))
       }
     )
-  }
 
 }
 
