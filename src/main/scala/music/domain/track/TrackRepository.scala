@@ -10,6 +10,6 @@ trait TrackRepository {
 
   def getById(id: TrackId): Try[Track]
 
-  def put(track: Track): Try[Track]
+  def put(track: Track): Try[Unit]
 
 }

@@ -27,9 +27,9 @@ class InMemoryTrackRepository() extends TrackRepository {
     }
   }
 
-  override def put(track: Track): Try[Track] = trackLock.synchronized {
+  override def put(track: Track): Try[Unit] = trackLock.synchronized {
     tracks = tracks.updated(track.id, track)
-    Success(track)
+    Success(())
   }
 
 }
