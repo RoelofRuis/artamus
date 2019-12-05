@@ -19,12 +19,12 @@ private[glyph] class ChordIterator(track: Track) {
     chords.nextOption match {
       case None => Iterator.empty
 
-      case Some((window, nextChord)) =>
+      case Some((nextWindow, nextChord)) =>
         val writeableChords = {
           val written = for {
             spelling <- nextChord.rootSpelling
           } yield {
-             NoteValueConversion.from(window.duration) match {
+             NoteValueConversion.from(nextWindow.duration) match {
               case Nil => Seq()
               case head :: Nil =>
                 ChordGlyph(head, spelling, nextChord.functions) :: Nil
@@ -35,7 +35,7 @@ private[glyph] class ChordIterator(track: Track) {
           written.map(_.iterator).getOrElse(Iterator())
         }
 
-        val rests = window.until(window) match {
+        val rests = window.until(nextWindow) match {
           case None => Iterator.empty
           case Some(diff) =>
             track
@@ -46,7 +46,7 @@ private[glyph] class ChordIterator(track: Track) {
               .iterator
         }
 
-        rests ++ writeableChords ++ read(window)
+        rests ++ writeableChords ++ read(nextWindow)
     }
   }
 
