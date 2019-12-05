@@ -39,7 +39,7 @@ object LilypondFormat {
     spelledRoot + spelledDur + chord.functions.toLilypond
   }
 
-  implicit val chordFunctionsToLilypond: LilypondFormat[SortedSet[Function]] = { functions =>
+  implicit val chordFunctionsToLilypond: LilypondFormat[Set[Function]] = { functions =>
     if (functions.contains(TwelveToneFunctions.FLAT_THREE)) ":m"
     else ""
   }

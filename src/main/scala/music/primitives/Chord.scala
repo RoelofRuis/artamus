@@ -1,10 +1,8 @@
 package music.primitives
 
-import scala.collection.immutable.SortedSet
-
 final case class Chord(
   root: PitchClass,
-  functions: SortedSet[Function],
+  functions: Set[Function],
   rootSpelling: Option[PitchSpelling]
 ) {
 
@@ -16,7 +14,7 @@ object Chord {
 
   def apply(
     root: PitchClass,
-    functions: SortedSet[Function]
+    functions: Set[Function]
   ): Chord = Chord(root, functions, None)
 
 }

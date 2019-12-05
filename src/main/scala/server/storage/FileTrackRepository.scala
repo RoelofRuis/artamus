@@ -10,7 +10,7 @@ import music.math.Rational
 import music.math.temporal.{Duration, Position, Window}
 import music.primitives._
 import server.storage.io.JsonStorage
-import spray.json.{DefaultJsonProtocol, JsNumber, JsString, JsValue, JsonFormat, deserializationError}
+import spray.json.{DefaultJsonProtocol, JsNumber, JsObject, JsString, JsValue, JsonFormat, JsonWriter, deserializationError}
 
 import scala.collection.immutable.SortedMap
 import scala.util.{Failure, Success, Try}
@@ -26,6 +26,7 @@ class FileTrackRepository @Inject() (
   final case class TrackContentModel(
     id: TrackId,
     bars: Map[String, TimeSignature],
+    chords: Map[String, (Window, Chord)],
     keys: Map[String, Key],
     notes: Map[String, NoteGroup]
   )
@@ -76,9 +77,10 @@ class FileTrackRepository @Inject() (
     implicit val scientificPitchFormat = jsonFormat2(ScientificPitch)
     implicit val noteFormat = jsonFormat3(Note.apply)
     implicit val functionFormat = jsonFormat2(Function)
+    implicit val chordFormat = jsonFormat3(Chord.apply)
     implicit val noteGroupFormat = jsonFormat2(NoteGroup)
     implicit val trackId = jsonFormat1(TrackId)
-    implicit val trackFormat = jsonFormat4(TrackContentModel)
+    implicit val trackFormat = jsonFormat5(TrackContentModel)
     implicit val trackContentModelFormat = jsonFormat1(TrackMapModel)
   }
 
@@ -106,6 +108,7 @@ class FileTrackRepository @Inject() (
           TrackContentModel(
             track.id,
             unloadPositions(track.bars.timeSignatures),
+            unloadPositions(track.chords.chords),
             unloadPositions(track.keys.keys),
             unloadPositions(track.notes.notes)
           )
@@ -124,7 +127,7 @@ class FileTrackRepository @Inject() (
             model.id,
             Bars(loadPositions(model.bars)),
             Keys(loadPositions(model.keys)),
-            Chords(),
+            Chords(loadPositions(model.chords)),
             Notes(loadPositions(model.notes))
           ))
       }
