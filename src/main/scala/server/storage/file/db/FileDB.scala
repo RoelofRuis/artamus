@@ -1,91 +1,75 @@
 package server.storage.file.db
 
 import java.io.File
+import java.util.concurrent.ConcurrentHashMap
 
 import com.typesafe.scalalogging.LazyLogging
-import javax.annotation.concurrent.GuardedBy
 import javax.inject.Inject
 import server.storage.TransactionalDB
 import server.storage.file.db.FileDB.{CommitFailed, CommitSuccessful, DataFile}
 
-import scala.collection.mutable.ListBuffer
+import scala.jdk.CollectionConverters._
 import scala.util.{Failure, Success, Try}
 
 class FileDB @Inject() (
   rootPath: Seq[String],
 ) extends TransactionalDB with LazyLogging {
 
-  private val VERSION_PATH = makePath(DataFile("_versioning", "json"))
+  // TODO: add versioning so real transactionality can be ensured
 
-  private val guard = new Object()
-
-  @GuardedBy("guard") private var version: Long = 0L
-  @GuardedBy("guard") private val listBuffer = ListBuffer[Write]()
-
-  initVersion()
+  private val dataToWrite = new ConcurrentHashMap[DataFile, Write]()
 
   def read(file: DataFile): Try[String] = {
     logger.info(s"DB READ  [$file]")
-    FileIO.read(Read(makePath(file)))
+    Option(dataToWrite.get(file)) match {
+      case Some(write) => Success(write.data)
+      case None => FileIO.read(Read(makePath(file)))
+    }
   }
 
   def write(file: DataFile, data: String): Try[Unit] = {
     logger.info(s"DB WRITE [$file]")
-    guard.synchronized { listBuffer.addOne(Write(makePath(file), data)) }
+    dataToWrite.put(file, Write(makePath(file), data))
     Success(())
   }
 
-  def commit(): Try[Unit] = {
-    val res = guard.synchronized {
-      val results = listBuffer
-        .map(FileIO.write)
-        .toList
+  def commit(): Try[Unit] = commitInternally() match {
+    case Right(success) =>
+      logger.info(s"DB COMMIT wrote [${success.writes}")
+      Success(())
 
-      if (results.isEmpty) Right(CommitSuccessful(0))
-      else {
-        listBuffer.clear()
-
-        results.collect { case Failure(ex) => ex } match {
-          case list if list.isEmpty =>
-            FileIO.write(Write(VERSION_PATH, version.toString)) match {
-              case Success(()) =>
-                version += 1
-                Right(CommitSuccessful(results.size))
-              case Failure(ex) => Left(CommitFailed(Seq(ex)))
-            }
-
-          case failures =>
-            Left(CommitFailed(failures))
-        }
-      }
-    }
-
-    res match {
-      case Right(success) =>
-        logger.info(s"DB COMMIT wrote [${success.writes}")
-        Success(())
-
-      case Left(failures) =>
-        logger.warn(s"DB COMMIT failed", failures)
-        Failure(failures)
-    }
+    case Left(failures) =>
+      logger.warn(s"DB COMMIT failed", failures)
+      Failure(failures)
   }
 
   def rollback(): Try[Unit] = {
     logger.info(s"DB ROLLBACK")
-    guard.synchronized { listBuffer.clear() }
+    dataToWrite.clear()
     Success(())
+  }
+
+  private def commitInternally(): Either[CommitFailed, CommitSuccessful] = {
+    val results = dataToWrite.values.asScala
+      .map(FileIO.write)
+      .toList
+
+    if (results.isEmpty) Right(CommitSuccessful(0))
+    else {
+      dataToWrite.clear()
+
+      results.collect { case Failure(ex) => ex } match {
+        case list if list.isEmpty =>
+          Right(CommitSuccessful(results.size))
+
+        case failures =>
+          Left(CommitFailed(failures))
+      }
+    }
   }
 
   private def makePath(description: DataFile): String = {
     (rootPath :+ description.name + "." + description.ext).mkString(File.separator)
-  }
-
-  private def initVersion(): Unit = guard.synchronized {
-    FileIO.read(Read(VERSION_PATH)).flatMap { s => Try { s.toLong } } match {
-      case Success(v) => version = v
-      case Failure(_) => version = 0L
-    }
   }
 
 }
