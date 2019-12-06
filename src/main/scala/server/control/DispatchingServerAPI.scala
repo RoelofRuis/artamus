@@ -4,12 +4,13 @@ import com.typesafe.scalalogging.LazyLogging
 import music.domain.user.{User, UserRepository}
 import protocol._
 import protocol.transport.server.{Connection, ServerAPI}
-import server.storage.EntityNotFoundException
+import server.storage.{EntityNotFoundException, TransactionalDB}
 import server.{Request, ServerBindings}
 
 import scala.util.{Failure, Success, Try}
 
 final class DispatchingServerAPI(
+  db: TransactionalDB,
   userRepository: UserRepository,
   server: ServerBindings,
 ) extends ServerAPI with LazyLogging {
@@ -23,6 +24,22 @@ final class DispatchingServerAPI(
   def connectionClosed(connection: Connection): Unit = {
     connections -= connection
     server.unsubscribeEvents(connection.name)
+  }
+
+  override def afterRequest(connection: Connection, response: DataResponse): DataResponse = {
+    response.data match {
+      case Right(_) =>
+        db.commit() match {
+          case Success(()) => response
+          case Failure(ex) =>
+            logger.error(s"Unable to commit changes", ex)
+            DataResponse(Left(s"Unable to commit changes"))
+        }
+
+      case Left(_) =>
+        db.rollback()
+        response
+    }
   }
 
   def handleRequest(connection: Connection, request: Object): DataResponse = {

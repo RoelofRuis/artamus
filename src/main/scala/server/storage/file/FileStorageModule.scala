@@ -19,6 +19,7 @@ class FileStorageModule extends ScalaPrivateModule {
     bind[UserRepository].to[FileUserRepository]
     bind[TrackRepository].to[FileTrackRepository]
 
+    expose[FileDB]
     expose[WorkspaceRepository]
     expose[UserRepository]
     expose[TrackRepository]

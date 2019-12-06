@@ -4,13 +4,14 @@ import java.io.File
 
 import com.typesafe.scalalogging.LazyLogging
 import javax.inject.Inject
+import server.storage.TransactionalDB
 import server.storage.file.db.FileDB.DataFile
 
 import scala.util.{Failure, Success, Try}
 
 class FileDB @Inject() (
   rootPath: Seq[String],
-) extends LazyLogging {
+) extends TransactionalDB with LazyLogging {
 
   private val versioningPath = makePath(DataFile("_versioning", "json"))
   private val initialVersion = FileIO.read(Read(versioningPath)).flatMap { s => Try { s.toLong } } match {
