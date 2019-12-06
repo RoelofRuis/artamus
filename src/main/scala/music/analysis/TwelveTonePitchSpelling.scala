@@ -1,21 +1,17 @@
 package music.analysis
 
-import music.domain.track.TrackSymbol
-import music.primitives._
-import music.domain.track.symbol.{Chord, Key, Note}
+import music.primitives.{Note, _}
 
 object TwelveTonePitchSpelling {
 
   import music.analysis.TwelveToneTuning._
 
-  def spellNotes(notes: Seq[TrackSymbol[Note]], keyOption: Option[Key]): Seq[TrackSymbol[Note]] = {
-    val key = keyOption.getOrElse(Key(PitchSpelling(Step(0), Accidental(0)), Scale.MAJOR))
-    notes.map(note => note.update(note.symbol.withScientificPitch(spell(note.symbol, key))))
+  def spellNote(note: Note, key: Key): Note = {
+    note.withScientificPitch(spell(note, key))
   }
 
-  def spellChord(chord: TrackSymbol[Chord], keyOption: Option[Key]): TrackSymbol[Chord] = {
-    val key = keyOption.getOrElse(Key(PitchSpelling(Step(0), Accidental(0)), Scale.MAJOR))
-    chord.update(chord.symbol.withRootSpelling(spellPc(chord.symbol.root, key)))
+  def spellChord(chord: Chord, key: Key): Chord = {
+    chord.withRootSpelling(spellPc(chord.root, key))
   }
 
   private def spell(note: Note, key: Key): ScientificPitch = {

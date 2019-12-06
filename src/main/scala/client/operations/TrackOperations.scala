@@ -4,14 +4,12 @@ import client.MusicReader
 import client.MusicReader.{NoteOn, Simultaneous}
 import client.io.StdIOTools
 import com.google.inject.Inject
-import music.domain.track.TimeSignature
-import music.domain.track.symbol.{Key, Note}
 import music.math.Rational
 import music.math.temporal.{Duration, Position, Window}
-import music.primitives._
+import music.primitives.{Note, NoteGroup, TimeSignature, _}
 import protocol.Command
+import server.domain.Analyse
 import server.domain.track._
-import server.domain.{Analyse, Commit}
 
 import scala.annotation.tailrec
 
@@ -22,11 +20,9 @@ class TrackOperations @Inject() (
 
   import music.analysis.TwelveToneTuning._
 
-  registry.registerOperation(OperationToken("commit", "track"), () => { List(Commit) })
-
-  registry.registerOperation(OperationToken("new", "track"), () => {
+  registry.registerOperation(OperationToken("new", "workspace"), () => {
     List(
-      NewTrack,
+      NewWorkspace,
       Analyse
     )
   })
@@ -36,7 +32,7 @@ class TrackOperations @Inject() (
     val division = reader.readTimeSignatureDivision
 
     List(
-      CreateTimeSignatureSymbol(Position.ZERO, TimeSignature(division)),
+      WriteTimeSignature(Position.ZERO, TimeSignature(division)),
       Analyse
     )
   })
@@ -53,7 +49,7 @@ class TrackOperations @Inject() (
     }
 
     List(
-      CreateKeySymbol(Position.ZERO, Key(root, keyType)),
+      WriteKey(Position.ZERO, Key(root, keyType)),
       Analyse
     )
   })
@@ -85,13 +81,14 @@ class TrackOperations @Inject() (
         case Onset :: tail =>
           val elementDuration = baseDuration * (1 + tail.takeWhile(_ == Continued).size)
           tail.dropWhile(_ == Continued)
-          val newCommands = reader
+          val notes = reader
             .readMidiNoteNumbers(Simultaneous)
             .map { midiNoteNumber =>
               val (oct, pc) = (midiNoteNumber.toOct, midiNoteNumber.toPc)
-              CreateNoteSymbol(Window(Position.at(baseDuration * currentPos), elementDuration), Note(oct, pc))
+              Note(oct, pc)
             }
-          read(elements.tail, commands ++ newCommands, currentPos + 1)
+          val newCommand = WriteNoteGroup(NoteGroup(Window(Position.at(baseDuration * currentPos), elementDuration), notes))
+          read(elements.tail, commands :+ newCommand, currentPos + 1)
         case Rest :: _ => read(elements.tail, commands, currentPos + 1)
         case Continued :: _ => read(elements.tail, commands, currentPos + 1)
       }

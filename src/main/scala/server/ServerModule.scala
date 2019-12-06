@@ -15,10 +15,13 @@ import server.analysis.blackboard.Controller
 import server.domain.ChangeHandler
 import server.interpret.LilypondInterpreter
 import server.rendering.{RenderingCompletionHandler, RenderingModule}
+import server.storage.file.FileStorageModule
+import server.storage.file.db.FileDB
 
 class ServerModule extends ScalaPrivateModule with ServerConfig {
 
   override def configure(): Unit = {
+    install(new FileStorageModule with ServerConfig)
     install(new DomainModule)
 
     bind[LilypondInterpreter].toInstance(
@@ -57,10 +60,14 @@ class ServerModule extends ScalaPrivateModule with ServerConfig {
   }
 
   @Provides @Singleton
-  def serverConnectionFactory(userRepository: UserRepository, serverBindings: ServerBindings): ServerInterface = {
+  def serverConnectionFactory(
+    db: FileDB,
+    userRepository: UserRepository,
+    serverBindings: ServerBindings
+  ): ServerInterface = {
     DefaultServer.apply(
       port,
-      new DispatchingServerAPI(userRepository, serverBindings)
+      new DispatchingServerAPI(db, userRepository, serverBindings)
     )
   }
 

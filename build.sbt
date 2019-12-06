@@ -10,12 +10,14 @@ val scalaGuiceVersion = "4.2.6"
 val scalaLoggingVersion = "3.9.2"
 val slf4jSimpleVersion = "1.7.28"
 val scalaSwingVersion = "2.1.1"
+val sprayJsonVersion = "1.3.5"
 
 libraryDependencies ++= Seq(
   "net.codingwell" %% "scala-guice" % scalaGuiceVersion,
   "com.typesafe.scala-logging" %% "scala-logging" % scalaLoggingVersion,
   "org.slf4j" % "slf4j-simple" % slf4jSimpleVersion,
-  "org.scala-lang.modules" %% "scala-swing" % scalaSwingVersion
+  "org.scala-lang.modules" %% "scala-swing" % scalaSwingVersion,
+  "io.spray" %%  "spray-json" % sprayJsonVersion
 )
 
 scalacOptions ++= Seq(

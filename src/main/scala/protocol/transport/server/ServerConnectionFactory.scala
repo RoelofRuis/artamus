@@ -25,9 +25,10 @@ private[server] class ServerConnectionFactory(server: ServerAPI) extends LazyLog
             while (socket.isConnected) {
               val request = objectIn.readObject()
 
-              val response = server.handleRequest(connection, request)
+              val mainResponse = server.handleRequest(connection, request)
+              val afterRequestResponse = server.afterRequest(connection, mainResponse)
 
-              objectOut.writeObject(response)
+              objectOut.writeObject(afterRequestResponse)
             }
           } catch {
             case _: EOFException => logger.info("EOF: Client hang up")

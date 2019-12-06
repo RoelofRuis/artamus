@@ -1,61 +1,51 @@
 package server.domain.track
 
 import javax.inject.Inject
-import music.domain.track.TrackRepository
-import music.domain.workspace.WorkspaceRepository
-import music.math.temporal.Window
+import music.domain.track.{Track, TrackRepository}
+import music.domain.user.User
+import music.domain.workspace.{Workspace, WorkspaceRepository}
 import protocol.Command
 import pubsub.Dispatcher
 import server.Request
 
 import scala.language.existentials
+import scala.util.Try
 
 private[server] class TrackCommandHandler @Inject() (
   workspaceRepo: WorkspaceRepository,
+  trackRepo: TrackRepository,
   dispatcher: Dispatcher[Request, Command],
 ) {
-  // TODO: refactor duplicate parts
 
-  dispatcher.subscribe[NewTrack.type]{ req =>
-    val edited = workspaceRepo
-      .getByOwner(req.user)
-      .startNewEdit
-
-    workspaceRepo.write(edited)
-    true
+  dispatcher.subscribe[NewWorkspace.type]{ req =>
+    for {
+      nextId <- trackRepo.nextId
+      track = Track(nextId)
+      workspace = Workspace(req.user.id, track.id)
+      newWorkspace = workspace.setTrackToEdit(track)
+      _ <- trackRepo.put(track)
+      _ <- workspaceRepo.put(newWorkspace)
+    } yield true
   }
 
-  dispatcher.subscribe[CreateNoteSymbol]{ req =>
-    val workspace = workspaceRepo.getByOwner(req.user)
-
-    val edited = workspace
-      .editedTrack
-      .create(req.attributes.window, req.attributes.symbol)
-
-    workspaceRepo.write(workspace.makeEdit(edited))
-    true
+  dispatcher.subscribe[WriteNoteGroup]{ req =>
+    updateTrack(req.user, _.writeNoteGroup(req.attributes.group))
   }
 
-  dispatcher.subscribe[CreateTimeSignatureSymbol]{ req =>
-    val workspace = workspaceRepo.getByOwner(req.user)
-
-    val edited = workspace
-      .editedTrack
-      .writeTimeSignature(req.attributes.position, req.attributes.ts)
-
-    workspaceRepo.write(workspace.makeEdit(edited))
-    true
+  dispatcher.subscribe[WriteTimeSignature]{ req =>
+    updateTrack(req.user, _.writeTimeSignature(req.attributes.position, req.attributes.ts))
   }
 
-  dispatcher.subscribe[CreateKeySymbol]{ req =>
-    val workspace = workspaceRepo.getByOwner(req.user)
+  dispatcher.subscribe[WriteKey]{ req =>
+    updateTrack(req.user, _.writeKey(req.attributes.position, req.attributes.symbol))
+  }
 
-    val edited = workspace
-      .editedTrack
-      .create(Window.instantAt(req.attributes.position), req.attributes.symbol)
-
-    workspaceRepo.write(workspace.makeEdit(edited))
-    true
+  def updateTrack(user: User, f: Track => Track): Try[Boolean] = {
+    for {
+      workspace <- workspaceRepo.getByOwner(user)
+      track <- trackRepo.getById(workspace.editedTrack)
+      _ <- trackRepo.put(f(track))
+    } yield true
   }
 
 }

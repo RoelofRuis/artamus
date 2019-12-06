@@ -1,12 +1,10 @@
-package music.domain.track.symbol
-
-import music.primitives.{Octave, PitchClass, ScientificPitch}
+package music.primitives
 
 final case class Note(
   octave: Octave,
   pitchClass: PitchClass,
   scientificPitch: Option[ScientificPitch]
-) extends SymbolType {
+) {
 
   def withScientificPitch(pitch: ScientificPitch): Note = this.copy(scientificPitch = Some(pitch))
 

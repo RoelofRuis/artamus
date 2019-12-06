@@ -5,22 +5,14 @@ import music.domain.track.Track
 import music.glyph
 import music.glyph._
 import music.math.temporal.{Position, Window}
-import music.primitives._
-import music.domain.track.symbol.{Key, Note}
 
 private[glyph] class StaffIterator(track: Track) {
 
-  import music.analysis.TwelveToneTuning._
-
-  private val keys = track.read[Key]()
-  private val notes = track.readGrouped[Note]()
+  private val notes = track.notes.readGroups
 
   def iterate(start: Position): Iterator[Glyph] = {
     val window = Window.instantAt(start)
-    val initialKey = keys
-      .headOption
-      .map(_.symbol)
-      .getOrElse(Key(PitchSpelling(Step(0), Accidental(0)), Scale.MAJOR))
+    val initialKey = track.keys.initialKey
 
     val initialElements = Iterator( // TODO: these should probably come from their own iterator
       TimeSignatureGlyph(track.bars.initialTimeSignature.division),
@@ -38,9 +30,9 @@ private[glyph] class StaffIterator(track: Track) {
           .map(RestGlyph(_, silent=false))
           .iterator
 
-      case Some(nextNotes) =>
+      case Some(nextGroup) =>
         // windowing
-        val nextWindow = nextNotes.map(_.window).head
+        val nextWindow = nextGroup.window
 
         // rests
         val rests = window.until(nextWindow) match {
@@ -55,7 +47,7 @@ private[glyph] class StaffIterator(track: Track) {
         }
 
         // pitches
-        val pitches = nextNotes.map(_.symbol).flatMap(_.scientificPitch)
+        val pitches = nextGroup.notes.flatMap(_.scientificPitch)
         val fittedDurations =
           track
             .bars

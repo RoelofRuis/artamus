@@ -31,6 +31,7 @@ class EditorLogic (
 
       case _ =>
     }
+    Success(())
   }
 
 }
