@@ -1,22 +1,20 @@
 package server.storage.file
 
-import java.io.File
-
 import com.typesafe.scalalogging.LazyLogging
 import javax.inject.{Inject, Singleton}
 import music.domain.user.{User, UserRepository}
 import server.storage.EntityNotFoundException
+import server.storage.file.db.JsonFileDB
 import server.storage.file.model.DomainProtocol
-import server.storage.io.JsonStorage
 
 import scala.util.{Failure, Success, Try}
 
 @Singleton
 class FileUserRepository @Inject() (
-  storage: JsonStorage,
+  db: JsonFileDB,
 ) extends UserRepository with LazyLogging {
 
-  private val PATH = new File("data/store/users.json")
+  private val ID = "users"
 
   final case class UserListModel(users: Seq[User] = Seq())
 
@@ -27,7 +25,7 @@ class FileUserRepository @Inject() (
   import UserJsonProtocol._
 
   def getByName(name: String): Try[User] = {
-    storage.read[UserListModel](PATH, UserListModel()) match {
+    db.read[UserListModel](ID, UserListModel()) match {
       case Failure(ex) => Failure(ex)
       case Success(storage) =>
         storage.users.find(_.name == name) match {

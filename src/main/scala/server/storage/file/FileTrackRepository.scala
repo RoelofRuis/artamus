@@ -1,24 +1,22 @@
 package server.storage.file
 
-import java.io.File
-
 import javax.inject.{Inject, Singleton}
 import music.domain.track.Track.TrackId
 import music.domain.track._
 import music.math.temporal.Window
 import music.primitives._
 import server.storage.EntityNotFoundException
-import server.storage.io.JsonStorage
+import server.storage.file.db.JsonFileDB
 import server.storage.file.model.DomainProtocol
 
 import scala.util.{Failure, Success, Try}
 
 @Singleton
 class FileTrackRepository @Inject() (
-  storage: JsonStorage,
+  db: JsonFileDB,
 ) extends TrackRepository {
 
-  private val PATH = new File("data/store/tracks.json")
+  private val ID = "tracks"
 
   final case class TrackMapModel(tracks: Map[String, TrackContentModel] = Map())
   final case class TrackContentModel(
@@ -39,7 +37,7 @@ class FileTrackRepository @Inject() (
   override def nextId: Try[TrackId] = Success(TrackId(0)) // TODO: proper implementation
 
   override def put(track: Track): Try[Unit] = {
-    storage.update(PATH, TrackMapModel()) { storage =>
+    db.update(ID, TrackMapModel()) { storage =>
       TrackMapModel(
         storage.tracks.updated(
           track.id.id.toString,
@@ -56,7 +54,7 @@ class FileTrackRepository @Inject() (
   }
 
   override def getById(id: TrackId): Try[Track] = {
-    storage.read[TrackMapModel](PATH, TrackMapModel()) match {
+    db.read[TrackMapModel](ID, TrackMapModel()) match {
       case Failure(ex) => Failure(ex)
       case Success(storage) => storage.tracks.get(id.id.toString) match {
         case None => Failure(EntityNotFoundException("Track"))
