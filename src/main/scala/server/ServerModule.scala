@@ -15,12 +15,12 @@ import server.analysis.blackboard.Controller
 import server.domain.ChangeHandler
 import server.interpret.LilypondInterpreter
 import server.rendering.{RenderingCompletionHandler, RenderingModule}
-import server.storage.StorageModule
+import server.storage.file.FileStorageModule
 
 class ServerModule extends ScalaPrivateModule with ServerConfig {
 
   override def configure(): Unit = {
-    install(new StorageModule with ServerConfig)
+    install(new FileStorageModule with ServerConfig)
     install(new DomainModule)
 
     bind[LilypondInterpreter].toInstance(

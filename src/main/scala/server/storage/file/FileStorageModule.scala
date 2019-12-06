@@ -1,18 +1,17 @@
-package server.storage
+package server.storage.file
 
 import music.domain.track.TrackRepository
 import music.domain.user.UserRepository
 import music.domain.workspace.WorkspaceRepository
 import net.codingwell.scalaguice.ScalaPrivateModule
 import server.storage.file.db.{FileDB, JsonFileDB, JsonMarshaller}
-import server.storage.file.{FileTrackRepository, FileUserRepository, FileWorkspaceRepository}
 
-class StorageModule extends ScalaPrivateModule {
-  this: StorageConfig =>
+class FileStorageModule extends ScalaPrivateModule {
+  this: FileStorageConfig =>
 
   override def configure(): Unit = {
     bind[JsonMarshaller].toInstance(new JsonMarshaller(compactJson))
-    bind[FileDB].toInstance(new FileDB(Seq("data", "store")))
+    bind[FileDB].toInstance(new FileDB(dbRoot))
 
     bind[JsonFileDB]
 
