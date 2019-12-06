@@ -1,8 +1,9 @@
-package server.storage
+package server.storage.memory
 
-import javax.inject.{Inject, Singleton}
-import music.domain.user.{User, UserRepository}
+import javax.inject.Singleton
 import music.domain.user.User.UserId
+import music.domain.user.{User, UserRepository}
+import server.storage.EntityNotFoundException
 
 import scala.util.{Failure, Success, Try}
 

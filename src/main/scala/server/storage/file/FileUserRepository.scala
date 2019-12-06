@@ -1,13 +1,13 @@
-package server.storage
+package server.storage.file
 
 import java.io.File
 
 import com.typesafe.scalalogging.LazyLogging
 import javax.inject.{Inject, Singleton}
-import music.domain.user.User.UserId
 import music.domain.user.{User, UserRepository}
+import server.storage.EntityNotFoundException
+import server.storage.file.model.DomainProtocol
 import server.storage.io.JsonStorage
-import spray.json.DefaultJsonProtocol
 
 import scala.util.{Failure, Success, Try}
 
@@ -20,9 +20,7 @@ class FileUserRepository @Inject() (
 
   final case class UserListModel(users: Seq[User] = Seq())
 
-  object UserJsonProtocol extends DefaultJsonProtocol {
-    implicit val userId = jsonFormat1(UserId)
-    implicit val user = jsonFormat2(User.apply)
+  object UserJsonProtocol extends DomainProtocol {
     implicit val userListModel = jsonFormat1(UserListModel)
   }
 

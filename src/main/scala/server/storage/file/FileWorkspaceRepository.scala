@@ -1,4 +1,4 @@
-package server.storage
+package server.storage.file
 
 import java.io.File
 
@@ -8,8 +8,9 @@ import music.domain.track.Track.TrackId
 import music.domain.user.User
 import music.domain.user.User.UserId
 import music.domain.workspace.{Workspace, WorkspaceRepository}
+import server.storage.EntityNotFoundException
+import server.storage.file.model.DomainProtocol
 import server.storage.io.JsonStorage
-import spray.json.DefaultJsonProtocol
 
 import scala.util.{Failure, Success, Try}
 
@@ -23,9 +24,7 @@ class FileWorkspaceRepository @Inject() (
   final case class WorkspaceModel(userId: UserId, trackId: TrackId)
   final case class WorkspaceMapModel(workspaces: Map[String, WorkspaceModel] = Map())
 
-  object WorkspaceJsonProtocol extends DefaultJsonProtocol {
-    implicit val trackId = jsonFormat1(TrackId)
-    implicit val userId = jsonFormat1(UserId)
+  object WorkspaceJsonProtocol extends DomainProtocol {
     implicit val workspaceFormat = jsonFormat2(WorkspaceModel)
     implicit val workspaceMapFormat = jsonFormat1(WorkspaceMapModel)
   }

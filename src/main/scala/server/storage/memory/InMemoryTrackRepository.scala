@@ -1,9 +1,10 @@
-package server.storage
+package server.storage.memory
 
 import javax.annotation.concurrent.GuardedBy
 import javax.inject.Singleton
-import music.domain.track.{Track, TrackRepository}
 import music.domain.track.Track.TrackId
+import music.domain.track.{Track, TrackRepository}
+import server.storage.EntityNotFoundException
 
 import scala.util.{Failure, Success, Try}
 

@@ -1,10 +1,11 @@
-package server.storage
+package server.storage.memory
 
 import javax.annotation.concurrent.GuardedBy
 import javax.inject.{Inject, Singleton}
 import music.domain.user.User
 import music.domain.user.User.UserId
 import music.domain.workspace.{Workspace, WorkspaceRepository}
+import server.storage.EntityNotFoundException
 
 import scala.util.{Failure, Success, Try}
 
