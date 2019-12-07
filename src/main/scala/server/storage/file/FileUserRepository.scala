@@ -14,7 +14,7 @@ class FileUserRepository @Inject() (
   db: JsonFileDB,
 ) extends UserRepository with LazyLogging {
 
-  private val ID = "users"
+  private val ID = "user"
 
   final case class UserListModel(users: Seq[User] = Seq())
 

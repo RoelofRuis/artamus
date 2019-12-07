@@ -23,23 +23,26 @@ class FileDB @Inject() (
     logger.info(s"DB READ  [$file]")
     Option(dataToWrite.get(file)) match {
       case Some(write) => Success(write.data)
-      case None => FileIO.read(Read(makePath(file)))
+      case None => FileIO.read(makePath(file))
     }
   }
 
   def write(file: DataFile, data: String): Try[Unit] = {
     logger.info(s"DB WRITE [$file]")
-    dataToWrite.put(file, Write(makePath(file), data))
+    dataToWrite.put(file, Write(makePath(file, withFile = false), makePath(file), data))
     Success(())
   }
 
   def commit(): Try[Unit] = commitInternally() match {
     case Right(success) =>
-      logger.info(s"DB COMMIT wrote [${success.writes}")
+      logger.info(s"DB COMMIT wrote [${success.writes}]")
       Success(())
 
     case Left(failures) =>
-      logger.warn(s"DB COMMIT failed", failures)
+      logger.warn(s"DB COMMIT failed")
+      failures.cause.foreach { cause =>
+        logger.error("commit failed", cause)
+      }
       Failure(failures)
   }
 
@@ -68,15 +71,22 @@ class FileDB @Inject() (
     }
   }
 
-  private def makePath(description: DataFile): String = {
-    (rootPath :+ description.name + "." + description.ext).mkString(File.separator)
+  private def makePath(file: DataFile, withFile: Boolean = true): String = {
+    if (withFile) {
+      val dataFile = file.id match {
+        case Some(id) => s"$id.${file.ext}"
+        case None => s"data.${file.ext}"
+      }
+      (rootPath :+ file.obj :+ dataFile).mkString(File.separator)
+    }
+    else (rootPath :+ file.obj).mkString(File.separator)
   }
 
 }
 
 object FileDB {
 
-  final case class DataFile(name: String, ext: String)
+  final case class DataFile(obj: String, id: Option[Long], ext: String)
 
   final case class CommitFailed(cause: Seq[Throwable]) extends Throwable
   final case class CommitSuccessful(writes: Int)

@@ -17,7 +17,7 @@ class FileWorkspaceRepository @Inject() (
   db: JsonFileDB,
 ) extends WorkspaceRepository with LazyLogging {
 
-  private val ID = "workspaces"
+  private val ID = "workspace"
 
   final case class WorkspaceModel(userId: UserId, trackId: TrackId)
   final case class WorkspaceMapModel(workspaces: Map[String, WorkspaceModel] = Map())

@@ -16,7 +16,7 @@ class FileTrackRepository @Inject() (
   db: JsonFileDB,
 ) extends TrackRepository {
 
-  private val ID = "tracks"
+  private val ID = "track"
 
   final case class TrackMapModel(tracks: Map[String, TrackContentModel] = Map())
   final case class TrackContentModel(
