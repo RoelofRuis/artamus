@@ -18,10 +18,7 @@ class Bootstrapper @Inject() (
     while(isRunning) {
       val (input, op) = nextOperation
 
-      op().foreach {
-        case command: Command => client.sendCommand(command).foreach(res => println(s"$command -> $res"))
-        case _ =>
-      }
+      sendCommands(op())
 
       if (input == "quit") isRunning = false
     }
@@ -29,6 +26,16 @@ class Bootstrapper @Inject() (
     renderHandler.frame.dispose()
     client.close()
   }
+
+  def sendCommands(commands: List[Command]): Unit = commands match {
+    case Nil =>
+    case command :: rest => client.sendCommand(command) match {
+      case Some(res) => println(s"[$command] -> [$res]")
+        sendCommands(rest)
+      case None => println(s"[$command] -> failed! (skipping [${rest.length}] more)")
+    }
+  }
+
 
   def nextOperation: (String, Operation) = {
     println("Input next command:")
