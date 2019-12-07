@@ -1,12 +1,11 @@
 package server.storage.file.db
 
-import java.io.File
 import java.util.concurrent.ConcurrentHashMap
 
 import com.typesafe.scalalogging.LazyLogging
 import javax.inject.Inject
 import server.storage.TransactionalDB
-import server.storage.file.db.FileDB.{CommitFailed, CommitSuccessful, DataFile}
+import server.storage.file.db.FileDB.{CommitFailed, CommitSuccessful}
 
 import scala.jdk.CollectionConverters._
 import scala.util.{Failure, Success, Try}
@@ -23,13 +22,13 @@ class FileDB @Inject() (
     logger.info(s"DB READ  [$file]")
     Option(dataToWrite.get(file)) match {
       case Some(write) => Success(write.data)
-      case None => FileIO.read(makePath(file))
+      case None => FileIO.read(Read(file, rootPath))
     }
   }
 
   def write(file: DataFile, data: String): Try[Unit] = {
     logger.info(s"DB WRITE [$file]")
-    dataToWrite.put(file, Write(makePath(file, withFile = false), makePath(file), data))
+    dataToWrite.put(file, Write(file, rootPath, data))
     Success(())
   }
 
@@ -71,22 +70,9 @@ class FileDB @Inject() (
     }
   }
 
-  private def makePath(file: DataFile, withFile: Boolean = true): String = {
-    if (withFile) {
-      val dataFile = file.id match {
-        case Some(id) => s"$id.${file.ext}"
-        case None => s"data.${file.ext}"
-      }
-      (rootPath :+ file.obj :+ dataFile).mkString(File.separator)
-    }
-    else (rootPath :+ file.obj).mkString(File.separator)
-  }
-
 }
 
 object FileDB {
-
-  final case class DataFile(obj: String, id: Option[Long], ext: String)
 
   final case class CommitFailed(cause: Seq[Throwable]) extends Throwable
   final case class CommitSuccessful(writes: Int)

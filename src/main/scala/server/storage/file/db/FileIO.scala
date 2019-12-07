@@ -7,8 +7,8 @@ import scala.util.{Failure, Success, Try}
 
 object FileIO {
 
-  def read(path: String): Try[String] = {
-    Try { Source.fromFile(path) }.flatMap { source =>
+  def read(read: Read): Try[String] = {
+    Try { Source.fromFile(read.path) }.flatMap { source =>
       try {
         Success(source.getLines.mkString)
       } catch {
