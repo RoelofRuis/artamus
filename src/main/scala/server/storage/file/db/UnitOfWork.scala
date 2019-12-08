@@ -27,7 +27,7 @@ class UnitOfWork(
   def commit(): Either[CommitFailed, CommitSuccessful] = commitLock.synchronized {
     val results = dataToWrite.asScala.iterator
       .map { case (file, data) =>
-        FileIO.write(Write(file, rootPath, version, data))
+        FileIO.write(Write(file, rootPath, Some(version), data))
       }
       .toList
 
@@ -37,7 +37,7 @@ class UnitOfWork(
 
       results.collect { case Failure(ex) => ex } match {
         case list if list.isEmpty =>
-          FileIO.write(Write(versionFile, rootPath, 0, version.toString)) match {
+          FileIO.write(Write(versionFile, rootPath, None, version.toString)) match {
             case Success(_) =>
               version += 1
               Right(CommitSuccessful(results.size))

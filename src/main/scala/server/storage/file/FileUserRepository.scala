@@ -16,9 +16,9 @@ class FileUserRepository @Inject() (
 
   private val ID = "user"
 
-  final case class UserListModel(users: Seq[User] = Seq())
-
   object UserJsonProtocol extends DomainProtocol {
+    final case class UserListModel(users: Seq[User] = Seq())
+
     implicit val userListModel = jsonFormat1(UserListModel)
   }
 

@@ -12,7 +12,8 @@ object FileIO {
   def readLatest(from: Read): Try[String] = {
     read(from) match {
       case s @ Success(_) => s
-      case Failure(_: FileNotFoundException) if from.version > 0 => readLatest(from.copy(version = from.version - 1))
+      case f @ Failure(_) if from.version.isEmpty => f
+      case Failure(_: FileNotFoundException) if from.version.exists(_ > 0) => readLatest(from.copy(version = from.version.map(_ - 1)))
       case f @ Failure(_) => f
     }
   }

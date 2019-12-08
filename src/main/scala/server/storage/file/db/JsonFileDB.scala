@@ -15,7 +15,7 @@ class JsonFileDB @Inject() (
 
   def read[A : JsonReader](name: String, orElse: => A): Try[A] = {
     val readResult = for {
-      data <- fileDB.read(DataFile(name, None, "json"))
+      data <- fileDB.read(DataFile(name, "json"))
       obj <- jsonMarshaller.read(data)
     } yield obj
 
@@ -29,7 +29,7 @@ class JsonFileDB @Inject() (
   def write[A : JsonWriter](name: String, data: A): Try[Unit] = {
     for {
       json <- jsonMarshaller.write(data)
-    } yield fileDB.write(DataFile(name, None, "json"), json)
+    } yield fileDB.write(DataFile(name, "json"), json)
   }
 
   def update[A : JsonReader : JsonWriter](name: String, default: A)(f: A => A): Try[Unit] = {

@@ -10,8 +10,8 @@ class FileDB @Inject() (
   rootPath: Seq[String],
 ) extends TransactionalDB with LazyLogging {
 
-  private val versionFile = DataFile("_version", None, "json")
-  private val initialVersion = FileIO.read(Read(versionFile, 0, rootPath)) match {
+  private val versionFile = DataFile("_version", "json")
+  private val initialVersion = FileIO.read(Read(versionFile, None, rootPath)) match {
     case Success(data) => Try { data.toLong } match {
       case Success(lastVersion) if lastVersion >= 1 =>
         logger.info(s"DB version at [$lastVersion]")
@@ -32,7 +32,7 @@ class FileDB @Inject() (
     logger.info(s"DB READ  [$file]")
     uow.getStaged(file) match {
       case Some(data) => Success(data)
-      case None => FileIO.readLatest(Read(file, uow.getLatestWrittenVersion, rootPath))
+      case None => FileIO.readLatest(Read(file, Some(uow.getLatestWrittenVersion), rootPath))
     }
   }
 

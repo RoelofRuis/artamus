@@ -18,16 +18,16 @@ class FileTrackRepository @Inject() (
 
   private val ID = "track"
 
-  final case class TrackMapModel(tracks: Map[String, TrackContentModel] = Map())
-  final case class TrackContentModel(
-    id: TrackId,
-    bars: Map[String, TimeSignature],
-    chords: Map[String, (Window, Chord)],
-    keys: Map[String, Key],
-    notes: Map[String, NoteGroup]
-  )
-
   object TrackJsonProtocol extends DomainProtocol {
+    final case class TrackMapModel(tracks: Map[String, TrackContentModel] = Map())
+    final case class TrackContentModel(
+      id: TrackId,
+      bars: Map[String, TimeSignature],
+      chords: Map[String, (Window, Chord)],
+      keys: Map[String, Key],
+      notes: Map[String, NoteGroup]
+    )
+
     implicit val trackFormat = jsonFormat5(TrackContentModel)
     implicit val trackContentModelFormat = jsonFormat1(TrackMapModel)
   }

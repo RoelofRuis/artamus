@@ -19,10 +19,10 @@ class FileWorkspaceRepository @Inject() (
 
   private val ID = "workspace"
 
-  final case class WorkspaceModel(userId: UserId, trackId: TrackId)
-  final case class WorkspaceMapModel(workspaces: Map[String, WorkspaceModel] = Map())
-
   object WorkspaceJsonProtocol extends DomainProtocol {
+    final case class WorkspaceModel(userId: UserId, trackId: TrackId)
+    final case class WorkspaceMapModel(workspaces: Map[String, WorkspaceModel] = Map())
+
     implicit val workspaceFormat = jsonFormat2(WorkspaceModel)
     implicit val workspaceMapFormat = jsonFormat1(WorkspaceMapModel)
   }
