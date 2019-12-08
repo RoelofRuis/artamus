@@ -7,7 +7,7 @@ import music.domain.user.User
 import music.domain.user.User.UserId
 import music.domain.workspace.{Workspace, WorkspaceRepository}
 import server.storage.EntityNotFoundException
-import server.storage.file.db.JsonFileDB
+import server.storage.file.db.{JsonFileDB, Query}
 import server.storage.file.model.DomainProtocol
 
 import scala.util.{Failure, Success, Try}
@@ -44,16 +44,13 @@ class FileWorkspaceRepository @Inject() (
   }
 
   def getByOwner(user: User): Try[Workspace] = {
-    db.read[WorkspaceMapModel](ID, WorkspaceMapModel()) match {
+    db.readByQuery[WorkspaceMapModel, WorkspaceModel](Query(ID, _.workspaces.get(user.id.id.toString))) match {
       case Failure(ex) => Failure(ex)
-      case Success(storage) => storage.workspaces.get(user.id.id.toString) match {
-        case None => Failure(EntityNotFoundException("Workspace"))
-        case Some(model) =>
-          Success(Workspace(
-            model.userId,
-            model.trackId
-          ))
-      }
+      case Success(model) =>
+        Success(Workspace(
+          model.userId,
+          model.trackId
+        ))
     }
   }
 }

@@ -6,7 +6,7 @@ import music.domain.track._
 import music.math.temporal.Window
 import music.primitives._
 import server.storage.EntityNotFoundException
-import server.storage.file.db.JsonFileDB
+import server.storage.file.db.{JsonFileDB, Query}
 import server.storage.file.model.DomainProtocol
 
 import scala.util.{Failure, Success, Try}
@@ -34,7 +34,12 @@ class FileTrackRepository @Inject() (
 
   import TrackJsonProtocol._
 
-  override def nextId: Try[TrackId] = Success(TrackId(0)) // TODO: proper implementation
+  override def nextId: Try[TrackId] =
+    db.readByQuery[TrackMapModel, Long](Query(ID, _.tracks.keys.map(_.toLong).maxOption)) match {
+      case Failure(_: EntityNotFoundException) => Success(TrackId(0))
+      case Success(long) => Success(TrackId(long + 1))
+      case Failure(ex) => Failure(ex)
+    }
 
   override def put(track: Track): Try[Unit] = {
     db.update(ID, TrackMapModel()) { storage =>
@@ -54,19 +59,17 @@ class FileTrackRepository @Inject() (
   }
 
   override def getById(id: TrackId): Try[Track] = {
-    db.read[TrackMapModel](ID, TrackMapModel()) match {
+    db.readByQuery[TrackMapModel, TrackContentModel](Query(ID, _.tracks.get(id.id.toString))) match {
       case Failure(ex) => Failure(ex)
-      case Success(storage) => storage.tracks.get(id.id.toString) match {
-        case None => Failure(EntityNotFoundException("Track"))
-        case Some(model) =>
-          Success(Track(
-            model.id,
-            Bars(loadPositions(model.bars)),
-            Keys(loadPositions(model.keys)),
-            Chords(loadPositions(model.chords)),
-            Notes(loadPositions(model.notes))
-          ))
-      }
+      case Success(model) =>
+        Success(Track(
+          model.id,
+          Bars(loadPositions(model.bars)),
+          Keys(loadPositions(model.keys)),
+          Chords(loadPositions(model.chords)),
+          Notes(loadPositions(model.notes))
+        )
+      )
     }
   }
 

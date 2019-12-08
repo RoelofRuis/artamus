@@ -3,6 +3,7 @@ package server.storage.file.db
 import java.io.FileNotFoundException
 
 import javax.inject.{Inject, Singleton}
+import server.storage.{DBException, EntityNotFoundException}
 import spray.json.{JsonReader, JsonWriter}
 
 import scala.util.{Failure, Success, Try}
@@ -13,16 +14,17 @@ class JsonFileDB @Inject() (
   jsonMarshaller: JsonMarshaller
 ) {
 
-  def read[A : JsonReader](name: String, orElse: => A): Try[A] = {
+  def readByQuery[A : JsonReader, B](query: Query[A, B]): Try[B] = {
     val readResult = for {
-      data <- fileDB.read(DataFile(name, "json"))
+      data <- fileDB.read(DataFile(query.name, "json"))
       obj <- jsonMarshaller.read(data)
-    } yield obj
+    } yield query.transform(obj)
 
     readResult match {
-      case s @ Success(_) => s
-      case Failure(_: FileNotFoundException) => Success(orElse)
-      case f @ Failure(_) => f
+      case Success(Some(a)) => Success(a)
+      case Success(None) => Failure(EntityNotFoundException(query.name))
+      case Failure(_: FileNotFoundException) => Failure(EntityNotFoundException(query.name))
+      case Failure(ex) => Failure(DBException(ex))
     }
   }
 
@@ -33,7 +35,8 @@ class JsonFileDB @Inject() (
   }
 
   def update[A : JsonReader : JsonWriter](name: String, default: A)(f: A => A): Try[Unit] = {
-    read[A](name, default)
+    readByQuery[A, A](Query(name, x => Some(x)))
+      .recover { case EntityNotFoundException(_) => default }
       .map(f)
       .flatMap(write[A](name, _))
   }
