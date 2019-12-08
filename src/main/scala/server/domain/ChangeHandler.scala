@@ -21,10 +21,10 @@ private[server] class ChangeHandler @Inject() (
 ) {
 
   changeCommands.subscribe[Analyse.type] { req =>
-    eventBus.publish(AnalysisStarted)
     for {
       workspace <- workspaceRepo.getByOwner(req.user)
       track <- trackRepo.getById(workspace.editedTrack)
+      _ = eventBus.publish(AnalysisStarted)
       analysedTrack = analysis.run(track)
       lilypondFile = interpreter.interpret(analysedTrack)
       _ = renderer.submit("committed-changes", lilypondFile)
