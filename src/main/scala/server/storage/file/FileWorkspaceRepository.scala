@@ -29,8 +29,8 @@ class FileWorkspaceRepository @Inject() (
   import WorkspaceJsonProtocol._
 
   override def put(workspace: Workspace): Try[Unit] = {
-    db.update[WorkspaceMapModel](ID) {
-      case Some(storage) => WorkspaceMapModel(
+    db.update[WorkspaceMapModel](ID, WorkspaceMapModel()) { storage =>
+      WorkspaceMapModel(
         storage.workspaces.updated(
           workspace.owner.id.toString,
           WorkspaceModel(

@@ -41,15 +41,14 @@ class FileTrackRepository @Inject() (
       case Failure(ex) => Failure(ex)
     }
 
-  def delete(track: Track): Try[Unit] = {
-    db.update[TrackMapModel](ID) {
-      case Some(storage) => TrackMapModel(storage.tracks.removed(track.id.id.toString))
+  def removeById(trackId: TrackId): Try[Unit] = {
+    db.update[TrackMapModel](ID, TrackMapModel()) { storage =>
+      TrackMapModel(storage.tracks.removed(trackId.id.toString))
     }
   }
 
   override def put(track: Track): Try[Unit] = {
-    db.update[TrackMapModel](ID) {
-      case Some(storage) =>
+    db.update[TrackMapModel](ID, TrackMapModel()) { storage =>
         TrackMapModel(
           storage.tracks.updated(
             track.id.id.toString,

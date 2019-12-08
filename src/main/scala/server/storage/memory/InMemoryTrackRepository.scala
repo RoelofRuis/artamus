@@ -21,6 +21,11 @@ class InMemoryTrackRepository() extends TrackRepository {
     Success(TrackId(id))
   }
 
+  override def removeById(id: TrackId): Try[Unit] = trackLock.synchronized {
+    tracks = tracks.removed(id)
+    Success(())
+  }
+
   override def getById(id: TrackId): Try[Track] = trackLock.synchronized {
     tracks.get(id) match {
       case Some(id) => Success(id)

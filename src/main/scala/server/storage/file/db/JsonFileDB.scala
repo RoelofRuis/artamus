@@ -33,12 +33,11 @@ class JsonFileDB @Inject() (
     } yield fileDB.write(DataFile(name, "json"), json)
   }
 
-  def update[A : JsonReader : JsonWriter](name: String)(f: PartialFunction[Option[A], A]): Try[Unit] = {
+  def update[A : JsonReader : JsonWriter](name: String, default: => A)(update: A => A): Try[Unit] = {
     readByQuery[A, A](Query(name, x => Some(x)))
-      .map(x => Some(x))
-      .recover { case EntityNotFoundException(_) => None }
-      .collect(f)
-      .flatMap(write[A](name, _))
+      .recover { case EntityNotFoundException(_) => default }
+      .map(update)
+      .map(write[A](name, _))
   }
 
 }

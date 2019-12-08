@@ -7,6 +7,7 @@ import music.domain.workspace.{Workspace, WorkspaceRepository}
 import protocol.Command
 import pubsub.Dispatcher
 import server.Request
+import server.storage.EntityNotFoundException
 
 import scala.language.existentials
 import scala.util.Try
