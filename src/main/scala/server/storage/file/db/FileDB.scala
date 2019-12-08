@@ -44,7 +44,8 @@ class FileDB @Inject() (
   def commit(): Try[Unit] =
     uow.commit() match {
       case Right(success) =>
-        logger.info(s"DB COMMIT wrote [${success.writes}]")
+        if (success.writes == 0) logger.debug(s"DB nothing to commit")
+        else logger.info(s"DB COMMIT wrote [${success.writes}]")
         Success(())
 
       case Left(failures) =>
@@ -56,8 +57,9 @@ class FileDB @Inject() (
     }
 
   def rollback(): Try[Unit] = {
-    uow.rollback()
-    logger.info(s"DB ROLLBACK")
+    val result = uow.rollback()
+    if (result.writes == 0) logger.debug(s"DB nothing to roll back")
+    else logger.info(s"DB ROLLBACK rolled back [${result.writes}]")
     Success(())
   }
 

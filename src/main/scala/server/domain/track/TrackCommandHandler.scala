@@ -19,7 +19,13 @@ private[server] class TrackCommandHandler @Inject() (
 ) {
 
   dispatcher.subscribe[NewWorkspace.type]{ req =>
+    val delete = for {
+      workspace <- workspaceRepo.getByOwner(req.user)
+      _ <- trackRepo.removeById(workspace.editedTrack)
+    } yield true
+
     for {
+      _ <- delete.recover { case _: EntityNotFoundException => true }
       nextId <- trackRepo.nextId
       track = Track(nextId)
       workspace = Workspace(req.user.id, track.id)

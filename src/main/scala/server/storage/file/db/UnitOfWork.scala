@@ -3,7 +3,7 @@ package server.storage.file.db
 import java.util.concurrent.ConcurrentHashMap
 
 import javax.annotation.concurrent.GuardedBy
-import server.storage.file.db.UnitOfWork.{CommitFailed, CommitSuccessful}
+import server.storage.file.db.UnitOfWork.{CommitFailed, CommitSuccessful, RollbackSuccessful}
 
 import scala.jdk.CollectionConverters._
 import scala.util.{Failure, Success}
@@ -50,12 +50,17 @@ class UnitOfWork(
     }
   }
 
-  def rollback(): Unit = dataToWrite.clear()
+  def rollback(): RollbackSuccessful = commitLock.synchronized {
+    val numWrites = dataToWrite.size()
+    dataToWrite.clear()
+    RollbackSuccessful(numWrites)
+  }
 
 }
 
 object UnitOfWork {
 
+  final case class RollbackSuccessful(writes: Int)
   final case class CommitFailed(cause: Seq[Throwable]) extends Throwable
   final case class CommitSuccessful(writes: Int)
 
