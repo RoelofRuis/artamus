@@ -3,7 +3,6 @@ package server.storage.file.db
 import java.io.FileNotFoundException
 
 import javax.inject.{Inject, Singleton}
-import server.storage.file.db.FileDB.DataFile
 import spray.json.{JsonReader, JsonWriter}
 
 import scala.util.{Failure, Success, Try}

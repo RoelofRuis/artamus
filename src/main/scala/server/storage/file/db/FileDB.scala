@@ -1,80 +1,64 @@
 package server.storage.file.db
 
-import java.util.concurrent.ConcurrentHashMap
-
 import com.typesafe.scalalogging.LazyLogging
 import javax.inject.Inject
 import server.storage.TransactionalDB
-import server.storage.file.db.FileDB.{CommitFailed, CommitSuccessful}
 
-import scala.jdk.CollectionConverters._
 import scala.util.{Failure, Success, Try}
 
 class FileDB @Inject() (
   rootPath: Seq[String],
 ) extends TransactionalDB with LazyLogging {
 
-  // TODO: add versioning so real transactionality can be ensured
+  private val versionFile = DataFile("_version", None, "json")
+  private val initialVersion = FileIO.read(Read(versionFile, 0, rootPath)) match {
+    case Success(data) => Try { data.toLong } match {
+      case Success(lastVersion) if lastVersion >= 1 =>
+        logger.info(s"DB version at [$lastVersion]")
+        lastVersion
 
-  private val dataToWrite = new ConcurrentHashMap[DataFile, Write]()
+      case _ =>
+        logger.info("Invalid version, starting from [1]")
+        1L
+    }
+    case Failure(_) =>
+      logger.info("No initial version found, starting from [1]")
+      1L
+  }
+
+  private val uow: UnitOfWork = new UnitOfWork(initialVersion, versionFile, rootPath)
 
   def read(file: DataFile): Try[String] = {
     logger.info(s"DB READ  [$file]")
-    Option(dataToWrite.get(file)) match {
-      case Some(write) => Success(write.data)
-      case None => FileIO.read(Read(file, rootPath))
+    uow.getStaged(file) match {
+      case Some(data) => Success(data)
+      case None => FileIO.readLatest(Read(file, uow.getLatestWrittenVersion, rootPath))
     }
   }
 
   def write(file: DataFile, data: String): Try[Unit] = {
     logger.info(s"DB WRITE [$file]")
-    dataToWrite.put(file, Write(file, rootPath, data))
-    Success(())
+    Success(uow.stage(file, data))
   }
 
-  def commit(): Try[Unit] = commitInternally() match {
-    case Right(success) =>
-      logger.info(s"DB COMMIT wrote [${success.writes}]")
-      Success(())
+  def commit(): Try[Unit] =
+    uow.commit() match {
+      case Right(success) =>
+        logger.info(s"DB COMMIT wrote [${success.writes}]")
+        Success(())
 
-    case Left(failures) =>
-      logger.warn(s"DB COMMIT failed")
-      failures.cause.foreach { cause =>
-        logger.error("commit failed", cause)
-      }
-      Failure(failures)
-  }
+      case Left(failures) =>
+        logger.warn(s"DB COMMIT failed")
+        failures.cause.foreach { cause =>
+          logger.error("commit failed", cause)
+        }
+        Failure(failures)
+    }
 
   def rollback(): Try[Unit] = {
+    uow.rollback()
     logger.info(s"DB ROLLBACK")
-    dataToWrite.clear()
     Success(())
   }
-
-  private def commitInternally(): Either[CommitFailed, CommitSuccessful] = {
-    val results = dataToWrite.values.asScala
-      .map(FileIO.write)
-      .toList
-
-    if (results.isEmpty) Right(CommitSuccessful(0))
-    else {
-      dataToWrite.clear()
-
-      results.collect { case Failure(ex) => ex } match {
-        case list if list.isEmpty =>
-          Right(CommitSuccessful(results.size))
-
-        case failures =>
-          Left(CommitFailed(failures))
-      }
-    }
-  }
-
-}
-
-object FileDB {
-
-  final case class CommitFailed(cause: Seq[Throwable]) extends Throwable
-  final case class CommitSuccessful(writes: Int)
 
 }
