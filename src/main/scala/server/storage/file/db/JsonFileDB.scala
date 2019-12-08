@@ -3,7 +3,7 @@ package server.storage.file.db
 import java.io.FileNotFoundException
 
 import javax.inject.{Inject, Singleton}
-import server.storage.{DBException, EntityNotFoundException}
+import server.storage.{DBIOException, EntityNotFoundException}
 import spray.json.{JsonReader, JsonWriter}
 
 import scala.util.{Failure, Success, Try}
@@ -22,9 +22,8 @@ class JsonFileDB @Inject() (
 
     readResult match {
       case Success(Some(a)) => Success(a)
-      case Success(None) => Failure(EntityNotFoundException(query.name))
-      case Failure(_: FileNotFoundException) => Failure(EntityNotFoundException(query.name))
-      case Failure(ex) => Failure(DBException(ex))
+      case Success(None) | Failure(_: FileNotFoundException) => Failure(EntityNotFoundException(query.name))
+      case Failure(ex) => Failure(DBIOException(ex))
     }
   }
 
@@ -34,10 +33,11 @@ class JsonFileDB @Inject() (
     } yield fileDB.write(DataFile(name, "json"), json)
   }
 
-  def update[A : JsonReader : JsonWriter](name: String, default: A)(f: A => A): Try[Unit] = {
+  def update[A : JsonReader : JsonWriter](name: String)(f: PartialFunction[Option[A], A]): Try[Unit] = {
     readByQuery[A, A](Query(name, x => Some(x)))
-      .recover { case EntityNotFoundException(_) => default }
-      .map(f)
+      .map(x => Some(x))
+      .recover { case EntityNotFoundException(_) => None }
+      .collect(f)
       .flatMap(write[A](name, _))
   }
 

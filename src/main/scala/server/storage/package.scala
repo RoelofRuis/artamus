@@ -2,7 +2,8 @@ package server
 
 package object storage {
 
-  final case class EntityNotFoundException(name: String) extends Exception
-  final case class DBException(cause: Throwable) extends Exception
+  sealed trait DatabaseException extends Throwable
+  final case class EntityNotFoundException(name: String) extends DatabaseException
+  final case class DBIOException(cause: Throwable) extends DatabaseException
 
 }

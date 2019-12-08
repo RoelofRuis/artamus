@@ -6,7 +6,6 @@ import music.domain.track.Track.TrackId
 import music.domain.user.User
 import music.domain.user.User.UserId
 import music.domain.workspace.{Workspace, WorkspaceRepository}
-import server.storage.EntityNotFoundException
 import server.storage.file.db.{JsonFileDB, Query}
 import server.storage.file.model.DomainProtocol
 
@@ -30,8 +29,8 @@ class FileWorkspaceRepository @Inject() (
   import WorkspaceJsonProtocol._
 
   override def put(workspace: Workspace): Try[Unit] = {
-    db.update(ID, WorkspaceMapModel()) { storage =>
-      WorkspaceMapModel(
+    db.update[WorkspaceMapModel](ID) {
+      case Some(storage) => WorkspaceMapModel(
         storage.workspaces.updated(
           workspace.owner.id.toString,
           WorkspaceModel(
