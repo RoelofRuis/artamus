@@ -3,7 +3,7 @@ package server.storage.file.db
 import java.util.concurrent.ConcurrentHashMap
 
 import javax.annotation.concurrent.GuardedBy
-import server.storage.file.db.UnitOfWork.{CommitFailed, CommitSuccessful, RollbackSuccessful}
+import server.storage.file.db.UnitOfWork.{CommitResult, RollbackResult}
 
 import scala.jdk.CollectionConverters._
 import scala.util.{Failure, Success}
@@ -16,52 +16,70 @@ class UnitOfWork(
 
   private val commitLock = new Object()
   @GuardedBy("commitLock") private var version: Long = initialVersion
-  private val dataToWrite = new ConcurrentHashMap[DataFile, String]()
+  private val cleanData = new ConcurrentHashMap[DataFile, String]()
+  private val dirtyData = new ConcurrentHashMap[DataFile, String]()
 
   def getLatestWrittenVersion: Long = version - 1
 
-  def getStaged(file: DataFile): Option[String] = Option(dataToWrite.get(file))
+  def get(file: DataFile): Option[String] = {
+    Option(dirtyData.get(file)) orElse Option(cleanData.get(file))
+  }
 
-  def stage(file: DataFile, data: String): Unit = dataToWrite.put(file, data)
+  def registerClean(file: DataFile, data: String): Unit = cleanData.put(file, data)
 
-  def commit(): Either[CommitFailed, CommitSuccessful] = commitLock.synchronized {
-    val results = dataToWrite.asScala.iterator
-      .map { case (file, data) =>
-        FileIO.write(Write(file, rootPath, Some(version), data))
+  def registerDirty(file: DataFile, data: String): Unit = dirtyData.put(file, data)
+
+  def commit(): CommitResult = commitLock.synchronized {
+    val results = dirtyData.asScala.iterator
+      .foldRight(CommitResult()) { case ((file, data), result) =>
+        if (Option(cleanData.get(file)).map(dataHash).contains(dataHash(data))) result.countSkipped
+        else {
+          FileIO.write(Write(file, rootPath, Some(version), data)) match {
+            case Success(()) => result.countWrite
+            case Failure(ex) => result.withError(ex)
+          }
+        }
       }
-      .toList
 
-    if (results.isEmpty) Right(CommitSuccessful(0))
+    if (results.hadNothingToWrite) results
     else {
-      dataToWrite.clear()
+      dirtyData.clear()
+      cleanData.clear()
 
-      results.collect { case Failure(ex) => ex } match {
+      results.errors match {
         case list if list.isEmpty =>
           FileIO.write(Write(versionFile, rootPath, None, version.toString)) match {
+            case Failure(ex) => results.withError(ex)
             case Success(_) =>
               version += 1
-              Right(CommitSuccessful(results.size))
-            case Failure(ex) => Left(CommitFailed(Seq(ex)))
+              results
           }
-
-        case failures =>
-          Left(CommitFailed(failures))
+        case _ => results
       }
     }
   }
 
-  def rollback(): RollbackSuccessful = commitLock.synchronized {
-    val numWrites = dataToWrite.size()
-    dataToWrite.clear()
-    RollbackSuccessful(numWrites)
+  def rollback(): RollbackResult = commitLock.synchronized {
+    val numWrites = dirtyData.size()
+    dirtyData.clear()
+    cleanData.clear()
+    RollbackResult(numWrites)
   }
 
 }
 
 object UnitOfWork {
 
-  final case class RollbackSuccessful(writes: Int)
-  final case class CommitFailed(cause: Seq[Throwable]) extends Throwable
-  final case class CommitSuccessful(writes: Int)
+  final case class CommitResult(errors: Seq[Throwable] = Seq(), writes: Int = 0, skipped: Int = 0) {
+    def isSuccess: Boolean = errors.isEmpty
+    def hadNothingToWrite: Boolean = isSuccess && writes == 0
+    def hadNothingToCommit: Boolean = hadNothingToWrite && skipped == 0
+
+    def withError(error: Throwable): CommitResult = copy(errors :+ error)
+    def countWrite: CommitResult = copy(writes = writes + 1)
+    def countSkipped: CommitResult = copy(skipped = skipped + 1)
+  }
+
+  final case class RollbackResult(writes: Int)
 
 }

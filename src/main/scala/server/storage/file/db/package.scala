@@ -24,4 +24,7 @@ package object db {
 
   final case class Read(file: DataFile, version: Option[Long], rootPath: Seq[String]) extends Paths
 
+  private val HASHREGEX = """[\n\r\s]+""".r
+  def dataHash(data: String): Int = HASHREGEX.replaceAllIn(data, "").hashCode
+
 }
