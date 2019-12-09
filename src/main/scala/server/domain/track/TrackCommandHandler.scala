@@ -26,8 +26,7 @@ private[server] class TrackCommandHandler @Inject() (
 
     for {
       _ <- delete.recover { case _: EntityNotFoundException => true }
-      nextId <- trackRepo.nextId
-      track = Track(nextId)
+      track = Track()
       workspace = Workspace(req.user.id, track.id)
       newWorkspace = workspace.setTrackToEdit(track)
       _ <- trackRepo.put(track)

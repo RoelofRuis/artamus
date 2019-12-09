@@ -1,5 +1,7 @@
 package server.storage.file.model
 
+import java.util.UUID
+
 import music.analysis.TwelveToneTuning
 import music.domain.track.Track.TrackId
 import music.domain.user.User
@@ -64,18 +66,18 @@ trait DomainProtocol extends DefaultJsonProtocol {
 
   implicit object TrackIdFormat extends JsonFormat[TrackId] {
     override def read(json: JsValue): TrackId = json match {
-      case JsNumber(i) => TrackId(i.intValue)
+      case JsString(i) => TrackId(UUID.fromString(i))
       case err => deserializationError(s"Invalid TrackId [$err]")
     }
-    override def write(obj: TrackId): JsValue = JsNumber(obj.id)
+    override def write(obj: TrackId): JsValue = JsString(obj.id.toString)
   }
 
   implicit object UserIdFormat extends JsonFormat[UserId] {
     override def read(json: JsValue): UserId = json match {
-      case JsNumber(i) => UserId(i.intValue)
-      case err => deserializationError(s"Invalid TrackId [$err]")
+      case JsString(i) => UserId(UUID.fromString(i))
+      case err => deserializationError(s"Invalid UserId [$err]")
     }
-    override def write(obj: UserId): JsValue = JsNumber(obj.id)
+    override def write(obj: UserId): JsValue = JsString(obj.id.toString)
   }
 
   implicit object AccidentalFormat extends JsonFormat[Accidental] {

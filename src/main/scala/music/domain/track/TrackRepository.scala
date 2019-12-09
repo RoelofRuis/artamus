@@ -6,8 +6,6 @@ import scala.util.Try
 
 trait TrackRepository {
 
-  def nextId: Try[TrackId]
-
   def getById(id: TrackId): Try[Track]
 
   def removeById(id: TrackId): Try[Unit]

@@ -10,7 +10,7 @@ import scala.util.{Failure, Success, Try}
 @Singleton
 class InMemoryUserRepository() extends UserRepository {
 
-  private val users: Array[User] = Array[User](User(UserId(0), "artamus"))
+  private val users: Array[User] = Array[User](User(UserId(), "artamus"))
 
   def getByName(name: String): Try[User] = {
     users.find(_.name == name) match {

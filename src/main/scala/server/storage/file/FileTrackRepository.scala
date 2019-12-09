@@ -5,7 +5,6 @@ import music.domain.track.Track.TrackId
 import music.domain.track._
 import music.math.temporal.Window
 import music.primitives._
-import server.storage.EntityNotFoundException
 import server.storage.file.db.{JsonFileDB, Query}
 import server.storage.file.model.DomainProtocol
 
@@ -33,13 +32,6 @@ class FileTrackRepository @Inject() (
   }
 
   import TrackJsonProtocol._
-
-  override def nextId: Try[TrackId] =
-    db.readByQuery[TrackMapModel, Long](Query(ID, _.tracks.keys.map(_.toLong).maxOption)) match {
-      case Failure(_: EntityNotFoundException) => Success(TrackId(0))
-      case Success(long) => Success(TrackId(long + 1))
-      case Failure(ex) => Failure(ex)
-    }
 
   def removeById(trackId: TrackId): Try[Unit] = {
     db.update[TrackMapModel](ID, TrackMapModel()) { storage =>
