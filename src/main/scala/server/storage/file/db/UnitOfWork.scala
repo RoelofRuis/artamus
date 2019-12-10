@@ -66,6 +66,9 @@ class UnitOfWork(
     RollbackResult(numWrites)
   }
 
+  private val HASHREGEX = """[\n\r\s]+""".r
+  private def dataHash(data: String): Int = HASHREGEX.replaceAllIn(data, "").hashCode
+
 }
 
 object UnitOfWork {
