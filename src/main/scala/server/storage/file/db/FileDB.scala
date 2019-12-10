@@ -15,11 +15,11 @@ class FileDB @Inject() (
   private val initialVersion = FileIO.read(Read(versionFile, None, rootPath)) match {
     case Success(data) => Try { data.toLong } match {
       case Success(lastVersion) if lastVersion >= 1 =>
-        logger.info(s"DB version at [$lastVersion]")
+        logger.debug(s"DB version at [$lastVersion]")
         lastVersion
 
       case _ =>
-        logger.info("Invalid version, starting from [1]")
+        logger.warn("Invalid version, starting from [1]")
         1L
     }
     case Failure(_) =>
@@ -30,7 +30,7 @@ class FileDB @Inject() (
   private val uow: UnitOfWork = new UnitOfWork(initialVersion, versionFile, rootPath)
 
   def read(file: DataFile): Try[String] = {
-    logger.info(s"DB READ  [$file]")
+    logger.debug(s"DB READ  [$file]")
     uow.get(file) match {
       case Some(data) => Success(data)
       case None => loadFromFile(file)
@@ -44,7 +44,7 @@ class FileDB @Inject() (
   }
 
   def write(file: DataFile, data: String): Try[Unit] = {
-    logger.info(s"DB WRITE [$file]")
+    logger.debug(s"DB WRITE [$file]")
     Success(uow.registerDirty(file, data))
   }
 
@@ -65,7 +65,7 @@ class FileDB @Inject() (
         logger.info(s"DB COMMIT > wrote [$w] > skipped [$s]")
         Success(())
       case CommitResult(errors, _, _) =>
-        logger.warn(s"DB COMMIT failued")
+        logger.warn(s"DB COMMIT failed")
         errors.foreach { cause => logger.error("commit failed", cause) }
         Failure(errors.head)
     }
