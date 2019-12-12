@@ -4,6 +4,7 @@ import music.analysis.TwelveTonePitchSpelling
 import music.domain.track.Track
 import server.analysis.blackboard.KnowledgeSource
 
+// TODO: this should be display analysis
 class PitchSpellingAnalyser extends KnowledgeSource[Track] {
 
   override def canExecute(state: Track): Boolean = true

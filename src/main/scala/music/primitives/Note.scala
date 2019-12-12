@@ -6,6 +6,7 @@ final case class Note(
   scientificPitch: Option[ScientificPitch]
 ) {
 
+  @deprecated
   def withScientificPitch(pitch: ScientificPitch): Note = this.copy(scientificPitch = Some(pitch))
 
 }
