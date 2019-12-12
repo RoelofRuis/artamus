@@ -10,8 +10,8 @@ class FileStorageModule extends ScalaPrivateModule {
   this: FileStorageConfig =>
 
   override def configure(): Unit = {
-    bind[JsonMarshaller].toInstance(new JsonMarshaller(compactJson))
     bind[FileDB].toInstance(new FileDB(dbRoot))
+    bind[Boolean].annotatedWithName("compact-json").toInstance(compactJson)
 
     bind[JsonFileDB]
 

@@ -1,13 +1,12 @@
 package server.storage.file.db
 
-import javax.inject.Inject
 import spray.json.{JsonWriter, _}
 
 import scala.util.Try
 
-class JsonMarshaller @Inject() (compact: Boolean) {
+object JsonMarshaller {
 
-  def write[A : JsonWriter](model: A): Try[String] = {
+  def write[A : JsonWriter](model: A, compact: Boolean): Try[String] = {
     Try {
       if (compact) model.toJson.compactPrint
       else model.toJson.prettyPrint

@@ -2,7 +2,7 @@ package server.storage.file.db
 
 import java.io.FileNotFoundException
 
-import javax.inject.{Inject, Singleton}
+import javax.inject.{Inject, Named, Singleton}
 import server.storage.{DBIOException, EntityNotFoundException}
 import spray.json.{JsonReader, JsonWriter}
 
@@ -11,13 +11,13 @@ import scala.util.{Failure, Success, Try}
 @Singleton
 class JsonFileDB @Inject() (
   fileDB: FileDB,
-  jsonMarshaller: JsonMarshaller
+  @Named("compact-json") compact: Boolean
 ) {
 
   def readByQuery[A : JsonReader, B](query: Query[A, B]): Try[B] = {
     val readResult = for {
       data <- fileDB.read(DataFile(query.name, "json"))
-      obj <- jsonMarshaller.read(data)
+      obj <- JsonMarshaller.read(data)
     } yield query.transform(obj)
 
     readResult match {
@@ -29,7 +29,7 @@ class JsonFileDB @Inject() (
 
   def write[A : JsonWriter](name: String, data: A): Try[Unit] = {
     for {
-      json <- jsonMarshaller.write(data)
+      json <- JsonMarshaller.write(data, compact)
     } yield fileDB.write(DataFile(name, "json"), json)
   }
 
