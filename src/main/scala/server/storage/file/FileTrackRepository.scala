@@ -5,15 +5,17 @@ import music.domain.track.Track.TrackId
 import music.domain.track._
 import music.math.temporal.Window
 import music.primitives._
-import server.storage.file.db.{JsonFileDB, Query}
+import server.storage.file.db.{FileDB, JsonIO, Query}
 import server.storage.file.model.DomainProtocol
 
 import scala.util.{Failure, Success, Try}
 
 @Singleton
 class FileTrackRepository @Inject() (
-  db: JsonFileDB,
+  db: FileDB,
 ) extends TrackRepository {
+
+  import JsonIO._
 
   private val ID = "track"
 

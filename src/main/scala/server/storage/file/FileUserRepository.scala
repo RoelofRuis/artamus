@@ -3,15 +3,17 @@ package server.storage.file
 import com.typesafe.scalalogging.LazyLogging
 import javax.inject.{Inject, Singleton}
 import music.domain.user.{User, UserRepository}
-import server.storage.file.db.{JsonFileDB, Query}
+import server.storage.file.db.{FileDB, JsonIO, Query}
 import server.storage.file.model.DomainProtocol
 
 import scala.util.Try
 
 @Singleton
 class FileUserRepository @Inject() (
-  db: JsonFileDB,
+  db: FileDB,
 ) extends UserRepository with LazyLogging {
+
+  import JsonIO._
 
   private val ID = "user"
 

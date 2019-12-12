@@ -6,15 +6,17 @@ import music.domain.track.Track.TrackId
 import music.domain.user.User
 import music.domain.user.User.UserId
 import music.domain.workspace.{Workspace, WorkspaceRepository}
-import server.storage.file.db.{JsonFileDB, Query}
+import server.storage.file.db.{FileDB, JsonIO, Query}
 import server.storage.file.model.DomainProtocol
 
 import scala.util.{Failure, Success, Try}
 
 @Singleton
 class FileWorkspaceRepository @Inject() (
-  db: JsonFileDB,
+  db: FileDB,
 ) extends WorkspaceRepository with LazyLogging {
+
+  import JsonIO._
 
   private val ID = "workspace"
 
