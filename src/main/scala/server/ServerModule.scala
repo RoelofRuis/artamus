@@ -1,7 +1,7 @@
 package server
 
 import _root_.server.analysis._
-import _root_.server.control.{DispatchingServerAPI, ServerControlHandler}
+import _root_.server.control.{ConnectionLifetimeHooks, DispatchingServerAPI, ServerControlHandler}
 import _root_.server.domain.track.{TrackCommandHandler, TrackQueryHandler}
 import com.google.inject.Provides
 import javax.inject.Singleton
@@ -26,6 +26,8 @@ class ServerModule extends ScalaPrivateModule with ServerConfig {
         paperSize
       )
     )
+
+    bind[ConnectionLifetimeHooks].asEagerSingleton()
 
     bind[RenderingCompletionHandler].to[RenderingEventCompletionHandler]
     install(new RenderingModule with ServerConfig)
@@ -58,11 +60,12 @@ class ServerModule extends ScalaPrivateModule with ServerConfig {
   @Provides @Singleton
   def serverConnectionFactory(
     db: FileDb,
-    serverBindings: ServerBindings
+    serverBindings: ServerBindings,
+    hooks: ConnectionLifetimeHooks
   ): ServerInterface = {
     DefaultServer.apply(
       port,
-      new DispatchingServerAPI(db, serverBindings)
+      new DispatchingServerAPI(db, serverBindings, hooks)
     )
   }
 

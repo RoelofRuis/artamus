@@ -2,6 +2,7 @@ package client.events
 
 import java.awt.image.BufferedImage
 import java.awt.{BorderLayout, Color}
+import java.io.File
 
 import com.google.inject.Inject
 import com.typesafe.scalalogging.LazyLogging
@@ -10,7 +11,8 @@ import javax.imageio.ImageIO
 import javax.swing.{ImageIcon, JFrame, JLabel, WindowConstants}
 import protocol.Event
 import pubsub.{Callback, Dispatcher}
-import server.domain.{AnalysisStarted, RenderingCompleted}
+import server.domain.AnalysisStarted
+import server.domain.track.TrackRendered
 
 import scala.util.{Failure, Success, Try}
 
@@ -42,8 +44,8 @@ class RenderHandler @Inject() (
     Success()
   }
 
-  dispatcher.subscribe[RenderingCompleted]{ event =>
-    Try { ImageIO.read(event.attributes.file) } match {
+  dispatcher.subscribe[TrackRendered]{ event =>
+    Try { ImageIO.read(new File(event.attributes.render.path)) } match {
       case Success(value) =>
         lastImage = Some(value)
         image.setImage(value)

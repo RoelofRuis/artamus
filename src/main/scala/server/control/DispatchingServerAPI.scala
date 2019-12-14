@@ -16,6 +16,7 @@ import scala.util.{Failure, Success, Try}
 final class DispatchingServerAPI(
   db2: Db with DbRead,
   server: ServerBindings,
+  hooks: ConnectionLifetimeHooks
 ) extends ServerAPI with LazyLogging {
 
   private var connections: Map[Connection, Option[User]] = Map()
@@ -80,6 +81,7 @@ final class DispatchingServerAPI(
           case Right(user) =>
             server.subscribeEvents(connection.name, event => connection.sendEvent(EventResponse(event)))
             connections = connections.updated(connection, Some(user))
+            hooks.onAuthenticated(startTransaction(connection), user)
             Right(true)
 
           case Left(NotFound()) =>
