@@ -7,6 +7,7 @@ import spray.json.{JsonReader, JsonWriter}
 
 import scala.util.{Failure, Success, Try}
 
+@deprecated
 object JsonIO {
 
   private val compact = false // TODO: move back to props

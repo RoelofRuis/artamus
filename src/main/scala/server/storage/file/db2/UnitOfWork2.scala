@@ -1,13 +1,18 @@
 package server.storage.file.db2
+import java.util.UUID
 import java.util.concurrent.ConcurrentHashMap
 
-import scala.jdk.CollectionConverters._
 import javax.annotation.concurrent.ThreadSafe
 import server.storage.file.db2.DbIO.DbResult
-import server.storage.file.db2.DbTransaction.{CommitResult, RollbackResult}
+import server.storage.file.db2.DbTransaction.CommitResult
+
+import scala.jdk.CollectionConverters._
 
 @ThreadSafe
-final class UnitOfWork2(private val db: FileDb2) extends DbIO with DbTransaction {
+final class UnitOfWork2 private (
+  id: UUID,
+  private val db: FileDb2
+) extends DbIO with DbTransaction {
 
   private val cleanData = new ConcurrentHashMap[Key, String]()
   private val dirtyData = new ConcurrentHashMap[Key, String]()
@@ -29,9 +34,9 @@ final class UnitOfWork2(private val db: FileDb2) extends DbIO with DbTransaction
     DbResult.done
   }
 
-  override def commit(): CommitResult = db.commitUnitOfWork(this)
+  override def delete(key: Key): DbResult[Unit] = ???
 
-  override def rollback(): RollbackResult = DbResult.done
+  override def commit(): CommitResult = db.commitUnitOfWork(this)
 
   def getChangeSet: Map[Key, String] = {
     dirtyData
@@ -43,5 +48,11 @@ final class UnitOfWork2(private val db: FileDb2) extends DbIO with DbTransaction
 
   private val HASHREGEX = """[\n\r\s]+""".r
   private def dataHash(data: String): Int = HASHREGEX.replaceAllIn(data, "").hashCode
+
+}
+
+object UnitOfWork2 {
+
+  def apply(db: FileDb2): UnitOfWork2 = new UnitOfWork2(UUID.randomUUID(), db)
 
 }

@@ -1,18 +1,23 @@
 package server.storage.file.db2
 
-import server.storage.file.db2.DbTransaction.{CommitResult, RollbackResult}
+import server.storage.file.db2.DbTransaction.CommitResult
 
 trait DbTransaction {
 
   def commit(): CommitResult
 
-  def rollback(): RollbackResult
-
 }
 
 object DbTransaction {
 
-  type CommitResult = Either[DatabaseError, Unit]
-  type RollbackResult = Either[DatabaseError, Unit]
+  type CommitResult = Either[CommitError, Int]
+
+  final case class CommitError(causes: Seq[DatabaseError]) extends Exception
+
+  object CommitResult {
+    def nothingToCommit: CommitResult = Right(0)
+    def success(writes: Int) = Right(writes)
+    def failure(causes: DatabaseError*) = Left(CommitError(causes))
+  }
 
 }

@@ -6,6 +6,7 @@ import scala.annotation.tailrec
 import scala.io.Source
 import scala.util.{Failure, Success, Try}
 
+@deprecated
 object FileIO {
 
   @tailrec

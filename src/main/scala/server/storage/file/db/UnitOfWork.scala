@@ -8,6 +8,7 @@ import server.storage.file.db.UnitOfWork.{CommitResult, RollbackResult}
 import scala.jdk.CollectionConverters._
 import scala.util.{Failure, Success}
 
+@deprecated
 class UnitOfWork(
   val initialVersion: Long,
   val versionFile: DataFile,

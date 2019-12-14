@@ -7,6 +7,7 @@ import server.storage.file.db.UnitOfWork.CommitResult
 
 import scala.util.{Failure, Success, Try}
 
+@deprecated
 class FileDB @Inject() (
   rootPath: Seq[String],
 ) extends TransactionalDB with LazyLogging {

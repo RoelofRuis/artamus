@@ -1,6 +1,6 @@
 package server.storage.file.db2
 
-import java.io.{BufferedWriter, File, FileWriter, IOException}
+import java.io.{BufferedWriter, File, FileNotFoundException, FileWriter, IOException}
 
 import server.storage.file.db2.DbIO.DbResult
 
@@ -11,7 +11,8 @@ object FileIO2 {
 
   def read(path: String): DbResult[String] = {
     Try { Source.fromFile(path) } match {
-      case Failure(ex) => DbResult.failure(IOError(ex)) // TODO: Should this be a KeyNotFoundException?
+      case Failure(_: FileNotFoundException) => DbResult.failure(FileNotFoundException())
+      case Failure(ex) => DbResult.failure(IOError(ex))
       case Success(source) =>
         try {
           DbResult.success(source.getLines.mkString)

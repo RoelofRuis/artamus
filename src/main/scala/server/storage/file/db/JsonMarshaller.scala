@@ -4,6 +4,7 @@ import spray.json.{JsonWriter, _}
 
 import scala.util.Try
 
+@deprecated
 object JsonMarshaller {
 
   def write[A : JsonWriter](model: A, compact: Boolean): Try[String] = {

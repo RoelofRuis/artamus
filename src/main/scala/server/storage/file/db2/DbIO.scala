@@ -8,6 +8,8 @@ trait DbIO {
 
   def write(key: Key, data: String): DbResult[Unit]
 
+  def delete(key: Key): DbResult[Unit]
+
 }
 
 object DbIO {
