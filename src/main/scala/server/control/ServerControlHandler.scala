@@ -13,10 +13,10 @@ private[server] class ServerControlHandler @Inject() (
 ) {
 
   dispatcher.subscribe[Disconnect] {
-    case Request(_, Disconnect(false)) =>
+    case Request(_, _, Disconnect(false)) =>
       Success(true)
 
-    case Request(_, Disconnect(true)) =>
+    case Request(_, _, Disconnect(true)) =>
       server.shutdown()
       Success(true)
 

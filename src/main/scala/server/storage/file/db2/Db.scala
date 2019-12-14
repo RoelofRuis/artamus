@@ -2,6 +2,6 @@ package server.storage.file.db2
 
 trait Db {
 
-  def newTransaction: DbIO
+  def newTransaction: DbTransaction with DbIO
 
 }

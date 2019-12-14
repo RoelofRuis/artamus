@@ -7,7 +7,6 @@ import com.google.inject.Provides
 import javax.inject.Singleton
 import music.domain.DomainModule
 import music.domain.track.Track
-import music.domain.user.UserRepository
 import net.codingwell.scalaguice.ScalaPrivateModule
 import protocol._
 import pubsub.{Dispatcher, EventBus}
@@ -16,7 +15,7 @@ import server.domain.ChangeHandler
 import server.interpret.LilypondInterpreter
 import server.rendering.{RenderingCompletionHandler, RenderingModule}
 import server.storage.file.FileStorageModule
-import server.storage.file.db.FileDB
+import server.storage.file.db2.FileDb2
 
 class ServerModule extends ScalaPrivateModule with ServerConfig {
 
@@ -61,13 +60,12 @@ class ServerModule extends ScalaPrivateModule with ServerConfig {
 
   @Provides @Singleton
   def serverConnectionFactory(
-    db: FileDB,
-    userRepository: UserRepository,
+    db: FileDb2,
     serverBindings: ServerBindings
   ): ServerInterface = {
     DefaultServer.apply(
       port,
-      new DispatchingServerAPI(db, userRepository, serverBindings)
+      new DispatchingServerAPI(db, serverBindings)
     )
   }
 

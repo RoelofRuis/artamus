@@ -4,7 +4,6 @@ import java.io.File
 import java.util.concurrent.atomic.AtomicLong
 
 import javax.annotation.concurrent.ThreadSafe
-import server.storage.file.db2.DbIO.DbResult
 import server.storage.file.db2.DbTransaction.CommitResult
 
 import scala.annotation.tailrec
@@ -12,7 +11,7 @@ import scala.annotation.tailrec
 @ThreadSafe
 class FileDb2(
   rootPath: Seq[String]
-) extends Db {
+) extends Db with DbRead {
 
   private val writeLock = new Object()
   private val version: AtomicLong = new AtomicLong(0L)
@@ -26,7 +25,7 @@ class FileDb2(
       writeLock.synchronized {
         val commitVersion = version.getAndIncrement()
 
-        val errors = changeSet.foldRight(List()) { case ((key, data), acc) =>
+        val errors = changeSet.foldRight(List[DatabaseError]()) { case ((key, data), acc) =>
           FileIO2.write(keyToPath(key, commitVersion), data) match {
             case Right(_) => acc
             case Left(ex) => acc :+ ex
@@ -45,15 +44,15 @@ class FileDb2(
     }
   }
 
-  def loadFromFile(key: Key): DbResult[String] = {
+  def readKey(key: Key): DbResult[String] = {
     val currentVersion = version.get()
 
     @tailrec
     def readVersioned(version: Long): DbResult[String] = {
       FileIO2.read(keyToPath(key, version)) match {
-        case Left(FileNotFoundException()) if version > 0 => readVersioned(version - 1)
-        case l @ Left(FileNotFoundException()) => l
-        case _ => _
+        case Left(FileNotFound()) if version > 0 => readVersioned(version - 1)
+        case l @ Left(FileNotFound()) => l
+        case x => x
       }
     }
     readVersioned(currentVersion)

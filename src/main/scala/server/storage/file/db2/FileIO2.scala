@@ -2,8 +2,6 @@ package server.storage.file.db2
 
 import java.io.{BufferedWriter, File, FileNotFoundException, FileWriter, IOException}
 
-import server.storage.file.db2.DbIO.DbResult
-
 import scala.io.Source
 import scala.util.{Failure, Success, Try}
 
@@ -11,7 +9,7 @@ object FileIO2 {
 
   def read(path: String): DbResult[String] = {
     Try { Source.fromFile(path) } match {
-      case Failure(_: FileNotFoundException) => DbResult.failure(FileNotFoundException())
+      case Failure(_: FileNotFoundException) => DbResult.failure(FileNotFound())
       case Failure(ex) => DbResult.failure(IOError(ex))
       case Success(source) =>
         try {

@@ -3,7 +3,6 @@ import java.util.UUID
 import java.util.concurrent.ConcurrentHashMap
 
 import javax.annotation.concurrent.ThreadSafe
-import server.storage.file.db2.DbIO.DbResult
 import server.storage.file.db2.DbTransaction.CommitResult
 
 import scala.jdk.CollectionConverters._
@@ -12,15 +11,15 @@ import scala.jdk.CollectionConverters._
 final class UnitOfWork2 private (
   id: UUID,
   private val db: FileDb2
-) extends DbIO with DbTransaction {
+) extends DbTransaction with DbIO {
 
   private val cleanData = new ConcurrentHashMap[Key, String]()
   private val dirtyData = new ConcurrentHashMap[Key, String]()
 
-  override def read(key: Key): DbResult[String] = {
+  override def readKey(key: Key): DbResult[String] = {
     Option(dirtyData.get(key)) orElse Option(cleanData.get(key)) match {
       case Some(data) => DbResult.success(data)
-      case None => db.loadFromFile(key) match {
+      case None => db.readKey(key) match {
         case r @ Right(data) =>
           cleanData.put(key, data)
           r
@@ -29,12 +28,12 @@ final class UnitOfWork2 private (
     }
   }
 
-  override def write(key: Key, data: String): DbResult[Unit] = {
+  override def writeKey(key: Key, data: String): DbResult[Unit] = {
     dirtyData.put(key, data)
     DbResult.done
   }
 
-  override def delete(key: Key): DbResult[Unit] = ???
+  override def deleteKey(key: Key): DbResult[Unit] = ???
 
   override def commit(): CommitResult = db.commitUnitOfWork(this)
 
