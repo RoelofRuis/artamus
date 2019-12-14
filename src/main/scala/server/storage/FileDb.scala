@@ -8,14 +8,22 @@ import server.storage.api.DbTransaction.CommitResult
 import server.storage.api.{DataKey, DatabaseError, Db, DbRead, DbResult, DbTransaction, FileNotFound}
 
 import scala.annotation.tailrec
+import scala.util.Try
 
 @ThreadSafe
 class FileDb(
   rootPath: Seq[String]
 ) extends Db with DbRead {
 
+  private val VersionPath = keyToPath(DataKey("_version"), 0)
+
+  val initialVersion: Long = FileIO.read(VersionPath) match {
+    case Left(_) => 0L
+    case Right(v) => Try { v.toLong + 1 }.getOrElse(0L)
+  }
+
   private val writeLock = new Object()
-  private val version: AtomicLong = new AtomicLong(0L)
+  private val version: AtomicLong = new AtomicLong(initialVersion)
 
   def newTransaction: UnitOfWork = UnitOfWork(this)
 
