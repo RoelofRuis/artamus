@@ -26,7 +26,7 @@ object FileIO {
 
   def write(path: String, data: String): DbResult[Unit] = {
     val writerAtDir = for {
-      _ <- Try { new File(path).mkdirs }
+      _ <- Try { new File(path).getParentFile.mkdirs }
       writer <- Try { new BufferedWriter(new FileWriter(path)) }
     } yield writer
 

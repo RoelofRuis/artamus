@@ -26,6 +26,7 @@ object Workspaces {
   implicit class WorkspaceQueries(db: DbRead) {
     def getWorkspaceByOwner(user: User): EntityResult[Workspace] = {
       db.read[WorkspaceMapModel](KEY) match {
+        case Left(_: FileNotFound) => EntityResult.notFound
         case Left(ex) => EntityResult.badData(ex)
         case Right(model) =>
           model.workspaces.get(user.id.id.toString) match {

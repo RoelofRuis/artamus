@@ -41,6 +41,7 @@ final class DispatchingServerAPI(
               response
 
             case Left(ex) => logger.error(s"Unable to commit changes", ex)
+              ex.causes.zipWithIndex.foreach { case (err, idx) => logger.error(s"commit error [$idx]", err) }
               DataResponse(Left(s"Unable to commit changes"))
           }
         }

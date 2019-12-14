@@ -1,7 +1,7 @@
 package server.storage.entity
 
 import music.domain.user.User
-import server.storage.api.{DataKey, DbRead}
+import server.storage.api.{DataKey, DbRead, FileNotFound}
 import server.storage.model.DomainProtocol
 
 object Users {
@@ -21,6 +21,7 @@ object Users {
   implicit class UserQueries(db: DbRead) {
     def getUserByName(name: String): EntityResult[User] = {
       db.read[UserListModel](KEY) match {
+        case Left(_: FileNotFound) => EntityResult.notFound
         case Left(ex) => EntityResult.badData(ex)
         case Right(model) =>
           model.users.find(_.name == name) match {

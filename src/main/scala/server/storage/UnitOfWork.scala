@@ -43,7 +43,7 @@ final class UnitOfWork private (
     dirtyData
       .asScala
       .iterator
-      .filter { case (key, data) => Option(cleanData.get(key)).map(dataHash).contains(dataHash(data)) }
+      .filterNot { case (key, data) => Option(cleanData.get(key)).map(dataHash).contains(dataHash(data)) }
       .toMap
   }
 
