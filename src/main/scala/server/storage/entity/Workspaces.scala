@@ -1,15 +1,15 @@
-package server.storage.neww
+package server.storage.entity
 
 import music.domain.track.Track.TrackId
 import music.domain.user.User
 import music.domain.user.User.UserId
 import music.domain.workspace.Workspace
-import server.storage.file.db2.{DbIO, DbRead, FileNotFound, DataKey}
-import server.storage.file.model.DomainProtocol
+import server.storage.api.{DataKey, DbIO, DbRead, FileNotFound}
+import server.storage.model.DomainProtocol
 
 object Workspaces {
 
-  import server.storage.file.db2.JsonDB._
+  import server.storage.JsonDB._
 
   private val KEY = DataKey("workspace")
 

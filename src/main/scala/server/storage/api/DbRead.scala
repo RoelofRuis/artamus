@@ -1,4 +1,4 @@
-package server.storage.file.db2
+package server.storage.api
 
 trait DbRead {
 

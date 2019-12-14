@@ -1,12 +1,12 @@
-package server.storage.neww
+package server.storage.entity
 
 import music.domain.user.User
-import server.storage.file.db2.{DbRead, DataKey}
-import server.storage.file.model.DomainProtocol
+import server.storage.api.{DataKey, DbRead}
+import server.storage.model.DomainProtocol
 
 object Users {
 
-  import server.storage.file.db2.JsonDB._
+  import server.storage.JsonDB._
 
   private val KEY = DataKey("user")
 

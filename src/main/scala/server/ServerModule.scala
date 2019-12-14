@@ -5,7 +5,6 @@ import _root_.server.control.{DispatchingServerAPI, ServerControlHandler}
 import _root_.server.domain.track.{TrackCommandHandler, TrackQueryHandler}
 import com.google.inject.Provides
 import javax.inject.Singleton
-import music.domain.DomainModule
 import music.domain.track.Track
 import net.codingwell.scalaguice.ScalaPrivateModule
 import protocol._
@@ -14,14 +13,12 @@ import server.analysis.blackboard.Controller
 import server.domain.ChangeHandler
 import server.interpret.LilypondInterpreter
 import server.rendering.{RenderingCompletionHandler, RenderingModule}
-import server.storage.file.FileStorageModule
-import server.storage.file.db2.FileDb2
+import server.storage.{FileDb, StorageModule}
 
 class ServerModule extends ScalaPrivateModule with ServerConfig {
 
   override def configure(): Unit = {
-    install(new FileStorageModule with ServerConfig)
-    install(new DomainModule)
+    install(new StorageModule with ServerConfig)
 
     bind[LilypondInterpreter].toInstance(
       new LilypondInterpreter(
@@ -60,7 +57,7 @@ class ServerModule extends ScalaPrivateModule with ServerConfig {
 
   @Provides @Singleton
   def serverConnectionFactory(
-    db: FileDb2,
+    db: FileDb,
     serverBindings: ServerBindings
   ): ServerInterface = {
     DefaultServer.apply(

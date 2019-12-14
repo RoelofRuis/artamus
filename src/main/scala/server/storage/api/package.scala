@@ -1,6 +1,6 @@
-package server.storage.file
+package server.storage
 
-package object db2 {
+package object api {
 
   trait DbIO extends DbRead with DbWrite
 

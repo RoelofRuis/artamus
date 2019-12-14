@@ -1,8 +1,8 @@
 package server.storage
 
-import server.storage.file.db2.DatabaseError
+import server.storage.api.DatabaseError
 
-package object neww {
+package object entity {
 
   type EntityResult[A] = Either[EntityException, A]
 

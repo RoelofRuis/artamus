@@ -1,24 +1,25 @@
-package server.storage.file.db2
+package server.storage
 
 import java.io.File
 import java.util.concurrent.atomic.AtomicLong
 
 import javax.annotation.concurrent.ThreadSafe
-import server.storage.file.db2.DbTransaction.CommitResult
+import server.storage.api.DbTransaction.CommitResult
+import server.storage.api.{DataKey, DatabaseError, Db, DbRead, DbResult, DbTransaction, FileNotFound}
 
 import scala.annotation.tailrec
 
 @ThreadSafe
-class FileDb2(
+class FileDb(
   rootPath: Seq[String]
 ) extends Db with DbRead {
 
   private val writeLock = new Object()
   private val version: AtomicLong = new AtomicLong(0L)
 
-  def newTransaction: UnitOfWork2 = UnitOfWork2(this)
+  def newTransaction: UnitOfWork = UnitOfWork(this)
 
-  def commitUnitOfWork(uow: UnitOfWork2): DbTransaction.CommitResult = {
+  def commitUnitOfWork(uow: UnitOfWork): DbTransaction.CommitResult = {
     val changeSet = uow.getChangeSet
     if (changeSet.isEmpty) CommitResult.nothingToCommit
     else {
@@ -26,7 +27,7 @@ class FileDb2(
         val commitVersion = version.getAndIncrement()
 
         val errors = changeSet.foldRight(List[DatabaseError]()) { case ((key, data), acc) =>
-          FileIO2.write(keyToPath(key, commitVersion), data) match {
+          FileIO.write(keyToPath(key, commitVersion), data) match {
             case Right(_) => acc
             case Left(ex) => acc :+ ex
           }
@@ -34,7 +35,7 @@ class FileDb2(
 
         errors match {
           case list if list.isEmpty =>
-            FileIO2.write(keyToPath(DataKey("_version"), 0), commitVersion.toString) match {
+            FileIO.write(keyToPath(DataKey("_version"), 0), commitVersion.toString) match {
               case Right(_) => CommitResult.success(changeSet.size)
               case Left(ex) => CommitResult.failure(ex)
             }
@@ -49,7 +50,7 @@ class FileDb2(
 
     @tailrec
     def readVersioned(version: Long): DbResult[String] = {
-      FileIO2.read(keyToPath(key, version)) match {
+      FileIO.read(keyToPath(key, version)) match {
         case Left(FileNotFound()) if version > 0 => readVersioned(version - 1)
         case l @ Left(FileNotFound()) => l
         case x => x

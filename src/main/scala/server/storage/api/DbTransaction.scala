@@ -1,6 +1,6 @@
-package server.storage.file.db2
+package server.storage.api
 
-import server.storage.file.db2.DbTransaction.CommitResult
+import server.storage.api.DbTransaction.CommitResult
 
 trait DbTransaction {
 

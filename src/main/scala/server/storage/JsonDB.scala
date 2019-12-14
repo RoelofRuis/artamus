@@ -1,5 +1,6 @@
-package server.storage.file.db2
+package server.storage
 
+import server.storage.api.{DataCorruptionException, DataKey, DbRead, DbResult, DbWrite}
 import spray.json.{JsonReader, JsonWriter, _}
 
 import scala.util.{Failure, Success, Try}

@@ -2,7 +2,7 @@ package server
 
 import music.domain.user.User
 import pubsub.RequestContainer
-import server.storage.file.db2.DbIO
+import server.storage.api.DbIO
 
 import scala.reflect.ClassTag
 

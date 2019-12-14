@@ -6,10 +6,10 @@ import com.typesafe.scalalogging.LazyLogging
 import music.domain.user.User
 import protocol._
 import protocol.transport.server.{Connection, ServerAPI}
-import server.storage.file.db2.{Db, DbIO, DbRead, DbTransaction}
-import server.storage.neww.NotFound
-import server.storage.neww.Users._
 import server.{Request, ServerBindings}
+import server.storage.api.{Db, DbIO, DbRead, DbTransaction}
+import server.storage.entity.NotFound
+import server.storage.entity.Users._
 
 import scala.util.{Failure, Success, Try}
 

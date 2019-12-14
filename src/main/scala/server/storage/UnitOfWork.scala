@@ -1,16 +1,18 @@
-package server.storage.file.db2
+package server.storage
+
 import java.util.UUID
 import java.util.concurrent.ConcurrentHashMap
 
 import javax.annotation.concurrent.ThreadSafe
-import server.storage.file.db2.DbTransaction.CommitResult
+import server.storage.api.DbTransaction.CommitResult
+import server.storage.api.{DataKey, DbIO, DbResult, DbTransaction}
 
 import scala.jdk.CollectionConverters._
 
 @ThreadSafe
-final class UnitOfWork2 private (
+final class UnitOfWork private (
   id: UUID,
-  private val db: FileDb2
+  private val db: FileDb
 ) extends DbTransaction with DbIO {
 
   private val cleanData = new ConcurrentHashMap[DataKey, String]()
@@ -50,8 +52,8 @@ final class UnitOfWork2 private (
 
 }
 
-object UnitOfWork2 {
+object UnitOfWork {
 
-  def apply(db: FileDb2): UnitOfWork2 = new UnitOfWork2(UUID.randomUUID(), db)
+  def apply(db: FileDb): UnitOfWork = new UnitOfWork(UUID.randomUUID(), db)
 
 }

@@ -1,6 +1,5 @@
-package server.storage.file
+package server.storage
 
 trait FileStorageConfig {
-  val compactJson: Boolean
   val dbRoot: Seq[String]
 }

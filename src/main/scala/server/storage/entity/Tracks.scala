@@ -1,15 +1,15 @@
-package server.storage.neww
+package server.storage.entity
 
 import music.domain.track.Track.TrackId
 import music.domain.track._
 import music.math.temporal.Window
 import music.primitives._
-import server.storage.file.db2.{DataKey, DbIO, DbRead, FileNotFound}
-import server.storage.file.model.DomainProtocol
+import server.storage.api.{DataKey, DbIO, DbRead, FileNotFound}
+import server.storage.model.DomainProtocol
 
 object Tracks {
 
-  import server.storage.file.db2.JsonDB._
+  import server.storage.JsonDB._
 
   private val KEY = DataKey("track")
 

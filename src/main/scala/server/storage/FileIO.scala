@@ -1,11 +1,13 @@
-package server.storage.file.db2
+package server.storage
 
-import java.io.{BufferedWriter, File, FileNotFoundException, FileWriter, IOException}
+import java.io._
+
+import server.storage.api.{DbResult, FileNotFound, IOError}
 
 import scala.io.Source
 import scala.util.{Failure, Success, Try}
 
-object FileIO2 {
+object FileIO {
 
   def read(path: String): DbResult[String] = {
     Try { Source.fromFile(path) } match {
