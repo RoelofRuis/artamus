@@ -1,7 +1,7 @@
 package server
 
 import server.rendering.RenderingConfig
-import server.storage.file.FileStorageConfig
+import server.storage.FileStorageConfig
 
 trait ServerConfig extends RenderingConfig with FileStorageConfig {
 
@@ -13,7 +13,6 @@ trait ServerConfig extends RenderingConfig with FileStorageConfig {
   val lyVersion: String = "2.18"
   val paperSize: String = "a6landscape"
 
-  val compactJson: Boolean = false
   val dbRoot: Seq[String] = Seq("data", "store")
 
 }

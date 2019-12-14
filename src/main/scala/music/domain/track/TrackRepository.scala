@@ -4,6 +4,7 @@ import music.domain.track.Track.TrackId
 
 import scala.util.Try
 
+@deprecated
 trait TrackRepository {
 
   def getById(id: TrackId): Try[Track]
