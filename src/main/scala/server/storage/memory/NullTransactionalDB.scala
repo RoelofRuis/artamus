@@ -5,6 +5,7 @@ import server.storage.TransactionalDB
 
 import scala.util.{Success, Try}
 
+@deprecated
 @Singleton
 class NullTransactionalDB extends TransactionalDB {
   override def commit(): Try[Unit] = Success(())

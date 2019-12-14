@@ -4,16 +4,17 @@ import server.storage.file.db2.DatabaseError
 
 package object neww {
 
-  type DomainResult[A] = Either[DomainException, A]
+  type EntityResult[A] = Either[EntityException, A]
 
-  object DomainResult {
-    def dbError[A](ex: DatabaseError): DomainResult[A] = Left(DbError(ex))
-    def entityNotFound[A]: DomainResult[A] = Left(EntityNotFound())
-    def success[A](a: A): DomainResult[A] = Right(a)
+  object EntityResult {
+    def badData[A](ex: DatabaseError): EntityResult[A] = Left(BadData(ex))
+    def notFound[A]: EntityResult[A] = Left(NotFound())
+    def found[A](a: A): EntityResult[A] = Right(a)
+    def ok: EntityResult[Unit] = Right(())
   }
 
-  sealed trait DomainException extends Exception
-  final case class EntityNotFound() extends DomainException
-  final case class DbError(ex: DatabaseError) extends DomainException
+  sealed trait EntityException extends Exception
+  final case class NotFound() extends EntityException
+  final case class BadData(ex: DatabaseError) extends EntityException
 
 }

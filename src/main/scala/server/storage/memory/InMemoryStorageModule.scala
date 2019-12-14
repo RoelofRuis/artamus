@@ -5,6 +5,7 @@ import music.domain.workspace.WorkspaceRepository
 import net.codingwell.scalaguice.ScalaPrivateModule
 import server.storage.TransactionalDB
 
+@deprecated
 class InMemoryStorageModule extends ScalaPrivateModule {
 
   override def configure(): Unit = {

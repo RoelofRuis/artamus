@@ -13,10 +13,10 @@ final class UnitOfWork2 private (
   private val db: FileDb2
 ) extends DbTransaction with DbIO {
 
-  private val cleanData = new ConcurrentHashMap[Key, String]()
-  private val dirtyData = new ConcurrentHashMap[Key, String]()
+  private val cleanData = new ConcurrentHashMap[DataKey, String]()
+  private val dirtyData = new ConcurrentHashMap[DataKey, String]()
 
-  override def readKey(key: Key): DbResult[String] = {
+  override def readKey(key: DataKey): DbResult[String] = {
     Option(dirtyData.get(key)) orElse Option(cleanData.get(key)) match {
       case Some(data) => DbResult.success(data)
       case None => db.readKey(key) match {
@@ -28,16 +28,16 @@ final class UnitOfWork2 private (
     }
   }
 
-  override def writeKey(key: Key, data: String): DbResult[Unit] = {
+  override def writeKey(key: DataKey, data: String): DbResult[Unit] = {
     dirtyData.put(key, data)
     DbResult.done
   }
 
-  override def deleteKey(key: Key): DbResult[Unit] = ???
+  override def deleteKey(key: DataKey): DbResult[Unit] = ???
 
   override def commit(): CommitResult = db.commitUnitOfWork(this)
 
-  def getChangeSet: Map[Key, String] = {
+  def getChangeSet: Map[DataKey, String] = {
     dirtyData
       .asScala
       .iterator

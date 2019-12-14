@@ -34,7 +34,7 @@ class FileDb2(
 
         errors match {
           case list if list.isEmpty =>
-            FileIO2.write(keyToPath(Key("_version"), 0), commitVersion.toString) match {
+            FileIO2.write(keyToPath(DataKey("_version"), 0), commitVersion.toString) match {
               case Right(_) => CommitResult.success(changeSet.size)
               case Left(ex) => CommitResult.failure(ex)
             }
@@ -44,7 +44,7 @@ class FileDb2(
     }
   }
 
-  def readKey(key: Key): DbResult[String] = {
+  def readKey(key: DataKey): DbResult[String] = {
     val currentVersion = version.get()
 
     @tailrec
@@ -58,7 +58,7 @@ class FileDb2(
     readVersioned(currentVersion)
   }
 
-  private def keyToPath(key: Key, version: Long): String = {
+  private def keyToPath(key: DataKey, version: Long): String = {
     val versionString = version.toString
     val dataFile = s"$versionString.json"
     (rootPath :+ key.name :+ dataFile).mkString(File.separator)

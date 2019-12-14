@@ -2,9 +2,9 @@ package server.storage.file.db2
 
 trait DbWrite {
 
-  def writeKey(key: Key, data: String): DbResult[Unit]
+  def writeKey(key: DataKey, data: String): DbResult[Unit]
 
-  def deleteKey(key: Key): DbResult[Unit]
+  def deleteKey(key: DataKey): DbResult[Unit]
 
 }
 

@@ -4,6 +4,7 @@ import music.domain.user.User
 
 import scala.util.Try
 
+@deprecated
 trait WorkspaceRepository {
 
   def getByOwner(user: User): Try[Workspace]

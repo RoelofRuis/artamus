@@ -4,7 +4,7 @@ package object db2 {
 
   trait DbIO extends DbRead with DbWrite
 
-  final case class Key(name: String)
+  final case class DataKey(name: String)
 
   sealed trait DatabaseError extends Exception
 

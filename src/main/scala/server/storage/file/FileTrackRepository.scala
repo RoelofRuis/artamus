@@ -10,6 +10,7 @@ import server.storage.file.model.DomainProtocol
 
 import scala.util.{Failure, Success, Try}
 
+@deprecated
 @Singleton
 class FileTrackRepository @Inject() (
   db: FileDB,

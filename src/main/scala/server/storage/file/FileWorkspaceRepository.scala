@@ -11,6 +11,7 @@ import server.storage.file.model.DomainProtocol
 
 import scala.util.{Failure, Success, Try}
 
+@deprecated
 @Singleton
 class FileWorkspaceRepository @Inject() (
   db: FileDB,

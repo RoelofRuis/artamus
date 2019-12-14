@@ -8,6 +8,7 @@ import server.storage.EntityNotFoundException
 
 import scala.util.{Failure, Success, Try}
 
+@deprecated
 @Singleton
 class InMemoryTrackRepository() extends TrackRepository {
 

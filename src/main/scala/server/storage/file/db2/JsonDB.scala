@@ -7,7 +7,7 @@ import scala.util.{Failure, Success, Try}
 object JsonDB {
 
   implicit class JsonDbRead(dbRead: DbRead) {
-    def read[A : JsonReader](key: Key): DbResult[A] = {
+    def read[A : JsonReader](key: DataKey): DbResult[A] = {
       for {
         data <- dbRead.readKey(key)
         obj <- JsonMarshaller.read(data)
@@ -18,7 +18,7 @@ object JsonDB {
   implicit class JsonDbWrite(dbWrite: DbWrite) {
     private val compact = false
 
-    def write[A : JsonWriter](key: Key, data: A): DbResult[Unit] = {
+    def write[A : JsonWriter](key: DataKey, data: A): DbResult[Unit] = {
       for {
         json <- JsonMarshaller.write(data, compact)
         write <- dbWrite.writeKey(key, json)
