@@ -2,6 +2,8 @@ package server
 
 import java.io.File
 
+import music.domain.track.Track.TrackId
+
 package object rendering {
 
   trait RenderingConfig {
@@ -14,9 +16,10 @@ package object rendering {
 
   trait Renderer {
 
-    def submit(submitter: String, track: LyFile): Unit
+    // TODO: fix packaging and references, trackId should not be referenced from here!
+    def submit(submitter: TrackId, track: LyFile): Unit
 
-    def getRender(submitter: String): Option[File]
+    def getRender(submitter: TrackId): Option[File]
 
     def shutdown(): Unit
 

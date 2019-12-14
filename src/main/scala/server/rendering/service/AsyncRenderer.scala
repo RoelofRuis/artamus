@@ -5,6 +5,7 @@ import java.io.File
 import com.typesafe.scalalogging.LazyLogging
 import javax.annotation.concurrent.NotThreadSafe
 import javax.inject.Inject
+import music.domain.track.Track.TrackId
 import server.rendering.{LyFile, Renderer, RenderingCompletionHandler}
 
 @NotThreadSafe
@@ -13,21 +14,21 @@ private[rendering] class AsyncRenderer @Inject() (
   completionHandler: RenderingCompletionHandler
 ) extends Renderer with LazyLogging {
 
-  private var rendersInProgress = Map[Long, String]()
-  private var rendersCompleted = Map[String, File]()
+  private var rendersInProgress = Map[Long, TrackId]()
+  private var rendersCompleted = Map[TrackId, File]()
 
   renderingService.setCompletionCallback(complete)
 
-  def submit(submitter: String, file: LyFile): Unit = {
+  def submit(trackId: TrackId, file: LyFile): Unit = {
     val renderId = renderingService.render(file)
-    logger.debug(s"Submitting rendering ($renderId -> $submitter)")
+    logger.debug(s"Submitting rendering ($renderId -> $trackId)")
 
-    rendersInProgress += (renderId -> submitter)
+    rendersInProgress += (renderId -> trackId)
   }
 
   def shutdown(): Unit = renderingService.shutdown()
 
-  override def getRender(submitter: String): Option[File] = {
+  override def getRender(submitter: TrackId): Option[File] = {
     rendersCompleted.get(submitter)
   }
 

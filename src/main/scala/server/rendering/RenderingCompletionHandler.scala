@@ -1,5 +1,7 @@
 package server.rendering
 
+import music.domain.track.Track.TrackId
+
 trait RenderingCompletionHandler {
-  def renderingCompleted(submitter: String, success: Boolean): Unit
+  def renderingCompleted(submitter: TrackId, success: Boolean): Unit
 }

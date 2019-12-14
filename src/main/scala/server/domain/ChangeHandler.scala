@@ -27,7 +27,7 @@ private[server] class ChangeHandler @Inject() (
       _ = eventBus.publish(AnalysisStarted)
       analysedTrack = analysis.run(track)
       lilypondFile = interpreter.interpret(analysedTrack)
-      _ = renderer.submit("committed-changes", lilypondFile)
+      _ = renderer.submit(workspace.editedTrack, lilypondFile)
       _ <- req.db.saveTrack(analysedTrack)
     } yield true
 
