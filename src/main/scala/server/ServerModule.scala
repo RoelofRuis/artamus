@@ -1,13 +1,11 @@
 package server
 
 import _root_.server.analysis._
-import _root_.server.control.{DispatchingServerAPI, ServerControlHandler}
+import _root_.server.control.{ConnectionLifetimeHooks, DispatchingServerAPI, ServerControlHandler}
 import _root_.server.domain.track.{TrackCommandHandler, TrackQueryHandler}
 import com.google.inject.Provides
 import javax.inject.Singleton
-import music.domain.DomainModule
 import music.domain.track.Track
-import music.domain.user.UserRepository
 import net.codingwell.scalaguice.ScalaPrivateModule
 import protocol._
 import pubsub.{Dispatcher, EventBus}
@@ -15,14 +13,12 @@ import server.analysis.blackboard.Controller
 import server.domain.ChangeHandler
 import server.interpret.LilypondInterpreter
 import server.rendering.{RenderingCompletionHandler, RenderingModule}
-import server.storage.file.FileStorageModule
-import server.storage.file.db.FileDB
+import server.storage.{FileDb, StorageModule}
 
 class ServerModule extends ScalaPrivateModule with ServerConfig {
 
   override def configure(): Unit = {
-    install(new FileStorageModule with ServerConfig)
-    install(new DomainModule)
+    install(new StorageModule with ServerConfig)
 
     bind[LilypondInterpreter].toInstance(
       new LilypondInterpreter(
@@ -30,6 +26,8 @@ class ServerModule extends ScalaPrivateModule with ServerConfig {
         paperSize
       )
     )
+
+    bind[ConnectionLifetimeHooks].asEagerSingleton()
 
     bind[RenderingCompletionHandler].to[RenderingEventCompletionHandler]
     install(new RenderingModule with ServerConfig)
@@ -61,13 +59,13 @@ class ServerModule extends ScalaPrivateModule with ServerConfig {
 
   @Provides @Singleton
   def serverConnectionFactory(
-    db: FileDB,
-    userRepository: UserRepository,
-    serverBindings: ServerBindings
+    db: FileDb,
+    serverBindings: ServerBindings,
+    hooks: ConnectionLifetimeHooks
   ): ServerInterface = {
     DefaultServer.apply(
       port,
-      new DispatchingServerAPI(db, userRepository, serverBindings)
+      new DispatchingServerAPI(db, serverBindings, hooks)
     )
   }
 

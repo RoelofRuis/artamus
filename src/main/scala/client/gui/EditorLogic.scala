@@ -1,10 +1,12 @@
 package client.gui
 
+import java.io.File
+
 import client.CommandExecutor
 import javax.imageio.ImageIO
 import protocol.Event
 import pubsub.{Callback, Dispatcher}
-import server.domain.RenderingCompleted
+import server.domain.track.TrackRendered
 
 import scala.swing.Swing
 import scala.swing.event.{Key, KeyTyped}
@@ -22,8 +24,8 @@ class EditorLogic (
       executor.execute(command) // TODO: this should not be on EDT!
   }
 
-  dispatcher.subscribe[RenderingCompleted]{ event =>
-    Try { ImageIO.read(event.attributes.file) } match {
+  dispatcher.subscribe[TrackRendered]{ event =>
+    Try { ImageIO.read(new File(event.attributes.render.path)) } match {
       case Success(loadedImage) => Swing.onEDT {
           workspace.image.setImage(loadedImage)
           repaint()

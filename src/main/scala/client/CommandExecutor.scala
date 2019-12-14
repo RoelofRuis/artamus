@@ -2,7 +2,9 @@ package client
 
 import client.operations.OperationRegistry
 import javax.inject.Inject
-import protocol.ClientInterface
+import protocol.{ClientInterface, Command}
+
+import scala.annotation.tailrec
 
 class CommandExecutor @Inject() (
   client: ClientInterface,
@@ -16,8 +18,18 @@ class CommandExecutor @Inject() (
       case None => false
       case Some(op) =>
         // TODO: improve user feedback
-        op().map(client.sendCommand)
+        sendCommands(op())
         true
+    }
+  }
+
+  @tailrec
+  private def sendCommands(commands: List[Command]): Unit = commands match {
+    case Nil =>
+    case command :: rest => client.sendCommand(command) match {
+      case Some(res) => println(s"[$command] -> [$res]")
+        sendCommands(rest)
+      case None => println(s"[$command] -> failed! (skipping [${rest.length}] more)")
     }
   }
 

@@ -1,11 +1,13 @@
 package music.domain.track
 
+import java.util.UUID
+
 import music.domain.track.Track.TrackId
 import music.math.temporal.Position
 import music.primitives.{Key, NoteGroup, TimeSignature}
 
 final case class Track(
-  id: TrackId,
+  id: TrackId = TrackId(),
   bars: Bars = Bars(),
   keys: Keys = Keys(),
   chords: Chords = Chords(),
@@ -36,6 +38,6 @@ final case class Track(
 
 object Track {
 
-  final case class TrackId(id: Long) extends AnyVal
+  final case class TrackId(id: UUID = UUID.randomUUID())
 
 }
