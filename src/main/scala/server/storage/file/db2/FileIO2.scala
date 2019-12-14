@@ -9,8 +9,8 @@ import scala.util.{Failure, Success, Try}
 
 object FileIO2 {
 
-  def read(key: Key): DbResult[String] = {
-    Try { Source.fromFile(keyToPath(key)) } match {
+  def read(path: String): DbResult[String] = {
+    Try { Source.fromFile(path) } match {
       case Failure(ex) => DbResult.failure(IOError(ex)) // TODO: Should this be a KeyNotFoundException?
       case Success(source) =>
         try {
@@ -23,10 +23,10 @@ object FileIO2 {
     }
   }
 
-  def write(key: Key, data: String): DbResult[Unit] = {
+  def write(path: String, data: String): DbResult[Unit] = {
     val writerAtDir = for {
-      _ <- Try { new File(keyToPath(key)).mkdirs }
-      writer <- Try { new BufferedWriter(new FileWriter(keyToPath(key))) }
+      _ <- Try { new File(path).mkdirs }
+      writer <- Try { new BufferedWriter(new FileWriter(path)) }
     } yield writer
 
     writerAtDir match {
@@ -41,7 +41,5 @@ object FileIO2 {
         }
     }
   }
-
-  private def keyToPath(key: Key): String = ???
 
 }
