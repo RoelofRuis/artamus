@@ -1,7 +1,7 @@
 package server.interpret
 
 import music.analysis.TwelveToneTuning.TwelveToneFunctions
-import music.glyph._
+import music.display._
 import music.primitives._
 
 import scala.annotation.tailrec

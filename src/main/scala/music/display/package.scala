@@ -1,10 +1,10 @@
 package music
 
 import music.domain.track.Track
-import music.glyph.iteration.{ChordIterator, StaffIterator}
+import music.display.iteration.{ChordIterator, StaffIterator}
 import music.math.temporal.Position
 
-package object glyph {
+package object display {
 
   implicit class GlyphOps(track: Track) {
 

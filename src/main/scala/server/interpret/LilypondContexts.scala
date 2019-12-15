@@ -5,7 +5,7 @@ import music.domain.track.Track
 object LilypondContexts {
 
   import LilypondFormat._
-  import music.glyph._
+  import music.display._
 
   def file(
     contents: String,

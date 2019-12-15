@@ -1,12 +1,11 @@
-package music.glyph.iteration
+package music.display.iteration
 
 import music.analysis.NoteValueConversion
+import music.display._
 import music.domain.track.Track
-import music.glyph
-import music.glyph._
 import music.math.temporal.{Position, Window}
 
-private[glyph] class StaffIterator(track: Track) {
+private[display] class StaffIterator(track: Track) {
 
   private val notes = track.notes.readGroups
 
@@ -42,7 +41,7 @@ private[glyph] class StaffIterator(track: Track) {
               .bars
               .fit(diff)
               .flatMap(window => NoteValueConversion.from(window.duration))
-              .map(glyph.RestGlyph(_, silent=false))
+              .map(RestGlyph(_, silent=false))
               .iterator
         }
 

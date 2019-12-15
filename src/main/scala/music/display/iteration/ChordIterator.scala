@@ -1,12 +1,11 @@
-package music.glyph.iteration
+package music.display.iteration
 
 import music.analysis.NoteValueConversion
+import music.display.{ChordGlyph, Glyph, RestGlyph}
 import music.domain.track.Track
-import music.glyph
-import music.glyph.{ChordGlyph, Glyph, RestGlyph}
 import music.math.temporal.{Position, Window}
 
-private[glyph] class ChordIterator(track: Track) {
+private[display] class ChordIterator(track: Track) {
 
   private val chords = track.chords.read
 
@@ -29,7 +28,7 @@ private[glyph] class ChordIterator(track: Track) {
               case head :: Nil =>
                 ChordGlyph(head, spelling, nextChord.functions) :: Nil
               case head :: tail =>
-                glyph.ChordGlyph(head, spelling, nextChord.functions) :: tail.map(RestGlyph(_, silent=true))
+                ChordGlyph(head, spelling, nextChord.functions) :: tail.map(RestGlyph(_, silent=true))
             }
           }
           written.map(_.iterator).getOrElse(Iterator())
@@ -42,7 +41,7 @@ private[glyph] class ChordIterator(track: Track) {
               .bars
               .fit(diff)
               .flatMap(window => NoteValueConversion.from(window.duration))
-              .map(glyph.RestGlyph(_, silent=true))
+              .map(RestGlyph(_, silent=true))
               .iterator
         }
 

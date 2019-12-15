@@ -1,4 +1,4 @@
-package music.glyph
+package music.display
 
 import music.primitives.{NoteValue, ScientificPitch}
 
