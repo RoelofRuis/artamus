@@ -8,7 +8,7 @@ import music.primitives.{Key, NoteGroup, TimeSignature}
 
 final case class Track(
   id: TrackId = TrackId(),
-  bars: Bars = Bars(),
+  timeSignatures: TimeSignatures = TimeSignatures(),
   keys: Keys = Keys(),
   chords: Chords = Chords(),
   notes: Notes = Notes()
@@ -16,7 +16,7 @@ final case class Track(
 
 
   def writeTimeSignature(pos: Position, timeSignature: TimeSignature): Track = copy(
-    bars = bars.writeTimeSignature(pos, timeSignature)
+    timeSignatures = timeSignatures.writeTimeSignature(pos, timeSignature)
   )
 
   def writeKey(pos: Position, key: Key): Track = copy(
@@ -25,10 +25,6 @@ final case class Track(
 
   def writeChords(chords: Chords): Track = copy(
     chords = chords
-  )
-
-  def overwriteNotes(notes: Notes): Track = copy(
-    notes = notes
   )
 
   def writeNoteGroup(noteGroup: NoteGroup): Track = copy(
