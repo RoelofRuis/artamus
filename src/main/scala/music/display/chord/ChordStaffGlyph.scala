@@ -1,6 +1,6 @@
-package music.display.neww.chord
+package music.display.chord
 
-import music.primitives.{NoteValue, PitchSpelling, Function}
+import music.primitives.{Function, NoteValue, PitchSpelling}
 
 sealed trait ChordStaffGlyph
 
@@ -10,6 +10,10 @@ object ChordStaffGlyph {
     duration: NoteValue,
     root: PitchSpelling,
     functions: Set[Function]
+  ) extends ChordStaffGlyph
+
+  final case class ChordRestGlyph(
+    duration: NoteValue,
   ) extends ChordStaffGlyph
 
 }

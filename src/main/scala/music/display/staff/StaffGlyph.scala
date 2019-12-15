@@ -1,4 +1,4 @@
-package music.display.neww.staff
+package music.display.staff
 
 import music.primitives.{NoteValue, PitchSpelling, Scale, ScientificPitch, TimeSignatureDivision}
 
@@ -10,7 +10,10 @@ object StaffGlyph {
     duration: NoteValue,
     notes: Seq[ScientificPitch],
     tieToNext: Boolean
-  ) extends StaffGlyph
+  ) extends StaffGlyph {
+    def isEmpty: Boolean = notes.isEmpty
+    def isChord: Boolean = notes.size > 1
+  }
 
   final case class RestGlyph(
     duration: NoteValue,

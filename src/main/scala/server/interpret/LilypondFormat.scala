@@ -1,11 +1,13 @@
 package server.interpret
 
 import music.analysis.TwelveToneTuning.TwelveToneFunctions
-import music.display._
+import music.display.chord.ChordStaff
+import music.display.chord.ChordStaffGlyph.{ChordNameGlyph, ChordRestGlyph}
+import music.display.staff.Staff
+import music.display.staff.StaffGlyph.{KeyGlyph, NoteGroupGlyph, RestGlyph, TimeSignatureGlyph}
 import music.primitives._
 
 import scala.annotation.tailrec
-import scala.collection.SortedSet
 
 trait LilypondFormat[A] {
   def toLilypond(a: A): String
@@ -19,13 +21,20 @@ object LilypondFormat {
     def toLilypond: String = LilypondFormat[A].toLilypond(a)
   }
 
-  implicit val glyphToLilypond: LilypondFormat[Glyph] = {
-    case g: RestGlyph => g.toLilypond
-    case n: NoteGroupGlyph => n.toLilypond
-    case c: ChordGlyph => c.toLilypond
-    case ts: TimeSignatureGlyph => ts.toLilypond
-    case k: KeyGlyph => k.toLilypond
-    case _ => ""
+  implicit val staffFormat: LilypondFormat[Staff] = staff => {
+    staff.glyphs.map {
+      case g: NoteGroupGlyph => g.toLilypond
+      case g: RestGlyph => g.toLilypond
+      case g: KeyGlyph => g.toLilypond
+      case g: TimeSignatureGlyph => g.toLilypond
+    }.mkString("\n")
+  }
+
+  implicit val chordStaffFormat: LilypondFormat[ChordStaff] = staff => {
+    staff.glyphs.map {
+      case g: ChordNameGlyph => g.toLilypond
+      case g: ChordRestGlyph => g.toLilypond
+    }.mkString("\n")
   }
 
   implicit val restToLilypond: LilypondFormat[RestGlyph] = rest => {
@@ -33,7 +42,11 @@ object LilypondFormat {
     if (rest.silent) "s" + durationString else "r" + durationString
   }
 
-  implicit val spelledChordToLilypond: LilypondFormat[ChordGlyph] = chord => {
+  implicit val chordRestToLilypond: LilypondFormat[ChordRestGlyph] = rest => {
+    s"s${rest.duration.toLilypond}"
+  }
+
+  implicit val spelledChordToLilypond: LilypondFormat[ChordNameGlyph] = chord => {
     val spelledRoot = chord.root.toLilypond
     val spelledDur = chord.duration.toLilypond
     spelledRoot + spelledDur + chord.functions.toLilypond

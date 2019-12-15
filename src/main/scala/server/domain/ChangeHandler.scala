@@ -1,6 +1,7 @@
 package server.domain
 
 import javax.inject.Inject
+import music.display.Display
 import music.domain.track.Track
 import protocol.{Command, Event}
 import pubsub.{Dispatcher, EventBus}
@@ -26,7 +27,8 @@ private[server] class ChangeHandler @Inject() (
       track <- req.db.getTrackById(workspace.editedTrack)
       _ = eventBus.publish(AnalysisStarted)
       analysedTrack = analysis.run(track)
-      lilypondFile = interpreter.interpret(analysedTrack)
+      displayTrack = Display.displayTrack(analysedTrack)
+      lilypondFile = interpreter.interpret(displayTrack)
       _ = renderer.submit(workspace.editedTrack, lilypondFile)
       _ <- req.db.saveTrack(analysedTrack)
     } yield true

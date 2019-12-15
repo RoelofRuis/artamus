@@ -1,11 +1,10 @@
 package server.interpret
 
-import music.domain.track.Track
+import music.display.DisplayTrack
 
 object LilypondContexts {
 
   import LilypondFormat._
-  import music.display._
 
   def file(
     contents: String,
@@ -28,16 +27,16 @@ object LilypondContexts {
        |}
        |""".stripMargin
 
-  def staff(track: Track): String =
+  def staff(track: DisplayTrack): String =
     s"""\\new Staff {
        |\\numericTimeSignature
-       |${track.iterateStaffGlyphs.map(_.toLilypond).mkString("\n")}
+       |${track.staff.toLilypond}
        |}""".stripMargin
 
-  def chords(track: Track): String =
+  def chords(track: DisplayTrack): String =
     s"""\\new ChordNames {
        |\\chordmode {
-       |${track.iterateChordGlyphs.map(_.toLilypond).mkString("\n")}
+       |${track.chordStaff.toLilypond}
        |}
        |}""".stripMargin
 

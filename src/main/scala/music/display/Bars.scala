@@ -1,4 +1,4 @@
-package music.display.neww
+package music.display
 
 import music.domain.track.TimeSignatures
 import music.math.temporal.{Duration, Position, Window}
