@@ -4,12 +4,12 @@ import music.domain.track.Track.TrackId
 import music.domain.track._
 import music.math.temporal.Window
 import music.primitives._
-import server.storage.api.{DataKey, DbIO, DbRead, ResourceNotFound}
+import server.storage.api.{DataKey, DbIO, DbRead}
 import server.storage.model.DomainProtocol
 
 object Tracks {
 
-  import server.storage.JsonDB._
+  import server.storage.entity.EntityIO._
 
   private val KEY = DataKey("track")
 
@@ -31,31 +31,29 @@ object Tracks {
 
   implicit class TrackQueries(db: DbRead) {
     def getTrackById(id: TrackId): EntityResult[Track] = {
-      db.read[TrackMapModel](KEY) match {
-        case Left(_: ResourceNotFound) => EntityResult.notFound
-        case Left(ex) => EntityResult.badData(ex)
-        case Right(model) =>
-          model.tracks.get(id.id.toString) match {
-            case None => EntityResult.notFound
-            case Some(w) => EntityResult.found(
-              Track(
-                w.id,
-                TimeSignatures(loadPositions(w.bars)),
-                Keys(loadPositions(w.keys)),
-                Chords(loadPositions(w.chords)),
-                Notes(loadPositions(w.notes))
-              )
+      db.readModel[TrackMapModel](KEY).flatMap {
+        _.tracks.get(id.id.toString) match {
+          case None => EntityResult.notFound
+          case Some(w) => EntityResult.found(
+            Track(
+              w.id,
+              TimeSignatures(loadPositions(w.bars)),
+              Keys(loadPositions(w.keys)),
+              Chords(loadPositions(w.chords)),
+              Notes(loadPositions(w.notes))
             )
-          }
+          )
+        }
       }
     }
   }
 
   implicit class TrackCommands(db: DbIO) {
-    // TODO: condense the shit out of this logic!
     def saveTrack(track: Track): EntityResult[Unit] = {
-      def update(model: TrackMapModel): TrackMapModel = {
-        TrackMapModel(
+      db.updateModel[TrackMapModel](
+        KEY,
+        TrackMapModel(),
+        model => TrackMapModel(
           model.tracks.updated(
             track.id.id.toString,
             TrackContentModel(
@@ -67,36 +65,15 @@ object Tracks {
             )
           )
         )
-      }
-      for {
-        model <- read
-        _ <- write(update(model))
-      } yield ()
+      )
     }
 
     def removeTrackById(trackId: TrackId): EntityResult[Unit] = {
-      def update(model: TrackMapModel): TrackMapModel = {
-        TrackMapModel(model.tracks.removed(trackId.id.toString))
-      }
-      for {
-        model <- read
-        _ <- write(update(model))
-      } yield ()
-    }
-
-    private def read: EntityResult[TrackMapModel] = {
-      db.read[TrackMapModel](KEY) match {
-        case Left(_: ResourceNotFound) => EntityResult.found(TrackMapModel())
-        case Right(model) => EntityResult.found(model)
-        case Left(ex) => EntityResult.badData(ex)
-      }
-    }
-
-    private def write(model: TrackMapModel): EntityResult[Unit] = {
-      db.write(KEY, model) match {
-        case Right(_) => EntityResult.ok
-        case Left(ex) => EntityResult.badData(ex)
-      }
+      db.updateModel[TrackMapModel](
+        KEY,
+        TrackMapModel(),
+        model => TrackMapModel(model.tracks.removed(trackId.id.toString))
+      )
     }
   }
 }

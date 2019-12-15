@@ -4,12 +4,12 @@ import music.domain.track.Track.TrackId
 import music.domain.user.User
 import music.domain.user.User.UserId
 import music.domain.workspace.Workspace
-import server.storage.api.{DataKey, DbIO, DbRead, ResourceNotFound}
+import server.storage.api.{DataKey, DbIO, DbRead}
 import server.storage.model.DomainProtocol
 
 object Workspaces {
 
-  import server.storage.JsonDB._
+  import server.storage.entity.EntityIO._
 
   private val KEY = DataKey("workspace")
 
@@ -25,34 +25,25 @@ object Workspaces {
 
   implicit class WorkspaceQueries(db: DbRead) {
     def getWorkspaceByOwner(user: User): EntityResult[Workspace] = {
-      db.read[WorkspaceMapModel](KEY) match {
-        case Left(_: ResourceNotFound) => EntityResult.notFound
-        case Left(ex) => EntityResult.badData(ex)
-        case Right(model) =>
-          model.workspaces.get(user.id.id.toString) match {
-            case None => EntityResult.notFound
-            case Some(w) =>
-              EntityResult.found(Workspace(
-                w.userId,
-                w.trackId
-              ))
-          }
+      db.readModel[WorkspaceMapModel](KEY).flatMap {
+        _.workspaces.get(user.id.id.toString) match {
+          case None => EntityResult.notFound
+          case Some(w) =>
+            EntityResult.found(Workspace(
+              w.userId,
+              w.trackId
+            ))
+        }
       }
     }
   }
 
   implicit class WorkspaceCommands(db: DbIO) {
-    // TODO: condense the shit out of this logic!
     def saveWorkspace(workspace: Workspace): EntityResult[Unit] = {
-      def read: EntityResult[WorkspaceMapModel] = {
-        db.read[WorkspaceMapModel](KEY) match {
-          case Left(_: ResourceNotFound) => EntityResult.found(WorkspaceMapModel())
-          case Right(model) => EntityResult.found(model)
-          case Left(ex) => EntityResult.badData(ex)
-        }
-      }
-
-      def update(model: WorkspaceMapModel): WorkspaceMapModel = WorkspaceMapModel(
+      db.updateModel[WorkspaceMapModel](
+        KEY,
+        WorkspaceMapModel(),
+        model => WorkspaceMapModel(
           model.workspaces.updated(
             workspace.owner.id.toString,
             WorkspaceModel(
@@ -61,18 +52,7 @@ object Workspaces {
             )
           )
         )
-
-      def write(model: WorkspaceMapModel): EntityResult[Unit] = {
-        db.write(KEY, model) match {
-          case Right(_) => EntityResult.ok
-          case Left(ex) => EntityResult.badData(ex)
-        }
-      }
-
-      for {
-        model <- read
-        _ <- write(update(model))
-      } yield ()
+      )
     }
   }
 
