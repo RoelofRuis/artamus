@@ -13,13 +13,13 @@ import server.analysis.blackboard.Controller
 import server.domain.ChangeHandler
 import server.interpret.LilypondInterpreter
 import server.rendering.{RenderingCompletionHandler, RenderingModule}
-import server.storage.FileStorageModule
+import server.storage.InMemoryStorageModule
 import server.storage.api.DbWithRead
 
 class ServerModule extends ScalaPrivateModule with ServerConfig {
 
   override def configure(): Unit = {
-    install(new FileStorageModule with ServerConfig)
+    install(new InMemoryStorageModule)
 
     bind[LilypondInterpreter].toInstance(
       new LilypondInterpreter(
