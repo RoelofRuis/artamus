@@ -3,6 +3,7 @@ package server.storage
 package object api {
 
   trait DbIO extends DbRead with DbWrite
+  trait DbWithRead extends Db with DbRead
 
   final case class DataKey(name: String)
 

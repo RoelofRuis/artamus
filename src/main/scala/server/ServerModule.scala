@@ -13,7 +13,8 @@ import server.analysis.blackboard.Controller
 import server.domain.ChangeHandler
 import server.interpret.LilypondInterpreter
 import server.rendering.{RenderingCompletionHandler, RenderingModule}
-import server.storage.{FileDb, StorageModule}
+import server.storage.StorageModule
+import server.storage.api.DbWithRead
 
 class ServerModule extends ScalaPrivateModule with ServerConfig {
 
@@ -58,7 +59,7 @@ class ServerModule extends ScalaPrivateModule with ServerConfig {
 
   @Provides @Singleton
   def serverConnectionFactory(
-    db: FileDb,
+    db: DbWithRead,
     serverBindings: ServerBindings,
     hooks: ConnectionLifetimeHooks
   ): ServerInterface = {

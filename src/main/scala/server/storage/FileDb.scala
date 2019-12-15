@@ -5,7 +5,7 @@ import java.util.concurrent.atomic.AtomicLong
 
 import javax.annotation.concurrent.ThreadSafe
 import server.storage.api.DbTransaction.CommitResult
-import server.storage.api.{DataKey, DatabaseError, Db, DbRead, DbResult, DbTransaction, FileNotFound}
+import server.storage.api.{DataKey, DatabaseError, Db, DbRead, DbResult, DbTransaction, FileNotFound, DbWithRead}
 
 import scala.annotation.tailrec
 import scala.util.Try
@@ -13,7 +13,7 @@ import scala.util.Try
 @ThreadSafe
 class FileDb(
   rootPath: Seq[String]
-) extends Db with DbRead {
+) extends DbWithRead {
 
   private val VersionPath = keyToPath(DataKey("_version"), 0)
 
