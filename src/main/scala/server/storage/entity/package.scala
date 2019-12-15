@@ -4,7 +4,7 @@ import server.storage.api.DatabaseError
 
 package object entity {
 
-  type EntityResult[A] = Either[EntityException, A]
+  type EntityResult[A] = Either[EntityException, A] // TODO: maybe make explicit class with transformations
 
   object EntityResult {
     def badData[A](ex: DatabaseError): EntityResult[A] = Left(BadData(ex))
