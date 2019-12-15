@@ -11,7 +11,7 @@ package object api {
 
   final case class IOError(cause: Throwable) extends DatabaseError
   final case class DataCorruptionException(cause: Throwable) extends DatabaseError
-  final case class FileNotFound() extends DatabaseError
+  final case class ResourceNotFound() extends DatabaseError
 
   type DbResult[A] = Either[DatabaseError, A]
 

@@ -1,19 +1,19 @@
-package server.storage
+package server.storage.impl
 
 import java.io.File
 import java.util.concurrent.atomic.AtomicLong
 
 import javax.annotation.concurrent.ThreadSafe
 import server.storage.api.DbTransaction.CommitResult
-import server.storage.api.{DataKey, DatabaseError, Db, DbRead, DbResult, DbTransaction, FileNotFound, DbWithRead}
+import server.storage.api._
 
 import scala.annotation.tailrec
 import scala.util.Try
 
 @ThreadSafe
-class FileDb(
+private[storage] class FileDb(
   rootPath: Seq[String]
-) extends DbWithRead {
+) extends CommittableReadableDb {
 
   private val VersionPath = keyToPath(DataKey("_version"), 0)
 
@@ -24,8 +24,6 @@ class FileDb(
 
   private val writeLock = new Object()
   private val version: AtomicLong = new AtomicLong(initialVersion)
-
-  def newTransaction: UnitOfWork = UnitOfWork(this)
 
   def commitUnitOfWork(uow: UnitOfWork): DbTransaction.CommitResult = {
     val changeSet = uow.getChangeSet
@@ -59,8 +57,8 @@ class FileDb(
     @tailrec
     def readVersioned(version: Long): DbResult[String] = {
       FileIO.read(keyToPath(key, version)) match {
-        case Left(FileNotFound()) if version > 0 => readVersioned(version - 1)
-        case l @ Left(FileNotFound()) => l
+        case Left(ResourceNotFound()) if version > 0 => readVersioned(version - 1)
+        case l @ Left(ResourceNotFound()) => l
         case x => x
       }
     }

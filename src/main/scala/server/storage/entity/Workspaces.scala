@@ -4,7 +4,7 @@ import music.domain.track.Track.TrackId
 import music.domain.user.User
 import music.domain.user.User.UserId
 import music.domain.workspace.Workspace
-import server.storage.api.{DataKey, DbIO, DbRead, FileNotFound}
+import server.storage.api.{DataKey, DbIO, DbRead, ResourceNotFound}
 import server.storage.model.DomainProtocol
 
 object Workspaces {
@@ -26,7 +26,7 @@ object Workspaces {
   implicit class WorkspaceQueries(db: DbRead) {
     def getWorkspaceByOwner(user: User): EntityResult[Workspace] = {
       db.read[WorkspaceMapModel](KEY) match {
-        case Left(_: FileNotFound) => EntityResult.notFound
+        case Left(_: ResourceNotFound) => EntityResult.notFound
         case Left(ex) => EntityResult.badData(ex)
         case Right(model) =>
           model.workspaces.get(user.id.id.toString) match {
@@ -46,7 +46,7 @@ object Workspaces {
     def saveWorkspace(workspace: Workspace): EntityResult[Unit] = {
       def read: EntityResult[WorkspaceMapModel] = {
         db.read[WorkspaceMapModel](KEY) match {
-          case Left(_: FileNotFound) => EntityResult.found(WorkspaceMapModel())
+          case Left(_: ResourceNotFound) => EntityResult.found(WorkspaceMapModel())
           case Right(model) => EntityResult.found(model)
           case Left(ex) => EntityResult.badData(ex)
         }

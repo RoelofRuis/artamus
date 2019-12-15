@@ -1,17 +1,17 @@
-package server.storage
+package server.storage.impl
 
 import java.io._
 
-import server.storage.api.{DbResult, FileNotFound, IOError}
+import server.storage.api.{DbResult, ResourceNotFound, IOError}
 
 import scala.io.Source
 import scala.util.{Failure, Success, Try}
 
-object FileIO {
+private[impl] object FileIO {
 
   def read(path: String): DbResult[String] = {
     Try { Source.fromFile(path) } match {
-      case Failure(_: FileNotFoundException) => DbResult.failure(FileNotFound())
+      case Failure(_: FileNotFoundException) => DbResult.failure(ResourceNotFound())
       case Failure(ex) => DbResult.failure(IOError(ex))
       case Success(source) =>
         try {

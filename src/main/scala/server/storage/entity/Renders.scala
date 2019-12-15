@@ -2,7 +2,7 @@ package server.storage.entity
 
 import music.domain.render.Render
 import music.domain.track.Track.TrackId
-import server.storage.api.{DataKey, DbIO, DbRead, FileNotFound}
+import server.storage.api.{DataKey, DbIO, DbRead, ResourceNotFound}
 import server.storage.model.DomainProtocol
 
 object Renders {
@@ -23,7 +23,7 @@ object Renders {
   implicit class RenderQueries(db: DbRead) {
     def getRenderByTrackId(trackId: TrackId): EntityResult[Render] = {
       db.read[RenderMapModel](KEY) match {
-        case Left(_: FileNotFound) => EntityResult.notFound
+        case Left(_: ResourceNotFound) => EntityResult.notFound
         case Left(ex) => EntityResult.badData(ex)
         case Right(model) =>
           model.renders.get(trackId.id.toString) match {
@@ -39,7 +39,7 @@ object Renders {
       // TODO: condense the shit out of this logic!
       def read: EntityResult[RenderMapModel] = {
         db.read[RenderMapModel](KEY) match {
-          case Left(_: FileNotFound) => EntityResult.found(RenderMapModel())
+          case Left(_: ResourceNotFound) => EntityResult.found(RenderMapModel())
           case Right(model) => EntityResult.found(model)
           case Left(ex) => EntityResult.badData(ex)
         }

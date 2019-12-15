@@ -4,7 +4,7 @@ import music.domain.track.Track.TrackId
 import music.domain.track._
 import music.math.temporal.Window
 import music.primitives._
-import server.storage.api.{DataKey, DbIO, DbRead, FileNotFound}
+import server.storage.api.{DataKey, DbIO, DbRead, ResourceNotFound}
 import server.storage.model.DomainProtocol
 
 object Tracks {
@@ -32,7 +32,7 @@ object Tracks {
   implicit class TrackQueries(db: DbRead) {
     def getTrackById(id: TrackId): EntityResult[Track] = {
       db.read[TrackMapModel](KEY) match {
-        case Left(_: FileNotFound) => EntityResult.notFound
+        case Left(_: ResourceNotFound) => EntityResult.notFound
         case Left(ex) => EntityResult.badData(ex)
         case Right(model) =>
           model.tracks.get(id.id.toString) match {
@@ -86,7 +86,7 @@ object Tracks {
 
     private def read: EntityResult[TrackMapModel] = {
       db.read[TrackMapModel](KEY) match {
-        case Left(_: FileNotFound) => EntityResult.found(TrackMapModel())
+        case Left(_: ResourceNotFound) => EntityResult.found(TrackMapModel())
         case Right(model) => EntityResult.found(model)
         case Left(ex) => EntityResult.badData(ex)
       }

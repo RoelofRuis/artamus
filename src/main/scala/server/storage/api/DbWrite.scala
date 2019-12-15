@@ -7,4 +7,3 @@ trait DbWrite {
   def deleteKey(key: DataKey): DbResult[Unit]
 
 }
-

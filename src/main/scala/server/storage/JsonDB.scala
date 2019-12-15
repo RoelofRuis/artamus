@@ -1,11 +1,11 @@
 package server.storage
 
-import server.storage.api.{DataCorruptionException, DataKey, DbRead, DbResult, DbWrite}
+import server.storage.api._
 import spray.json.{JsonReader, JsonWriter, _}
 
 import scala.util.{Failure, Success, Try}
 
-object JsonDB {
+private[storage] object JsonDB {
 
   implicit class JsonDbRead(dbRead: DbRead) {
     def read[A : JsonReader](key: DataKey): DbResult[A] = {

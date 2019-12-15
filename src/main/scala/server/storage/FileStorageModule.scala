@@ -2,8 +2,9 @@ package server.storage
 
 import net.codingwell.scalaguice.ScalaPrivateModule
 import server.storage.api.DbWithRead
+import server.storage.impl.FileDb
 
-class StorageModule extends ScalaPrivateModule {
+class FileStorageModule extends ScalaPrivateModule {
   this: FileStorageConfig =>
 
   override def configure(): Unit = {
