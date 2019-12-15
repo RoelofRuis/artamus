@@ -35,8 +35,6 @@ private[impl] final class UnitOfWork private (
     DbResult.done
   }
 
-  override def deleteKey(key: DataKey): DbResult[Unit] = ???
-
   override def commit(): CommitResult = db.commitUnitOfWork(this)
 
   def getChangeSet: Map[DataKey, String] = {
