@@ -1,6 +1,6 @@
 package music.display.iteration
 
-import music.analysis.NoteValueConversion
+import music.analysis.{NoteValueConversion, TwelveTonePitchSpelling}
 import music.display.{ChordGlyph, Glyph, RestGlyph}
 import music.domain.track.Track
 import music.math.temporal.{Position, Window}
@@ -10,6 +10,7 @@ private[display] class ChordIterator(track: Track) {
   import music.display.neww.Bars._
 
   private val chords = track.chords.read
+  private val initialKey = track.keys.initialKey
 
   def iterate(start: Position): Iterator[Glyph] = {
     val window = Window.instantAt(start)
@@ -22,18 +23,16 @@ private[display] class ChordIterator(track: Track) {
 
       case Some((nextWindow, nextChord)) =>
         val writeableChords = {
-          val written = for {
-            spelling <- nextChord.rootSpelling
-          } yield {
-             NoteValueConversion.from(nextWindow.duration) match {
-              case Nil => Seq()
-              case head :: Nil =>
-                ChordGlyph(head, spelling, nextChord.functions) :: Nil
-              case head :: tail =>
-                ChordGlyph(head, spelling, nextChord.functions) :: tail.map(RestGlyph(_, silent=true))
-            }
+          // TODO: Use the 'active' key instead of initial key.
+          val spelling = TwelveTonePitchSpelling.spellChord(nextChord, initialKey)
+          val written = NoteValueConversion.from(nextWindow.duration) match {
+            case Nil => Seq()
+            case head :: Nil =>
+              ChordGlyph(head, spelling, nextChord.functions) :: Nil
+            case head :: tail =>
+              ChordGlyph(head, spelling, nextChord.functions) :: tail.map(RestGlyph(_, silent=true))
           }
-          written.map(_.iterator).getOrElse(Iterator())
+          written.iterator
         }
 
         val rests = window.until(nextWindow) match {

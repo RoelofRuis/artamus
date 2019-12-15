@@ -103,9 +103,9 @@ trait DomainProtocol extends DefaultJsonProtocol {
   implicit val keyFormat = jsonFormat2(Key)
   implicit val windowFormat = jsonFormat2(Window.apply)
   implicit val scientificPitchFormat = jsonFormat2(ScientificPitch)
-  implicit val noteFormat = jsonFormat3(Note.apply)
+  implicit val noteFormat = jsonFormat2(Note.apply)
   implicit val functionFormat = jsonFormat2(Function)
-  implicit val chordFormat = jsonFormat3(Chord.apply)
+  implicit val chordFormat = jsonFormat2(Chord.apply)
   implicit val noteGroupFormat = jsonFormat2(NoteGroup)
   implicit val user = jsonFormat2(User.apply)
 

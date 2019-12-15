@@ -1,21 +1,22 @@
 package music.display.iteration
 
-import music.analysis.NoteValueConversion
+import music.analysis.{NoteValueConversion, TwelveTonePitchSpelling}
 import music.display._
 import music.domain.track.Track
 import music.math.temporal.{Position, Window}
+import music.primitives.{Key, ScientificPitch}
 
 private[display] class StaffIterator(track: Track) {
 
   import music.display.neww.Bars._
 
   private val notes = track.notes.readGroups
+  private val initialKey: Key = track.keys.initialKey
 
   def iterate(start: Position): Iterator[Glyph] = {
     val window = Window.instantAt(start)
-    val initialKey = track.keys.initialKey
 
-    val initialElements = Iterator( // TODO: these should probably come from their own iterator
+    val initialElements = Iterator(
       TimeSignatureGlyph(track.timeSignatures.initialTimeSignature.division),
       KeyGlyph(initialKey.root, initialKey.scale)
     )
@@ -48,7 +49,8 @@ private[display] class StaffIterator(track: Track) {
         }
 
         // pitches
-        val pitches = nextGroup.notes.flatMap(_.scientificPitch)
+        // TODO: Use the 'active' key instead of initial key.
+        val pitches: Seq[ScientificPitch] = nextGroup.notes.map(TwelveTonePitchSpelling.spellNote(_, initialKey))
         val fittedDurations =
           track
             .timeSignatures

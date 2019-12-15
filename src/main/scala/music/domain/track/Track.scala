@@ -27,10 +27,6 @@ final case class Track(
     chords = chords
   )
 
-  def overwriteNotes(notes: Notes): Track = copy(
-    notes = notes
-  )
-
   def writeNoteGroup(noteGroup: NoteGroup): Track = copy(
     notes = notes.writeNoteGroup(noteGroup)
   )
