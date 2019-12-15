@@ -6,6 +6,7 @@ import music.math.temporal.Position
 
 package object display {
 
+  @deprecated
   implicit class GlyphOps(track: Track) {
 
     def iterateStaffGlyphs: Iterator[Glyph] = new StaffIterator(track).iterate(Position.ZERO)

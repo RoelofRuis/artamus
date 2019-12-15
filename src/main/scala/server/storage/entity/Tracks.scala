@@ -40,7 +40,7 @@ object Tracks {
             case Some(w) => EntityResult.found(
               Track(
                 w.id,
-                Bars(loadPositions(w.bars)),
+                TimeSignatures(loadPositions(w.bars)),
                 Keys(loadPositions(w.keys)),
                 Chords(loadPositions(w.chords)),
                 Notes(loadPositions(w.notes))
@@ -60,7 +60,7 @@ object Tracks {
             track.id.id.toString,
             TrackContentModel(
               track.id,
-              savePositions(track.bars.timeSignatures),
+              savePositions(track.timeSignatures.timeSignatures),
               savePositions(track.chords.chords),
               savePositions(track.keys.keys),
               savePositions(track.notes.notes)

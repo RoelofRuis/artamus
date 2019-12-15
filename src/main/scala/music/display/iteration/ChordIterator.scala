@@ -7,6 +7,8 @@ import music.math.temporal.{Position, Window}
 
 private[display] class ChordIterator(track: Track) {
 
+  import music.display.neww.Bars._
+
   private val chords = track.chords.read
 
   def iterate(start: Position): Iterator[Glyph] = {
@@ -38,7 +40,7 @@ private[display] class ChordIterator(track: Track) {
           case None => Iterator.empty
           case Some(diff) =>
             track
-              .bars
+              .timeSignatures
               .fit(diff)
               .flatMap(window => NoteValueConversion.from(window.duration))
               .map(RestGlyph(_, silent=true))

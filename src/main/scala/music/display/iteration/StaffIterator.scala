@@ -7,6 +7,8 @@ import music.math.temporal.{Position, Window}
 
 private[display] class StaffIterator(track: Track) {
 
+  import music.display.neww.Bars._
+
   private val notes = track.notes.readGroups
 
   def iterate(start: Position): Iterator[Glyph] = {
@@ -14,7 +16,7 @@ private[display] class StaffIterator(track: Track) {
     val initialKey = track.keys.initialKey
 
     val initialElements = Iterator( // TODO: these should probably come from their own iterator
-      TimeSignatureGlyph(track.bars.initialTimeSignature.division),
+      TimeSignatureGlyph(track.timeSignatures.initialTimeSignature.division),
       KeyGlyph(initialKey.root, initialKey.scale)
     )
 
@@ -25,7 +27,7 @@ private[display] class StaffIterator(track: Track) {
     notes.nextOption() match {
       case None =>
         NoteValueConversion
-          .from(track.bars.fillBarFrom(window).duration)
+          .from(track.timeSignatures.fillBarFrom(window).duration)
           .map(RestGlyph(_, silent=false))
           .iterator
 
@@ -38,7 +40,7 @@ private[display] class StaffIterator(track: Track) {
           case None => Iterator.empty
           case Some(diff) =>
             track
-              .bars
+              .timeSignatures
               .fit(diff)
               .flatMap(window => NoteValueConversion.from(window.duration))
               .map(RestGlyph(_, silent=false))
@@ -49,7 +51,7 @@ private[display] class StaffIterator(track: Track) {
         val pitches = nextGroup.notes.flatMap(_.scientificPitch)
         val fittedDurations =
           track
-            .bars
+            .timeSignatures
             .fit(nextWindow)
             .flatMap(window => NoteValueConversion.from(window.duration))
 

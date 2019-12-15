@@ -48,7 +48,6 @@ class ServerModule extends ScalaPrivateModule with ServerConfig {
       .toInstance(new Controller(
         Seq(
           new ChordAnalyser(),
-          new PitchSpellingAnalyser(),
           new PitchHistogramAnalyser()
         ),
       ))

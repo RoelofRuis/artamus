@@ -5,11 +5,11 @@ import music.domain.track.Track
 import server.analysis.blackboard.KnowledgeSource
 
 // TODO: this should be display analysis
-class PitchSpellingAnalyser extends KnowledgeSource[Track] {
+class PitchSpellingAnalyser {
 
-  override def canExecute(state: Track): Boolean = true
 
-  override def execute(track: Track): Track = {
+
+  def execute(track: Track): Track = {
     val key = track.keys.initialKey
 
     val spelledNotes = track
