@@ -1,7 +1,7 @@
 package client.io.terminal
 
 import client.MusicPlayer
-import music.playback.MidiNote
+import music.domain.perform.MidiNote
 
 class TerminalMusicPlayer extends MusicPlayer {
 

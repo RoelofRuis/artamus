@@ -1,6 +1,6 @@
 package music.analysis
 
-import music.primitives._
+import music.domain.primitives._
 
 object Analysis {
 

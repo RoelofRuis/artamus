@@ -5,7 +5,7 @@ import java.io.File
 import com.typesafe.scalalogging.LazyLogging
 import javax.annotation.concurrent.NotThreadSafe
 import javax.inject.Inject
-import music.domain.track.Track.TrackId
+import music.domain.write.track.Track.TrackId
 import server.rendering.{LyFile, Renderer, RenderingCompletionHandler}
 
 @NotThreadSafe

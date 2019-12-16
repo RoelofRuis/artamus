@@ -1,6 +1,6 @@
 package server.storage
 
-import music.domain.user.User
+import music.domain.write.user.User
 import server.entity.EntityResult
 import server.storage.api.{DataKey, DbIO}
 import storage.api.DbRead

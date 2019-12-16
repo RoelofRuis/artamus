@@ -1,6 +1,6 @@
 package client
 
-import music.playback.MidiNote
+import music.domain.perform.MidiNote
 
 trait MusicPlayer {
 

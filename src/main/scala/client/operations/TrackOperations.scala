@@ -6,7 +6,7 @@ import client.io.StdIOTools
 import com.google.inject.Inject
 import music.math.Rational
 import music.math.temporal.{Duration, Position, Window}
-import music.primitives.{Note, NoteGroup, TimeSignature, _}
+import music.domain.primitives.{Note, NoteGroup, TimeSignature, _}
 import protocol.Command
 import server.domain.Analyse
 import server.domain.track._

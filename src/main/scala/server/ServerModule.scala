@@ -5,7 +5,7 @@ import _root_.server.control.{ConnectionLifetimeHooks, DispatchingServerAPI, Ser
 import _root_.server.domain.track.{TrackCommandHandler, TrackQueryHandler}
 import com.google.inject.Provides
 import javax.inject.Singleton
-import music.domain.track.Track
+import music.domain.write.track.Track
 import net.codingwell.scalaguice.ScalaPrivateModule
 import protocol._
 import pubsub.{Dispatcher, EventBus}

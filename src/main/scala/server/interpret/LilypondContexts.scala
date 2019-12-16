@@ -1,6 +1,6 @@
 package server.interpret
 
-import music.display.DisplayTrack
+import music.domain.display.DisplayTrack
 
 object LilypondContexts {
 

@@ -1,9 +1,9 @@
 package server.storage
 
-import music.domain.track.Track.TrackId
-import music.domain.user.User
-import music.domain.user.User.UserId
-import music.domain.workspace.Workspace
+import music.domain.write.track.Track.TrackId
+import music.domain.write.user.User
+import music.domain.write.user.User.UserId
+import music.domain.write.workspace.Workspace
 import server.entity.EntityResult
 import server.storage.api.{DataKey, DbIO}
 import storage.api.DbRead

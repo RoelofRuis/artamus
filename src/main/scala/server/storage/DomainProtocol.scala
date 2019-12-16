@@ -3,12 +3,12 @@ package server.storage
 import java.util.UUID
 
 import music.analysis.TwelveToneTuning
-import music.domain.track.Track.TrackId
-import music.domain.user.User
-import music.domain.user.User.UserId
+import music.domain.write.track.Track.TrackId
+import music.domain.write.user.User
+import music.domain.write.user.User.UserId
 import music.math.Rational
 import music.math.temporal.{Duration, Position, Window}
-import music.primitives.{Accidental, Chord, Function, Key, Note, NoteGroup, Octave, PitchClass, PitchSpelling, Scale, ScientificPitch, Step, TimeSignature, TimeSignatureDivision}
+import music.domain.primitives.{Accidental, Chord, Function, Key, Note, NoteGroup, Octave, PitchClass, PitchSpelling, Scale, ScientificPitch, Step, TimeSignature, TimeSignatureDivision}
 import spray.json.{DefaultJsonProtocol, JsNumber, JsString, JsValue, JsonFormat, deserializationError}
 
 import scala.collection.immutable.SortedMap

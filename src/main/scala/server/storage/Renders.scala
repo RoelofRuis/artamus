@@ -1,7 +1,7 @@
 package server.storage
 
-import music.domain.render.Render
-import music.domain.track.Track.TrackId
+import music.domain.write.render.Render
+import music.domain.write.track.Track.TrackId
 import server.entity.EntityResult
 import server.storage.api.{DataKey, DbIO}
 import storage.api.DbRead

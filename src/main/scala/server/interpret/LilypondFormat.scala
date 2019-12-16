@@ -1,11 +1,11 @@
 package server.interpret
 
 import music.analysis.TwelveToneTuning.TwelveToneFunctions
-import music.display.chord.ChordStaff
-import music.display.chord.ChordStaffGlyph.{ChordNameGlyph, ChordRestGlyph}
-import music.display.staff.Staff
-import music.display.staff.StaffGlyph.{KeyGlyph, NoteGroupGlyph, RestGlyph, TimeSignatureGlyph}
-import music.primitives._
+import music.domain.display.chord.ChordStaff
+import music.domain.display.chord.ChordStaffGlyph.{ChordNameGlyph, ChordRestGlyph}
+import music.domain.display.staff.Staff
+import music.domain.display.staff.StaffGlyph.{KeyGlyph, NoteGroupGlyph, RestGlyph, TimeSignatureGlyph}
+import music.domain.primitives._
 
 import scala.annotation.tailrec
 

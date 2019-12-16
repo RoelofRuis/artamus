@@ -1,9 +1,9 @@
 package server.domain
 
-import music.domain.render.Render
+import music.domain.write.render.Render
 import music.math.temporal.{Position, Window}
-import music.playback.MidiNote
-import music.primitives._
+import music.domain.perform.MidiNote
+import music.domain.primitives._
 import protocol.{Command, Event, Query}
 
 package object track {

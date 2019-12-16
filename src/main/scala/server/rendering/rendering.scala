@@ -2,7 +2,7 @@ package server
 
 import java.io.File
 
-import music.domain.track.Track.TrackId
+import music.domain.write.track.Track.TrackId
 
 package object rendering {
 

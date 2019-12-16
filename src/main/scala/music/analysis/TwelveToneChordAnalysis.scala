@@ -1,6 +1,6 @@
 package music.analysis
 
-import music.primitives.{Chord, _}
+import music.domain.primitives.{Chord, _}
 
 object TwelveToneChordAnalysis {
 
