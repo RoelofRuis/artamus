@@ -1,4 +1,6 @@
-package server.storage.api
+package storage.api
+
+import server.storage.api.DbIO
 
 trait Db {
 

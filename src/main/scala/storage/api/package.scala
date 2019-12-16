@@ -1,5 +1,7 @@
 package server.storage
 
+import storage.api.{Db, DbRead, DbWrite}
+
 package object api {
 
   trait DbIO extends DbRead with DbWrite

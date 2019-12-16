@@ -1,11 +1,13 @@
-package server.storage.entity
+package storage
 
-import server.storage.api.{DataKey, DbIO, DbRead, ResourceNotFound}
+import server.entity.EntityResult
+import server.storage.api.{DataKey, DbIO, ResourceNotFound}
 import spray.json.{JsonReader, JsonWriter}
+import storage.api.DbRead
 
 object EntityIO {
 
-  import server.storage.JsonDB._
+  import JsonDB._
 
   implicit class ModelOps(db: DbRead) {
     def readModel[A: JsonReader](key: DataKey, default: Option[A] = None): EntityResult[A] = {

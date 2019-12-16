@@ -8,7 +8,7 @@ import protocol.Event
 import pubsub.EventBus
 import server.domain.track.TrackRendered
 import server.rendering.{Renderer, RenderingCompletionHandler}
-import server.storage.api.DbWithRead
+import storage.api.DbWithRead
 
 class RenderingEventCompletionHandler @Inject() (
   renderer: Renderer,
@@ -16,7 +16,7 @@ class RenderingEventCompletionHandler @Inject() (
   db: DbWithRead
 ) extends RenderingCompletionHandler with LazyLogging {
 
-  import server.storage.entity.Renders._
+  import server.storage.Renders._
 
   override def renderingCompleted(submitter: TrackId, success: Boolean): Unit = {
     if (success) {

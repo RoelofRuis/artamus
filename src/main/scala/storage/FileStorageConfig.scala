@@ -1,4 +1,4 @@
-package server.storage
+package storage
 
 trait FileStorageConfig {
   val dbRoot: Seq[String]

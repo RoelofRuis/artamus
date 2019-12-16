@@ -6,7 +6,7 @@ import music.domain.workspace.Workspace
 import protocol.Command
 import pubsub.Dispatcher
 import server.Request
-import server.storage.entity.{EntityResult, NotFound}
+import server.entity.{EntityResult, NotFound}
 
 import scala.language.existentials
 import scala.util.{Failure, Success, Try}
@@ -15,8 +15,8 @@ private[server] class TrackCommandHandler @Inject() (
   dispatcher: Dispatcher[Request, Command],
 ) {
 
-  import server.storage.entity.Tracks._
-  import server.storage.entity.Workspaces._
+  import server.storage.Tracks._
+  import server.storage.Workspaces._
 
   dispatcher.subscribe[NewWorkspace.type]{ req =>
     val delete = for {

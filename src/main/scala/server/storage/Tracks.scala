@@ -1,15 +1,16 @@
-package server.storage.entity
+package server.storage
 
 import music.domain.track.Track.TrackId
 import music.domain.track._
 import music.math.temporal.Window
 import music.primitives._
-import server.storage.api.{DataKey, DbIO, DbRead}
-import server.storage.model.DomainProtocol
+import server.entity.EntityResult
+import server.storage.api.{DataKey, DbIO}
+import storage.api.DbRead
 
 object Tracks {
 
-  import server.storage.entity.EntityIO._
+  import storage.EntityIO._
 
   private val KEY = DataKey("track")
 

@@ -1,12 +1,13 @@
-package server.storage.entity
+package server.storage
 
 import music.domain.user.User
-import server.storage.api.{DataKey, DbIO, DbRead}
-import server.storage.model.DomainProtocol
+import server.entity.EntityResult
+import server.storage.api.{DataKey, DbIO}
+import storage.api.DbRead
 
 object Users {
 
-  import server.storage.entity.EntityIO._
+  import storage.EntityIO._
 
   private val KEY = DataKey("user")
 

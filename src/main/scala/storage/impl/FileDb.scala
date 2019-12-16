@@ -1,11 +1,12 @@
-package server.storage.impl
+package storage.impl
 
 import java.io.File
 import java.util.concurrent.atomic.AtomicLong
 
 import javax.annotation.concurrent.ThreadSafe
-import server.storage.api.DbTransaction.CommitResult
-import server.storage.api._
+import server.storage.api.{DataKey, DatabaseError, DbResult, ResourceNotFound}
+import storage.api.DbTransaction.CommitResult
+import storage.api._
 
 import scala.annotation.tailrec
 import scala.util.Try

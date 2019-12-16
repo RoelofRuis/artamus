@@ -1,4 +1,6 @@
-package server.storage.api
+package storage.api
+
+import server.storage.api.{DataKey, DbResult}
 
 trait DbWrite {
 

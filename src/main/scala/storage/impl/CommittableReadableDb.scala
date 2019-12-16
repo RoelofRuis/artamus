@@ -1,6 +1,7 @@
-package server.storage.impl
+package storage.impl
 
-import server.storage.api.{DbIO, DbTransaction, DbWithRead}
+import server.storage.api.{DbIO, DbWithRead}
+import storage.api.DbTransaction
 
 private[impl] trait CommittableReadableDb extends DbWithRead {
 

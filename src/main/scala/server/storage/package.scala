@@ -1,4 +1,4 @@
-package server.storage
+package server
 
 import server.storage.api.DatabaseError
 

@@ -1,8 +1,8 @@
-package server.storage
+package storage
 
 import net.codingwell.scalaguice.ScalaPrivateModule
 import server.storage.api.DbWithRead
-import server.storage.impl.FileDb
+import storage.impl.FileDb
 
 class FileStorageModule extends ScalaPrivateModule {
   this: FileStorageConfig =>

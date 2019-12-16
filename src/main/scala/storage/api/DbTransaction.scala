@@ -1,6 +1,7 @@
-package server.storage.api
+package storage.api
 
-import server.storage.api.DbTransaction.CommitResult
+import server.storage.api.DatabaseError
+import storage.api.DbTransaction.CommitResult
 
 trait DbTransaction {
 

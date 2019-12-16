@@ -13,8 +13,8 @@ import server.analysis.blackboard.Controller
 import server.domain.ChangeHandler
 import server.interpret.LilypondInterpreter
 import server.rendering.{RenderingCompletionHandler, RenderingModule}
-import server.storage.InMemoryStorageModule
-import server.storage.api.DbWithRead
+import _root_.storage.InMemoryStorageModule
+import storage.api.DbWithRead
 
 class ServerModule extends ScalaPrivateModule with ServerConfig {
 
