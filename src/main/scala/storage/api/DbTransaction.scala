@@ -1,6 +1,5 @@
 package storage.api
 
-import server.storage.api.DatabaseError
 import storage.api.DbTransaction.CommitResult
 
 trait DbTransaction {

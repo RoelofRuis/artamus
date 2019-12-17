@@ -1,13 +1,11 @@
-package server.storage
+package server.model
 
 import music.domain.write.user.User
-import server.entity.EntityResult
-import server.storage.api.{DataKey, DbIO}
-import storage.api.DbRead
+import storage.api.{DataKey, DbIO, DbRead, ModelResult}
 
 object Users {
 
-  import storage.EntityIO._
+  import storage.api.ModelIO._
 
   private val KEY = DataKey("user")
 
@@ -20,7 +18,7 @@ object Users {
   import UserJsonProtocol._
 
   implicit class UserCommands(db: DbIO) {
-    def saveUser(user: User): EntityResult[Unit] = {
+    def saveUser(user: User): ModelResult[Unit] = {
       db.updateModel[UserListModel](
         KEY,
         UserListModel(),
@@ -30,11 +28,11 @@ object Users {
   }
 
   implicit class UserQueries(db: DbRead) {
-    def getUserByName(name: String): EntityResult[User] = {
+    def getUserByName(name: String): ModelResult[User] = {
       db.readModel[UserListModel](KEY).flatMap {
         _.users.find(_.name == name) match {
-          case None => EntityResult.notFound
-          case Some(u) => EntityResult.found(u)
+          case None => ModelResult.notFound
+          case Some(u) => ModelResult.found(u)
         }
       }
     }

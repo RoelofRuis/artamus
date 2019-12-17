@@ -2,7 +2,7 @@ package storage.impl
 
 import java.io._
 
-import server.storage.api.{DbResult, IOError, ResourceNotFound}
+import storage.api.{DbResult, IOError, ResourceNotFound}
 
 import scala.io.Source
 import scala.util.{Failure, Success, Try}

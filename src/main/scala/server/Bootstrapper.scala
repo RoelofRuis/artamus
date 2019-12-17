@@ -8,7 +8,7 @@ import music.domain.write.user.User.UserId
 import protocol.ServerInterface
 import server.rendering.Renderer
 import storage.api.DbWithRead
-import server.storage.Users._
+import server.model.Users._
 
 class Bootstrapper @Inject() (
   server: ServerInterface,

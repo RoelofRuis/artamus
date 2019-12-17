@@ -1,4 +1,4 @@
-package server.storage
+package server.model
 
 import java.util.UUID
 

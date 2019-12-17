@@ -16,7 +16,7 @@ class RenderingEventCompletionHandler @Inject() (
   db: DbWithRead
 ) extends RenderingCompletionHandler with LazyLogging {
 
-  import server.storage.Renders._
+  import server.model.Renders._
 
   override def renderingCompleted(submitter: TrackId, success: Boolean): Unit = {
     if (success) {

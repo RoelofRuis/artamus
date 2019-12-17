@@ -18,8 +18,8 @@ private[server] class ChangeHandler @Inject() (
   renderer: Renderer,
 ) {
 
-  import server.storage.Tracks._
-  import server.storage.Workspaces._
+  import server.model.Tracks._
+  import server.model.Workspaces._
 
   changeCommands.subscribe[Analyse.type] { req =>
     val res = for {

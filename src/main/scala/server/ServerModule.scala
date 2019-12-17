@@ -1,8 +1,9 @@
 package server
 
-import _root_.server.analysis._
-import _root_.server.control.{ConnectionLifetimeHooks, DispatchingServerAPI, ServerControlHandler}
-import _root_.server.domain.track.{TrackCommandHandler, TrackQueryHandler}
+import analysis._
+import control.{ConnectionLifetimeHooks, DispatchingServerAPI, ServerControlHandler}
+import domain.track.{TrackCommandHandler, TrackQueryHandler}
+import storage.InMemoryStorageModule
 import com.google.inject.Provides
 import javax.inject.Singleton
 import music.domain.write.track.Track
@@ -13,7 +14,6 @@ import server.analysis.blackboard.Controller
 import server.domain.ChangeHandler
 import server.interpret.LilypondInterpreter
 import server.rendering.{RenderingCompletionHandler, RenderingModule}
-import _root_.storage.InMemoryStorageModule
 import storage.api.DbWithRead
 
 class ServerModule extends ScalaPrivateModule with ServerConfig {

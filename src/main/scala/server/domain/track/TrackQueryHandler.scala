@@ -6,7 +6,7 @@ import music.math.temporal.Position
 import protocol.Query
 import pubsub.Dispatcher
 import server.Request
-import server.entity.NotFound
+import storage.api.NotFound
 
 import scala.util.{Failure, Success, Try}
 
@@ -14,8 +14,8 @@ private[server] class TrackQueryHandler @Inject() (
   dispatcher: Dispatcher[Request, Query]
 ) {
 
-  import server.storage.Tracks._
-  import server.storage.Workspaces._
+  import server.model.Tracks._
+  import server.model.Workspaces._
 
   dispatcher.subscribe[ReadNotes.type]{ req =>
     readTrack(req, _.notes.readGroups.flatMap(_.notes).toSeq, Seq())

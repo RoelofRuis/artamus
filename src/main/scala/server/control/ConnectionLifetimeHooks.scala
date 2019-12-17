@@ -5,15 +5,14 @@ import music.domain.write.user.User
 import protocol.Event
 import pubsub.EventBus
 import server.domain.track.TrackRendered
-import server.storage.api.DbIO
-import storage.api.DbTransaction
+import storage.api.{DbIO, DbTransaction}
 
 final class ConnectionLifetimeHooks @Inject() (
   eventbus: EventBus[Event],
 ) {
 
-  import server.storage.Workspaces._
-  import server.storage.Renders._
+  import server.model.Renders._
+  import server.model.Workspaces._
 
   def onAuthenticated(db: DbIO with DbTransaction, user: User): Unit = {
     for {

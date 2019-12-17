@@ -1,7 +1,7 @@
 package storage
 
 import net.codingwell.scalaguice.ScalaPrivateModule
-import server.storage.api.DbWithRead
+import storage.api.DbWithRead
 import storage.impl.InMemoryDb
 
 class InMemoryStorageModule extends ScalaPrivateModule {

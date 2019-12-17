@@ -7,10 +7,8 @@ import music.domain.write.user.User
 import protocol._
 import protocol.transport.server.{Connection, ServerAPI}
 import server.{Request, ServerBindings}
-import server.entity.NotFound
-import server.storage.api.{DbIO, DbWithRead}
-import storage.api.DbTransaction
-import server.storage.Users._
+import storage.api.{DbIO, DbTransaction, DbWithRead, NotFound}
+import server.model.Users._
 
 import scala.util.{Failure, Success, Try}
 

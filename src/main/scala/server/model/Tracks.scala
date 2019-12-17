@@ -1,16 +1,14 @@
-package server.storage
+package server.model
 
+import music.domain.primitives._
 import music.domain.write.track.Track.TrackId
 import music.domain.write.track._
 import music.math.temporal.Window
-import music.domain.primitives._
-import server.entity.EntityResult
-import server.storage.api.{DataKey, DbIO}
-import storage.api.DbRead
+import storage.api.{DataKey, DbIO, DbRead, ModelResult}
 
 object Tracks {
 
-  import storage.EntityIO._
+  import storage.api.ModelIO._
 
   private val KEY = DataKey("track")
 
@@ -31,11 +29,11 @@ object Tracks {
   import TrackJsonProtocol._
 
   implicit class TrackQueries(db: DbRead) {
-    def getTrackById(id: TrackId): EntityResult[Track] = {
+    def getTrackById(id: TrackId): ModelResult[Track] = {
       db.readModel[TrackMapModel](KEY).flatMap {
         _.tracks.get(id.id.toString) match {
-          case None => EntityResult.notFound
-          case Some(w) => EntityResult.found(
+          case None => ModelResult.notFound
+          case Some(w) => ModelResult.found(
             Track(
               w.id,
               TimeSignatures(loadPositions(w.bars)),
@@ -50,7 +48,7 @@ object Tracks {
   }
 
   implicit class TrackCommands(db: DbIO) {
-    def saveTrack(track: Track): EntityResult[Unit] = {
+    def saveTrack(track: Track): ModelResult[Unit] = {
       db.updateModel[TrackMapModel](
         KEY,
         TrackMapModel(),
@@ -69,7 +67,7 @@ object Tracks {
       )
     }
 
-    def removeTrackById(trackId: TrackId): EntityResult[Unit] = {
+    def removeTrackById(trackId: TrackId): ModelResult[Unit] = {
       db.updateModel[TrackMapModel](
         KEY,
         TrackMapModel(),

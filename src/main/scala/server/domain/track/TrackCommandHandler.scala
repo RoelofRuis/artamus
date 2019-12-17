@@ -6,7 +6,7 @@ import music.domain.write.workspace.Workspace
 import protocol.Command
 import pubsub.Dispatcher
 import server.Request
-import server.entity.{EntityResult, NotFound}
+import storage.api.{ModelResult, NotFound}
 
 import scala.language.existentials
 import scala.util.{Failure, Success, Try}
@@ -15,8 +15,8 @@ private[server] class TrackCommandHandler @Inject() (
   dispatcher: Dispatcher[Request, Command],
 ) {
 
-  import server.storage.Tracks._
-  import server.storage.Workspaces._
+  import server.model.Tracks._
+  import server.model.Workspaces._
 
   dispatcher.subscribe[NewWorkspace.type]{ req =>
     val delete = for {
@@ -25,7 +25,7 @@ private[server] class TrackCommandHandler @Inject() (
     } yield true
 
     val recoveredDelete = delete match {
-      case Left(_: NotFound) => EntityResult.ok
+      case Left(_: NotFound) => ModelResult.ok
       case l @ Left(_) => l
       case r @ Right(_) => r
     }

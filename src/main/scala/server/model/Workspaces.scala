@@ -1,16 +1,14 @@
-package server.storage
+package server.model
 
 import music.domain.write.track.Track.TrackId
 import music.domain.write.user.User
 import music.domain.write.user.User.UserId
 import music.domain.write.workspace.Workspace
-import server.entity.EntityResult
-import server.storage.api.{DataKey, DbIO}
-import storage.api.DbRead
+import storage.api.{DataKey, DbIO, DbRead, ModelResult}
 
 object Workspaces {
 
-  import storage.EntityIO._
+  import storage.api.ModelIO._
 
   private val KEY = DataKey("workspace")
 
@@ -25,12 +23,12 @@ object Workspaces {
   import WorkspaceJsonProtocol._
 
   implicit class WorkspaceQueries(db: DbRead) {
-    def getWorkspaceByOwner(user: User): EntityResult[Workspace] = {
+    def getWorkspaceByOwner(user: User): ModelResult[Workspace] = {
       db.readModel[WorkspaceMapModel](KEY).flatMap {
         _.workspaces.get(user.id.id.toString) match {
-          case None => EntityResult.notFound
+          case None => ModelResult.notFound
           case Some(w) =>
-            EntityResult.found(Workspace(
+            ModelResult.found(Workspace(
               w.userId,
               w.trackId
             ))
@@ -40,7 +38,7 @@ object Workspaces {
   }
 
   implicit class WorkspaceCommands(db: DbIO) {
-    def saveWorkspace(workspace: Workspace): EntityResult[Unit] = {
+    def saveWorkspace(workspace: Workspace): ModelResult[Unit] = {
       db.updateModel[WorkspaceMapModel](
         KEY,
         WorkspaceMapModel(),
