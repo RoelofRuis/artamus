@@ -25,10 +25,10 @@ private[server] class TrackQueryHandler @Inject() (
     readTrack(req, _.chords.chords.values.toSeq, Seq())
   }
 
-  dispatcher.subscribe[ReadMidiNotes.type]{ req =>
-    import music.perform._
+  dispatcher.subscribe[Perform.type]{ req =>
+    import music.domain.perform._
 
-    readTrack(req, _.iterate(Position.ZERO).toSeq, Seq())
+    readTrack(req, _.perform(Position.ZERO), TrackPerformance())
   }
 
   def readTrack[A](req: Request[Query], f: Track => A, onNotFound: => A): Try[A] = {

@@ -13,8 +13,8 @@ object Display {
 
   import Bars._
 
-  def displayTrack(track: Track): DisplayTrack = {
-    DisplayTrack(
+  def displayTrack(track: Track): TrackDisplay = {
+    TrackDisplay(
       track.getStaff,
       track.getChordStaff
     )

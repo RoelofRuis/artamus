@@ -1,9 +1,9 @@
 package server.domain
 
+import music.domain.perform.TrackPerformance
+import music.domain.primitives._
 import music.domain.write.render.Render
 import music.math.temporal.{Position, Window}
-import music.domain.perform.MidiNote
-import music.domain.primitives._
 import protocol.{Command, Event, Query}
 
 package object track {
@@ -16,8 +16,9 @@ package object track {
 
   // Queries
   case object LoadRender extends Query { type Res = Option[Render] }
+  case object Perform extends Query { type Res = TrackPerformance }
+
   case object ReadNotes extends Query { type Res = Seq[Note] }
-  case object ReadMidiNotes extends Query { type Res = Seq[MidiNote] }
   case object ReadChords extends Query { type Res = Seq[(Window, Chord)] }
 
   // Events

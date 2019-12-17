@@ -1,6 +1,6 @@
 package server.interpret
 
-import music.domain.display.DisplayTrack
+import music.domain.display.TrackDisplay
 
 object LilypondContexts {
 
@@ -27,13 +27,13 @@ object LilypondContexts {
        |}
        |""".stripMargin
 
-  def staff(track: DisplayTrack): String =
+  def staff(track: TrackDisplay): String =
     s"""\\new Staff {
        |\\numericTimeSignature
        |${track.staff.toLilypond}
        |}""".stripMargin
 
-  def chords(track: DisplayTrack): String =
+  def chords(track: TrackDisplay): String =
     s"""\\new ChordNames {
        |\\chordmode {
        |${track.chordStaff.toLilypond}

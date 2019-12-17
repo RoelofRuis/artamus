@@ -3,7 +3,7 @@ package client.operations
 import client.MusicPlayer
 import javax.inject.Inject
 import protocol.ClientInterface
-import server.domain.track.{ReadChords, ReadMidiNotes, ReadNotes}
+import server.domain.track.{ReadChords, Perform, ReadNotes}
 
 class TrackQueryOperations @Inject() (
   registry: OperationRegistry,
@@ -30,9 +30,9 @@ class TrackQueryOperations @Inject() (
   })
 
   registry.registerOperation(OperationToken("play", "track-query"), () => {
-    client.sendQuery(ReadMidiNotes) match {
+    client.sendQuery(Perform) match {
       case None =>
-      case Some(notes) => musicPlayer.play(notes)
+      case Some(track) => musicPlayer.play(track)
     }
     List()
   })
