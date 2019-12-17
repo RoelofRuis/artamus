@@ -1,7 +1,7 @@
 package server.domain
 
 import music.domain.perform.TrackPerformance
-import music.domain.primitives._
+import music.primitives._
 import music.domain.write.render.Render
 import music.math.temporal.{Position, Window}
 import protocol.{Command, Event, Query}

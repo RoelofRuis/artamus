@@ -1,6 +1,6 @@
 package music.domain.display.staff
 
-import music.domain.primitives.{NoteValue, PitchSpelling, Scale, ScientificPitch, TimeSignatureDivision}
+import music.primitives.{NoteValue, PitchSpelling, Scale, ScientificPitch, TimeSignatureDivision}
 
 sealed trait StaffGlyph
 

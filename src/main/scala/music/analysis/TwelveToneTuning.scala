@@ -1,7 +1,7 @@
 package music.analysis
 
 import music.analysis.Analysis.{Chords, Functions, Intervals}
-import music.domain.primitives._
+import music.primitives._
 
 object TwelveToneTuning {
 

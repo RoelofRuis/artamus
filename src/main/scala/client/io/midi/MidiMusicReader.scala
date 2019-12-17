@@ -4,7 +4,7 @@ import client.MusicReader
 import client.MusicReader.{NoteOn, ReadMethod, Simultaneous}
 import javax.inject.Inject
 import midi.in.MidiMessageReader
-import music.domain.primitives._
+import music.primitives._
 
 private[midi] class MidiMusicReader @Inject() (reader: MidiMessageReader) extends MusicReader {
 

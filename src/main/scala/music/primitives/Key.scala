@@ -1,4 +1,4 @@
-package music.domain.primitives
+package music.primitives
 
 final case class Key(
   root: PitchSpelling,

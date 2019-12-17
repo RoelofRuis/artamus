@@ -1,7 +1,7 @@
 package music.domain.write.track
 
 import music.math.temporal.Position
-import music.domain.primitives.{Note, NoteGroup}
+import music.primitives.{Note, NoteGroup}
 
 import scala.collection.BufferedIterator
 import scala.collection.immutable.SortedMap

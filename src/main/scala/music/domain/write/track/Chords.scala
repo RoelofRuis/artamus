@@ -1,7 +1,7 @@
 package music.domain.write.track
 
 import music.math.temporal.{Position, Window}
-import music.domain.primitives.Chord
+import music.primitives.Chord
 
 import scala.collection.BufferedIterator
 import scala.collection.immutable.SortedMap

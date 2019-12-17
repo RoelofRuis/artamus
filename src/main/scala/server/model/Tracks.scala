@@ -1,6 +1,6 @@
 package server.model
 
-import music.domain.primitives._
+import music.primitives._
 import music.domain.write.track.Track.TrackId
 import music.domain.write.track._
 import music.math.temporal.Window

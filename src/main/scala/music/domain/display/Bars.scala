@@ -2,7 +2,7 @@ package music.domain.display
 
 import music.domain.write.track.TimeSignatures
 import music.math.temporal.{Duration, Position, Window}
-import music.domain.primitives.TimeSignature
+import music.primitives.TimeSignature
 
 import scala.annotation.tailrec
 

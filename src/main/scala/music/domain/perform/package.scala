@@ -1,6 +1,6 @@
 package music.domain
 
-import music.domain.primitives.{Loudness, MidiNoteNumber}
+import music.primitives.{Loudness, MidiNoteNumber}
 import music.domain.write.track.Track
 import music.math.temporal.Position
 

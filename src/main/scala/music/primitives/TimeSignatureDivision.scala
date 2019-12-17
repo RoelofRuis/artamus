@@ -1,4 +1,4 @@
-package music.domain.primitives
+package music.primitives
 
 import music.math
 import music.math.Rational

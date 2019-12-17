@@ -2,7 +2,7 @@ package music.analysis
 
 import music.math.temporal.Duration
 import music.math.{Rational, _}
-import music.domain.primitives.NoteValue
+import music.primitives.NoteValue
 
 object NoteValueConversion {
 

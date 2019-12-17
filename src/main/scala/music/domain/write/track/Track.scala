@@ -4,7 +4,7 @@ import java.util.UUID
 
 import music.domain.write.track.Track.TrackId
 import music.math.temporal.Position
-import music.domain.primitives.{Key, NoteGroup, TimeSignature}
+import music.primitives.{Key, NoteGroup, TimeSignature}
 
 final case class Track(
   id: TrackId = TrackId(),

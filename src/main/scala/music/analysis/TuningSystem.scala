@@ -1,7 +1,7 @@
 package music.analysis
 
 import music.analysis.Analysis.{Chords, Functions, Intervals}
-import music.domain.primitives.{Function, Interval, PitchClass}
+import music.primitives.{Function, Interval, PitchClass}
 
 final case class TuningSystem(pcSeq: Seq[Int]) {
   val numSteps: Int = pcSeq.size

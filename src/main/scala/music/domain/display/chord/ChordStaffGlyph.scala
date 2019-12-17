@@ -1,6 +1,6 @@
 package music.domain.display.chord
 
-import music.domain.primitives.{Function, NoteValue, PitchSpelling}
+import music.primitives.{Function, NoteValue, PitchSpelling}
 
 sealed trait ChordStaffGlyph
 

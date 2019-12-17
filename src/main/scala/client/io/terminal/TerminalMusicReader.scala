@@ -3,7 +3,7 @@ package client.io.terminal
 import client.MusicReader
 import client.MusicReader.{NoteOn, Simultaneous}
 import client.io.StdIOTools
-import music.domain.primitives._
+import music.primitives._
 
 class TerminalMusicReader extends MusicReader {
 

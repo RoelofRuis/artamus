@@ -1,7 +1,7 @@
 package music.domain.write.track
 
 import music.math.temporal.Position
-import music.domain.primitives.{TimeSignature, TimeSignatureDivision}
+import music.primitives.{TimeSignature, TimeSignatureDivision}
 
 import scala.collection.immutable.SortedMap
 

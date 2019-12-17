@@ -8,7 +8,7 @@ import music.domain.write.user.User
 import music.domain.write.user.User.UserId
 import music.math.Rational
 import music.math.temporal.{Duration, Position, Window}
-import music.domain.primitives.{Accidental, Chord, Function, Key, Note, NoteGroup, Octave, PitchClass, PitchSpelling, Scale, ScientificPitch, Step, TimeSignature, TimeSignatureDivision}
+import music.primitives.{Accidental, Chord, Function, Key, Note, NoteGroup, Octave, PitchClass, PitchSpelling, Scale, ScientificPitch, Step, TimeSignature, TimeSignatureDivision}
 import spray.json.{DefaultJsonProtocol, JsNumber, JsString, JsValue, JsonFormat, deserializationError}
 
 import scala.collection.immutable.SortedMap

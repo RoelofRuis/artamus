@@ -5,7 +5,7 @@ import music.domain.display.chord.ChordStaff
 import music.domain.display.chord.ChordStaffGlyph.{ChordNameGlyph, ChordRestGlyph}
 import music.domain.display.staff.Staff
 import music.domain.display.staff.StaffGlyph.{KeyGlyph, NoteGroupGlyph, RestGlyph, TimeSignatureGlyph}
-import music.domain.primitives._
+import music.primitives._
 
 import scala.annotation.tailrec
 

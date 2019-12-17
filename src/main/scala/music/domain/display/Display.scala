@@ -7,7 +7,7 @@ import music.domain.display.staff.{Staff, StaffGlyph}
 import music.domain.display.staff.StaffGlyph.{KeyGlyph, NoteGroupGlyph, RestGlyph, TimeSignatureGlyph}
 import music.domain.write.track.Track
 import music.math.temporal.{Position, Window}
-import music.domain.primitives.{Key, ScientificPitch}
+import music.primitives.{Key, ScientificPitch}
 
 object Display {
 

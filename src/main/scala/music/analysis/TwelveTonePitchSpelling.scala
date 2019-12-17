@@ -1,6 +1,6 @@
 package music.analysis
 
-import music.domain.primitives.{Note, _}
+import music.primitives.{Note, _}
 
 object TwelveTonePitchSpelling {
 

@@ -1,7 +1,7 @@
 package client
 
 import client.MusicReader.ReadMethod
-import music.domain.primitives.{MidiNoteNumber, PitchClass, PitchSpelling, TimeSignatureDivision}
+import music.primitives.{MidiNoteNumber, PitchClass, PitchSpelling, TimeSignatureDivision}
 
 trait MusicReader {
 
