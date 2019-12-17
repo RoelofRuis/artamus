@@ -1,64 +1,53 @@
 package server.rendering.service
 
 import java.io.{File, PrintWriter}
+import java.util.concurrent.Executors
 import java.util.concurrent.atomic.AtomicLong
-import java.util.concurrent.{ExecutorService, Executors}
 
 import javax.annotation.concurrent.NotThreadSafe
 import server.rendering.LyFile
 
-@NotThreadSafe
+import scala.concurrent.{ExecutionContext, Future}
+import scala.util.Try
+
 private[rendering] class LilypondCommandLineExecutor(
   val resourceRootPath: String,
   val cleanupLySources: Boolean,
   val pngResolution: Int,
 ) {
 
-  private val executor: ExecutorService = Executors.newFixedThreadPool(1)
-  private val taskIdGenerator = new AtomicLong(0L)
-  private var completionHandler: Option[(Long, Either[RenderingException, RenderingResult]) => Unit] = None
+  // TODO: ensure automatic shutdown!
 
-  def render(lilyFile: LyFile): Long = {
-    val taskId = taskIdGenerator.getAndIncrement()
+  private implicit val executor: ExecutionContext = ExecutionContext.fromExecutor(Executors.newFixedThreadPool(1))
+  private val fileIdGenerator = new AtomicLong(0L)
 
-    executor.execute(makeRunnable(lilyFile, taskId))
-
-    taskId
+  def render(lilyFile: LyFile, onComplete: Try[RenderingResult] => Unit): Unit = {
+    Future {
+      run(lilyFile)
+    }.onComplete(res => onComplete(res.flatMap(_.toTry)))
   }
 
-  def shutdown(): Unit = executor.shutdown()
+  private def run(lilyFile: LyFile): Either[RenderingException, RenderingResult] = {
+    val fileId = fileIdGenerator.getAndIncrement()
+    val sourceFile = new File(s"$resourceRootPath/lily_$fileId.ly")
+    val targetFile = new File(s"$resourceRootPath/lily_$fileId.png")
 
-  def setCompletionCallback(handler: (Long, Either[RenderingException, RenderingResult]) => Unit): Unit = {
-    completionHandler = Some(handler)
-  }
+    try {
+      val writer = new PrintWriter(sourceFile)
+      writer.write(lilyFile.contents)
+      writer.close()
 
-  private def complete(taskId: Long, result: Either[RenderingException, RenderingResult]): Unit = {
-    // TODO: ensure thread safety!
-    completionHandler.foreach(_(taskId, result))
-  }
+      import sys.process._
 
-  private def makeRunnable(lilyFile: LyFile, taskId: Long): Runnable = {
-    () => {
-      val sourceFile = new File(s"$resourceRootPath/lily_$taskId.ly")
-      val targetFile = new File(s"$resourceRootPath/lily_$taskId.png")
+      val result = getLilypondCommand(sourceFile.getAbsolutePath).!!
 
-      try {
-        val writer = new PrintWriter(sourceFile)
-        writer.write(lilyFile.contents)
-        writer.close()
+      if (targetFile.exists()) Right(RenderingResult(targetFile))
+      else Left(RenderingException(result, None))
 
-        import sys.process._
-
-        val result = getLilypondCommand(sourceFile.getAbsolutePath).!!
-
-        if (targetFile.exists()) complete(taskId, Right(RenderingResult(targetFile)))
-        else complete(taskId, Left(RenderingException(result, None)))
-
-      } catch {
-        case ex: Exception => complete(taskId, Left(RenderingException("Exception during rendering", Some(ex))))
-      } finally {
-        if (cleanupLySources) sourceFile.delete()
-      }
+    } catch {
+      case ex: Exception => Left(RenderingException("Exception during rendering", Some(ex)))
+    } finally {
+      if (cleanupLySources) sourceFile.delete()
     }
   }
 
