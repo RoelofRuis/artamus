@@ -1,15 +1,13 @@
 package client.io.terminal
 
 import client.MusicPlayer
-import music.playback.MidiNote
+import music.model.perform.TrackPerformance
 
 class TerminalMusicPlayer extends MusicPlayer {
 
-  override def play(notes: Seq[MidiNote]): Unit = {
+  override def play(track: TrackPerformance): Unit = {
     println("Playing:")
-    notes.foreach { note =>
-      println(note)
-    }
+    track.notes.foreach { note => println(note) }
   }
 
 }

@@ -1,7 +1,7 @@
 package client.io.midi
 
 import midi.out.{SequenceBuilder, SequenceFormat}
-import music.playback.MidiNote
+import music.model.perform.MidiNote
 
 private[midi] case class MidiNoteFormat(symbols: Seq[MidiNote]) extends SequenceFormat {
 

@@ -1,8 +1,8 @@
 package server
 
-import music.domain.user.User
+import music.model.write.user.User
 import pubsub.RequestContainer
-import server.storage.api.DbIO
+import storage.api.DbIO
 
 import scala.reflect.ClassTag
 

@@ -1,8 +1,6 @@
 package server
 
-import java.io.File
-
-import music.domain.track.Track.TrackId
+import music.model.write.track.Track.TrackId
 
 package object rendering {
 
@@ -16,12 +14,7 @@ package object rendering {
 
   trait Renderer {
 
-    // TODO: fix packaging and references, trackId should not be referenced from here!
-    def submit(submitter: TrackId, track: LyFile): Unit
-
-    def getRender(submitter: TrackId): Option[File]
-
-    def shutdown(): Unit
+    def submit(trackId: TrackId, file: LyFile): Unit
 
   }
 

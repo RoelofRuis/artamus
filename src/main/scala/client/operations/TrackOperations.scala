@@ -9,7 +9,7 @@ import music.math.temporal.{Duration, Position, Window}
 import music.primitives.{Note, NoteGroup, TimeSignature, _}
 import protocol.Command
 import server.domain.Analyse
-import server.domain.track._
+import server.domain.writing._
 
 import scala.annotation.tailrec
 

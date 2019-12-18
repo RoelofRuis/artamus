@@ -1,18 +1,18 @@
 package server.control
 
 import javax.inject.Inject
-import music.domain.user.User
+import music.model.write.user.User
 import protocol.Event
 import pubsub.EventBus
-import server.domain.track.TrackRendered
-import server.storage.api.{DbIO, DbTransaction}
+import server.domain.writing.TrackRendered
+import storage.api.{DbIO, DbTransaction}
 
 final class ConnectionLifetimeHooks @Inject() (
   eventbus: EventBus[Event],
 ) {
 
-  import server.storage.entity.Workspaces._
-  import server.storage.entity.Renders._
+  import server.model.Renders._
+  import server.model.Workspaces._
 
   def onAuthenticated(db: DbIO with DbTransaction, user: User): Unit = {
     for {

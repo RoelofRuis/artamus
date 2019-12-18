@@ -6,15 +6,9 @@ object TwelveTonePitchSpelling {
 
   import music.analysis.TwelveToneTuning._
 
-  def spellNote(note: Note, key: Key): Note = {
-    note.withScientificPitch(spell(note, key))
-  }
+  def spellChord(chord: Chord, key: Key): PitchSpelling = spellPc(chord.root, key)
 
-  def spellChord(chord: Chord, key: Key): Chord = {
-    chord.withRootSpelling(spellPc(chord.root, key))
-  }
-
-  private def spell(note: Note, key: Key): ScientificPitch = {
+  def spellNote(note: Note, key: Key): ScientificPitch = {
     val spelledPitch = spellPc(note.pitchClass, key)
 
     val newOctave = if (spelledPitch.span > tuning.span) Octave(note.octave.value - 1) else note.octave

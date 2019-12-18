@@ -1,7 +1,7 @@
 package server
 
 import server.rendering.RenderingConfig
-import server.storage.FileStorageConfig
+import storage.FileStorageConfig
 
 trait ServerConfig extends RenderingConfig with FileStorageConfig {
 

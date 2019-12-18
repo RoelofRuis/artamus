@@ -1,24 +1,25 @@
 package server
 
-import _root_.server.analysis._
-import _root_.server.control.{ConnectionLifetimeHooks, DispatchingServerAPI, ServerControlHandler}
-import _root_.server.domain.track.{TrackCommandHandler, TrackQueryHandler}
 import com.google.inject.Provides
 import javax.inject.Singleton
-import music.domain.track.Track
+import music.model.write.track.Track
 import net.codingwell.scalaguice.ScalaPrivateModule
 import protocol._
 import pubsub.{Dispatcher, EventBus}
+import server.analysis._
 import server.analysis.blackboard.Controller
+import server.control.{ConnectionLifetimeHooks, DispatchingServerAPI, ServerControlHandler}
 import server.domain.ChangeHandler
+import server.domain.writing.{TrackCommandHandler, TrackQueryHandler}
 import server.interpret.LilypondInterpreter
 import server.rendering.{RenderingCompletionHandler, RenderingModule}
-import server.storage.{FileDb, StorageModule}
+import storage.InMemoryStorageModule
+import storage.api.DbWithRead
 
 class ServerModule extends ScalaPrivateModule with ServerConfig {
 
   override def configure(): Unit = {
-    install(new StorageModule with ServerConfig)
+    install(new InMemoryStorageModule)
 
     bind[LilypondInterpreter].toInstance(
       new LilypondInterpreter(
@@ -48,7 +49,6 @@ class ServerModule extends ScalaPrivateModule with ServerConfig {
       .toInstance(new Controller(
         Seq(
           new ChordAnalyser(),
-          new PitchSpellingAnalyser(),
           new PitchHistogramAnalyser()
         ),
       ))
@@ -59,7 +59,7 @@ class ServerModule extends ScalaPrivateModule with ServerConfig {
 
   @Provides @Singleton
   def serverConnectionFactory(
-    db: FileDb,
+    db: DbWithRead,
     serverBindings: ServerBindings,
     hooks: ConnectionLifetimeHooks
   ): ServerInterface = {

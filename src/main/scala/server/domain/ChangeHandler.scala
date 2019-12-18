@@ -1,7 +1,8 @@
 package server.domain
 
 import javax.inject.Inject
-import music.domain.track.Track
+import music.model.display.Display
+import music.model.write.track.Track
 import protocol.{Command, Event}
 import pubsub.{Dispatcher, EventBus}
 import server.Request
@@ -17,8 +18,8 @@ private[server] class ChangeHandler @Inject() (
   renderer: Renderer,
 ) {
 
-  import server.storage.entity.Tracks._
-  import server.storage.entity.Workspaces._
+  import server.model.Tracks._
+  import server.model.Workspaces._
 
   changeCommands.subscribe[Analyse.type] { req =>
     val res = for {
@@ -26,7 +27,8 @@ private[server] class ChangeHandler @Inject() (
       track <- req.db.getTrackById(workspace.editedTrack)
       _ = eventBus.publish(AnalysisStarted)
       analysedTrack = analysis.run(track)
-      lilypondFile = interpreter.interpret(analysedTrack)
+      displayTrack = Display.displayTrack(analysedTrack)
+      lilypondFile = interpreter.interpret(displayTrack)
       _ = renderer.submit(workspace.editedTrack, lilypondFile)
       _ <- req.db.saveTrack(analysedTrack)
     } yield true

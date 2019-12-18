@@ -1,10 +1,10 @@
 package client
 
-import music.playback.MidiNote
+import music.model.perform.TrackPerformance
 
 trait MusicPlayer {
 
-  def play(notes: Seq[MidiNote]): Unit
+  def play(notes: TrackPerformance): Unit
 
 }
 

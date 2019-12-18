@@ -3,18 +3,17 @@ package server.control
 import java.util.concurrent.ConcurrentHashMap
 
 import com.typesafe.scalalogging.LazyLogging
-import music.domain.user.User
+import music.model.write.user.User
 import protocol._
 import protocol.transport.server.{Connection, ServerAPI}
 import server.{Request, ServerBindings}
-import server.storage.api.{Db, DbIO, DbRead, DbTransaction}
-import server.storage.entity.NotFound
-import server.storage.entity.Users._
+import storage.api.{DbIO, DbTransaction, DbWithRead, NotFound}
+import server.model.Users._
 
 import scala.util.{Failure, Success, Try}
 
 final class DispatchingServerAPI(
-  db2: Db with DbRead,
+  db: DbWithRead,
   server: ServerBindings,
   hooks: ConnectionLifetimeHooks
 ) extends ServerAPI with LazyLogging {
@@ -77,7 +76,7 @@ final class DispatchingServerAPI(
   def authenticate(connection: Connection, request: ServerRequest): Either[ServerException, Any] = {
     request match {
       case CommandRequest(Authenticate(userName)) =>
-        db2.getUserByName(userName) match {
+        db.getUserByName(userName) match {
           case Right(user) =>
             server.subscribeEvents(connection.name, event => connection.sendEvent(EventResponse(event)))
             connections = connections.updated(connection, Some(user))
@@ -119,7 +118,7 @@ final class DispatchingServerAPI(
   }
 
   private def startTransaction(connection: Connection): DbIO with DbTransaction = {
-    val transaction = db2.newTransaction
+    val transaction = db.newTransaction
     transactions.put(connection, transaction)
     transaction
   }
