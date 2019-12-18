@@ -17,14 +17,6 @@ private[server] class TrackQueryHandler @Inject() (
   import server.model.Tracks._
   import server.model.Workspaces._
 
-  dispatcher.subscribe[ReadNotes.type]{ req =>
-    readTrack(req, _.notes.readGroups.flatMap(_.notes).toSeq, Seq())
-  }
-
-  dispatcher.subscribe[ReadChords.type]{ req =>
-    readTrack(req, _.chords.chords.values.toSeq, Seq())
-  }
-
   dispatcher.subscribe[Perform.type]{ req =>
     import music.model.perform._
 
