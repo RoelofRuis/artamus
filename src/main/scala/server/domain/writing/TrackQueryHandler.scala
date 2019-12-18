@@ -1,4 +1,4 @@
-package server.domain.track
+package server.domain.writing
 
 import javax.inject.Inject
 import music.model.write.track.Track

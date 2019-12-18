@@ -1,19 +1,19 @@
 package server
 
-import analysis._
-import control.{ConnectionLifetimeHooks, DispatchingServerAPI, ServerControlHandler}
-import domain.track.{TrackCommandHandler, TrackQueryHandler}
-import storage.InMemoryStorageModule
 import com.google.inject.Provides
 import javax.inject.Singleton
 import music.model.write.track.Track
 import net.codingwell.scalaguice.ScalaPrivateModule
 import protocol._
 import pubsub.{Dispatcher, EventBus}
+import server.analysis._
 import server.analysis.blackboard.Controller
+import server.control.{ConnectionLifetimeHooks, DispatchingServerAPI, ServerControlHandler}
 import server.domain.ChangeHandler
+import server.domain.writing.{TrackCommandHandler, TrackQueryHandler}
 import server.interpret.LilypondInterpreter
 import server.rendering.{RenderingCompletionHandler, RenderingModule}
+import storage.InMemoryStorageModule
 import storage.api.DbWithRead
 
 class ServerModule extends ScalaPrivateModule with ServerConfig {
