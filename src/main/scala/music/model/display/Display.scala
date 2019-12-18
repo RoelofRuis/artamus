@@ -1,6 +1,6 @@
 package music.model.display
 
-import music.analysis.{NoteValueConversion, TwelveTonePitchSpelling}
+import music.analysis.TwelveTonePitchSpelling
 import music.model.display.chord.ChordStaffGlyph.{ChordNameGlyph, ChordRestGlyph}
 import music.model.display.chord.{ChordStaff, ChordStaffGlyph}
 import music.model.display.staff.{Staff, StaffGlyph}
@@ -12,6 +12,7 @@ import music.primitives.{Key, ScientificPitch}
 object Display {
 
   import Bars._
+  import NoteValues._
 
   def displayTrack(track: Track): TrackDisplay = {
     TrackDisplay(
@@ -40,8 +41,8 @@ object Display {
     private def read(window: Window): Iterator[StaffGlyph] = {
       notes.nextOption() match {
         case None =>
-          NoteValueConversion
-            .from(track.timeSignatures.fillBarFrom(window).duration)
+          track.timeSignatures.fillBarFrom(window).duration
+            .asNoteValues
             .map(RestGlyph(_, silent=false))
             .iterator
 
@@ -56,7 +57,7 @@ object Display {
               track
                 .timeSignatures
                 .fit(diff)
-                .flatMap(window => NoteValueConversion.from(window.duration))
+                .flatMap(_.duration.asNoteValues)
                 .map(RestGlyph(_, silent=false))
                 .iterator
           }
@@ -68,7 +69,7 @@ object Display {
             track
               .timeSignatures
               .fit(nextWindow)
-              .flatMap(window => NoteValueConversion.from(window.duration))
+              .flatMap(_.duration.asNoteValues)
 
           val lilyStrings = fittedDurations
             .zipWithIndex
@@ -100,7 +101,7 @@ object Display {
           val writeableChords = {
             // TODO: Use the 'active' key instead of initial key.
             val spelling = TwelveTonePitchSpelling.spellChord(nextChord, initialKey)
-            val written = NoteValueConversion.from(nextWindow.duration) match {
+            val written = nextWindow.duration.asNoteValues match {
               case Nil => Seq()
               case head :: Nil =>
                 ChordNameGlyph(head, spelling, nextChord.functions) :: Nil
@@ -116,7 +117,7 @@ object Display {
               track
                 .timeSignatures
                 .fit(diff)
-                .flatMap(window => NoteValueConversion.from(window.duration))
+                .flatMap(_.duration.asNoteValues)
                 .map(ChordRestGlyph)
                 .iterator
           }
