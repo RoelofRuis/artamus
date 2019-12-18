@@ -1,4 +1,4 @@
-package server.rendering.service
+package server.rendering
 
 import java.util.concurrent.{ExecutorService, Executors}
 
@@ -6,7 +6,6 @@ import com.typesafe.scalalogging.LazyLogging
 import javax.inject.Inject
 import music.model.display.render.Render
 import music.model.write.track.Track.TrackId
-import server.rendering.{LyFile, Renderer, RenderingCompletionHandler}
 
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.{Failure, Success}
@@ -30,10 +29,11 @@ private[rendering] class AsyncRenderer @Inject() (
     Future(renderingService.render(file))
       .onComplete {
         case Success(Right(result)) =>
-          logger.debug(s"Render for track [$trackId] successful")
-          completionHandler.renderingCompleted(Render(trackId, result.file.getAbsolutePath))
-        case Success(Left(ex)) => logger.error(s"Render for track [$trackId] failed", ex)
-        case Failure(ex) => logger.error(s"Render for track [$trackId] failed", ex)
+          completionHandler.renderingCompleted(Right(Render(trackId, result.file.getAbsolutePath)))
+        case Success(Left(ex)) =>
+          completionHandler.renderingCompleted(Left(ex))
+        case Failure(ex) =>
+          completionHandler.renderingCompleted(Left(RenderingException("Async renderer failed", Some(ex))))
       }
   }
 }
