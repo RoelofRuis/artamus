@@ -1,10 +1,9 @@
 package server.rendering.service
 
 import java.io.{File, PrintWriter}
-import java.util.concurrent.Executors
 import java.util.concurrent.atomic.AtomicLong
+import java.util.concurrent.{ExecutorService, Executors}
 
-import javax.annotation.concurrent.NotThreadSafe
 import server.rendering.LyFile
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -16,9 +15,13 @@ private[rendering] class LilypondCommandLineExecutor(
   val pngResolution: Int,
 ) {
 
-  // TODO: ensure automatic shutdown!
+  private val executor: ExecutorService = Executors.newFixedThreadPool(1, (r: Runnable) => {
+    val t: Thread = Executors.defaultThreadFactory().newThread(r);
+    t.setDaemon(true);
+    t
+  })
 
-  private implicit val executor: ExecutionContext = ExecutionContext.fromExecutor(Executors.newFixedThreadPool(1))
+  private implicit val executionContext: ExecutionContext = ExecutionContext.fromExecutor(executor)
   private val fileIdGenerator = new AtomicLong(0L)
 
   def render(lilyFile: LyFile, onComplete: Try[RenderingResult] => Unit): Unit = {
