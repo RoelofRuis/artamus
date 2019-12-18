@@ -1,13 +1,9 @@
 package server.rendering.service
 
 import java.io.{File, PrintWriter}
-import java.util.concurrent.atomic.AtomicLong
-import java.util.concurrent.{ExecutorService, Executors}
+import java.util.UUID
 
 import server.rendering.LyFile
-
-import scala.concurrent.{ExecutionContext, Future}
-import scala.util.Try
 
 private[rendering] class LilypondCommandLineExecutor(
   val resourceRootPath: String,
@@ -15,23 +11,8 @@ private[rendering] class LilypondCommandLineExecutor(
   val pngResolution: Int,
 ) {
 
-  private val executor: ExecutorService = Executors.newFixedThreadPool(1, (r: Runnable) => {
-    val t: Thread = Executors.defaultThreadFactory().newThread(r);
-    t.setDaemon(true);
-    t
-  })
-
-  private implicit val executionContext: ExecutionContext = ExecutionContext.fromExecutor(executor)
-  private val fileIdGenerator = new AtomicLong(0L)
-
-  def render(lilyFile: LyFile, onComplete: Try[RenderingResult] => Unit): Unit = {
-    Future {
-      run(lilyFile)
-    }.onComplete(res => onComplete(res.flatMap(_.toTry)))
-  }
-
-  private def run(lilyFile: LyFile): Either[RenderingException, RenderingResult] = {
-    val fileId = fileIdGenerator.getAndIncrement()
+  def render(lilyFile: LyFile): Either[RenderingException, RenderingResult] = {
+    val fileId = UUID.randomUUID()
     val sourceFile = new File(s"$resourceRootPath/lily_$fileId.ly")
     val targetFile = new File(s"$resourceRootPath/lily_$fileId.png")
 
