@@ -1,7 +1,7 @@
 package client.io.terminal
 
 import client.MusicPlayer
-import music.domain.perform.TrackPerformance
+import music.model.perform.TrackPerformance
 
 class TerminalMusicPlayer extends MusicPlayer {
 

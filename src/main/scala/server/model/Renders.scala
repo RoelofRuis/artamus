@@ -1,7 +1,7 @@
 package server.model
 
-import music.domain.write.render.Render
-import music.domain.write.track.Track.TrackId
+import music.model.display.render.Render
+import music.model.write.track.Track.TrackId
 import storage.api.{DataKey, DbIO, DbRead, ModelResult}
 
 object Renders {

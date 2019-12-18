@@ -1,4 +1,4 @@
-package music.domain.write.track
+package music.model.write.track
 
 import music.math.temporal.{Position, Window}
 import music.primitives.Chord

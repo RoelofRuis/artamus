@@ -2,7 +2,7 @@ package server
 
 import com.typesafe.scalalogging.LazyLogging
 import javax.inject.Inject
-import music.domain.write.render.Render
+import music.model.display.render.Render
 import protocol.Event
 import pubsub.EventBus
 import server.domain.track.TrackRendered

@@ -1,6 +1,6 @@
 package server
 
-import music.domain.write.user.User
+import music.model.write.user.User
 import pubsub.RequestContainer
 import storage.api.DbIO
 

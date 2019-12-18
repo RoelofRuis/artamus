@@ -1,6 +1,6 @@
 package server.model
 
-import music.domain.write.user.User
+import music.model.write.user.User
 import storage.api.{DataKey, DbIO, DbRead, ModelResult}
 
 object Users {

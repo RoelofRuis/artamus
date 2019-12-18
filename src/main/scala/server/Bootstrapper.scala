@@ -3,8 +3,8 @@ package server
 import java.util.UUID
 
 import javax.inject.Inject
-import music.domain.write.user.User
-import music.domain.write.user.User.UserId
+import music.model.write.user.User
+import music.model.write.user.User.UserId
 import protocol.ServerInterface
 import server.model.Users._
 import storage.api.DbWithRead

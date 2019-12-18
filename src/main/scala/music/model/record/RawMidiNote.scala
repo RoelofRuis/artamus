@@ -1,4 +1,4 @@
-package music.domain.record
+package music.model.record
 
 import music.math.temporal.Position
 import music.primitives.{Loudness, MidiNoteNumber}

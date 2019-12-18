@@ -1,8 +1,8 @@
 package server.model
 
 import music.primitives._
-import music.domain.write.track.Track.TrackId
-import music.domain.write.track._
+import music.model.write.track.Track.TrackId
+import music.model.write.track._
 import music.math.temporal.Window
 import storage.api.{DataKey, DbIO, DbRead, ModelResult}
 

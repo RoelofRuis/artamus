@@ -1,4 +1,4 @@
-package music.domain.perform
+package music.model.perform
 
 import music.math.temporal.Window
 import music.primitives.{Loudness, MidiNoteNumber}

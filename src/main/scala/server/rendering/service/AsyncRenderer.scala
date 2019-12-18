@@ -4,8 +4,8 @@ import java.util.concurrent.{ExecutorService, Executors}
 
 import com.typesafe.scalalogging.LazyLogging
 import javax.inject.Inject
-import music.domain.write.render.Render
-import music.domain.write.track.Track.TrackId
+import music.model.display.render.Render
+import music.model.write.track.Track.TrackId
 import server.rendering.{LyFile, Renderer, RenderingCompletionHandler}
 
 import scala.concurrent.{ExecutionContext, Future}

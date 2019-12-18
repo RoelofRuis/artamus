@@ -1,11 +1,11 @@
-package music.domain.display
+package music.model.display
 
 import music.analysis.{NoteValueConversion, TwelveTonePitchSpelling}
-import music.domain.display.chord.ChordStaffGlyph.{ChordNameGlyph, ChordRestGlyph}
-import music.domain.display.chord.{ChordStaff, ChordStaffGlyph}
-import music.domain.display.staff.{Staff, StaffGlyph}
-import music.domain.display.staff.StaffGlyph.{KeyGlyph, NoteGroupGlyph, RestGlyph, TimeSignatureGlyph}
-import music.domain.write.track.Track
+import music.model.display.chord.ChordStaffGlyph.{ChordNameGlyph, ChordRestGlyph}
+import music.model.display.chord.{ChordStaff, ChordStaffGlyph}
+import music.model.display.staff.{Staff, StaffGlyph}
+import music.model.display.staff.StaffGlyph.{KeyGlyph, NoteGroupGlyph, RestGlyph, TimeSignatureGlyph}
+import music.model.write.track.Track
 import music.math.temporal.{Position, Window}
 import music.primitives.{Key, ScientificPitch}
 

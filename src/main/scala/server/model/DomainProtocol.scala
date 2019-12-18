@@ -3,9 +3,9 @@ package server.model
 import java.util.UUID
 
 import music.analysis.TwelveToneTuning
-import music.domain.write.track.Track.TrackId
-import music.domain.write.user.User
-import music.domain.write.user.User.UserId
+import music.model.write.track.Track.TrackId
+import music.model.write.user.User
+import music.model.write.user.User.UserId
 import music.math.Rational
 import music.math.temporal.{Duration, Position, Window}
 import music.primitives.{Accidental, Chord, Function, Key, Note, NoteGroup, Octave, PitchClass, PitchSpelling, Scale, ScientificPitch, Step, TimeSignature, TimeSignatureDivision}

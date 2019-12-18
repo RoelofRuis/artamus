@@ -1,4 +1,4 @@
-package music.domain.record
+package music.model.record
 
 final case class MidiRecording(
   resolution: Long,

@@ -1,8 +1,8 @@
-package music.domain.write.workspace
+package music.model.write.workspace
 
-import music.domain.write.track.Track
-import music.domain.write.track.Track.TrackId
-import music.domain.write.user.User.UserId
+import music.model.write.track.Track
+import music.model.write.track.Track.TrackId
+import music.model.write.user.User.UserId
 
 final case class Workspace(
   owner: UserId,

@@ -1,8 +1,8 @@
-package music.domain.write.track
+package music.model.write.track
 
 import java.util.UUID
 
-import music.domain.write.track.Track.TrackId
+import music.model.write.track.Track.TrackId
 import music.math.temporal.Position
 import music.primitives.{Key, NoteGroup, TimeSignature}
 

@@ -1,8 +1,8 @@
 package server.domain.track
 
 import javax.inject.Inject
-import music.domain.write.track.Track
-import music.domain.write.workspace.Workspace
+import music.model.write.track.Track
+import music.model.write.workspace.Workspace
 import protocol.Command
 import pubsub.Dispatcher
 import server.Request

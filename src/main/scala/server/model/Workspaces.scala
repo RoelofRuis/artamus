@@ -1,9 +1,9 @@
 package server.model
 
-import music.domain.write.track.Track.TrackId
-import music.domain.write.user.User
-import music.domain.write.user.User.UserId
-import music.domain.write.workspace.Workspace
+import music.model.write.track.Track.TrackId
+import music.model.write.user.User
+import music.model.write.user.User.UserId
+import music.model.write.workspace.Workspace
 import storage.api.{DataKey, DbIO, DbRead, ModelResult}
 
 object Workspaces {

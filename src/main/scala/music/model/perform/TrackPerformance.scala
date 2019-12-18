@@ -1,4 +1,4 @@
-package music.domain.perform
+package music.model.perform
 
 final case class TrackPerformance(
   notes: Iterator[MidiNote]

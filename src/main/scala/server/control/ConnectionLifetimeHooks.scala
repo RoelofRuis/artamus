@@ -1,7 +1,7 @@
 package server.control
 
 import javax.inject.Inject
-import music.domain.write.user.User
+import music.model.write.user.User
 import protocol.Event
 import pubsub.EventBus
 import server.domain.track.TrackRendered

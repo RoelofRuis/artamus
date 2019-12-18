@@ -1,6 +1,6 @@
 package server
 
-import music.domain.write.track.Track.TrackId
+import music.model.write.track.Track.TrackId
 
 package object rendering {
 

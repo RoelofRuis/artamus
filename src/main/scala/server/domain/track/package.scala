@@ -1,8 +1,8 @@
 package server.domain
 
-import music.domain.perform.TrackPerformance
+import music.model.perform.TrackPerformance
 import music.primitives._
-import music.domain.write.render.Render
+import music.model.display.render.Render
 import music.math.temporal.{Position, Window}
 import protocol.{Command, Event, Query}
 

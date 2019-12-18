@@ -1,8 +1,8 @@
 package server.domain
 
 import javax.inject.Inject
-import music.domain.display.Display
-import music.domain.write.track.Track
+import music.model.display.Display
+import music.model.write.track.Track
 import protocol.{Command, Event}
 import pubsub.{Dispatcher, EventBus}
 import server.Request

@@ -6,7 +6,7 @@ import domain.track.{TrackCommandHandler, TrackQueryHandler}
 import storage.InMemoryStorageModule
 import com.google.inject.Provides
 import javax.inject.Singleton
-import music.domain.write.track.Track
+import music.model.write.track.Track
 import net.codingwell.scalaguice.ScalaPrivateModule
 import protocol._
 import pubsub.{Dispatcher, EventBus}

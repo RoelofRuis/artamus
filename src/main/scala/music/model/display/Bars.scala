@@ -1,6 +1,6 @@
-package music.domain.display
+package music.model.display
 
-import music.domain.write.track.TimeSignatures
+import music.model.write.track.TimeSignatures
 import music.math.temporal.{Duration, Position, Window}
 import music.primitives.TimeSignature
 

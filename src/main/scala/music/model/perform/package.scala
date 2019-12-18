@@ -1,7 +1,7 @@
-package music.domain
+package music.model
 
 import music.primitives.{Loudness, MidiNoteNumber}
-import music.domain.write.track.Track
+import music.model.write.track.Track
 import music.math.temporal.Position
 
 package object perform {

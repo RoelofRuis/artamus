@@ -3,7 +3,7 @@ package server.control
 import java.util.concurrent.ConcurrentHashMap
 
 import com.typesafe.scalalogging.LazyLogging
-import music.domain.write.user.User
+import music.model.write.user.User
 import protocol._
 import protocol.transport.server.{Connection, ServerAPI}
 import server.{Request, ServerBindings}

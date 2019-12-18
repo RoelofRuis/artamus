@@ -1,6 +1,6 @@
 package client
 
-import music.domain.perform.TrackPerformance
+import music.model.perform.TrackPerformance
 
 trait MusicPlayer {
 

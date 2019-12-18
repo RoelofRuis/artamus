@@ -1,4 +1,4 @@
-package music.domain.display.staff
+package music.model.display.staff
 
 import music.primitives.{NoteValue, PitchSpelling, Scale, ScientificPitch, TimeSignatureDivision}
 

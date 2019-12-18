@@ -1,4 +1,4 @@
-package music.domain.display.chord
+package music.model.display.chord
 
 import music.primitives.{Function, NoteValue, PitchSpelling}
 

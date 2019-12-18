@@ -1,6 +1,6 @@
 package server.interpret
 
-import music.domain.display.TrackDisplay
+import music.model.display.TrackDisplay
 import server.rendering.LyFile
 
 class LilypondInterpreter(

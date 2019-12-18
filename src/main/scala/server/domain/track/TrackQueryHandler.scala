@@ -1,7 +1,7 @@
 package server.domain.track
 
 import javax.inject.Inject
-import music.domain.write.track.Track
+import music.model.write.track.Track
 import music.math.temporal.Position
 import protocol.Query
 import pubsub.Dispatcher
@@ -26,7 +26,7 @@ private[server] class TrackQueryHandler @Inject() (
   }
 
   dispatcher.subscribe[Perform.type]{ req =>
-    import music.domain.perform._
+    import music.model.perform._
 
     readTrack(req, _.perform(Position.ZERO), TrackPerformance())
   }
