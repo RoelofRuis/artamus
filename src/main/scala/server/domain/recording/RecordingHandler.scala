@@ -9,6 +9,6 @@ private[server] class RecordingHandler @Inject() (
   dispatcher: Dispatcher[Request, Command],
 ) {
 
-
+  // TODO: implement
 
 }
