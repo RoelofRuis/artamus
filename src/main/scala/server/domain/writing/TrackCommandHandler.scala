@@ -22,7 +22,7 @@ private[server] class TrackCommandHandler @Inject() (
     val delete = for {
       workspace <- req.db.getWorkspaceByOwner(req.user)
       _ <- req.db.removeTrackById(workspace.editedTrack)
-    } yield true
+    } yield ()
 
     val recoveredDelete = delete match {
       case Left(_: NotFound) => ModelResult.ok
@@ -37,7 +37,7 @@ private[server] class TrackCommandHandler @Inject() (
       newWorkspace = workspace.setTrackToEdit(track)
       _ <- req.db.saveTrack(track)
       _ <- req.db.saveWorkspace(newWorkspace)
-    } yield true
+    } yield ()
 
     res.toTry
   }
@@ -54,16 +54,16 @@ private[server] class TrackCommandHandler @Inject() (
     updateTrack(req, _.writeKey(req.attributes.position, req.attributes.symbol))
   }
 
-  def updateTrack(req: Request[Command], f: Track => Track): Try[Boolean] = {
+  def updateTrack(req: Request[Command], f: Track => Track): Try[Unit] = {
     val res = for {
       workspace <- req.db.getWorkspaceByOwner(req.user)
       track <- req.db.getTrackById(workspace.editedTrack)
       _ <- req.db.saveTrack(f(track))
-    } yield true
+    } yield ()
 
     res match {
       case Left(ex) => Failure(ex)
-      case Right(_) => Success(true)
+      case Right(_) => Success(())
     }
   }
 

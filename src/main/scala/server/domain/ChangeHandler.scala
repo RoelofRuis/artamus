@@ -31,7 +31,7 @@ private[server] class ChangeHandler @Inject() (
       lilypondFile = interpreter.interpret(displayTrack)
       _ = renderer.submit(workspace.editedTrack, lilypondFile)
       _ <- req.db.saveTrack(analysedTrack)
-    } yield true
+    } yield ()
 
     res.toTry
   }

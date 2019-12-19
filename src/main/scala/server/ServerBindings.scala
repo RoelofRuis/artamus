@@ -20,7 +20,7 @@ class ServerBindings @Inject() (
     eventSubscriber.unsubscribe(subscribeKey)
   }
 
-  def handleCommand(request: Request[Command]): Try[Command#Res] = commandDispatcher.handle(request)
+  def handleCommand(request: Request[Command]): Try[Unit] = commandDispatcher.handle(request)
 
   def handleQuery(request: Request[Query]): Try[Query#Res] = queryDispatcher.handle(request)
 

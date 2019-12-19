@@ -22,8 +22,11 @@ class DefaultClient(
     clientThread.start()
   }
 
-  override def sendCommand[A <: protocol.Command](message: A): Option[protocol.Command#Res] = {
-    clientThread.sendRequest[CommandRequest, A#Res](CommandRequest(message))
+  override def sendCommand[A <: protocol.Command](message: A): Boolean = {
+    clientThread.sendRequest[CommandRequest, Unit](CommandRequest(message)) match {
+      case None => false
+      case Some(_) => true
+    }
   }
 
   override def sendQuery[A <: protocol.Query](message: A): Option[A#Res] = {
