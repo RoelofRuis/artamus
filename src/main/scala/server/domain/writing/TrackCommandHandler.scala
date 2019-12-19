@@ -5,11 +5,11 @@ import music.model.write.track.Track
 import music.model.write.workspace.Workspace
 import protocol.Command
 import pubsub.Dispatcher
-import server.Request
+import server.{Request, Responses}
 import storage.api.{ModelResult, NotFound}
 
 import scala.language.existentials
-import scala.util.{Failure, Success, Try}
+import scala.util.Try
 
 private[server] class TrackCommandHandler @Inject() (
   dispatcher: Dispatcher[Request, Command],
@@ -39,7 +39,7 @@ private[server] class TrackCommandHandler @Inject() (
       _ <- req.db.saveWorkspace(newWorkspace)
     } yield ()
 
-    res.toTry
+    Responses.executed(res)
   }
 
   dispatcher.subscribe[WriteNoteGroup]{ req =>
@@ -61,10 +61,7 @@ private[server] class TrackCommandHandler @Inject() (
       _ <- req.db.saveTrack(f(track))
     } yield ()
 
-    res match {
-      case Left(ex) => Failure(ex)
-      case Right(_) => Success(())
-    }
+    Responses.executed(res)
   }
 
 }

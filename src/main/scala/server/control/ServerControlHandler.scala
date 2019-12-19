@@ -3,9 +3,7 @@ package server.control
 import javax.inject.Inject
 import protocol.{Command, ServerInterface}
 import pubsub.Dispatcher
-import server.Request
-
-import scala.util.Success
+import server.{Request, Responses}
 
 private[server] class ServerControlHandler @Inject() (
   server: ServerInterface,
@@ -13,14 +11,12 @@ private[server] class ServerControlHandler @Inject() (
 ) {
 
   dispatcher.subscribe[Disconnect] {
-    case Request(_, _, Disconnect(false)) =>
-      Success(())
-
+    case Request(_, _, Disconnect(false)) => Responses.ok
     case Request(_, _, Disconnect(true)) =>
       server.shutdown()
-      Success(())
+      Responses.ok
 
-    case _ => Success(())
+    case _ => Responses.ok
   }
 
 }

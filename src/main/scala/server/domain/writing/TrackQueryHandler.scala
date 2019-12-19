@@ -1,14 +1,13 @@
 package server.domain.writing
 
 import javax.inject.Inject
-import music.model.write.track.Track
 import music.math.temporal.Position
+import music.model.write.track.Track
 import protocol.Query
 import pubsub.Dispatcher
-import server.Request
-import storage.api.NotFound
+import server.{Request, Responses}
 
-import scala.util.{Failure, Success, Try}
+import scala.util.Try
 
 private[server] class TrackQueryHandler @Inject() (
   dispatcher: Dispatcher[Request, Query]
@@ -29,11 +28,7 @@ private[server] class TrackQueryHandler @Inject() (
       track <- req.db.getTrackById(workspace.editedTrack)
     } yield f(track)
 
-    res match {
-      case Right(a) => Success(a)
-      case Left(_: NotFound) => Success(onNotFound)
-      case Left(ex) => Failure(ex)
-    }
+    Responses.returning[A](res, Some(onNotFound))
   }
 
 }
