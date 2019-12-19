@@ -21,7 +21,7 @@ package object perform {
               val midiNoteNumber = MidiNoteNumber(note.octave, note.pitchClass)
               MidiNote(midiNoteNumber, noteGroup.window, Loudness(VOLUME))
             }
-          }
+          }.toSeq
       )
     }
   }
