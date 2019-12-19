@@ -35,14 +35,14 @@ private[storage] object JsonIO {
         else model.toJson.prettyPrint
       } match {
         case Success(s) => DbResult.success(s)
-        case Failure(ex) => DbResult.failure(DataCorruptionException(ex))
+        case Failure(ex) => DbResult.corruptData(ex)
       }
     }
 
     def read[A : JsonReader](s: String): DbResult[A] = {
       Try { s.parseJson.convertTo[A] } match {
         case Success(a) => DbResult.success(a)
-        case Failure(ex) => DbResult.failure(DataCorruptionException(ex))
+        case Failure(ex) => DbResult.corruptData(ex)
       }
     }
 

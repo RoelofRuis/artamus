@@ -22,7 +22,9 @@ object Users {
       db.updateModel[UserListModel](
         KEY,
         UserListModel(),
-        model => UserListModel(model.users :+ user)
+        model =>
+          if (model.users.contains(user)) model
+          else UserListModel(model.users :+ user)
       )
     }
   }

@@ -1,7 +1,6 @@
 package server.rendering
 
 import net.codingwell.scalaguice.ScalaPrivateModule
-import server.rendering.service.{AsyncRenderer, LilypondCommandLineExecutor}
 
 class RenderingModule extends ScalaPrivateModule {
   this: RenderingConfig =>

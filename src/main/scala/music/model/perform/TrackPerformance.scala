@@ -1,11 +1,11 @@
 package music.model.perform
 
 final case class TrackPerformance(
-  notes: Iterator[MidiNote]
+  notes: Seq[MidiNote]
 )
 
 object TrackPerformance {
 
-  def apply(): TrackPerformance = TrackPerformance(Iterator.empty)
+  def apply(): TrackPerformance = TrackPerformance(Seq())
 
 }

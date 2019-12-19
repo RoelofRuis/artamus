@@ -1,5 +1,7 @@
 package server
 
+import java.io.File
+
 import music.model.write.track.Track.TrackId
 
 package object rendering {
@@ -17,5 +19,8 @@ package object rendering {
     def submit(trackId: TrackId, file: LyFile): Unit
 
   }
+
+  final case class RenderingException(message: String, cause: Option[Throwable]) extends Exception
+  final case class RenderingResult(file: File)
 
 }

@@ -26,11 +26,13 @@ class CommandExecutor @Inject() (
   @tailrec
   private def sendCommands(commands: List[Command]): Unit = commands match {
     case Nil =>
-    case command :: rest => client.sendCommand(command) match {
-      case Some(res) => println(s"[$command] -> [$res]")
+    case command :: rest =>
+      if (client.sendCommand(command)) {
+        println(s"[$command] executed")
         sendCommands(rest)
-      case None => println(s"[$command] -> failed! (skipping [${rest.length}] more)")
-    }
+      } else {
+        println(s"[$command] failed! (skipping [${rest.length}] more)")
+      }
   }
 
   def exit(): Unit = client.close()

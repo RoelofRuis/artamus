@@ -1,9 +1,7 @@
-package server.rendering.service
+package server.rendering
 
 import java.io.{File, PrintWriter}
 import java.util.UUID
-
-import server.rendering.LyFile
 
 private[rendering] class LilypondCommandLineExecutor(
   val resourceRootPath: String,
