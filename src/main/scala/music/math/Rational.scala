@@ -3,7 +3,7 @@ package music.math
 import scala.annotation.tailrec
 
 /**
-  * Models a rational numbers that can be used to express exact fractional calculations.
+  * Models a rational number that can be used to express exact fractional calculations.
   *
   * @see https://en.wikipedia.org/wiki/rational_number
   *
