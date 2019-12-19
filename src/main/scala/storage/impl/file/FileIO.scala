@@ -1,4 +1,4 @@
-package storage.impl
+package storage.impl.file
 
 import java.io._
 import java.nio.file.{Files, Paths, StandardCopyOption}

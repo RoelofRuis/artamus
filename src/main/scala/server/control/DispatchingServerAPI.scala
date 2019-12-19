@@ -6,9 +6,10 @@ import com.typesafe.scalalogging.LazyLogging
 import music.model.write.user.User
 import protocol._
 import protocol.transport.server.{Connection, ServerAPI}
-import server.{Request, ServerBindings}
-import storage.api.{DbIO, DbTransaction, DbWithRead, NotFound}
 import server.model.Users._
+import server.{Request, ServerBindings}
+import storage.api.ModelIO.NotFound
+import storage.api.{DbIO, DbTransaction, DbWithRead}
 
 import scala.util.{Failure, Success, Try}
 
