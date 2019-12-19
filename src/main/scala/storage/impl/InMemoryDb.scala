@@ -22,7 +22,7 @@ private[storage] class InMemoryDb() extends CommittableReadableDb {
   def readKey(key: DataKey): DbResult[String] = {
     Option(state.get(key)) match {
       case Some(s) => DbResult.success(s)
-      case None => DbResult.failure(ResourceNotFound())
+      case None => DbResult.notFound
     }
   }
 
