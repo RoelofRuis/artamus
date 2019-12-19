@@ -1,6 +1,6 @@
 package server
 
-import storage.api.{ModelResult, NotFound}
+import storage.api.ModelIO.{ModelResult, NotFound}
 
 import scala.util.{Failure, Success, Try}
 

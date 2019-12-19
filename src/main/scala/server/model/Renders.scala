@@ -2,7 +2,7 @@ package server.model
 
 import music.model.display.render.Render
 import music.model.write.track.Track.TrackId
-import storage.api.{DataKey, DbIO, DbRead, ModelResult}
+import storage.api.{DataKey, DbIO, DbRead}
 
 object Renders {
 

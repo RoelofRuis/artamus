@@ -4,7 +4,7 @@ import music.model.write.track.Track.TrackId
 import music.model.write.user.User
 import music.model.write.user.User.UserId
 import music.model.write.workspace.Workspace
-import storage.api.{DataKey, DbIO, DbRead, ModelResult}
+import storage.api.{DataKey, DbIO, DbRead}
 
 object Workspaces {
 

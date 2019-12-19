@@ -6,7 +6,7 @@ import music.model.write.workspace.Workspace
 import protocol.Command
 import pubsub.Dispatcher
 import server.{Request, Responses}
-import storage.api.{ModelResult, NotFound}
+import storage.api.ModelIO.{ModelResult, NotFound}
 
 import scala.language.existentials
 import scala.util.Try
