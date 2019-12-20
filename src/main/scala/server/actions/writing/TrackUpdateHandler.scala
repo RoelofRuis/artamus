@@ -5,14 +5,15 @@ import music.model.write.track.Track
 import music.model.write.workspace.Workspace
 import protocol.Command
 import pubsub.Dispatcher
+import server.analysis.blackboard.Controller
 import server.{Request, Responses}
 import storage.api.ModelIO.{ModelResult, NotFound}
 
-import scala.language.existentials
 import scala.util.Try
 
-private[server] class TrackCommandHandler @Inject() (
+private[server] class TrackUpdateHandler @Inject() (
   dispatcher: Dispatcher[Request, Command],
+  analysis: Controller[Track]
 ) {
 
   import server.model.Tracks._
@@ -40,6 +41,10 @@ private[server] class TrackCommandHandler @Inject() (
     } yield ()
 
     Responses.executed(res)
+  }
+
+  dispatcher.subscribe[Analyse.type] { req =>
+    updateTrack(req, analysis.run)
   }
 
   dispatcher.subscribe[WriteNoteGroup]{ req =>

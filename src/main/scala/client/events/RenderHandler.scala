@@ -11,8 +11,7 @@ import javax.imageio.ImageIO
 import javax.swing.{ImageIcon, JFrame, JLabel, WindowConstants}
 import protocol.Event
 import pubsub.{Callback, Dispatcher}
-import server.actions.AnalysisStarted
-import server.actions.writing.TrackRendered
+import server.actions.writing.{RenderingStarted, TrackRendered}
 
 import scala.util.{Failure, Success, Try}
 
@@ -30,7 +29,7 @@ class RenderHandler @Inject() (
   frame.getContentPane.add(label, BorderLayout.CENTER)
   frame.setVisible(true)
 
-  dispatcher.subscribe[AnalysisStarted.type]{ _ =>
+  dispatcher.subscribe[RenderingStarted.type]{ _ =>
     lastImage match {
       case Some(img) =>
         val graphics = img.createGraphics()

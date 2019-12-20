@@ -3,15 +3,13 @@ package server.rendering.impl
 import java.io.{File, PrintWriter}
 import java.util.UUID
 
-import server.rendering.RenderingCompletionHandler.RenderingException
-
 private[rendering] class LilypondCommandLineExecutor(
   val resourceRootPath: String,
   val cleanupLySources: Boolean,
   val pngResolution: Int,
 ) {
 
-  def render(lilyFile: LyFile): Either[RenderingException, RenderingResult] = {
+  def render(lilyFile: LyFile): Either[Throwable, RenderingResult] = {
     val fileId = UUID.randomUUID()
     val sourceFile = new File(s"$resourceRootPath/lily_$fileId.ly")
     val targetFile = new File(s"$resourceRootPath/lily_$fileId.png")
@@ -26,10 +24,10 @@ private[rendering] class LilypondCommandLineExecutor(
       val result = getLilypondCommand(sourceFile.getAbsolutePath).!!
 
       if (targetFile.exists()) Right(RenderingResult(targetFile))
-      else Left(RenderingException(result, None))
+      else Left(new Exception(result))
 
     } catch {
-      case ex: Exception => Left(RenderingException("Exception during rendering", Some(ex)))
+      case ex: Exception => Left(ex)
     } finally {
       if (cleanupLySources) sourceFile.delete()
     }

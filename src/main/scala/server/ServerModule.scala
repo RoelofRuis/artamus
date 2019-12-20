@@ -5,14 +5,13 @@ import javax.inject.Singleton
 import music.model.write.track.Track
 import net.codingwell.scalaguice.ScalaPrivateModule
 import protocol._
-import server.actions.ChangeHandler
 import server.actions.control.ServerControlHandler
 import server.actions.recording.RecordingCommandHandler
-import server.actions.writing.{TrackCommandHandler, TrackQueryHandler}
+import server.actions.writing.{TrackQueryHandler, TrackTaskHandler, TrackUpdateHandler}
 import server.analysis._
 import server.analysis.blackboard.Controller
 import server.infra.{ConnectionLifetimeHooks, DispatchingServerAPI, ServerBindings, ServerInfraModule}
-import server.rendering.{RenderingCompletionHandler, RenderingModule}
+import server.rendering.RenderingModule
 import storage.InMemoryStorageModule
 import storage.api.DbWithRead
 
@@ -26,11 +25,9 @@ class ServerModule extends ScalaPrivateModule with ServerConfig {
     // Handlers
     bind[ServerControlHandler].asEagerSingleton()
     bind[TrackQueryHandler].asEagerSingleton()
-    bind[TrackCommandHandler].asEagerSingleton()
+    bind[TrackUpdateHandler].asEagerSingleton()
+    bind[TrackTaskHandler].asEagerSingleton()
     bind[RecordingCommandHandler].asEagerSingleton()
-    bind[ChangeHandler].asEagerSingleton()
-
-    bind[RenderingCompletionHandler].to[RenderingEventCompletionHandler]
 
     bind[Controller[Track]]
       .toInstance(new Controller(

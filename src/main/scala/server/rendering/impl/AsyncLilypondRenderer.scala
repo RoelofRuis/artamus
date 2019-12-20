@@ -7,8 +7,11 @@ import javax.inject.Inject
 import music.model.display.Display
 import music.model.display.render.Render
 import music.model.write.track.Track
-import server.rendering.RenderingCompletionHandler.RenderingException
-import server.rendering.{AsyncRenderer, RenderingCompletionHandler}
+import protocol.Event
+import pubsub.EventBus
+import server.actions.writing.TrackRendered
+import server.rendering.AsyncRenderer
+import storage.api.DbWithRead
 
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.{Failure, Success}
@@ -16,7 +19,8 @@ import scala.util.{Failure, Success}
 private[rendering] class AsyncLilypondRenderer @Inject() (
   renderingService: LilypondCommandLineExecutor,
   interpreter: LilypondInterpreter,
-  completionHandler: RenderingCompletionHandler
+  eventBus: EventBus[Event],
+  db: DbWithRead
 ) extends AsyncRenderer with LazyLogging {
 
   private val executor: ExecutorService = Executors.newFixedThreadPool(1, (r: Runnable) => {
@@ -35,12 +39,27 @@ private[rendering] class AsyncLilypondRenderer @Inject() (
       val lyFile = interpreter.interpret(displayTrack)
       renderingService.render(lyFile)
     }.onComplete {
-      case Success(Right(result)) =>
-        completionHandler.renderingCompleted(Right(Render(track.id, result.file.getAbsolutePath)))
-      case Success(Left(ex)) =>
-        completionHandler.renderingCompleted(Left(ex))
-      case Failure(ex) =>
-        completionHandler.renderingCompleted(Left(RenderingException("Async renderer failed", Some(ex))))
+      case Success(Right(result)) => renderingCompleted(Right(Render(track.id, result.file.getAbsolutePath)))
+      case Success(Left(ex)) => renderingCompleted(Left(ex))
+      case Failure(ex) => renderingCompleted(Left(ex))
     }
   }
+
+  import server.model.Renders._
+
+  private def renderingCompleted(result: Either[Throwable, Render]): Unit = {
+    result match {
+      case Left(ex) => logger.error(s"Render failed", ex)
+      case Right(render) =>
+        logger.debug(s"Render for track [${render.trackId}] successful")
+        val transaction = db.newTransaction
+        transaction.saveRender(render)
+        transaction.commit() match {
+          case Left(err) => logger.error(s"Async renderer failed", err)
+          case Right(_) => eventBus.publish(TrackRendered(render))
+        }
+    }
+  }
+
+
 }
