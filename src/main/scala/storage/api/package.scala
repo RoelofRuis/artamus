@@ -21,9 +21,6 @@ package object api {
     def ioError[A](cause: Throwable): DbResult[A] = Left(IOError(cause))
     def notFound[A]: DbResult[A] = Left(ResourceNotFound())
     def corruptData[A](cause: Throwable): DbResult[A] = Left(DataCorruptionException(cause))
-
-    @deprecated
-    def failure[A](error: DatabaseError): DbResult[A] = Left(error)
   }
 
 }
