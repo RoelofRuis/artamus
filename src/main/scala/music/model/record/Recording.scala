@@ -10,7 +10,9 @@ final case class Recording(
   id: RecordingId = RecordingId(),
   mode: RecordingMode = InputOnly,
   notes: Seq[RawMidiNote] = Seq()
-)
+) {
+  def recordNote(note: RawMidiNote): Recording = copy(notes = notes :+ note)
+}
 
 object Recording {
 
