@@ -8,12 +8,12 @@ trait ServerConfig extends RenderingConfig with FileStorageConfig {
   val port = 9999
 
   val resourceRootPath = "data"
-  val cleanupLySources = false
+  val cleanupLySources = true
   val pngResolution = 160
   val lyVersion: String = "2.18"
   val paperSize: String = "a6landscape"
 
-  val dbRoot: Seq[String] = Seq("data", "store")
-  val cleanupThreshold: Int = 10
+  val dbRoot: String = "data/store"
+  val cleanupThreshold: Int = 20
 
 }

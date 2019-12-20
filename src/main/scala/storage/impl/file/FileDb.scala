@@ -1,8 +1,9 @@
 package storage.impl.file
 
-import java.io.File
+import java.nio.file.{Path, Paths}
 
 import javax.annotation.concurrent.{GuardedBy, ThreadSafe}
+import javax.inject.{Inject, Named, Singleton}
 import storage.api.DbTransaction.CommitResult
 import storage.api._
 import storage.impl.{CommittableReadableDb, UnitOfWork}
@@ -12,9 +13,10 @@ import scala.util.Try
 import scala.util.matching.Regex
 
 @ThreadSafe
-private[storage] class FileDb(
-  rootPath: Seq[String],
-  cleanupThreshold: Int,
+@Singleton
+private[storage] class FileDb @Inject() (
+  @Named("db-root-path") rootPath: String,
+  @Named("cleanup-threshold") cleanupThreshold: Int
 ) extends CommittableReadableDb {
 
   private val VersionPath = keyToPath(DataKey("_version"), 0)
@@ -102,24 +104,26 @@ private[storage] class FileDb(
   }
 
   private val FILE: Regex = """(\d+)\.[a-z]+""".r
-  private def getActiveFilesPerKey: Seq[(DataKey, String, List[String])] = {
+  private def getActiveFilesPerKey: Seq[(DataKey, Path, List[Path])] = {
     FileIO
-      .list(rootPath.mkString(File.separator), onlyDirs=true)
-      .map { root =>
-        val validFiles = FileIO.list((rootPath :+ root).mkString(File.separator), onlyDirs = false)
+      .list(Paths.get(rootPath), onlyDirs=true)
+      .flatMap { root =>
+        val validFiles = FileIO.list(root, onlyDirs = false)
+          .map(_.getFileName.toString)
           .map { case FILE(v) => v.toInt }
           .filter(_ <= version)
           .sorted
           .reverse
-          .map(i => keyToPath(DataKey(root), i))
-        (DataKey(root), validFiles.head, validFiles.tail)
+          .map(i => keyToPath(DataKey(root.getFileName.toString), i))
+        if (validFiles.isEmpty) Seq()
+        else Seq((DataKey(root.getFileName.toString), validFiles.head, validFiles.tail))
       }
   }
 
-  private def keyToPath(key: DataKey, version: Int): String = {
+  private def keyToPath(key: DataKey, version: Int): Path = {
     val versionString = version.toString
-    val dataFile = s"$versionString.json"
-    (rootPath :+ key.name :+ dataFile).mkString(File.separator)
+    val dataFile = s"$versionString.dat"
+    Paths.get(rootPath, key.name, dataFile)
   }
 
 }
