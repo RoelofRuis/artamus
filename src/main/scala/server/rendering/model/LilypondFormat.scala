@@ -1,4 +1,4 @@
-package server.interpret
+package server.rendering.model
 
 import music.analysis.TwelveToneTuning.TwelveToneFunctions
 import music.model.display.chord.ChordStaff
@@ -9,11 +9,11 @@ import music.primitives._
 
 import scala.annotation.tailrec
 
-trait LilypondFormat[A] {
+private[rendering] trait LilypondFormat[A] {
   def toLilypond(a: A): String
 }
 
-object LilypondFormat {
+private[rendering] object LilypondFormat {
 
   def apply[A](implicit formatter: LilypondFormat[A]): LilypondFormat[A] = formatter
 

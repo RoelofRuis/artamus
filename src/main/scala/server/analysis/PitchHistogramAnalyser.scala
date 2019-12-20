@@ -7,8 +7,6 @@ import scala.collection.immutable.SortedMap
 
 class PitchHistogramAnalyser extends KnowledgeSource[Track] {
 
-  override def canExecute(state: Track): Boolean = true
-
   override def execute(track: Track): Track = {
     val zero = SortedMap(
       0 -> 0L,

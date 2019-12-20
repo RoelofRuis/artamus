@@ -8,8 +8,7 @@ import music.math.Rational
 import music.math.temporal.{Duration, Position, Window}
 import music.primitives.{Note, NoteGroup, TimeSignature, _}
 import protocol.Command
-import server.domain.Analyse
-import server.domain.writing._
+import server.actions.writing._
 
 import scala.annotation.tailrec
 
@@ -20,10 +19,17 @@ class TrackOperations @Inject() (
 
   import music.analysis.TwelveToneTuning._
 
+  registry.registerOperation(OperationToken("analyse", "track"), () => {
+    List(
+      Analyse,
+      Render
+    )
+  })
+
   registry.registerOperation(OperationToken("new", "workspace"), () => {
     List(
       NewWorkspace,
-      Analyse
+      Render
     )
   })
 
@@ -33,7 +39,7 @@ class TrackOperations @Inject() (
 
     List(
       WriteTimeSignature(Position.ZERO, TimeSignature(division)),
-      Analyse
+      Render
     )
   })
 
@@ -50,7 +56,7 @@ class TrackOperations @Inject() (
 
     List(
       WriteKey(Position.ZERO, Key(root, keyType)),
-      Analyse
+      Render
     )
   })
 
@@ -94,7 +100,7 @@ class TrackOperations @Inject() (
       }
     }
 
-    read(elementLayout) :+ Analyse
+    read(elementLayout) :+ Render
   })
 
   sealed trait GridElement

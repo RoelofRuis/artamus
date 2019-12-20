@@ -1,7 +1,7 @@
 package server.model
 
 import music.model.write.user.User
-import storage.api.{DataKey, DbIO, DbRead, ModelResult}
+import storage.api.{DataKey, DbIO, DbRead}
 
 object Users {
 
@@ -10,33 +10,32 @@ object Users {
   private val KEY = DataKey("user")
 
   object UserJsonProtocol extends DomainProtocol {
-    final case class UserListModel(users: Seq[User] = Seq())
+    final case class UserTable(users: Map[String, User] = Map())
 
-    implicit val userListModel = jsonFormat1(UserListModel)
+    implicit val userFormat = jsonFormat2(User.apply)
+    implicit val userTableFormat = jsonFormat1(UserTable)
   }
 
   import UserJsonProtocol._
 
-  implicit class UserCommands(db: DbIO) {
-    def saveUser(user: User): ModelResult[Unit] = {
-      db.updateModel[UserListModel](
-        KEY,
-        UserListModel(),
-        model =>
-          if (model.users.contains(user)) model
-          else UserListModel(model.users :+ user)
-      )
+  implicit class UserQueries(db: DbRead) {
+    def getUserByName(name: String): ModelResult[User] = {
+      db.readModel[UserTable](KEY).flatMap {
+        _.users.find { case (_, user) => (user.name == name) } match {
+          case None => ModelResult.notFound
+          case Some((_, user)) => ModelResult.found(user)
+        }
+      }
     }
   }
 
-  implicit class UserQueries(db: DbRead) {
-    def getUserByName(name: String): ModelResult[User] = {
-      db.readModel[UserListModel](KEY).flatMap {
-        _.users.find(_.name == name) match {
-          case None => ModelResult.notFound
-          case Some(u) => ModelResult.found(u)
-        }
-      }
+  implicit class UserCommands(db: DbIO) {
+    def saveUser(user: User): ModelResult[Unit] = {
+      db.updateModel[UserTable](
+        KEY,
+        UserTable(),
+        model => UserTable(model.users.updated(user.id.toString, user))
+      )
     }
   }
 

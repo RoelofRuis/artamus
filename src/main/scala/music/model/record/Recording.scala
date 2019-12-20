@@ -7,10 +7,12 @@ import music.primitives.TickResolution
 
 final case class Recording(
   resolution: TickResolution,
-  recordingId: RecordingId = RecordingId(),
+  id: RecordingId = RecordingId(),
   mode: RecordingMode = InputOnly,
   notes: Seq[RawMidiNote] = Seq()
-)
+) {
+  def recordNote(note: RawMidiNote): Recording = copy(notes = notes :+ note)
+}
 
 object Recording {
 

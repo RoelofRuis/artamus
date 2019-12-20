@@ -1,8 +1,8 @@
-package server.interpret
+package server.rendering.model
 
 import music.model.display.TrackDisplay
 
-object LilypondContexts {
+private[rendering] object LilypondContexts {
 
   import LilypondFormat._
 
@@ -31,6 +31,7 @@ object LilypondContexts {
     s"""\\new Staff {
        |\\numericTimeSignature
        |${track.staff.toLilypond}
+       |\\bar "|."
        |}""".stripMargin
 
   def chords(track: TrackDisplay): String =

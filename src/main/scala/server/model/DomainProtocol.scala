@@ -3,14 +3,16 @@ package server.model
 import java.util.UUID
 
 import music.analysis.TwelveToneTuning
-import music.model.write.track.Track.TrackId
-import music.model.write.user.User
-import music.model.write.user.User.UserId
 import music.math.Rational
 import music.math.temporal.{Duration, Position, Window}
-import music.primitives.{Accidental, Chord, Function, Key, Note, NoteGroup, Octave, PitchClass, PitchSpelling, Scale, ScientificPitch, Step, TimeSignature, TimeSignatureDivision}
+import music.model.record.Recording.RecordingId
+import music.model.record.{InputOnly, RawMidiNote, RecordingMode}
+import music.model.write.track.Track.TrackId
+import music.model.write.user.User.UserId
+import music.primitives.{Accidental, Chord, Function, Key, Loudness, MidiNoteNumber, Note, NoteGroup, Octave, PitchClass, PitchSpelling, Scale, ScientificPitch, Step, TickPosition, TickResolution, TimeSignature, TimeSignatureDivision}
 import spray.json.{DefaultJsonProtocol, JsNumber, JsString, JsValue, JsonFormat, deserializationError}
 
+import scala.language.reflectiveCalls
 import scala.collection.immutable.SortedMap
 
 trait DomainProtocol extends DefaultJsonProtocol {
@@ -64,20 +66,26 @@ trait DomainProtocol extends DefaultJsonProtocol {
     override def write(obj: Position): JsValue = JsString(writeRational(obj.v.n,obj.v.d))
   }
 
-  implicit object TrackIdFormat extends JsonFormat[TrackId] {
-    override def read(json: JsValue): TrackId = json match {
-      case JsString(i) => TrackId(UUID.fromString(i))
-      case err => deserializationError(s"Invalid TrackId [$err]")
+  trait IdFormat[A <: { val id: UUID }] extends JsonFormat[A] {
+    def create(id: UUID): A
+
+    override def read(json: JsValue): A = json match {
+      case JsString(i) => create(UUID.fromString(i))
+      case err => deserializationError(s"Invalid RecordingId [$err]")
     }
-    override def write(obj: TrackId): JsValue = JsString(obj.id.toString)
+    override def write(obj: A): JsValue = JsString(obj.id.toString)
   }
 
-  implicit object UserIdFormat extends JsonFormat[UserId] {
-    override def read(json: JsValue): UserId = json match {
-      case JsString(i) => UserId(UUID.fromString(i))
-      case err => deserializationError(s"Invalid UserId [$err]")
-    }
-    override def write(obj: UserId): JsValue = JsString(obj.id.toString)
+  implicit object RecordingIdFormat extends IdFormat[RecordingId] {
+    def create(id: UUID): RecordingId = RecordingId(id)
+  }
+
+  implicit object TrackIdFormat extends IdFormat[TrackId] {
+    def create(id: UUID): TrackId = TrackId(id)
+  }
+
+  implicit object UserIdFormat extends IdFormat[UserId] {
+    def create(id: UUID): UserId = UserId(id)
   }
 
   implicit object AccidentalFormat extends JsonFormat[Accidental] {
@@ -96,6 +104,22 @@ trait DomainProtocol extends DefaultJsonProtocol {
     override def write(obj: Octave): JsValue = JsNumber(obj.value)
   }
 
+  implicit object RecordingModelFormat extends JsonFormat[RecordingMode] {
+    override def write(obj: RecordingMode): JsValue = {
+      obj match {
+        case InputOnly => JsNumber(0)
+      }
+    }
+
+    override def read(json: JsValue): RecordingMode = json match {
+      case JsNumber(i) => i.intValue match {
+        case 1 => InputOnly
+        case _ => deserializationError(s"Invalid recording mode")
+      }
+      case _ => deserializationError(s"Invalid recording mode")
+    }
+  }
+
   implicit val rationalModel = jsonFormat2(Rational.apply)
   implicit val timeSignatureFormat = jsonFormat1(TimeSignature)
   implicit val scaleFormat = jsonFormat1(Scale.apply)
@@ -107,11 +131,15 @@ trait DomainProtocol extends DefaultJsonProtocol {
   implicit val functionFormat = jsonFormat2(Function)
   implicit val chordFormat = jsonFormat2(Chord.apply)
   implicit val noteGroupFormat = jsonFormat2(NoteGroup)
-  implicit val user = jsonFormat2(User.apply)
+  implicit val tickResolutionFormat = jsonFormat1(TickResolution)
+  implicit val tickPositionFormat = jsonFormat1(TickPosition)
+  implicit val loudnessFormat = jsonFormat1(Loudness)
+  implicit val midiNoteNumberFormat = jsonFormat1(MidiNoteNumber.apply)
+  implicit val rawMidiNoteFormat = jsonFormat3(RawMidiNote)
 
   // Helpers for SortedMap conversion
   def savePositions[A](m: SortedMap[Position, A]): Map[String, A] = {
-    m.map { case (pos: Position, a: A) => (writeRational(pos.v.n, pos.v.d), a) }
+    m.map { case (pos: Position, a) => (writeRational(pos.v.n, pos.v.d), a) }
   }
 
   def loadPositions[A](m: Map[String, A]): SortedMap[Position, A] = {

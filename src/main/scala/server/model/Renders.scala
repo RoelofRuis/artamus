@@ -2,7 +2,7 @@ package server.model
 
 import music.model.display.render.Render
 import music.model.write.track.Track.TrackId
-import storage.api.{DataKey, DbIO, DbRead, ModelResult}
+import storage.api.{DataKey, DbIO, DbRead}
 
 object Renders {
 
@@ -11,17 +11,17 @@ object Renders {
   private val KEY = DataKey("render")
 
   object RenderJsonProtocol extends DomainProtocol {
-    final case class RenderMapModel(renders: Map[String, Render] = Map())
+    final case class RendersTable(renders: Map[String, Render] = Map())
 
-    implicit val renderModel = jsonFormat2(Render)
-    implicit val renderMapModel = jsonFormat1(RenderMapModel)
+    implicit val renderFormat = jsonFormat2(Render)
+    implicit val renderTableFormat = jsonFormat1(RendersTable)
   }
 
   import RenderJsonProtocol._
 
   implicit class RenderQueries(db: DbRead) {
     def getRenderByTrackId(trackId: TrackId): ModelResult[Render] = {
-      db.readModel[RenderMapModel](KEY).flatMap {
+      db.readModel[RendersTable](KEY).flatMap {
         _.renders.get(trackId.id.toString) match {
           case None => ModelResult.notFound
           case Some(u) => ModelResult.found(u)
@@ -32,10 +32,10 @@ object Renders {
 
   implicit class RenderCommands(db: DbIO) {
     def saveRender(render: Render): ModelResult[Unit] = {
-      db.updateModel[RenderMapModel](
+      db.updateModel[RendersTable](
         KEY,
-        RenderMapModel(),
-        model => RenderMapModel(model.renders.updated(render.trackId.id.toString, render))
+        RendersTable(),
+        model => RendersTable(model.renders.updated(render.trackId.id.toString, render))
       )
     }
   }

@@ -1,10 +1,11 @@
-package storage.impl
+package storage.impl.file
 
 import java.io.File
 
 import javax.annotation.concurrent.{GuardedBy, ThreadSafe}
 import storage.api.DbTransaction.CommitResult
 import storage.api._
+import storage.impl.{CommittableReadableDb, UnitOfWork}
 
 import scala.annotation.tailrec
 import scala.util.Try
