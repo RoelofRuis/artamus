@@ -41,7 +41,7 @@ class RenderHandler @Inject() (
         frame.repaint()
       case None =>
     }
-    Success()
+    Success(())
   }
 
   dispatcher.subscribe[TrackRendered]{ event =>
@@ -56,6 +56,6 @@ class RenderHandler @Inject() (
       case Failure(ex) =>
         logger.warn("Unable to draw rendered result", ex)
     }
-    Success()
+    Success(())
   }
 }

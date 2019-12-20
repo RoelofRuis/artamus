@@ -12,8 +12,8 @@ final class Resource[A] private (acquireRes: => Either[Throwable, A], releaseRes
   /**
     * Acquire an instance of this resource.
     *
-    * If there is a problem acquiring the resource, returns Left([[ResourceAcquirementException]])
-    * If this resource instance is closed, returns Left([[ResourceClosedException]])
+    * If there is a problem acquiring the resource, returns Left([[resource.Resource.ResourceAcquirementException ResourceAcquirementException]])
+    * If this resource instance is closed, returns Left([[resource.Resource.ResourceClosedException ResourceClosedException]])
     */
   def acquire: Either[ResourceException, A] = state match {
     case Empty()    =>
@@ -40,7 +40,7 @@ final class Resource[A] private (acquireRes: => Either[Throwable, A], releaseRes
   /**
     * Close this resource instance, and release the currently held resource.
     *
-    * If [[acquire]] is called after this resource is closed, it will return Some([[ResourceClosedException]])
+    * If [[acquire]] is called after this resource is closed, it will return Some([[resource.Resource.ResourceClosedException ResourceClosedException]])
     */
   def close: Option[ResourceReleaseException] = state match {
     case Empty()    =>

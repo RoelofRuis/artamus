@@ -139,7 +139,7 @@ trait DomainProtocol extends DefaultJsonProtocol {
 
   // Helpers for SortedMap conversion
   def savePositions[A](m: SortedMap[Position, A]): Map[String, A] = {
-    m.map { case (pos: Position, a: A) => (writeRational(pos.v.n, pos.v.d), a) }
+    m.map { case (pos: Position, a) => (writeRational(pos.v.n, pos.v.d), a) }
   }
 
   def loadPositions[A](m: Map[String, A]): SortedMap[Position, A] = {
