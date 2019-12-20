@@ -12,7 +12,6 @@ import server.actions.writing.{TrackCommandHandler, TrackQueryHandler}
 import server.analysis._
 import server.analysis.blackboard.Controller
 import server.infra.{ConnectionLifetimeHooks, DispatchingServerAPI, ServerBindings, ServerInfraModule}
-import server.interpret.LilypondInterpreter
 import server.rendering.{RenderingCompletionHandler, RenderingModule}
 import storage.InMemoryStorageModule
 import storage.api.DbWithRead
@@ -23,13 +22,6 @@ class ServerModule extends ScalaPrivateModule with ServerConfig {
     install(new InMemoryStorageModule with ServerConfig)
     install(new RenderingModule with ServerConfig)
     install(new ServerInfraModule)
-
-    bind[LilypondInterpreter].toInstance(
-      new LilypondInterpreter(
-        lyVersion,
-        paperSize
-      )
-    )
 
     // Handlers
     bind[ServerControlHandler].asEagerSingleton()

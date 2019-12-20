@@ -1,9 +1,9 @@
-package server.interpret
+package server.rendering.impl
 
 import music.model.display.TrackDisplay
-import server.rendering.LyFile
+import server.rendering.model.LilypondContexts
 
-class LilypondInterpreter(
+private[rendering] class LilypondInterpreter(
   lyVersion: String,
   paperSize: String
 ) {

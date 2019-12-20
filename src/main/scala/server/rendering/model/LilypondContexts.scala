@@ -1,8 +1,8 @@
-package server.interpret
+package server.rendering.model
 
 import music.model.display.TrackDisplay
 
-object LilypondContexts {
+private[rendering] object LilypondContexts {
 
   import LilypondFormat._
 

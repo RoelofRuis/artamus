@@ -6,7 +6,8 @@ import music.model.display.render.Render
 import protocol.Event
 import pubsub.EventBus
 import server.actions.writing.TrackRendered
-import server.rendering.{RenderingCompletionHandler, RenderingException}
+import server.rendering.RenderingCompletionHandler
+import server.rendering.RenderingCompletionHandler.RenderingException
 import storage.api.DbWithRead
 
 class RenderingEventCompletionHandler @Inject() (

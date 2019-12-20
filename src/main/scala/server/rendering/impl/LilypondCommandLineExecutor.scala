@@ -1,7 +1,9 @@
-package server.rendering
+package server.rendering.impl
 
 import java.io.{File, PrintWriter}
 import java.util.UUID
+
+import server.rendering.RenderingCompletionHandler.RenderingException
 
 private[rendering] class LilypondCommandLineExecutor(
   val resourceRootPath: String,
