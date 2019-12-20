@@ -31,6 +31,7 @@ private[rendering] object LilypondContexts {
     s"""\\new Staff {
        |\\numericTimeSignature
        |${track.staff.toLilypond}
+       |\\bar "|."
        |}""".stripMargin
 
   def chords(track: TrackDisplay): String =
