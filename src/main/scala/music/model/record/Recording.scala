@@ -6,8 +6,8 @@ import music.model.record.Recording.RecordingId
 import music.primitives.TickResolution
 
 final case class Recording(
-  id: RecordingId = RecordingId(),
   resolution: TickResolution,
+  id: RecordingId = RecordingId(),
   mode: RecordingMode = InputOnly,
   notes: Seq[RawMidiNote] = Seq()
 )

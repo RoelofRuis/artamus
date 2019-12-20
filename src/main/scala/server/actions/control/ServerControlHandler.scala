@@ -1,4 +1,4 @@
-package server.control
+package server.actions.control
 
 import javax.inject.Inject
 import protocol.{Command, ServerInterface}

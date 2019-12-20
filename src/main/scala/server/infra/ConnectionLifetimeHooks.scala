@@ -1,10 +1,10 @@
-package server.control
+package server.infra
 
 import javax.inject.Inject
 import music.model.write.user.User
 import protocol.Event
 import pubsub.EventBus
-import server.domain.writing.TrackRendered
+import server.actions.writing.TrackRendered
 import storage.api.{DbIO, DbTransaction}
 
 final class ConnectionLifetimeHooks @Inject() (

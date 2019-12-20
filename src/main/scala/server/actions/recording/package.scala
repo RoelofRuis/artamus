@@ -1,4 +1,4 @@
-package server.domain
+package server.actions
 
 import music.model.record.RawMidiNote
 import music.primitives.{TickPosition, TickResolution}

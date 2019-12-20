@@ -1,12 +1,13 @@
-package server
+package server.infra
 
 import javax.inject.Inject
 import protocol.{Command, Event, Query}
 import pubsub.{Dispatcher, EventBus}
+import server.Request
 
 import scala.util.Try
 
-class ServerBindings @Inject() (
+final class ServerBindings @Inject() (
   commandDispatcher: Dispatcher[Request, Command],
   queryDispatcher: Dispatcher[Request, Query],
   eventSubscriber: EventBus[Event]

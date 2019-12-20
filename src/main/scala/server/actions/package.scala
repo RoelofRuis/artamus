@@ -2,7 +2,7 @@ package server
 
 import protocol.{Command, Event}
 
-package object domain {
+package object actions {
 
   case object Analyse extends Command
 

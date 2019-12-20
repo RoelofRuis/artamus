@@ -3,16 +3,16 @@ package server.model
 import java.util.UUID
 
 import music.analysis.TwelveToneTuning
-import music.model.write.track.Track.TrackId
-import music.model.write.user.User
-import music.model.write.user.User.UserId
 import music.math.Rational
 import music.math.temporal.{Duration, Position, Window}
 import music.model.record.Recording.RecordingId
-import music.model.write.workspace.Workspace
-import music.primitives.{Accidental, Chord, Function, Key, Note, NoteGroup, Octave, PitchClass, PitchSpelling, Scale, ScientificPitch, Step, TimeSignature, TimeSignatureDivision}
+import music.model.record.{InputOnly, RawMidiNote, RecordingMode}
+import music.model.write.track.Track.TrackId
+import music.model.write.user.User.UserId
+import music.primitives.{Accidental, Chord, Function, Key, Loudness, MidiNoteNumber, Note, NoteGroup, Octave, PitchClass, PitchSpelling, Scale, ScientificPitch, Step, TickPosition, TickResolution, TimeSignature, TimeSignatureDivision}
 import spray.json.{DefaultJsonProtocol, JsNumber, JsString, JsValue, JsonFormat, deserializationError}
 
+import scala.language.reflectiveCalls
 import scala.collection.immutable.SortedMap
 
 trait DomainProtocol extends DefaultJsonProtocol {
@@ -104,6 +104,22 @@ trait DomainProtocol extends DefaultJsonProtocol {
     override def write(obj: Octave): JsValue = JsNumber(obj.value)
   }
 
+  implicit object RecordingModelFormat extends JsonFormat[RecordingMode] {
+    override def write(obj: RecordingMode): JsValue = {
+      obj match {
+        case InputOnly => JsNumber(0)
+      }
+    }
+
+    override def read(json: JsValue): RecordingMode = json match {
+      case JsNumber(i) => i.intValue match {
+        case 1 => InputOnly
+        case _ => deserializationError(s"Invalid recording mode")
+      }
+      case _ => deserializationError(s"Invalid recording mode")
+    }
+  }
+
   implicit val rationalModel = jsonFormat2(Rational.apply)
   implicit val timeSignatureFormat = jsonFormat1(TimeSignature)
   implicit val scaleFormat = jsonFormat1(Scale.apply)
@@ -115,6 +131,11 @@ trait DomainProtocol extends DefaultJsonProtocol {
   implicit val functionFormat = jsonFormat2(Function)
   implicit val chordFormat = jsonFormat2(Chord.apply)
   implicit val noteGroupFormat = jsonFormat2(NoteGroup)
+  implicit val tickResolutionFormat = jsonFormat1(TickResolution)
+  implicit val tickPositionFormat = jsonFormat1(TickPosition)
+  implicit val loudnessFormat = jsonFormat1(Loudness)
+  implicit val midiNoteNumberFormat = jsonFormat1(MidiNoteNumber.apply)
+  implicit val rawMidiNoteFormat = jsonFormat3(RawMidiNote)
 
   // Helpers for SortedMap conversion
   def savePositions[A](m: SortedMap[Position, A]): Map[String, A] = {

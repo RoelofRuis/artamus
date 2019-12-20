@@ -1,4 +1,4 @@
-package server.domain.writing
+package server.actions.writing
 
 import javax.inject.Inject
 import music.math.temporal.Position

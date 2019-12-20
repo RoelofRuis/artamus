@@ -1,4 +1,4 @@
-package server.domain
+package server.actions
 
 import javax.inject.Inject
 import music.model.display.Display
