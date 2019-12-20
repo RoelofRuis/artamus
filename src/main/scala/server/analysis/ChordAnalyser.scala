@@ -6,8 +6,6 @@ import server.analysis.blackboard.KnowledgeSource
 
 class ChordAnalyser extends KnowledgeSource[Track] {
 
-  override def canExecute(state: Track): Boolean = true
-
   override def execute(track: Track): Track = {
     val analysedChords = track
       .notes

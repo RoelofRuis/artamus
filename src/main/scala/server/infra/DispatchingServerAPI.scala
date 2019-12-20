@@ -1,4 +1,4 @@
-package server.control
+package server.infra
 
 import java.util.concurrent.ConcurrentHashMap
 
@@ -7,7 +7,8 @@ import music.model.write.user.User
 import protocol._
 import protocol.transport.server.{Connection, ServerAPI}
 import server.model.Users._
-import server.{Request, ServerBindings}
+import server.Request
+import server.actions.control.Authenticate
 import storage.api.ModelIO.NotFound
 import storage.api.{DbIO, DbTransaction, DbWithRead}
 

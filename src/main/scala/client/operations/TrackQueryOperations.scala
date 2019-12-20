@@ -3,7 +3,7 @@ package client.operations
 import client.MusicPlayer
 import javax.inject.Inject
 import protocol.ClientInterface
-import server.domain.writing.Perform
+import server.actions.writing.Perform
 
 class TrackQueryOperations @Inject() (
   registry: OperationRegistry,

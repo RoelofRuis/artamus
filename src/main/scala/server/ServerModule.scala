@@ -5,12 +5,13 @@ import javax.inject.Singleton
 import music.model.write.track.Track
 import net.codingwell.scalaguice.ScalaPrivateModule
 import protocol._
-import pubsub.{Dispatcher, EventBus}
+import server.actions.ChangeHandler
+import server.actions.control.ServerControlHandler
+import server.actions.recording.RecordingCommandHandler
+import server.actions.writing.{TrackCommandHandler, TrackQueryHandler}
 import server.analysis._
 import server.analysis.blackboard.Controller
-import server.control.{ConnectionLifetimeHooks, DispatchingServerAPI, ServerControlHandler}
-import server.domain.ChangeHandler
-import server.domain.writing.{TrackCommandHandler, TrackQueryHandler}
+import server.infra.{ConnectionLifetimeHooks, DispatchingServerAPI, ServerBindings, ServerInfraModule}
 import server.interpret.LilypondInterpreter
 import server.rendering.{RenderingCompletionHandler, RenderingModule}
 import storage.InMemoryStorageModule
@@ -20,6 +21,8 @@ class ServerModule extends ScalaPrivateModule with ServerConfig {
 
   override def configure(): Unit = {
     install(new InMemoryStorageModule with ServerConfig)
+    install(new RenderingModule with ServerConfig)
+    install(new ServerInfraModule)
 
     bind[LilypondInterpreter].toInstance(
       new LilypondInterpreter(
@@ -28,22 +31,14 @@ class ServerModule extends ScalaPrivateModule with ServerConfig {
       )
     )
 
-    bind[ConnectionLifetimeHooks].asEagerSingleton()
-
-    bind[RenderingCompletionHandler].to[RenderingEventCompletionHandler]
-    install(new RenderingModule with ServerConfig)
-
+    // Handlers
     bind[ServerControlHandler].asEagerSingleton()
+    bind[TrackQueryHandler].asEagerSingleton()
+    bind[TrackCommandHandler].asEagerSingleton()
+    bind[RecordingCommandHandler].asEagerSingleton()
     bind[ChangeHandler].asEagerSingleton()
 
-    bind[Dispatcher[Request, Query]].toInstance(pubsub.createDispatcher[Request, Query]())
-    bind[TrackQueryHandler].asEagerSingleton()
-
-    bind[Dispatcher[Request, Command]].toInstance(pubsub.createDispatcher[Request, Command]())
-    bind[TrackCommandHandler].asEagerSingleton()
-
-    bind[ServerBindings].asEagerSingleton()
-    bind[EventBus[Event]].toInstance(new EventBus[Event])
+    bind[RenderingCompletionHandler].to[RenderingEventCompletionHandler]
 
     bind[Controller[Track]]
       .toInstance(new Controller(

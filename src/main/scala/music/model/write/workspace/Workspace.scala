@@ -1,14 +1,18 @@
 package music.model.write.workspace
 
+import music.model.record.Recording
+import music.model.record.Recording.RecordingId
 import music.model.write.track.Track
 import music.model.write.track.Track.TrackId
 import music.model.write.user.User.UserId
 
 final case class Workspace(
   owner: UserId,
-  editedTrack: TrackId
+  selectedTrack: TrackId,
+  activeRecording: Option[RecordingId] = None
 ) {
-  def setTrackToEdit(track: Track): Workspace = copy(editedTrack = track.id)
+  def selectTrack(track: Track): Workspace = copy(selectedTrack = track.id)
+  def startRecording(recording: Recording): Workspace = copy(activeRecording = Some(recording.id))
 }
 
 object Workspace {

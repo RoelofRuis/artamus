@@ -3,7 +3,7 @@ package client.operations
 import client.io.StdIOTools
 import com.google.inject.Inject
 import protocol.ClientInterface
-import server.control.{Authenticate, Disconnect}
+import server.actions.control.{Authenticate, Disconnect}
 
 class SystemOperations @Inject() (
   registry: OperationRegistry,

@@ -11,8 +11,8 @@ import javax.imageio.ImageIO
 import javax.swing.{ImageIcon, JFrame, JLabel, WindowConstants}
 import protocol.Event
 import pubsub.{Callback, Dispatcher}
-import server.domain.AnalysisStarted
-import server.domain.writing.TrackRendered
+import server.actions.AnalysisStarted
+import server.actions.writing.TrackRendered
 
 import scala.util.{Failure, Success, Try}
 

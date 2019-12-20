@@ -1,4 +1,4 @@
-package server.domain
+package server.actions
 
 import music.math.temporal.Position
 import music.model.display.render.Render

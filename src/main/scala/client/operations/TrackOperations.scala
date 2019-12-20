@@ -8,8 +8,8 @@ import music.math.Rational
 import music.math.temporal.{Duration, Position, Window}
 import music.primitives.{Note, NoteGroup, TimeSignature, _}
 import protocol.Command
-import server.domain.Analyse
-import server.domain.writing._
+import server.actions.Analyse
+import server.actions.writing._
 
 import scala.annotation.tailrec
 

@@ -5,7 +5,7 @@ import javax.inject.Inject
 import music.model.display.render.Render
 import protocol.Event
 import pubsub.EventBus
-import server.domain.writing.TrackRendered
+import server.actions.writing.TrackRendered
 import server.rendering.{RenderingCompletionHandler, RenderingException}
 import storage.api.DbWithRead
 
