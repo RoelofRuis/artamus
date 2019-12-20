@@ -24,12 +24,12 @@ private[server] class ChangeHandler @Inject() (
   changeCommands.subscribe[Analyse.type] { req =>
     val res = for {
       workspace <- req.db.getWorkspaceByOwner(req.user)
-      track <- req.db.getTrackById(workspace.editedTrack)
+      track <- req.db.getTrackById(workspace.selectedTrack)
       _ = eventBus.publish(AnalysisStarted)
       analysedTrack = analysis.run(track)
       displayTrack = Display.displayTrack(analysedTrack)
       lilypondFile = interpreter.interpret(displayTrack)
-      _ = renderer.submit(workspace.editedTrack, lilypondFile)
+      _ = renderer.submit(workspace.selectedTrack, lilypondFile)
       _ <- req.db.saveTrack(analysedTrack)
     } yield ()
 

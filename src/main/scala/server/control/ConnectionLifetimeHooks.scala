@@ -17,7 +17,7 @@ final class ConnectionLifetimeHooks @Inject() (
   def onAuthenticated(db: DbIO with DbTransaction, user: User): Unit = {
     for {
       workspace <- db.getWorkspaceByOwner(user)
-      render <- db.getRenderByTrackId(workspace.editedTrack)
+      render <- db.getRenderByTrackId(workspace.selectedTrack)
     } yield {
       eventbus.publish(TrackRendered(render))
     }

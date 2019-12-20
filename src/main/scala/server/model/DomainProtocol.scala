@@ -8,6 +8,8 @@ import music.model.write.user.User
 import music.model.write.user.User.UserId
 import music.math.Rational
 import music.math.temporal.{Duration, Position, Window}
+import music.model.record.Recording.RecordingId
+import music.model.write.workspace.Workspace
 import music.primitives.{Accidental, Chord, Function, Key, Note, NoteGroup, Octave, PitchClass, PitchSpelling, Scale, ScientificPitch, Step, TimeSignature, TimeSignatureDivision}
 import spray.json.{DefaultJsonProtocol, JsNumber, JsString, JsValue, JsonFormat, deserializationError}
 
@@ -64,20 +66,26 @@ trait DomainProtocol extends DefaultJsonProtocol {
     override def write(obj: Position): JsValue = JsString(writeRational(obj.v.n,obj.v.d))
   }
 
-  implicit object TrackIdFormat extends JsonFormat[TrackId] {
-    override def read(json: JsValue): TrackId = json match {
-      case JsString(i) => TrackId(UUID.fromString(i))
-      case err => deserializationError(s"Invalid TrackId [$err]")
+  trait IdFormat[A <: { val id: UUID }] extends JsonFormat[A] {
+    def create(id: UUID): A
+
+    override def read(json: JsValue): A = json match {
+      case JsString(i) => create(UUID.fromString(i))
+      case err => deserializationError(s"Invalid RecordingId [$err]")
     }
-    override def write(obj: TrackId): JsValue = JsString(obj.id.toString)
+    override def write(obj: A): JsValue = JsString(obj.id.toString)
   }
 
-  implicit object UserIdFormat extends JsonFormat[UserId] {
-    override def read(json: JsValue): UserId = json match {
-      case JsString(i) => UserId(UUID.fromString(i))
-      case err => deserializationError(s"Invalid UserId [$err]")
-    }
-    override def write(obj: UserId): JsValue = JsString(obj.id.toString)
+  implicit object RecordingIdFormat extends IdFormat[RecordingId] {
+    def create(id: UUID): RecordingId = RecordingId(id)
+  }
+
+  implicit object TrackIdFormat extends IdFormat[TrackId] {
+    def create(id: UUID): TrackId = TrackId(id)
+  }
+
+  implicit object UserIdFormat extends IdFormat[UserId] {
+    def create(id: UUID): UserId = UserId(id)
   }
 
   implicit object AccidentalFormat extends JsonFormat[Accidental] {
@@ -107,7 +115,8 @@ trait DomainProtocol extends DefaultJsonProtocol {
   implicit val functionFormat = jsonFormat2(Function)
   implicit val chordFormat = jsonFormat2(Chord.apply)
   implicit val noteGroupFormat = jsonFormat2(NoteGroup)
-  implicit val user = jsonFormat2(User.apply)
+  implicit val userFormat = jsonFormat2(User.apply)
+  implicit val workspaceFormat = jsonFormat3(Workspace.apply)
 
   // Helpers for SortedMap conversion
   def savePositions[A](m: SortedMap[Position, A]): Map[String, A] = {

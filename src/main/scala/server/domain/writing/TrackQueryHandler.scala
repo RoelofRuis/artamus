@@ -25,7 +25,7 @@ private[server] class TrackQueryHandler @Inject() (
   def readTrack[A](req: Request[Query], f: Track => A, onNotFound: => A): Try[A] = {
     val res = for {
       workspace <- req.db.getWorkspaceByOwner(req.user)
-      track <- req.db.getTrackById(workspace.editedTrack)
+      track <- req.db.getTrackById(workspace.selectedTrack)
     } yield f(track)
 
     Responses.returning[A](res, Some(onNotFound))
