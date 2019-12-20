@@ -13,7 +13,7 @@ object Tracks {
   private val KEY = DataKey("track")
 
   object TrackJsonProtocol extends DomainProtocol {
-    final case class TrackMapModel(tracks: Map[String, TrackContentModel] = Map())
+    final case class TrackTable(tracks: Map[String, TrackContentModel] = Map())
     final case class TrackContentModel(
       id: TrackId,
       bars: Map[String, TimeSignature],
@@ -23,14 +23,14 @@ object Tracks {
     )
 
     implicit val trackFormat = jsonFormat5(TrackContentModel)
-    implicit val trackContentModelFormat = jsonFormat1(TrackMapModel)
+    implicit val trackTableFormat = jsonFormat1(TrackTable)
   }
 
   import TrackJsonProtocol._
 
   implicit class TrackQueries(db: DbRead) {
     def getTrackById(id: TrackId): ModelResult[Track] = {
-      db.readModel[TrackMapModel](KEY).flatMap {
+      db.readModel[TrackTable](KEY).flatMap {
         _.tracks.get(id.id.toString) match {
           case None => ModelResult.notFound
           case Some(w) => ModelResult.found(
@@ -49,10 +49,10 @@ object Tracks {
 
   implicit class TrackCommands(db: DbIO) {
     def saveTrack(track: Track): ModelResult[Unit] = {
-      db.updateModel[TrackMapModel](
+      db.updateModel[TrackTable](
         KEY,
-        TrackMapModel(),
-        model => TrackMapModel(
+        TrackTable(),
+        model => TrackTable(
           model.tracks.updated(
             track.id.id.toString,
             TrackContentModel(
@@ -68,10 +68,10 @@ object Tracks {
     }
 
     def removeTrackById(trackId: TrackId): ModelResult[Unit] = {
-      db.updateModel[TrackMapModel](
+      db.updateModel[TrackTable](
         KEY,
-        TrackMapModel(),
-        model => TrackMapModel(model.tracks.removed(trackId.id.toString))
+        TrackTable(),
+        model => TrackTable(model.tracks.removed(trackId.id.toString))
       )
     }
   }

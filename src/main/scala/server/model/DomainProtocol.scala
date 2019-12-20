@@ -115,8 +115,6 @@ trait DomainProtocol extends DefaultJsonProtocol {
   implicit val functionFormat = jsonFormat2(Function)
   implicit val chordFormat = jsonFormat2(Chord.apply)
   implicit val noteGroupFormat = jsonFormat2(NoteGroup)
-  implicit val userFormat = jsonFormat2(User.apply)
-  implicit val workspaceFormat = jsonFormat3(Workspace.apply)
 
   // Helpers for SortedMap conversion
   def savePositions[A](m: SortedMap[Position, A]): Map[String, A] = {
