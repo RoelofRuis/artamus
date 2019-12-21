@@ -69,7 +69,6 @@ private[storage] class FileDb @Inject() (
     readVersioned(version)
   }
 
-  // TODO: clean up cleanup logic ;-)
   private def checkCleanup(): Unit = {
     val filesState = getActiveFilesPerKey
     val oldFiles = filesState.foldRight(0) { case ((_, _, old), acc) => acc + old.size }
@@ -96,10 +95,8 @@ private[storage] class FileDb @Inject() (
     if (res.isEmpty) {
       FileIO.write(keyToPath(DataKey("_version"), 0), "0") match {
         case Right(_) => version = 0
-        case Left(_) => // TODO: proper return value
+        case Left(_) =>
       }
-    } else {
-      res.foreach(println)
     }
   }
 
