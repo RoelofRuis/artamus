@@ -1,19 +1,37 @@
 package server.rendering.impl
 
 import music.model.display.TrackDisplay
-import server.rendering.model.LilypondContexts
+import server.rendering.model.LilypondFormat
 
 private[rendering] class LilypondInterpreter(
   lyVersion: String,
   paperSize: String
 ) {
 
+  import LilypondFormat._
+
   def interpret(track: TrackDisplay): LyFile = {
-    LyFile(LilypondContexts.file(
-      Seq(LilypondContexts.staff(track), LilypondContexts.chords(track)).mkString("\n"),
-      lyVersion,
-      paperSize,
-    ))
+    val contents = s"""|\\version "$lyVersion"
+        |
+        |\\paper {
+        |  #(set-paper-size "$paperSize")
+        |}
+        |
+        |\\header {
+        |  tagline = ##f
+        |}
+        |
+        |\\score {
+        |<<
+        |\\new GrandStaff <<
+        |${track.upper.toLilypond}
+        |${track.lower.toLilypond}
+        |>>
+        |${track.chords.toLilypond}
+        |>>
+        |}
+        |""".stripMargin
+    LyFile(contents)
   }
 
 }

@@ -1,12 +1,12 @@
 package music.model.display
 
 import music.analysis.TwelveTonePitchSpelling
+import music.math.temporal.{Position, Window}
 import music.model.display.chord.ChordStaffGlyph.{ChordNameGlyph, ChordRestGlyph}
 import music.model.display.chord.{ChordStaff, ChordStaffGlyph}
-import music.model.display.staff.{Staff, StaffGlyph}
 import music.model.display.staff.StaffGlyph.{KeyGlyph, NoteGroupGlyph, RestGlyph, TimeSignatureGlyph}
+import music.model.display.staff.{Staff, StaffGlyph}
 import music.model.write.track.Track
-import music.math.temporal.{Position, Window}
 import music.primitives.{Key, ScientificPitch}
 
 object Display {
@@ -17,6 +17,7 @@ object Display {
   def displayTrack(track: Track): TrackDisplay = {
     TrackDisplay(
       track.getStaff,
+      Staff(Iterator.empty),
       track.getChordStaff
     )
   }

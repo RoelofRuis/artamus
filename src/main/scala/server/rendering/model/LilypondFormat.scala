@@ -22,19 +22,35 @@ private[rendering] object LilypondFormat {
   }
 
   implicit val staffFormat: LilypondFormat[Staff] = staff => {
-    staff.glyphs.map {
+    val contents = staff.glyphs.map {
       case g: NoteGroupGlyph => g.toLilypond
       case g: RestGlyph => g.toLilypond
       case g: KeyGlyph => g.toLilypond
       case g: TimeSignatureGlyph => g.toLilypond
     }.mkString("\n")
+    s"""
+      |\\new Staff {
+      |\\numericTimeSignature
+      |\\override Score.BarNumber.break-visibility = ##(#f #t #t)
+      |\\set Score.barNumberVisibility = #all-bar-numbers-visible
+      |\\bar ""
+      |$contents
+      |\\bar "|."
+      |}
+      |""".stripMargin
   }
 
   implicit val chordStaffFormat: LilypondFormat[ChordStaff] = staff => {
-    staff.glyphs.map {
+    val contents = staff.glyphs.map {
       case g: ChordNameGlyph => g.toLilypond
       case g: ChordRestGlyph => g.toLilypond
     }.mkString("\n")
+
+    s"""\\new ChordNames {
+       |\\chordmode {
+       |$contents
+       |}
+       |}""".stripMargin
   }
 
   implicit val restToLilypond: LilypondFormat[RestGlyph] = rest => {
