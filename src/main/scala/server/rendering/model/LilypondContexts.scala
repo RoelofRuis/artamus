@@ -30,6 +30,9 @@ private[rendering] object LilypondContexts {
   def staff(track: TrackDisplay): String =
     s"""\\new Staff {
        |\\numericTimeSignature
+       |\\override Score.BarNumber.break-visibility = ##(#f #t #t)
+       |\\set Score.barNumberVisibility = #all-bar-numbers-visible
+       |\\bar ""
        |${track.staff.toLilypond}
        |\\bar "|."
        |}""".stripMargin
