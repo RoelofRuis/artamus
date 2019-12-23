@@ -2,7 +2,7 @@ package music.model.display.staff
 
 import music.primitives.{MidiNoteNumber, Note, NoteGroup}
 
-object InclusionStrategies {
+object Inclusion {
 
   trait InclusionStrategy extends (NoteGroup => Seq[Note])
 

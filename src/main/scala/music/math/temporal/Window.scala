@@ -26,6 +26,12 @@ final case class Window(start: Position, duration: Duration) {
     }
   }
 
+  def spanning(that: Window): Window = {
+    val smallestStart = Seq(this.start, that.start).min
+    val largestEnd = Seq(this.end, that.end).max
+    Window(smallestStart, largestEnd - smallestStart)
+  }
+
   def isInstant: Boolean = duration == Duration.ZERO
 
 }

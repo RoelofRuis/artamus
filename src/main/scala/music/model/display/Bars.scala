@@ -18,14 +18,8 @@ object Bars {
     def initialTimeSignature: TimeSignature = ts
 
     def extendToFillBar(window: Window): Window = {
-      val bar = durationFits(window.end, ts.division.barDuration, inclusive=true)
-      Window(window.start, getBarWindow(bar).end - window.start)
-    }
-
-    @deprecated
-    def fillBarFrom(window: Window): Window = {
-      val bar = durationFits(window.end, ts.division.barDuration, inclusive=true)
-      Window(window.end, getBarWindow(bar).end - window.end)
+      val bar = durationFits(window.end, ts.division.barDuration, inclusive=false)
+      window.spanning(Window.instantAt(getBarWindow(bar).start))
     }
 
     def fit(window: Window): Seq[Window] = {
