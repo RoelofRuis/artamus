@@ -31,9 +31,7 @@ object ModelIO {
             case None => ModelResult.notFound
           }
         case Right(model) => ModelResult.found(model)
-        case Left(ex) =>
-          ex.printStackTrace()
-          ModelResult.badData(ex)
+        case Left(ex) => ModelResult.badData(ex)
       }
     }
   }

@@ -2,6 +2,7 @@ package music.model.display.staff
 
 import music.analysis.TwelveTonePitchSpelling
 import music.math.temporal.{Position, Window}
+import music.model.display.staff.InclusionStrategies.InclusionStrategy
 import music.model.display.staff.StaffGlyph.{KeyGlyph, NoteGroupGlyph, RestGlyph, TimeSignatureGlyph}
 import music.model.display.{Bars, NoteValues}
 import music.model.write.track.Track
@@ -56,13 +57,11 @@ object StaffDisplay {
         case Some(nextGroup) if include(nextGroup).isEmpty =>
           // windowing
           val nextWindow = Window(window.start, window.start - nextGroup.window.end)
-          println("Empty include" + nextWindow)
           read(nextWindow, notes, include)
 
         case Some(nextGroup) =>
           // windowing
           val nextWindow = nextGroup.window
-          println("Does include" + nextWindow)
           val nextNotes = include(nextGroup)
 
           // rests

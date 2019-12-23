@@ -2,9 +2,9 @@ package music.model.display.staff
 
 import music.primitives.{MidiNoteNumber, Note, NoteGroup}
 
-trait InclusionStrategy extends (NoteGroup => Seq[Note])
-
 object InclusionStrategies {
+
+  trait InclusionStrategy extends (NoteGroup => Seq[Note])
 
   import music.analysis.TwelveToneTuning._
 
