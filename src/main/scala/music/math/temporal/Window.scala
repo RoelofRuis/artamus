@@ -26,6 +26,8 @@ final case class Window(start: Position, duration: Duration) {
     }
   }
 
+  def isInstant: Boolean = duration == Duration.ZERO
+
 }
 
 object Window {

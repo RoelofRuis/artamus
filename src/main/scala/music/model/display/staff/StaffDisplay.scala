@@ -21,7 +21,7 @@ object StaffDisplay {
       // TODO: dynamic reading window
       val window = Window.instantAt(Position.ZERO)
 
-      val initialElements = Iterator(
+      val initialElements = () => Iterator(
         TimeSignatureGlyph(track.timeSignatures.initialTimeSignature.division),
         KeyGlyph(initialKey.root, initialKey.scale)
       )
@@ -29,7 +29,7 @@ object StaffDisplay {
       (
         Staff(
           Treble,
-          initialElements ++ read(
+          initialElements() ++ read(
             window,
             track.notes.readGroups,
             InclusionStrategies.higherNoteNumbers(59)
@@ -37,7 +37,7 @@ object StaffDisplay {
         ),
         Staff(
           Bass,
-          initialElements ++ read(
+          initialElements() ++ read(
             window,
             track.notes.readGroups,
             InclusionStrategies.lowerEqualNoteNumbers(59)
@@ -46,17 +46,23 @@ object StaffDisplay {
       )
     }
 
-    def read(window: Window, notes: Iterator[NoteGroup], include: InclusionStrategy): Iterator[StaffGlyph] = {
+    def read(lastWindow: Window, notes: Iterator[NoteGroup], include: InclusionStrategy): Iterator[StaffGlyph] = {
       notes.nextOption() match {
         case None =>
-          track.timeSignatures.fillBarFrom(window).duration
-            .asNoteValues
-            .map(RestGlyph(_, silent=false))
-            .iterator
+          val finalWindow = track.timeSignatures.extendToFillBar(lastWindow)
+          if (finalWindow.isInstant) Iterator.empty
+          else {
+            track
+              .timeSignatures
+              .fit(finalWindow)
+              .flatMap(_.duration.asNoteValues)
+              .map(RestGlyph(_, silent=false))
+              .iterator
+          }
 
         case Some(nextGroup) if include(nextGroup).isEmpty =>
           // windowing
-          val nextWindow = Window(window.start, window.start - nextGroup.window.end)
+          val nextWindow = Window(lastWindow.start, nextGroup.window.end - lastWindow.start)
           read(nextWindow, notes, include)
 
         case Some(nextGroup) =>
@@ -65,7 +71,7 @@ object StaffDisplay {
           val nextNotes = include(nextGroup)
 
           // rests
-          val rests = window.until(nextWindow) match {
+          val rests = lastWindow.until(nextWindow) match {
             case None => Iterator.empty
             case Some(diff) =>
               track
@@ -90,8 +96,8 @@ object StaffDisplay {
             .map { case (dur, i) => NoteGroupGlyph(dur, pitches, i != (fittedDurations.size - 1)) }
             .iterator
 
-          if (lilyStrings.isEmpty) rests ++ read(nextWindow, notes, include)
-          else rests ++ lilyStrings ++ read(nextWindow, notes, include)
+          if (lilyStrings.isEmpty) rests ++ read(Window.instantAt(nextWindow.end), notes, include)
+          else rests ++ lilyStrings ++ read(Window.instantAt(nextWindow.end), notes, include)
       }
     }
   }
