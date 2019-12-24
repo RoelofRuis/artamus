@@ -12,13 +12,17 @@ import server.analysis._
 import server.analysis.blackboard.Controller
 import server.infra.{ConnectionLifetimeHooks, DispatchingServerAPI, ServerBindings, ServerInfraModule}
 import server.rendering.RenderingModule
-import storage.FileStorageModule
+import storage.InMemoryStorageModule
 import storage.api.DbWithRead
 
 class ServerModule extends ScalaPrivateModule with ServerConfig {
 
   override def configure(): Unit = {
-    install(new FileStorageModule with ServerConfig)
+    // -- pick either one storage
+    // install(new FileStorageModule with ServerConfig)
+    install(new InMemoryStorageModule)
+    // --
+
     install(new RenderingModule with ServerConfig)
     install(new ServerInfraModule)
 
