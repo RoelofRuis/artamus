@@ -2,27 +2,22 @@ package server.model
 
 import music.model.record.Recording
 import music.model.record.Recording.RecordingId
-import storage.api.{DataKey, DbIO, DbRead}
+import spray.json.RootJsonFormat
+import storage.api.{DbIO, DbRead}
 
 object Recordings {
 
   import storage.api.ModelIO._
 
-  private val KEY = DataKey("recording")
-
-  object RecordingJsonProtocol extends DomainProtocol {
-    final case class RecordingTable(recordings: Map[String, Recording] = Map())
-
-    implicit val recordingFormat = jsonFormat4(Recording.apply)
-    implicit val recordingTableFormat = jsonFormat1(RecordingTable)
+  private implicit val table: JsonTableModel[Recording] = new JsonTableModel[Recording] {
+    override val tableName: String = "recording"
+    implicit val format: RootJsonFormat[Recording] = jsonFormat4(Recording.apply)
   }
-
-  import RecordingJsonProtocol._
 
   implicit class RecordingQueries(db: DbRead) {
     def getRecordingById(id: RecordingId): ModelResult[Recording] = {
-      db.readModel[RecordingTable](KEY).flatMap {
-        _.recordings.get(id.toString) match {
+      db.readModel[table.Shape](Some(table.empty)).flatMap {
+        _.get(id.toString) match {
           case None => ModelResult.notFound
           case Some(recording) => ModelResult.found(recording)
         }
@@ -32,12 +27,9 @@ object Recordings {
 
   implicit class RecordingCommands(db: DbIO) {
     def saveRecording(recording: Recording): ModelResult[Unit] = {
-      db.updateModel[RecordingTable](
-        KEY,
-        RecordingTable(),
-        model => RecordingTable(
-          model.recordings.updated(recording.id.toString, recording)
-        )
+      db.updateModel[table.Shape](
+        table.empty,
+        _.updated(recording.id.toString, recording)
       )
     }
   }

@@ -20,7 +20,6 @@ package object api {
     def done: DbResult[Unit] = Right(())
     def ioError[A](cause: Throwable): DbResult[A] = Left(IOError(cause))
     def notFound[A]: DbResult[A] = Left(ResourceNotFound())
-    def corruptData[A](cause: Throwable): DbResult[A] = Left(DataCorruptionException(cause))
   }
 
 }

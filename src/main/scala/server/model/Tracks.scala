@@ -4,42 +4,38 @@ import music.math.temporal.Window
 import music.model.write.track.Track.TrackId
 import music.model.write.track._
 import music.primitives._
-import storage.api.{DataKey, DbIO, DbRead}
+import spray.json.RootJsonFormat
+import storage.api.{DbIO, DbRead}
 
 object Tracks {
 
   import storage.api.ModelIO._
 
-  private val KEY = DataKey("track")
+  private final case class TrackContentModel(
+    id: TrackId,
+    bars: Map[String, TimeSignature],
+    chords: Map[String, (Window, Chord)],
+    keys: Map[String, Key],
+    notes: Map[String, NoteGroup]
+  )
 
-  object TrackJsonProtocol extends DomainProtocol {
-    final case class TrackTable(tracks: Map[String, TrackContentModel] = Map())
-    final case class TrackContentModel(
-      id: TrackId,
-      bars: Map[String, TimeSignature],
-      chords: Map[String, (Window, Chord)],
-      keys: Map[String, Key],
-      notes: Map[String, NoteGroup]
-    )
-
-    implicit val trackFormat = jsonFormat5(TrackContentModel)
-    implicit val trackTableFormat = jsonFormat1(TrackTable)
+  private implicit val table: JsonTableModel[TrackContentModel] = new JsonTableModel[TrackContentModel] {
+    override val tableName: String = "track"
+    override implicit val format: RootJsonFormat[TrackContentModel] = jsonFormat5(TrackContentModel)
   }
-
-  import TrackJsonProtocol._
 
   implicit class TrackQueries(db: DbRead) {
     def getTrackById(id: TrackId): ModelResult[Track] = {
-      db.readModel[TrackTable](KEY).flatMap {
-        _.tracks.get(id.id.toString) match {
+      db.readModel[table.Shape](Some(table.empty)).flatMap {
+        _.get(id.id.toString) match {
           case None => ModelResult.notFound
           case Some(w) => ModelResult.found(
             Track(
               w.id,
-              TimeSignatures(loadPositions(w.bars)),
-              Keys(loadPositions(w.keys)),
-              Chords(loadPositions(w.chords)),
-              Notes(loadPositions(w.notes))
+              TimeSignatures(table.loadPositions(w.bars)),
+              Keys(table.loadPositions(w.keys)),
+              Chords(table.loadPositions(w.chords)),
+              Notes(table.loadPositions(w.notes))
             )
           )
         }
@@ -49,29 +45,25 @@ object Tracks {
 
   implicit class TrackCommands(db: DbIO) {
     def saveTrack(track: Track): ModelResult[Unit] = {
-      db.updateModel[TrackTable](
-        KEY,
-        TrackTable(),
-        model => TrackTable(
-          model.tracks.updated(
-            track.id.id.toString,
-            TrackContentModel(
-              track.id,
-              savePositions(track.timeSignatures.timeSignatures),
-              savePositions(track.chords.chords),
-              savePositions(track.keys.keys),
-              savePositions(track.notes.notes)
-            )
+      db.updateModel[table.Shape](
+        table.empty,
+        _.updated(
+          track.id.id.toString,
+          TrackContentModel(
+            track.id,
+            table.savePositions(track.timeSignatures.timeSignatures),
+            table.savePositions(track.chords.chords),
+            table.savePositions(track.keys.keys),
+            table.savePositions(track.notes.notes)
           )
         )
       )
     }
 
     def removeTrackById(trackId: TrackId): ModelResult[Unit] = {
-      db.updateModel[TrackTable](
-        KEY,
-        TrackTable(),
-        model => TrackTable(model.tracks.removed(trackId.id.toString))
+      db.updateModel[table.Shape](
+        table.empty,
+        _.removed(trackId.id.toString)
       )
     }
   }
