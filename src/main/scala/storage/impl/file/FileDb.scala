@@ -9,7 +9,7 @@ import storage.api._
 import storage.impl.{CommittableReadableDb, UnitOfWork}
 
 import scala.annotation.tailrec
-import scala.util.Try
+import scala.util.{Failure, Success, Try}
 import scala.util.matching.Regex
 
 @ThreadSafe
@@ -57,16 +57,26 @@ private[storage] class FileDb @Inject() (
     }
   }
 
-  def readKey(key: DataKey): DbResult[String] = {
+  override def readModel[A : Model]: ModelResult[A] = {
+    val model = implicitly[Model[A]]
     @tailrec
     def readVersioned(version: Int): DbResult[String] = {
-      FileIO.read(keyToPath(key, version)) match {
+      FileIO.read(keyToPath(model.key, version)) match {
         case Left(ResourceNotFound()) if version > 0 => readVersioned(version - 1)
         case l @ Left(ResourceNotFound()) => l
         case x => x
       }
     }
-    readVersioned(version)
+    val dbResult = readVersioned(version)
+
+    dbResult match {
+      case Left(_: ResourceNotFound) => ModelResult.notFound
+      case Left(ex) => ModelResult.badData(ex)
+      case Right(data) => model.deserialize(data) match {
+        case Success(obj) => ModelResult.found(obj)
+        case Failure(ex) => ModelResult.badData(DataCorruptionException(ex))
+      }
+    }
   }
 
   private def checkCleanup(): Unit = {

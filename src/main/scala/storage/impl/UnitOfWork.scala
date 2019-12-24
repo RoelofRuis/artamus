@@ -4,10 +4,11 @@ import java.util.UUID
 import java.util.concurrent.ConcurrentHashMap
 
 import javax.annotation.concurrent.ThreadSafe
-import storage.api.{DataKey, DbIO, DbResult, DbTransaction}
 import storage.api.DbTransaction.CommitResult
+import storage.api._
 
 import scala.jdk.CollectionConverters._
+import scala.util.{Failure, Success}
 
 @ThreadSafe
 private[impl] final class UnitOfWork private (
@@ -18,21 +19,36 @@ private[impl] final class UnitOfWork private (
   private val cleanData = new ConcurrentHashMap[DataKey, String]()
   private val dirtyData = new ConcurrentHashMap[DataKey, String]()
 
-  override def readKey(key: DataKey): DbResult[String] = {
-    Option(dirtyData.get(key)) orElse Option(cleanData.get(key)) match {
-      case Some(data) => DbResult.success(data)
-      case None => db.readKey(key) match {
-        case r @ Right(data) =>
-          cleanData.put(key, data)
-          r
+  override def readModel[A : Model]: ModelResult[A] = {
+    val model = implicitly[Model[A]]
+    Option(dirtyData.get(model.key)) orElse Option(cleanData.get(model.key)) match {
+      case Some(data) =>
+        model.deserialize(data) match {
+          case Success(obj) => ModelResult.found(obj)
+          case Failure(ex) => ModelResult.badData(DataCorruptionException(ex))
+        }
+      case None => db.readModel match {
+        case Right(obj) => ModelResult.found(obj)
         case l @ Left(_) => l
       }
     }
   }
 
-  override def writeKey(key: DataKey, data: String): DbResult[Unit] = {
-    dirtyData.put(key, data)
-    DbResult.done
+  override def writeModel[A : Model](obj: A): ModelResult[Unit] = {
+    val model = implicitly[Model[A]]
+    model.serialize(obj) match {
+      case Failure(ex) => ModelResult.badData(DataCorruptionException(ex))
+      case Success(data) =>
+        dirtyData.put(model.key, data)
+        ModelResult.ok
+    }
+  }
+
+  override def updateModel[A : Model](default: A, f: A => A): ModelResult[Unit] = {
+    for {
+      data <- recoverNotFound(readModel, default)
+      _ <- writeModel(f(data))
+    } yield ()
   }
 
   override def commit(): CommitResult = db.commitUnitOfWork(this)

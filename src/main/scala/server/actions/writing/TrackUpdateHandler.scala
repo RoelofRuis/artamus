@@ -7,7 +7,7 @@ import protocol.Command
 import pubsub.Dispatcher
 import server.analysis.blackboard.Controller
 import server.{Request, Responses}
-import storage.api.ModelIO.{ModelResult, NotFound}
+import storage.api.{ModelResult, NotFound}
 
 import scala.util.Try
 

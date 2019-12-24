@@ -7,6 +7,30 @@ package object api {
 
   final case class DataKey(name: String)
 
+  type ModelResult[A] = Either[ModelException, A]
+
+  object ModelResult {
+    def badData[A](ex: DatabaseError): ModelResult[A] = Left(BadData(ex))
+    def notFound[A]: ModelResult[A] = Left(NotFound())
+    def found[A](a: A): ModelResult[A] = Right(a)
+    def ok: ModelResult[Unit] = Right(())
+  }
+
+  // TODO: should be renamed to storage exception
+  sealed trait ModelException extends Exception
+  final case class NotFound() extends ModelException
+  final case class BadData(ex: DatabaseError) extends ModelException
+
+
+  def recoverNotFound[A](res: ModelResult[A], default: A): ModelResult[A] = {
+    res match {
+      case Left(_: NotFound) => ModelResult.found(default)
+      case x => x
+    }
+  }
+
+
+  // TODO: try to remove these!
   sealed trait DatabaseError extends Exception
 
   final case class IOError(cause: Throwable) extends DatabaseError

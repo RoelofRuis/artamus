@@ -3,11 +3,9 @@ package server.model
 import music.model.display.render.Render
 import music.model.write.track.Track.TrackId
 import spray.json.RootJsonFormat
-import storage.api.{DbIO, DbRead}
+import storage.api.{DbIO, DbRead, ModelResult}
 
 object Renders {
-
-  import storage.api.ModelIO._
 
   private implicit val table: JsonTableModel[Render] = new JsonTableModel[Render] {
     override val tableName: String = "render"
@@ -16,7 +14,7 @@ object Renders {
 
   implicit class RenderQueries(db: DbRead) {
     def getRenderByTrackId(trackId: TrackId): ModelResult[Render] = {
-      db.readModel[table.Shape](Some(table.empty)).flatMap {
+      storage.api.recoverNotFound(db.readModel[table.Shape], table.empty).flatMap {
         _.get(trackId.id.toString) match {
           case None => ModelResult.notFound
           case Some(u) => ModelResult.found(u)

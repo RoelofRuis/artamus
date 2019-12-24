@@ -9,8 +9,7 @@ import protocol.transport.server.{Connection, ServerAPI}
 import server.model.Users._
 import server.Request
 import server.actions.control.Authenticate
-import storage.api.ModelIO.NotFound
-import storage.api.{DbIO, DbTransaction, DbWithRead}
+import storage.api.{DbIO, DbTransaction, DbWithRead, NotFound}
 
 import scala.util.{Failure, Success, Try}
 

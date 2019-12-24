@@ -8,6 +8,7 @@ import storage.api._
 import storage.impl.{CommittableReadableDb, UnitOfWork}
 
 import scala.jdk.CollectionConverters._
+import scala.util.{Failure, Success}
 
 @ThreadSafe
 private[storage] class InMemoryDb() extends CommittableReadableDb {
@@ -20,10 +21,14 @@ private[storage] class InMemoryDb() extends CommittableReadableDb {
     CommitResult.success(changeSet.size)
   }
 
-  def readKey(key: DataKey): DbResult[String] = {
-    Option(state.get(key)) match {
-      case Some(s) => DbResult.success(s)
-      case None => DbResult.notFound
+  override def readModel[A : Model]: ModelResult[A] = {
+    val model = implicitly[Model[A]]
+    Option(state.get(model.key)) match {
+      case Some(data) => model.deserialize(data) match {
+        case Success(obj) => ModelResult.found(obj)
+        case Failure(ex) => ModelResult.badData(DataCorruptionException(ex))
+      }
+      case None => ModelResult.notFound
     }
   }
 

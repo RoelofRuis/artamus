@@ -5,7 +5,7 @@ import music.model.record.Recording
 import protocol.Command
 import pubsub.Dispatcher
 import server.{Request, Responses}
-import storage.api.ModelIO.ModelResult
+import storage.api.ModelResult
 
 private[server] class RecordingCommandHandler @Inject() (
   dispatcher: Dispatcher[Request, Command],

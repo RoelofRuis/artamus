@@ -3,11 +3,9 @@ package server.model
 import music.model.write.user.User
 import music.model.write.workspace.Workspace
 import spray.json.RootJsonFormat
-import storage.api.{DbIO, DbRead}
+import storage.api.{DbIO, DbRead, ModelResult}
 
 object Workspaces {
-
-  import storage.api.ModelIO._
 
   private implicit val table: JsonTableModel[Workspace] = new JsonTableModel[Workspace] {
     override val tableName: String = "workspace"
@@ -16,7 +14,7 @@ object Workspaces {
 
   implicit class WorkspaceQueries(db: DbRead) {
     def getWorkspaceByOwner(user: User): ModelResult[Workspace] = {
-      db.readModel[table.Shape](Some(table.empty)).flatMap {
+      storage.api.recoverNotFound(db.readModel[table.Shape], table.empty).flatMap {
         _.get(user.id.id.toString) match {
           case None => ModelResult.notFound
           case Some(w) => ModelResult.found(w)

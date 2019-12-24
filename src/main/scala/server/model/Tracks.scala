@@ -5,11 +5,9 @@ import music.model.write.track.Track.TrackId
 import music.model.write.track._
 import music.primitives._
 import spray.json.RootJsonFormat
-import storage.api.{DbIO, DbRead}
+import storage.api.{DbIO, DbRead, ModelResult}
 
 object Tracks {
-
-  import storage.api.ModelIO._
 
   private final case class TrackContentModel(
     id: TrackId,
@@ -26,7 +24,7 @@ object Tracks {
 
   implicit class TrackQueries(db: DbRead) {
     def getTrackById(id: TrackId): ModelResult[Track] = {
-      db.readModel[table.Shape](Some(table.empty)).flatMap {
+      storage.api.recoverNotFound(db.readModel[table.Shape], table.empty).flatMap {
         _.get(id.id.toString) match {
           case None => ModelResult.notFound
           case Some(w) => ModelResult.found(

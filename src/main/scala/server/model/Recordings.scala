@@ -3,11 +3,9 @@ package server.model
 import music.model.record.Recording
 import music.model.record.Recording.RecordingId
 import spray.json.RootJsonFormat
-import storage.api.{DbIO, DbRead}
+import storage.api.{DbIO, DbRead, ModelResult}
 
 object Recordings {
-
-  import storage.api.ModelIO._
 
   private implicit val table: JsonTableModel[Recording] = new JsonTableModel[Recording] {
     override val tableName: String = "recording"
@@ -16,7 +14,7 @@ object Recordings {
 
   implicit class RecordingQueries(db: DbRead) {
     def getRecordingById(id: RecordingId): ModelResult[Recording] = {
-      db.readModel[table.Shape](Some(table.empty)).flatMap {
+      storage.api.recoverNotFound(db.readModel[table.Shape], table.empty).flatMap {
         _.get(id.toString) match {
           case None => ModelResult.notFound
           case Some(recording) => ModelResult.found(recording)
