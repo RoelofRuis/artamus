@@ -9,7 +9,7 @@ class ChordAnalyser extends KnowledgeSource[Track] {
   override def execute(track: Track): Track = {
     val analysedChords = track
       .notes
-      .readGroups
+      .readGroups()
       .flatMap { noteGroup =>
         val pitches = noteGroup.notes.map { note => note.pitchClass }
         val possibleChords = TwelveToneChordAnalysis.findChords(pitches)
