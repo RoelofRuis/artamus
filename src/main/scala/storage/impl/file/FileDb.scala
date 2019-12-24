@@ -5,6 +5,7 @@ import java.nio.file.{Path, Paths}
 import javax.annotation.concurrent.{GuardedBy, ThreadSafe}
 import javax.inject.{Inject, Named, Singleton}
 import storage.api.DbTransaction.CommitResult
+import storage.api.Model.{DataKey, JSON, Raw}
 import storage.api._
 import storage.impl.{CommittableReadableDb, UnitOfWork}
 
@@ -19,7 +20,7 @@ private[storage] class FileDb @Inject() (
   @Named("cleanup-threshold") cleanupThreshold: Int
 ) extends CommittableReadableDb {
 
-  private val VersionPath = keyToPath(DataKey("_version"), 0)
+  private val VersionPath = keyToPath(DataKey("_version", Raw), 0)
 
   val initialVersion: Int = FileIO.read(VersionPath) match {
     case Left(_) => 0
@@ -43,7 +44,7 @@ private[storage] class FileDb @Inject() (
 
         errors match {
           case list if list.isEmpty =>
-            FileIO.write(keyToPath(DataKey("_version"), 0), version.toString) match {
+            FileIO.write(VersionPath, version.toString) match {
               case Right(_) =>
                 version += 1
                 CommitResult.success(changeSet.size)
@@ -78,14 +79,16 @@ private[storage] class FileDb @Inject() (
     }
   }
 
+  private val FILE: Regex = """(\d+)\.([a-z]+)""".r
+
   private def checkCleanup(): Unit = {
     val filesState = getActiveFilesPerKey
-    val oldFiles = filesState.foldRight(0) { case ((_, _, old), acc) => acc + old.size }
+    val oldFiles = filesState.foldRight(0) { case ((_, old), acc) => acc + old.size }
     if (oldFiles > cleanupThreshold) performCleanup()
   }
 
   private def performCleanup(): Unit = writeLock.synchronized {
-    val res = getActiveFilesPerKey.foldRight(List[DbException]()) { case ((key, latest, old), acc) =>
+    val res = getActiveFilesPerKey.foldRight(List[DbException]()) { case ((latest, old), acc) =>
       val deleteErrors = old.foldRight(List[DbException]()) { case (file, acc) =>
         FileIO.delete(file) match {
           case Right(_) => acc
@@ -94,7 +97,10 @@ private[storage] class FileDb @Inject() (
       }
       if (deleteErrors.nonEmpty) acc ++ deleteErrors
       else {
-        FileIO.move(latest, keyToPath(key, 0)) match {
+        val newPath = latest.getFileName.toString match {
+          case FILE(_, ext) => Paths.get(latest.getParent.toString, "0." + ext)
+        }
+        FileIO.move(latest, newPath) match {
           case Right(_) => List()
           case Left(ex) => List(ex)
         }
@@ -102,33 +108,43 @@ private[storage] class FileDb @Inject() (
     }
 
     if (res.isEmpty) {
-      FileIO.write(keyToPath(DataKey("_version"), 0), "0") match {
+      FileIO.write(VersionPath, "0") match {
         case Right(_) => version = 0
         case Left(_) =>
       }
     }
   }
 
-  private val FILE: Regex = """(\d+)\.[a-z]+""".r
-  private def getActiveFilesPerKey: Seq[(DataKey, Path, List[Path])] = {
+  private def getActiveFilesPerKey: Seq[(Path, List[Path])] = {
     FileIO
       .list(Paths.get(rootPath), onlyDirs=true)
       .flatMap { root =>
         val validFiles = FileIO.list(root, onlyDirs = false)
           .map(_.getFileName.toString)
-          .map { case FILE(v) => v.toInt }
-          .filter(_ <= version)
-          .sorted
+          .map { case FILE(v, ext) => (v.toInt, ext) }
+          .filter { case (v, _) => v <= version }
+          .sortBy { case (v, _) => v }
           .reverse
-          .map(i => keyToPath(DataKey(root.getFileName.toString), i))
+          .map { case (v, ext) =>
+            val dataType = ext match {
+              case "json" => JSON
+              case "dat" => Raw
+              case _ => Raw
+            }
+            keyToPath(DataKey(root.getFileName.toString, dataType), v)
+          }
         if (validFiles.isEmpty) Seq()
-        else Seq((DataKey(root.getFileName.toString), validFiles.head, validFiles.tail))
+        else Seq((validFiles.head, validFiles.tail))
       }
   }
 
   private def keyToPath(key: DataKey, version: Int): Path = {
     val versionString = version.toString
-    val dataFile = s"$versionString.dat"
+    val extension = key.dataType match {
+      case JSON => "json"
+      case Raw => "dat"
+    }
+    val dataFile = s"$versionString.$extension"
     Paths.get(rootPath, key.name, dataFile)
   }
 

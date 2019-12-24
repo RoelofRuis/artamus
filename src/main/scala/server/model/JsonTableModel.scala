@@ -1,6 +1,7 @@
 package server.model
 
-import storage.api.{DataKey, Model}
+import storage.api.Model
+import storage.api.Model.{DataKey, JSON}
 
 import scala.util.Try
 
@@ -18,7 +19,7 @@ trait JsonTableModel[A] extends Model[Map[String, A]] with DomainProtocol {
   override def serialize(obj: Map[String, A]): Try[String] = Try {
     obj.toJson.prettyPrint
   }
-  override lazy val key: DataKey = DataKey(tableName)
+  override lazy val key: DataKey = DataKey(tableName, JSON)
 
   def empty: Shape = Map()
 }

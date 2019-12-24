@@ -14,6 +14,6 @@ trait ServerConfig extends RenderingConfig with FileStorageConfig {
   val paperSize: String = "a6landscape"
 
   val dbRoot: String = "data/store"
-  val cleanupThreshold: Int = 20
+  val cleanupThreshold: Int = 5
 
 }

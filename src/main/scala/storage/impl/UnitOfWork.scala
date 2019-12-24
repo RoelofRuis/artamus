@@ -5,6 +5,7 @@ import java.util.concurrent.ConcurrentHashMap
 
 import javax.annotation.concurrent.ThreadSafe
 import storage.api.DbTransaction.CommitResult
+import storage.api.Model.DataKey
 import storage.api._
 
 import scala.jdk.CollectionConverters._

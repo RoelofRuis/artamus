@@ -5,8 +5,6 @@ package object api {
   trait DbIO extends DbRead with DbWrite
   trait DbWithRead extends Db with DbRead
 
-  final case class DataKey(name: String)
-
   sealed trait DbException extends Exception
   final case class NotFound() extends DbException
   final case class BadData(cause: Throwable) extends DbException
