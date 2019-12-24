@@ -33,12 +33,16 @@ object Bars {
         .flatMap(window.intersect)
     }
 
+    def endsInBar(window: Window): BarNumber = {
+      durationFits(window.end, ts.division.barDuration, inclusive=false)
+    }
+
     private def getBarWindow(bar: BarNumber): Window = Window(
       Position.at(ts.division.barDuration * bar),
       ts.division.barDuration
     )
 
-    private def durationFits(pos: Position, dur: Duration, inclusive: Boolean): Int = {
+    private def durationFits(pos: Position, dur: Duration, inclusive: Boolean): BarNumber = {
       @tailrec
       def loopExclusive(pos: Position, dur: Duration, acc: Int): Int = {
         val newPos = pos - dur

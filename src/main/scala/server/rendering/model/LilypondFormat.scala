@@ -4,7 +4,7 @@ import music.analysis.TwelveToneTuning.TwelveToneFunctions
 import music.model.display.chord.ChordStaff
 import music.model.display.chord.ChordStaffGlyph.{ChordNameGlyph, ChordRestGlyph}
 import music.model.display.staff.{Bass, Clef, Staff, Treble}
-import music.model.display.staff.StaffGlyph.{KeyGlyph, NoteGroupGlyph, RestGlyph, TimeSignatureGlyph}
+import music.model.display.staff.StaffGlyph.{FullBarRestGlyph, KeyGlyph, NoteGroupGlyph, RestGlyph, TimeSignatureGlyph}
 import music.primitives._
 
 import scala.annotation.tailrec
@@ -25,6 +25,7 @@ private[rendering] object LilypondFormat {
     val contents = staff.glyphs.map {
       case g: NoteGroupGlyph => g.toLilypond
       case g: RestGlyph => g.toLilypond
+      case g: FullBarRestGlyph => g.toLilypond
       case g: KeyGlyph => g.toLilypond
       case g: TimeSignatureGlyph => g.toLilypond
     }.mkString("\n")
@@ -57,6 +58,8 @@ private[rendering] object LilypondFormat {
        |}
        |}""".stripMargin
   }
+
+  implicit val fullBarRestGlyphToLilypond: LilypondFormat[FullBarRestGlyph] = rest => s"R" + rest.numberOfBars
 
   implicit val restToLilypond: LilypondFormat[RestGlyph] = rest => {
     val durationString = rest.duration.toLilypond

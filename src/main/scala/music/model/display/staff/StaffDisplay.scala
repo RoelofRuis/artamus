@@ -3,7 +3,7 @@ package music.model.display.staff
 import music.analysis.TwelveTonePitchSpelling
 import music.math.temporal.{Position, Window}
 import music.model.display.staff.Inclusion.InclusionStrategy
-import music.model.display.staff.StaffGlyph.{KeyGlyph, NoteGroupGlyph, RestGlyph, TimeSignatureGlyph}
+import music.model.display.staff.StaffGlyph.{FullBarRestGlyph, KeyGlyph, NoteGroupGlyph, RestGlyph, TimeSignatureGlyph}
 import music.model.display.{Bars, NoteValues}
 import music.model.write.track.Track
 import music.primitives.{Key, ScientificPitch}
@@ -37,12 +37,11 @@ object StaffDisplay {
       def loop(lastWindow: Window): Iterator[StaffGlyph] = {
         notes.nextOption() match {
           case None =>
-            val finalWindow = track.timeSignatures.extendToFillBar(lastWindow)
-            if (finalWindow.isInstant) Iterator.empty
+            if (track.timeSignatures.endsInBar(lastWindow) == 0) Iterator(FullBarRestGlyph(1))
             else {
               track
                 .timeSignatures
-                .fit(finalWindow)
+                .fit(track.timeSignatures.extendToFillBar(lastWindow))
                 .flatMap(_.duration.asNoteValues)
                 .map(RestGlyph(_, silent=false))
                 .iterator
