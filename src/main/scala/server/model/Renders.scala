@@ -3,7 +3,7 @@ package server.model
 import music.model.display.render.Render
 import music.model.write.track.Track.TrackId
 import spray.json.RootJsonFormat
-import storage.api.{DbIO, DbRead, ModelResult}
+import storage.api.{DbIO, DbRead, DbResult}
 
 object Renders {
 
@@ -13,18 +13,18 @@ object Renders {
   }
 
   implicit class RenderQueries(db: DbRead) {
-    def getRenderByTrackId(trackId: TrackId): ModelResult[Render] = {
-      storage.api.recoverNotFound(db.readModel[table.Shape], table.empty).flatMap {
+    def getRenderByTrackId(trackId: TrackId): DbResult[Render] = {
+      db.readModel[table.Shape].ifNotFound(table.empty).flatMap {
         _.get(trackId.id.toString) match {
-          case None => ModelResult.notFound
-          case Some(u) => ModelResult.found(u)
+          case None => DbResult.notFound
+          case Some(u) => DbResult.found(u)
         }
       }
     }
   }
 
   implicit class RenderCommands(db: DbIO) {
-    def saveRender(render: Render): ModelResult[Unit] = {
+    def saveRender(render: Render): DbResult[Unit] = {
       db.updateModel[table.Shape](
         table.empty,
         _.updated(render.trackId.id.toString, render)

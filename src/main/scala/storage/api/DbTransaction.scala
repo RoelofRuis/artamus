@@ -12,12 +12,12 @@ object DbTransaction {
 
   type CommitResult = Either[CommitError, Int]
 
-  final case class CommitError(causes: Seq[DatabaseError]) extends Exception
+  final case class CommitError(causes: Seq[DbException]) extends Exception
 
   object CommitResult {
     def nothingToCommit: CommitResult = Right(0)
     def success(writes: Int) = Right(writes)
-    def failure(causes: DatabaseError*) = Left(CommitError(causes))
+    def failure(causes: DbException*) = Left(CommitError(causes))
   }
 
 }

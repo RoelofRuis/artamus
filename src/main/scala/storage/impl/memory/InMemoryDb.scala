@@ -21,14 +21,14 @@ private[storage] class InMemoryDb() extends CommittableReadableDb {
     CommitResult.success(changeSet.size)
   }
 
-  override def readModel[A : Model]: ModelResult[A] = {
+  override def readModel[A : Model]: DbResult[A] = {
     val model = implicitly[Model[A]]
     Option(state.get(model.key)) match {
       case Some(data) => model.deserialize(data) match {
-        case Success(obj) => ModelResult.found(obj)
-        case Failure(ex) => ModelResult.badData(DataCorruptionException(ex))
+        case Success(obj) => DbResult.found(obj)
+        case Failure(ex) => DbResult.badData(ex)
       }
-      case None => ModelResult.notFound
+      case None => DbResult.notFound
     }
   }
 

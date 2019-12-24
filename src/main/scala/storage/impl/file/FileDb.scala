@@ -34,7 +34,7 @@ private[storage] class FileDb @Inject() (
     if (changeSet.isEmpty) CommitResult.nothingToCommit
     else {
       val res = writeLock.synchronized {
-        val errors = changeSet.foldRight(List[DatabaseError]()) { case ((key, data), acc) =>
+        val errors = changeSet.foldRight(List[DbException]()) { case ((key, data), acc) =>
           FileIO.write(keyToPath(key, version), data) match {
             case Right(_) => acc
             case Left(ex) => acc :+ ex
@@ -57,25 +57,24 @@ private[storage] class FileDb @Inject() (
     }
   }
 
-  override def readModel[A : Model]: ModelResult[A] = {
+  override def readModel[A : Model]: DbResult[A] = {
     val model = implicitly[Model[A]]
     @tailrec
     def readVersioned(version: Int): DbResult[String] = {
       FileIO.read(keyToPath(model.key, version)) match {
-        case Left(ResourceNotFound()) if version > 0 => readVersioned(version - 1)
-        case l @ Left(ResourceNotFound()) => l
+        case Left(NotFound()) if version > 0 => readVersioned(version - 1)
+        case l @ Left(NotFound()) => l
         case x => x
       }
     }
     val dbResult = readVersioned(version)
 
     dbResult match {
-      case Left(_: ResourceNotFound) => ModelResult.notFound
-      case Left(ex) => ModelResult.badData(ex)
       case Right(data) => model.deserialize(data) match {
-        case Success(obj) => ModelResult.found(obj)
-        case Failure(ex) => ModelResult.badData(DataCorruptionException(ex))
+        case Success(obj) => DbResult.found(obj)
+        case Failure(ex) => DbResult.badData(ex)
       }
+      case Left(ex) => Left(ex)
     }
   }
 
@@ -86,8 +85,8 @@ private[storage] class FileDb @Inject() (
   }
 
   private def performCleanup(): Unit = writeLock.synchronized {
-    val res = getActiveFilesPerKey.foldRight(List[DatabaseError]()) { case ((key, latest, old), acc) =>
-      val deleteErrors = old.foldRight(List[DatabaseError]()) { case (file, acc) =>
+    val res = getActiveFilesPerKey.foldRight(List[DbException]()) { case ((key, latest, old), acc) =>
+      val deleteErrors = old.foldRight(List[DbException]()) { case (file, acc) =>
         FileIO.delete(file) match {
           case Right(_) => acc
           case Left(ex) => acc :+ ex

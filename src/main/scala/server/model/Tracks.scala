@@ -5,7 +5,7 @@ import music.model.write.track.Track.TrackId
 import music.model.write.track._
 import music.primitives._
 import spray.json.RootJsonFormat
-import storage.api.{DbIO, DbRead, ModelResult}
+import storage.api.{DbIO, DbRead, DbResult}
 
 object Tracks {
 
@@ -23,11 +23,11 @@ object Tracks {
   }
 
   implicit class TrackQueries(db: DbRead) {
-    def getTrackById(id: TrackId): ModelResult[Track] = {
-      storage.api.recoverNotFound(db.readModel[table.Shape], table.empty).flatMap {
+    def getTrackById(id: TrackId): DbResult[Track] = {
+      db.readModel[table.Shape].ifNotFound(table.empty).flatMap {
         _.get(id.id.toString) match {
-          case None => ModelResult.notFound
-          case Some(w) => ModelResult.found(
+          case None => DbResult.notFound
+          case Some(w) => DbResult.found(
             Track(
               w.id,
               TimeSignatures(table.loadPositions(w.bars)),
@@ -42,7 +42,7 @@ object Tracks {
   }
 
   implicit class TrackCommands(db: DbIO) {
-    def saveTrack(track: Track): ModelResult[Unit] = {
+    def saveTrack(track: Track): DbResult[Unit] = {
       db.updateModel[table.Shape](
         table.empty,
         _.updated(
@@ -58,7 +58,7 @@ object Tracks {
       )
     }
 
-    def removeTrackById(trackId: TrackId): ModelResult[Unit] = {
+    def removeTrackById(trackId: TrackId): DbResult[Unit] = {
       db.updateModel[table.Shape](
         table.empty,
         _.removed(trackId.id.toString)

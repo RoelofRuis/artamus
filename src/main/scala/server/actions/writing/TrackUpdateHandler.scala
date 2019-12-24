@@ -7,7 +7,7 @@ import protocol.Command
 import pubsub.Dispatcher
 import server.analysis.blackboard.Controller
 import server.{Request, Responses}
-import storage.api.{ModelResult, NotFound}
+import storage.api.{DbResult, NotFound}
 
 import scala.util.Try
 
@@ -26,7 +26,7 @@ private[server] class TrackUpdateHandler @Inject() (
     } yield ()
 
     val recoveredDelete = delete match {
-      case Left(_: NotFound) => ModelResult.ok
+      case Left(_: NotFound) => DbResult.ok
       case l @ Left(_) => l
       case r @ Right(_) => r
     }

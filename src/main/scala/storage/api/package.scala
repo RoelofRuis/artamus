@@ -7,43 +7,26 @@ package object api {
 
   final case class DataKey(name: String)
 
-  type ModelResult[A] = Either[ModelException, A]
+  sealed trait DbException extends Exception
+  final case class NotFound() extends DbException
+  final case class BadData(cause: Throwable) extends DbException
 
-  object ModelResult {
-    def badData[A](ex: DatabaseError): ModelResult[A] = Left(BadData(ex))
-    def notFound[A]: ModelResult[A] = Left(NotFound())
-    def found[A](a: A): ModelResult[A] = Right(a)
-    def ok: ModelResult[Unit] = Right(())
-  }
+  type DbResult[A] = Either[DbException, A]
 
-  // TODO: should be renamed to storage exception
-  sealed trait ModelException extends Exception
-  final case class NotFound() extends ModelException
-  final case class BadData(ex: DatabaseError) extends ModelException
-
-
-  def recoverNotFound[A](res: ModelResult[A], default: A): ModelResult[A] = {
-    res match {
-      case Left(_: NotFound) => ModelResult.found(default)
-      case x => x
+  implicit class DbResultOps[A](res: DbResult[A]) {
+    def ifNotFound(default: A): DbResult[A] = {
+      res match {
+        case Left(_: NotFound) => DbResult.found(default)
+        case x => x
+      }
     }
   }
 
-
-  // TODO: try to remove these!
-  sealed trait DatabaseError extends Exception
-
-  final case class IOError(cause: Throwable) extends DatabaseError
-  final case class DataCorruptionException(cause: Throwable) extends DatabaseError
-  final case class ResourceNotFound() extends DatabaseError
-
-  type DbResult[A] = Either[DatabaseError, A]
-
   object DbResult {
-    def success[A](a: A): DbResult[A] = Right(a)
-    def done: DbResult[Unit] = Right(())
-    def ioError[A](cause: Throwable): DbResult[A] = Left(IOError(cause))
-    def notFound[A]: DbResult[A] = Left(ResourceNotFound())
+    def badData[A](ex: Throwable): DbResult[A] = Left(BadData(ex))
+    def notFound[A]: DbResult[A] = Left(NotFound())
+    def found[A](a: A): DbResult[A] = Right(a)
+    def ok: DbResult[Unit] = Right(())
   }
 
 }

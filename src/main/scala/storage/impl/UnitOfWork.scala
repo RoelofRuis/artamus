@@ -19,34 +19,34 @@ private[impl] final class UnitOfWork private (
   private val cleanData = new ConcurrentHashMap[DataKey, String]()
   private val dirtyData = new ConcurrentHashMap[DataKey, String]()
 
-  override def readModel[A : Model]: ModelResult[A] = {
+  override def readModel[A : Model]: DbResult[A] = {
     val model = implicitly[Model[A]]
     Option(dirtyData.get(model.key)) orElse Option(cleanData.get(model.key)) match {
       case Some(data) =>
         model.deserialize(data) match {
-          case Success(obj) => ModelResult.found(obj)
-          case Failure(ex) => ModelResult.badData(DataCorruptionException(ex))
+          case Success(obj) => DbResult.found(obj)
+          case Failure(ex) => DbResult.badData(ex)
         }
       case None => db.readModel match {
-        case Right(obj) => ModelResult.found(obj)
+        case Right(obj) => DbResult.found(obj)
         case l @ Left(_) => l
       }
     }
   }
 
-  override def writeModel[A : Model](obj: A): ModelResult[Unit] = {
+  override def writeModel[A : Model](obj: A): DbResult[Unit] = {
     val model = implicitly[Model[A]]
     model.serialize(obj) match {
-      case Failure(ex) => ModelResult.badData(DataCorruptionException(ex))
+      case Failure(ex) => DbResult.badData(ex)
       case Success(data) =>
         dirtyData.put(model.key, data)
-        ModelResult.ok
+        DbResult.ok
     }
   }
 
-  override def updateModel[A : Model](default: A, f: A => A): ModelResult[Unit] = {
+  override def updateModel[A : Model](default: A, f: A => A): DbResult[Unit] = {
     for {
-      data <- recoverNotFound(readModel, default)
+      data <- readModel.ifNotFound(default)
       _ <- writeModel(f(data))
     } yield ()
   }

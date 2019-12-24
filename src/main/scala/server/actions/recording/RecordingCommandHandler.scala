@@ -5,7 +5,7 @@ import music.model.record.Recording
 import protocol.Command
 import pubsub.Dispatcher
 import server.{Request, Responses}
-import storage.api.ModelResult
+import storage.api.DbResult
 
 private[server] class RecordingCommandHandler @Inject() (
   dispatcher: Dispatcher[Request, Command],
@@ -29,7 +29,7 @@ private[server] class RecordingCommandHandler @Inject() (
   dispatcher.subscribe[RecordNote] { req =>
     val res = for {
       workspace <- req.db.getWorkspaceByOwner(req.user)
-      recording <- workspace.activeRecording.map(req.db.getRecordingById).getOrElse(ModelResult.notFound)
+      recording <- workspace.activeRecording.map(req.db.getRecordingById).getOrElse(DbResult.notFound)
       newRecording = recording.recordNote(req.attributes.note)
       _ <- req.db.saveRecording(newRecording)
     } yield ()

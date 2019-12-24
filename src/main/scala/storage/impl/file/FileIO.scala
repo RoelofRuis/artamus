@@ -13,8 +13,8 @@ private[impl] object FileIO {
   def read(path: Path): DbResult[String] = {
     Try { Files.readAllBytes(path) } match {
       case Failure(_: NoSuchFileException) => DbResult.notFound
-      case Failure(ex) => DbResult.ioError(ex)
-      case Success(bytes) => DbResult.success(new String(bytes, StandardCharsets.UTF_8))
+      case Failure(ex) => DbResult.badData(ex)
+      case Success(bytes) => DbResult.found(new String(bytes, StandardCharsets.UTF_8))
     }
   }
 
@@ -25,8 +25,8 @@ private[impl] object FileIO {
     } yield ()
 
     res match {
-      case Failure(ex) => DbResult.ioError(ex)
-      case Success(_) => DbResult.done
+      case Failure(ex) => DbResult.badData(ex)
+      case Success(_) => DbResult.ok
     }
   }
 
@@ -37,13 +37,12 @@ private[impl] object FileIO {
     }
   }
 
-
   def delete(path: Path): DbResult[Unit] = {
     Try {
       Files.delete(path)
     } match {
-      case Success(_) => DbResult.done
-      case Failure(ex) => DbResult.ioError(ex)
+      case Success(_) => DbResult.ok
+      case Failure(ex) => DbResult.badData(ex)
     }
   }
 
@@ -55,8 +54,8 @@ private[impl] object FileIO {
         StandardCopyOption.ATOMIC_MOVE
       )
     } match {
-      case Success(_) => DbResult.done
-      case Failure(ex) => DbResult.ioError(ex)
+      case Success(_) => DbResult.ok
+      case Failure(ex) => DbResult.badData(ex)
     }
   }
 
