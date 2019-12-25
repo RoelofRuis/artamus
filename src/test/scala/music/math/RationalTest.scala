@@ -2,7 +2,7 @@ package music.math
 
 import utest._
 
-object RationalTests extends TestSuite {
+object RationalTest extends TestSuite {
 
   val tests: Tests = Tests {
     test("construct whole numbers") {
