@@ -6,21 +6,21 @@ import com.typesafe.scalalogging.LazyLogging
 import music.model.write.user.User
 import protocol._
 import protocol.transport.server.{Connection, ServerAPI}
-import server.model.Users._
 import server.Request
 import server.actions.control.Authenticate
-import storage.api.{DbIO, DbTransaction, DbWithRead, NotFound}
+import server.model.Users._
+import storage.api.{Database, DbIO, Transaction, NotFound}
 
 import scala.util.{Failure, Success, Try}
 
 final class DispatchingServerAPI(
-  db: DbWithRead,
+  db: Database,
   server: ServerBindings,
   hooks: ConnectionLifetimeHooks
 ) extends ServerAPI with LazyLogging {
 
   private var connections: Map[Connection, Option[User]] = Map()
-  private val transactions: ConcurrentHashMap[Connection, DbTransaction] = new ConcurrentHashMap[Connection, DbTransaction]()
+  private val transactions: ConcurrentHashMap[Connection, Transaction] = new ConcurrentHashMap[Connection, Transaction]()
 
   def connectionOpened(connection: Connection): Unit = {
     connections += (connection -> None)
@@ -118,7 +118,7 @@ final class DispatchingServerAPI(
     }
   }
 
-  private def startTransaction(connection: Connection): DbIO with DbTransaction = {
+  private def startTransaction(connection: Connection): DbIO with Transaction = {
     val transaction = db.newTransaction
     transactions.put(connection, transaction)
     transaction

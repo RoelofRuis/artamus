@@ -1,16 +1,16 @@
 package storage.api
 
-import storage.api.Model.DataKey
+import storage.api.DataModel.DataKey
 
 import scala.util.Try
 
-trait Model[A] {
+trait DataModel[A] {
   val key: DataKey
   def deserialize(data: String): Try[A]
   def serialize(obj: A): Try[String]
 }
 
-object Model {
+object DataModel {
 
   final case class DataKey(name: String, dataType: DataType)
 

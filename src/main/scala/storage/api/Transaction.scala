@@ -1,14 +1,14 @@
 package storage.api
 
-import storage.api.DbTransaction.CommitResult
+import storage.api.Transaction.CommitResult
 
-trait DbTransaction {
+trait Transaction {
 
   def commit(): CommitResult
 
 }
 
-object DbTransaction {
+object Transaction {
 
   type CommitResult = Either[CommitError, Int]
 

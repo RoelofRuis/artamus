@@ -1,15 +1,15 @@
 package storage
 
 import net.codingwell.scalaguice.ScalaPrivateModule
-import storage.api.DbWithRead
-import storage.impl.memory.InMemoryDb
+import storage.api.Database
+import storage.impl.memory.InMemoryDatabase
 
 class InMemoryStorageModule extends ScalaPrivateModule {
 
   override def configure(): Unit = {
-    bind[DbWithRead].toInstance(new InMemoryDb())
+    bind[Database].to[InMemoryDatabase]
 
-    expose[DbWithRead]
+    expose[Database]
   }
 
 }

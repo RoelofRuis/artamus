@@ -2,8 +2,7 @@ package storage
 
 package object api {
 
-  trait DbIO extends DbRead with DbWrite
-  trait DbWithRead extends Db with DbRead
+  trait DbIO extends ModelReader with ModelWriter
 
   sealed trait DbException extends Exception
   final case class NotFound() extends DbException

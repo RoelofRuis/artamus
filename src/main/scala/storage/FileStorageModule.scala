@@ -1,8 +1,8 @@
 package storage
 
 import net.codingwell.scalaguice.ScalaPrivateModule
-import storage.api.DbWithRead
-import storage.impl.file.FileDb
+import storage.api.Database
+import storage.impl.file.FileDatabase
 
 class FileStorageModule extends ScalaPrivateModule {
   this: FileStorageConfig =>
@@ -11,9 +11,9 @@ class FileStorageModule extends ScalaPrivateModule {
     bind[String].annotatedWithName("db-root-path").toInstance(dbRoot)
     bind[Int].annotatedWithName("cleanup-threshold").toInstance(cleanupThreshold)
 
-    bind[DbWithRead].to[FileDb]
+    bind[Database].to[FileDatabase]
 
-    expose[DbWithRead]
+    expose[Database]
   }
 
 }

@@ -5,7 +5,7 @@ import music.model.write.track.Track.TrackId
 import music.model.write.track._
 import music.primitives._
 import spray.json.RootJsonFormat
-import storage.api.{DbIO, DbRead, DbResult}
+import storage.api.{DbIO, ModelReader, DbResult}
 
 object Tracks {
 
@@ -17,12 +17,12 @@ object Tracks {
     notes: Map[String, NoteGroup]
   )
 
-  private implicit val table: JsonTableModel[TrackContentModel] = new JsonTableModel[TrackContentModel] {
+  private implicit val table: JsonTableDataModel[TrackContentModel] = new JsonTableDataModel[TrackContentModel] {
     override val tableName: String = "track"
     override implicit val format: RootJsonFormat[TrackContentModel] = jsonFormat5(TrackContentModel)
   }
 
-  implicit class TrackQueries(db: DbRead) {
+  implicit class TrackQueries(db: ModelReader) {
     def getTrackById(id: TrackId): DbResult[Track] = {
       db.readModel[table.Shape].ifNotFound(table.empty).flatMap {
         _.get(id.id.toString) match {

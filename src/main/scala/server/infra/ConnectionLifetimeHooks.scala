@@ -5,7 +5,7 @@ import music.model.write.user.User
 import protocol.Event
 import pubsub.EventBus
 import server.actions.writing.TrackRendered
-import storage.api.{DbIO, DbTransaction}
+import storage.api.{DbIO, Transaction}
 
 final class ConnectionLifetimeHooks @Inject() (
   eventbus: EventBus[Event],
@@ -14,7 +14,7 @@ final class ConnectionLifetimeHooks @Inject() (
   import server.model.Renders._
   import server.model.Workspaces._
 
-  def onAuthenticated(db: DbIO with DbTransaction, user: User): Unit = {
+  def onAuthenticated(db: DbIO with Transaction, user: User): Unit = {
     for {
       workspace <- db.getWorkspaceByOwner(user)
       render <- db.getRenderByTrackId(workspace.selectedTrack)

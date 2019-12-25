@@ -3,27 +3,29 @@ package storage.impl.memory
 import java.util.concurrent.ConcurrentHashMap
 
 import javax.annotation.concurrent.ThreadSafe
-import storage.api.DbTransaction.CommitResult
-import storage.api.Model.DataKey
+import javax.inject.{Inject, Singleton}
+import storage.api.Transaction.CommitResult
+import storage.api.DataModel.DataKey
 import storage.api._
-import storage.impl.{CommittableReadableDb, UnitOfWork}
+import storage.impl.{TransactionalDatabase, UnitOfWork}
 
 import scala.jdk.CollectionConverters._
 import scala.util.{Failure, Success}
 
 @ThreadSafe
-private[storage] class InMemoryDb() extends CommittableReadableDb {
+@Singleton
+private[storage] class InMemoryDatabase @Inject() () extends TransactionalDatabase {
 
   private val state = new ConcurrentHashMap[DataKey, String]()
 
-  def commitUnitOfWork(uow: UnitOfWork): DbTransaction.CommitResult = {
+  def commitUnitOfWork(uow: UnitOfWork): Transaction.CommitResult = {
     val changeSet = uow.getChangeSet
     state.putAll(uow.getChangeSet.asJava)
     CommitResult.success(changeSet.size)
   }
 
-  override def readModel[A : Model]: DbResult[A] = {
-    val model = implicitly[Model[A]]
+  override def readModel[A : DataModel]: DbResult[A] = {
+    val model = implicitly[DataModel[A]]
     Option(state.get(model.key)) match {
       case Some(data) => model.deserialize(data) match {
         case Success(obj) => DbResult.found(obj)

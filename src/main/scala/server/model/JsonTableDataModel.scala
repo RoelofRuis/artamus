@@ -1,11 +1,11 @@
 package server.model
 
-import storage.api.Model
-import storage.api.Model.{DataKey, JSON}
+import storage.api.DataModel
+import storage.api.DataModel.{DataKey, JSON}
 
 import scala.util.Try
 
-trait JsonTableModel[A] extends Model[Map[String, A]] with DomainProtocol {
+trait JsonTableDataModel[A] extends DataModel[Map[String, A]] with DomainProtocol {
   import spray.json._
 
   type Shape = Map[String, A]

@@ -4,10 +4,10 @@ import java.nio.file.{Path, Paths}
 
 import javax.annotation.concurrent.{GuardedBy, ThreadSafe}
 import javax.inject.{Inject, Named, Singleton}
-import storage.api.DbTransaction.CommitResult
-import storage.api.Model.{DataKey, JSON, Raw}
+import storage.api.Transaction.CommitResult
+import storage.api.DataModel.{DataKey, JSON, Raw}
 import storage.api._
-import storage.impl.{CommittableReadableDb, UnitOfWork}
+import storage.impl.{TransactionalDatabase, UnitOfWork}
 
 import scala.annotation.tailrec
 import scala.util.{Failure, Success, Try}
@@ -15,10 +15,10 @@ import scala.util.matching.Regex
 
 @ThreadSafe
 @Singleton
-private[storage] class FileDb @Inject() (
+private[storage] class FileDatabase @Inject() (
   @Named("db-root-path") rootPath: String,
   @Named("cleanup-threshold") cleanupThreshold: Int
-) extends CommittableReadableDb {
+) extends TransactionalDatabase {
 
   private val VersionPath = keyToPath(DataKey("_version", Raw), 0)
 
@@ -30,7 +30,7 @@ private[storage] class FileDb @Inject() (
   private val writeLock = new Object()
   @GuardedBy("writeLock") private var version: Int = initialVersion
 
-  def commitUnitOfWork(uow: UnitOfWork): DbTransaction.CommitResult = {
+  def commitUnitOfWork(uow: UnitOfWork): Transaction.CommitResult = {
     val changeSet = uow.getChangeSet
     if (changeSet.isEmpty) CommitResult.nothingToCommit
     else {
@@ -58,8 +58,8 @@ private[storage] class FileDb @Inject() (
     }
   }
 
-  override def readModel[A : Model]: DbResult[A] = {
-    val model = implicitly[Model[A]]
+  override def readModel[A : DataModel]: DbResult[A] = {
+    val model = implicitly[DataModel[A]]
     @tailrec
     def readVersioned(version: Int): DbResult[String] = {
       FileIO.read(keyToPath(model.key, version)) match {

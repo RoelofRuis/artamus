@@ -7,11 +7,11 @@ import music.model.write.user.User
 import music.model.write.user.User.UserId
 import protocol.ServerInterface
 import server.model.Users._
-import storage.api.DbWithRead
+import storage.api.Database
 
 class Bootstrapper @Inject() (
   server: ServerInterface,
-  db: DbWithRead
+  db: Database
 ) {
 
   def run(): Unit = {

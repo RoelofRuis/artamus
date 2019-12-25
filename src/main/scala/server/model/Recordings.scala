@@ -3,16 +3,16 @@ package server.model
 import music.model.record.Recording
 import music.model.record.Recording.RecordingId
 import spray.json.RootJsonFormat
-import storage.api.{DbIO, DbRead, DbResult}
+import storage.api.{DbIO, ModelReader, DbResult}
 
 object Recordings {
 
-  private implicit val table: JsonTableModel[Recording] = new JsonTableModel[Recording] {
+  private implicit val table: JsonTableDataModel[Recording] = new JsonTableDataModel[Recording] {
     override val tableName: String = "recording"
     implicit val format: RootJsonFormat[Recording] = jsonFormat4(Recording.apply)
   }
 
-  implicit class RecordingQueries(db: DbRead) {
+  implicit class RecordingQueries(db: ModelReader) {
     def getRecordingById(id: RecordingId): DbResult[Recording] = {
       db.readModel[table.Shape].ifNotFound(table.empty).flatMap {
         _.get(id.toString) match {

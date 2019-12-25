@@ -4,8 +4,8 @@ import java.util.UUID
 import java.util.concurrent.ConcurrentHashMap
 
 import javax.annotation.concurrent.ThreadSafe
-import storage.api.DbTransaction.CommitResult
-import storage.api.Model.DataKey
+import storage.api.Transaction.CommitResult
+import storage.api.DataModel.DataKey
 import storage.api._
 
 import scala.jdk.CollectionConverters._
@@ -14,14 +14,14 @@ import scala.util.{Failure, Success}
 @ThreadSafe
 private[impl] final class UnitOfWork private (
   id: UUID,
-  private val db: CommittableReadableDb
-) extends DbTransaction with DbIO {
+  private val db: TransactionalDatabase
+) extends Transaction with DbIO {
 
   private val cleanData = new ConcurrentHashMap[DataKey, String]()
   private val dirtyData = new ConcurrentHashMap[DataKey, String]()
 
-  override def readModel[A : Model]: DbResult[A] = {
-    val model = implicitly[Model[A]]
+  override def readModel[A : DataModel]: DbResult[A] = {
+    val model = implicitly[DataModel[A]]
     Option(dirtyData.get(model.key)) orElse Option(cleanData.get(model.key)) match {
       case Some(data) =>
         model.deserialize(data) match {
@@ -35,8 +35,8 @@ private[impl] final class UnitOfWork private (
     }
   }
 
-  override def writeModel[A : Model](obj: A): DbResult[Unit] = {
-    val model = implicitly[Model[A]]
+  override def writeModel[A : DataModel](obj: A): DbResult[Unit] = {
+    val model = implicitly[DataModel[A]]
     model.serialize(obj) match {
       case Failure(ex) => DbResult.badData(ex)
       case Success(data) =>
@@ -45,7 +45,7 @@ private[impl] final class UnitOfWork private (
     }
   }
 
-  override def updateModel[A : Model](default: A, f: A => A): DbResult[Unit] = {
+  override def updateModel[A : DataModel](default: A, f: A => A): DbResult[Unit] = {
     for {
       data <- readModel.ifNotFound(default)
       _ <- writeModel(f(data))
@@ -69,6 +69,6 @@ private[impl] final class UnitOfWork private (
 
 object UnitOfWork {
 
-  def apply(db: CommittableReadableDb): UnitOfWork = new UnitOfWork(UUID.randomUUID(), db)
+  def apply(db: TransactionalDatabase): UnitOfWork = new UnitOfWork(UUID.randomUUID(), db)
 
 }

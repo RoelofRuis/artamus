@@ -13,7 +13,7 @@ import server.analysis.blackboard.Controller
 import server.infra.{ConnectionLifetimeHooks, DispatchingServerAPI, ServerBindings, ServerInfraModule}
 import server.rendering.RenderingModule
 import storage.InMemoryStorageModule
-import storage.api.DbWithRead
+import storage.api.Database
 
 class ServerModule extends ScalaPrivateModule with ServerConfig {
 
@@ -47,7 +47,7 @@ class ServerModule extends ScalaPrivateModule with ServerConfig {
 
   @Provides @Singleton
   def serverConnectionFactory(
-    db: DbWithRead,
+    db: Database,
     serverBindings: ServerBindings,
     hooks: ConnectionLifetimeHooks
   ): ServerInterface = {

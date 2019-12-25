@@ -3,16 +3,16 @@ package server.model
 import music.model.display.render.Render
 import music.model.write.track.Track.TrackId
 import spray.json.RootJsonFormat
-import storage.api.{DbIO, DbRead, DbResult}
+import storage.api.{DbIO, ModelReader, DbResult}
 
 object Renders {
 
-  private implicit val table: JsonTableModel[Render] = new JsonTableModel[Render] {
+  private implicit val table: JsonTableDataModel[Render] = new JsonTableDataModel[Render] {
     override val tableName: String = "render"
     implicit val format: RootJsonFormat[Render] = jsonFormat2(Render)
   }
 
-  implicit class RenderQueries(db: DbRead) {
+  implicit class RenderQueries(db: ModelReader) {
     def getRenderByTrackId(trackId: TrackId): DbResult[Render] = {
       db.readModel[table.Shape].ifNotFound(table.empty).flatMap {
         _.get(trackId.id.toString) match {
