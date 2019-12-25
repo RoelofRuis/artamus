@@ -2,8 +2,7 @@ package music.math
 
 import scala.annotation.tailrec
 
-/**
-  * Models a rational number that can be used to express exact fractional calculations.
+/** Models a rational number that can be used to express exact fractional calculations.
   *
   * @see https://en.wikipedia.org/wiki/rational_number
   *
@@ -38,7 +37,12 @@ final case class Rational private (n: Int, d: Int) extends Ordered[Rational] {
     if (n == 0 || d == 0) "0"
     else {
       val i = n / d
-      val rest = if ((n - i) != 0) s"${n - (i * d)}/$d" else ""
+      val rest = {
+        if ((n - i) != 0) {
+          val dispN = if (i < 0) (n - (i * d)) * -1 else n - (i * d)
+          s"$dispN/$d"
+        } else ""
+      }
       if (i != 0) {
         if (rest.nonEmpty) s"$i $rest"
         else s"$i"
@@ -56,18 +60,19 @@ object Rational {
 
   def apply(n: Int, d: Int): Rational = {
     if (n == 0) new Rational(0, 0)
+    else if (d < 0) apply(n * -1, d * -1)
     else {
-      val g = gcd(Math.abs(n), Math.abs(d))
+      val g = greatestCommonDivisor(Math.abs(n), Math.abs(d))
       new Rational(n / g, d / g)
     }
   }
 
   @tailrec
-  private def gcd(x: Int, y:Int): Int = {
+  private def greatestCommonDivisor(x: Int, y:Int): Int = {
     if (x == 0) y
     else if (y == 0) x
-    else if (x < y) gcd(x, y-x)
-    else gcd(x-y, y)
+    else if (x < y) greatestCommonDivisor(x, y-x)
+    else greatestCommonDivisor(x-y, y)
   }
 
 }
