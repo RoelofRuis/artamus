@@ -2,7 +2,7 @@ package server
 
 import com.google.inject.Guice
 
-object Main extends App {
+object ServerApp extends App {
 
   val injector = Guice.createInjector(
     new ServerModule
