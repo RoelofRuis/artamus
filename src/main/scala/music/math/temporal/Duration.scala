@@ -2,8 +2,7 @@ package music.math.temporal
 
 import music.math.Rational
 
-/**
-  * A non-negative duration expressed by a [[Rational]] value.
+/** A rational-valued non-negative duration.
   *
   * @param v The duration value
   */
