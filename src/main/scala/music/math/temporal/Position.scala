@@ -2,8 +2,7 @@ package music.math.temporal
 
 import music.math.Rational
 
-/**
-  * A position in time expressed by a rational value. Its value might be negative.
+/** A rational valued position. Its value might be negative.
   *
   * @param v The position value
   */
