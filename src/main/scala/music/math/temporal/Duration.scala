@@ -6,8 +6,8 @@ import music.math.Rational
   *
   * @param v The duration value
   */
-final case class Duration private (v: Rational) extends Comparable[Duration] {
-  override def compareTo(o: Duration): Int = v compare o.v
+final case class Duration private (v: Rational) extends Ordered[Duration] {
+  override def compare(o: Duration): Int = v compare o.v
   def *(i: Int): Duration = Duration(v * i)
 }
 
