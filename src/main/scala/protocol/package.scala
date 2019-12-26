@@ -1,5 +1,3 @@
-import scala.language.reflectiveCalls
-
 package object protocol {
 
   trait Command { final type Res = Unit }
