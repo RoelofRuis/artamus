@@ -58,7 +58,7 @@ object StaffDisplay {
             val nextNotes = include(nextGroup)
 
             // rests
-            val rests = lastWindow.until(nextWindow) match {
+            val rests = Window.instantAt(lastWindow.start).until(nextWindow) match {
               case None => Iterator.empty
               case Some(diff) =>
                 track
