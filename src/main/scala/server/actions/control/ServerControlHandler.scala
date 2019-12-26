@@ -1,8 +1,8 @@
 package server.actions.control
 
 import javax.inject.Inject
-import protocol.ServerInterface
 import protocol.v2.Command2
+import protocol.v2.server.api.ServerInterface
 import pubsub.Dispatcher
 import server.{Request, Responses}
 

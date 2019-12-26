@@ -1,6 +1,4 @@
-package protocol
-
-import protocol.transport.server.{ServerAPI, SimpleServer}
+package protocol.v2.server.api
 
 object DefaultServer {
 

@@ -5,6 +5,7 @@ import javax.inject.Singleton
 import music.model.write.track.Track
 import net.codingwell.scalaguice.ScalaPrivateModule
 import protocol._
+import protocol.v2.server.api.{DefaultServer, ServerInterface}
 import server.actions.control.ServerControlHandler
 import server.actions.recording.RecordingCommandHandler
 import server.actions.writing.{TrackQueryHandler, TrackTaskHandler, TrackUpdateHandler}

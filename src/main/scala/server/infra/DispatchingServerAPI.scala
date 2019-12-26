@@ -2,14 +2,14 @@ package server.infra
 
 import java.util.concurrent.ConcurrentHashMap
 
-import com.typesafe.scalalogging.LazyLogging
-import music.model.write.user.User
-import protocol.transport.server.{Connection, ServerAPI}
-import protocol.v2.Exceptions.{InvalidRequest, InvalidStateException, LogicException, MessageException, ServerException, StorageException, Unauthorized}
-import protocol.v2._
 import _root_.server.Request
 import _root_.server.actions.control.Authenticate
 import _root_.server.model.Users._
+import com.typesafe.scalalogging.LazyLogging
+import music.model.write.user.User
+import protocol.v2.Exceptions._
+import protocol.v2._
+import protocol.v2.server.api.{ConnectionRef, ServerAPI}
 import storage.api.{Database, DbIO, NotFound, Transaction}
 
 import scala.util.{Failure, Success, Try}
@@ -20,20 +20,20 @@ final class DispatchingServerAPI(
   hooks: ConnectionLifetimeHooks
 ) extends ServerAPI with LazyLogging {
 
-  private var connections: Map[Connection, Option[User]] = Map()
-  private val transactions: ConcurrentHashMap[Connection, Transaction] = new ConcurrentHashMap[Connection, Transaction]()
+  private var connections: Map[ConnectionRef, Option[User]] = Map()
+  private val transactions: ConcurrentHashMap[ConnectionRef, Transaction] = new ConcurrentHashMap[ConnectionRef, Transaction]()
 
-  def connectionOpened(connection: Connection): Unit = {
+  def connectionOpened(connection: ConnectionRef): Unit = {
     connections += (connection -> None)
   }
 
-  def connectionClosed(connection: Connection): Unit = {
+  def connectionClosed(connection: ConnectionRef): Unit = {
     connections -= connection
-    server.unsubscribeEvents(connection.name)
+    server.unsubscribeEvents(connection.toString)
     transactions.remove(connection)
   }
 
-  override def afterRequest(connection: Connection, response: DataResponse2): DataResponse2 = {
+  override def afterRequest(connection: ConnectionRef, response: DataResponse2): DataResponse2 = {
     response.data match {
       case Right(_) =>
         Option(transactions.get(connection)) match {
@@ -56,7 +56,7 @@ final class DispatchingServerAPI(
     }
   }
 
-  def handleRequest(connection: Connection, request: Object): DataResponse2 = {
+  def handleRequest(connection: ConnectionRef, request: Object): DataResponse2 = {
     val result = connections.get(connection) match {
       case None =>
         logger.error(s"Received message on unbound connection [$connection]")
@@ -77,12 +77,12 @@ final class DispatchingServerAPI(
     DataResponse2(result)
   }
 
-  private def authenticate(connection: Connection, request: Request2): Either[ServerException, Any] = {
+  private def authenticate(connection: ConnectionRef, request: Request2): Either[ServerException, Any] = {
     request match {
       case CommandRequest2(Authenticate(userName)) =>
         db.getUserByName(userName) match {
           case Right(user) =>
-            server.subscribeEvents(connection.name, event => connection.sendEvent(EventResponse2(event)))
+            server.subscribeEvents(connection.toString, event => connection.sendEvent(event))
             connections = connections.updated(connection, Some(user))
             hooks.onAuthenticated(startTransaction(connection), user)
             Right(true)
@@ -101,7 +101,7 @@ final class DispatchingServerAPI(
     }
   }
 
-  private def executeRequest(connection: Connection, user: User, request: Request2): Either[ServerException, Any] = {
+  private def executeRequest(connection: ConnectionRef, user: User, request: Request2): Either[ServerException, Any] = {
     try {
       val transaction = startTransaction(connection)
       val response = request match {
@@ -123,7 +123,7 @@ final class DispatchingServerAPI(
     }
   }
 
-  private def startTransaction(connection: Connection): DbIO with Transaction = {
+  private def startTransaction(connection: ConnectionRef): DbIO with Transaction = {
     val transaction = db.newTransaction
     transactions.put(connection, transaction)
     transaction

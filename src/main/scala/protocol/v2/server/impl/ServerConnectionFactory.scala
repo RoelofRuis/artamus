@@ -1,21 +1,25 @@
-package protocol.transport.server
+package protocol.v2.server.impl
 
 import java.io.{EOFException, IOException, ObjectInputStream, ObjectOutputStream}
 import java.net.Socket
+import java.util.UUID
 
 import com.typesafe.scalalogging.LazyLogging
-import protocol.transport.server.ServerConnectionFactory.ServerConnection
+import protocol.v2.Exceptions.WriteException
+import protocol.v2.server.api.{ConnectionRef, ServerAPI}
+import protocol.v2.server.impl.ServerConnectionFactory.ServerConnection
+import protocol.v2.{Event2, EventResponse2}
 
 import scala.util.{Failure, Success, Try}
 
 private[server] class ServerConnectionFactory(server: ServerAPI) extends LazyLogging {
 
-  def connect(socket: Socket, connectionId: Long): Try[Runnable] = {
+  def connect(socket: Socket): Try[Runnable] = {
     try {
 
       lazy val objectIn = new ObjectInputStream(socket.getInputStream)
       val objectOut = new ObjectOutputStream(socket.getOutputStream)
-      val connection = ServerConnection(connectionId, objectOut)
+      val connection = ServerConnection(objectOut)
 
       Success(new Runnable {
         override def run(): Unit = {
@@ -48,11 +52,15 @@ private[server] class ServerConnectionFactory(server: ServerAPI) extends LazyLog
 object ServerConnectionFactory {
 
   private[ServerConnectionFactory] final case class ServerConnection (
-    id: Long,
-    private val eventOut: ObjectOutputStream
-  ) extends Connection {
-    def name: String = s"connection_$id"
-    def sendEvent(event: Any): Unit = eventOut.writeObject(event)
+    private val eventOut: ObjectOutputStream,
+    id: UUID = UUID.randomUUID()
+  ) extends ConnectionRef {
+    override def sendEvent(event: Event2): Option[WriteException] = {
+      Try { eventOut.writeObject(EventResponse2(event)) } match {
+        case Success(_) => None
+        case Failure(ex) => Some(WriteException(ex))
+      }
+    }
   }
 
 }

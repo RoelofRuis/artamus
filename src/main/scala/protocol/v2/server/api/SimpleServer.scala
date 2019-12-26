@@ -1,10 +1,11 @@
-package protocol.transport.server
+package protocol.v2.server.api
 
 import java.io.IOException
 import java.net.ServerSocket
 import java.util.concurrent.{ExecutorService, Executors, RejectedExecutionException, TimeUnit}
 
 import com.typesafe.scalalogging.LazyLogging
+import protocol.v2.server.impl.ServerConnectionFactory
 import resource.Resource
 
 import scala.concurrent.{Future, Promise}
@@ -17,14 +18,12 @@ class SimpleServer (
 
   private val executor: ExecutorService = Executors.newFixedThreadPool(1)
 
-  private var connectionId: Long = 0
-
   def accept(): Unit = {
     while ( ! executor.isShutdown ) {
       val execution = for {
         server <- serverSocket.acquire.toTry
         socket <- Try { server.accept() }
-        connection <- connectionFactory.connect(socket, nextConnectionId)
+        connection <- connectionFactory.connect(socket)
         execution <- acceptConnection(connection)
       } yield execution
 
@@ -57,12 +56,6 @@ class SimpleServer (
   private def acceptConnection(connection: Runnable): Try[Unit] = {
     logger.info("Accepting new connection")
     Try { executor.execute(connection) }
-  }
-
-  private def nextConnectionId: Long = {
-    val subId = connectionId
-    connectionId += 1
-    subId
   }
 
 }
