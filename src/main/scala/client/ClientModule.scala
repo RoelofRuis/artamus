@@ -6,10 +6,11 @@ import client.operations._
 import com.google.inject.Provides
 import javax.inject.Singleton
 import net.codingwell.scalaguice.ScalaPrivateModule
-import protocol.{ClientInterface, DefaultClient, Event}
+import protocol.Event
+import protocol.v2.client.api.{ClientConfig, ClientInterface2}
 import pubsub.{Callback, Dispatcher}
 
-class ClientModule extends ScalaPrivateModule with ClientConfig {
+class ClientModule extends ScalaPrivateModule {
 
   override def configure(): Unit = {
     install(new MidiIOModule)
@@ -27,6 +28,7 @@ class ClientModule extends ScalaPrivateModule with ClientConfig {
   }
 
   @Provides @Singleton
-  def client(dispatcher: Dispatcher[Callback, Event]): ClientInterface = DefaultClient(port, dispatcher)
+  def client(dispatcher: Dispatcher[Callback, Event]): ClientInterface2 =
+    protocol.v2.client.api.createClient(ClientConfig("localhost", 9999), dispatcher)
 
 }

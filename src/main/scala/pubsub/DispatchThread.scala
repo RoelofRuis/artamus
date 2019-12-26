@@ -4,6 +4,7 @@ import java.util.concurrent.BlockingQueue
 
 import scala.reflect.ClassTag
 
+@deprecated
 class DispatchThread[A <: { type Res } : ClassTag](
   eventQueue: BlockingQueue[A],
   dispatcher: Dispatcher[Callback, A]

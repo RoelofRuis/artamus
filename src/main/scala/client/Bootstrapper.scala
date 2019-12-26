@@ -3,16 +3,16 @@ package client
 import client.events.RenderHandler
 import client.operations.{Operation, OperationRegistry}
 import javax.inject.Inject
-import protocol.{ClientInterface, Command}
+import protocol.Command
+import protocol.v2.client.api.ClientInterface2
 
 class Bootstrapper @Inject() (
-  client: ClientInterface,
+  client: ClientInterface2,
   registry: OperationRegistry,
   renderHandler: RenderHandler
 ) {
 
   def run(): Unit = {
-    client.open()
     var isRunning = true
 
     while(isRunning) {
@@ -24,17 +24,18 @@ class Bootstrapper @Inject() (
     }
 
     renderHandler.frame.dispose()
-    client.close()
   }
 
   def sendCommands(commands: List[Command]): Unit = commands match {
     case Nil =>
     case command :: rest =>
-      if (client.sendCommand(command)) {
-        println(s"[$command] executed")
-        sendCommands(rest)
-      } else {
-        println(s"[$command] -> failed! (skipping [${rest.length}] more)")
+      client.sendCommand(command) match {
+        case None =>
+          println(s"[$command] executed")
+          sendCommands(rest)
+        case Some(ex) =>
+          println(s"[$command] -> failed! (skipping [${rest.length}] more)")
+          ex.printStackTrace()
       }
   }
 

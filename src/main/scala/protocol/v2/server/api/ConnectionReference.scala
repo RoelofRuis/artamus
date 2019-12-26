@@ -1,6 +1,8 @@
-package protocol.v2.api
+package protocol.v2.server.api
 
 import java.util.UUID
+
+import protocol.v2.Exceptions.TransportException
 
 trait ConnectionReference {
   val id: UUID
