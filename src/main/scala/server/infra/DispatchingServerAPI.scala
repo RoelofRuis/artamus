@@ -4,12 +4,13 @@ import java.util.concurrent.ConcurrentHashMap
 
 import com.typesafe.scalalogging.LazyLogging
 import music.model.write.user.User
-import protocol._
 import protocol.transport.server.{Connection, ServerAPI}
-import server.Request
-import server.actions.control.Authenticate
-import server.model.Users._
-import storage.api.{Database, DbIO, Transaction, NotFound}
+import protocol.v2.Exceptions.{InvalidRequest, InvalidStateException, LogicException, MessageException, ServerException, StorageException, Unauthorized}
+import protocol.v2._
+import _root_.server.Request
+import _root_.server.actions.control.Authenticate
+import _root_.server.model.Users._
+import storage.api.{Database, DbIO, NotFound, Transaction}
 
 import scala.util.{Failure, Success, Try}
 
@@ -32,18 +33,20 @@ final class DispatchingServerAPI(
     transactions.remove(connection)
   }
 
-  override def afterRequest(connection: Connection, response: DataResponse): DataResponse = {
+  override def afterRequest(connection: Connection, response: DataResponse2): DataResponse2 = {
     response.data match {
       case Right(_) =>
         Option(transactions.get(connection)) match {
           case None => response
+
           case Some(transaction) => transaction.commit() match {
-            case Right(numChanges) => logger.debug(s"Committed [$numChanges] changes")
+            case Right(numChanges) =>
+              logger.debug(s"Committed [$numChanges] changes")
               response
 
             case Left(ex) => logger.error(s"Unable to commit changes", ex)
               ex.causes.zipWithIndex.foreach { case (err, idx) => logger.error(s"commit error [$idx]", err) }
-              DataResponse(Left(s"Unable to commit changes"))
+              DataResponse2(Left(StorageException))
           }
         }
 
@@ -53,68 +56,70 @@ final class DispatchingServerAPI(
     }
   }
 
-  def handleRequest(connection: Connection, request: Object): DataResponse = {
+  def handleRequest(connection: Connection, request: Object): DataResponse2 = {
     val result = connections.get(connection) match {
       case None =>
         logger.error(s"Received message on unbound connection [$connection]")
-        Left(s"Received message on unbound connection")
+        Left(InvalidStateException)
 
       case Some(identifier) =>
-        Try { request.asInstanceOf[ServerRequest] } match {
+        Try { request.asInstanceOf[Request2] } match {
           case Success(request) =>
             identifier match {
               case None => authenticate(connection, request)
-              case Some(user) => handleRequest(connection, user, request)
+              case Some(user) => executeRequest(connection, user, request)
             }
           case Failure(ex) =>
             logger.warn(s"Unable to read message.", ex)
-            Left(s"Unable to read message")
+            Left(MessageException)
         }
     }
-    DataResponse(result)
+    DataResponse2(result)
   }
 
-  def authenticate(connection: Connection, request: ServerRequest): Either[ServerException, Any] = {
+  private def authenticate(connection: Connection, request: Request2): Either[ServerException, Any] = {
     request match {
-      case CommandRequest(Authenticate(userName)) =>
+      case CommandRequest2(Authenticate(userName)) =>
         db.getUserByName(userName) match {
           case Right(user) =>
-            server.subscribeEvents(connection.name, event => connection.sendEvent(EventResponse(event)))
+            server.subscribeEvents(connection.name, event => connection.sendEvent(EventResponse2(event)))
             connections = connections.updated(connection, Some(user))
             hooks.onAuthenticated(startTransaction(connection), user)
             Right(true)
 
           case Left(NotFound()) =>
             logger.info(s"User [$userName] not found")
-            Left(s"User not found")
+            Left(InvalidRequest(s"User [$userName] not found"))
 
           case Left(ex) =>
             logger.error("Error in server logic", ex)
-            Left("Server error")
+            Left(LogicException)
         }
       case _ =>
         logger.warn("Received unauthorized request")
-        Left("Unauthorized")
+        Left(Unauthorized)
     }
   }
 
-  def handleRequest(connection: Connection, user: User, request: ServerRequest): Either[ServerException, Any] = {
+  private def executeRequest(connection: Connection, user: User, request: Request2): Either[ServerException, Any] = {
     try {
       val transaction = startTransaction(connection)
       val response = request match {
-        case CommandRequest(command) => server.handleCommand(Request(user, transaction, command))
-        case QueryRequest(query) => server.handleQuery(Request(user, transaction, query))
+        case CommandRequest2(command) => server.handleCommand(Request(user, transaction, command))
+        case QueryRequest2(query) => server.handleQuery(Request(user, transaction, query))
       }
       response match {
         case Failure(ex) =>
+          // TODO: is LogicException the correct error here?
           logger.error("Error in server logic", ex)
-          Left("Server error")
+          Left(LogicException)
+
         case Success(response) => Right(response)
       }
     } catch {
       case ex: Exception =>
         logger.error("Unexpected server error", ex)
-        Left("Server error")
+        Left(LogicException)
     }
   }
 

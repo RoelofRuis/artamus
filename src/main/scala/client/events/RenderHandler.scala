@@ -9,7 +9,7 @@ import com.typesafe.scalalogging.LazyLogging
 import javax.annotation.concurrent.NotThreadSafe
 import javax.imageio.ImageIO
 import javax.swing.{ImageIcon, JFrame, JLabel, WindowConstants}
-import protocol.Event
+import protocol.v2.Event2
 import pubsub.{Callback, Dispatcher}
 import server.actions.writing.{RenderingStarted, TrackRendered}
 
@@ -17,7 +17,7 @@ import scala.util.{Failure, Success, Try}
 
 @NotThreadSafe // TODO: proper GUI
 class RenderHandler @Inject() (
-  dispatcher: Dispatcher[Callback, Event],
+  dispatcher: Dispatcher[Callback, Event2],
 ) extends LazyLogging {
 
   val frame: JFrame = new JFrame()

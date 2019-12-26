@@ -2,13 +2,13 @@ package server.infra
 
 import javax.inject.Inject
 import music.model.write.user.User
-import protocol.Event
+import protocol.v2.Event2
 import pubsub.EventBus
 import server.actions.writing.TrackRendered
 import storage.api.{DbIO, Transaction}
 
 final class ConnectionLifetimeHooks @Inject() (
-  eventbus: EventBus[Event],
+  eventbus: EventBus[Event2],
 ) {
 
   import server.model.Renders._

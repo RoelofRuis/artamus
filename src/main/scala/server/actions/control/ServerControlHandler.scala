@@ -1,13 +1,14 @@
 package server.actions.control
 
 import javax.inject.Inject
-import protocol.{Command, ServerInterface}
+import protocol.ServerInterface
+import protocol.v2.Command2
 import pubsub.Dispatcher
 import server.{Request, Responses}
 
 private[server] class ServerControlHandler @Inject() (
   server: ServerInterface,
-  dispatcher: Dispatcher[Request, Command]
+  dispatcher: Dispatcher[Request, Command2]
 ) {
 
   dispatcher.subscribe[Disconnect] {

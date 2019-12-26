@@ -1,13 +1,13 @@
 package server.actions.writing
 
 import javax.inject.Inject
-import protocol.Command
+import protocol.v2.Command2
 import pubsub.Dispatcher
 import server.rendering.AsyncRenderer
 import server.{Request, Responses}
 
 private[server] class TrackTaskHandler @Inject() (
-  dispatcher: Dispatcher[Request, Command],
+  dispatcher: Dispatcher[Request, Command2],
   renderer: AsyncRenderer,
 ) {
 

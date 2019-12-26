@@ -1,7 +1,7 @@
 package protocol.v2.client.impl
 
 import javax.annotation.concurrent.{GuardedBy, NotThreadSafe}
-import protocol.v2.{Command2, Query2}
+import protocol.v2.{Command2, CommandRequest2, Query2, QueryRequest2}
 import protocol.v2.Exceptions.{NotConnected, ResponseException}
 import protocol.v2.client.api._
 import protocol.v2.client.impl.Client2.{Connected, TransportState, Unconnected}
@@ -30,14 +30,14 @@ final class Client2(
   }
 
   override def sendCommand[A <: Command2](command: A): Option[ResponseException] = {
-    getTransport.flatMap(_.send[Command2, Unit](command)) match {
+    getTransport.flatMap(_.send[CommandRequest2, Unit](CommandRequest2(command))) match {
       case Right(_) => None
       case Left(ex) => Some(ex)
     }
   }
 
   override def sendQuery[A <: Query2](query: A): Either[ResponseException, A#Res] = {
-    getTransport.flatMap(_.send[Query2, A#Res])
+    getTransport.flatMap(_.send[QueryRequest2, A#Res](QueryRequest2(query)))
   }
 
 }

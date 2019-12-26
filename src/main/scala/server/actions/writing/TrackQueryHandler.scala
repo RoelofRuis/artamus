@@ -3,14 +3,14 @@ package server.actions.writing
 import javax.inject.Inject
 import music.math.temporal.Position
 import music.model.write.track.Track
-import protocol.Query
+import protocol.v2.Query2
 import pubsub.Dispatcher
 import server.{Request, Responses}
 
 import scala.util.Try
 
 private[server] class TrackQueryHandler @Inject() (
-  dispatcher: Dispatcher[Request, Query]
+  dispatcher: Dispatcher[Request, Query2]
 ) {
 
   import server.model.Tracks._
@@ -22,7 +22,7 @@ private[server] class TrackQueryHandler @Inject() (
     readTrack(req, _.perform(Position.ZERO), TrackPerformance())
   }
 
-  def readTrack[A](req: Request[Query], f: Track => A, onNotFound: => A): Try[A] = {
+  def readTrack[A](req: Request[Query2], f: Track => A, onNotFound: => A): Try[A] = {
     val res = for {
       workspace <- req.db.getWorkspaceByOwner(req.user)
       track <- req.db.getTrackById(workspace.selectedTrack)

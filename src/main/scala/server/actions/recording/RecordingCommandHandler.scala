@@ -2,17 +2,17 @@ package server.actions.recording
 
 import javax.inject.Inject
 import music.model.record.Recording
-import protocol.Command
+import protocol.v2.Command2
 import pubsub.Dispatcher
 import server.{Request, Responses}
 import storage.api.DbResult
 
 private[server] class RecordingCommandHandler @Inject() (
-  dispatcher: Dispatcher[Request, Command],
+  dispatcher: Dispatcher[Request, Command2],
 ) {
 
-  import server.model.Workspaces._
   import server.model.Recordings._
+  import server.model.Workspaces._
 
   dispatcher.subscribe[StartRecording] { req =>
     val res = for {

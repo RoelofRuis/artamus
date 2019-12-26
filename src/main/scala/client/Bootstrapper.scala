@@ -3,7 +3,7 @@ package client
 import client.events.RenderHandler
 import client.operations.{Operation, OperationRegistry}
 import javax.inject.Inject
-import protocol.Command
+import protocol.v2.Command2
 import protocol.v2.client.api.ClientInterface2
 
 class Bootstrapper @Inject() (
@@ -26,7 +26,7 @@ class Bootstrapper @Inject() (
     renderHandler.frame.dispose()
   }
 
-  def sendCommands(commands: List[Command]): Unit = commands match {
+  def sendCommands(commands: List[Command2]): Unit = commands match {
     case Nil =>
     case command :: rest =>
       client.sendCommand(command) match {

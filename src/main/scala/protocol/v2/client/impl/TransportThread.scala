@@ -11,7 +11,7 @@ import protocol.v2.{DataResponse2, EventResponse2, Response2}
 
 import scala.util.{Failure, Success, Try}
 
-@NotThreadSafe("`send` should only be called sequentially!")
+@NotThreadSafe // for now `send` should only be called sequentially!"
 class TransportThread(
   val socket: Socket,
   val inputStream: ObjectInputStream,
@@ -65,7 +65,7 @@ class TransportThread(
           case Success(d @ DataResponse2(_)) if expectsData.get() => readQueue.put(Right(d))
           case Success(_ @ DataResponse2(_)) => readQueue.put(Left(UnexpectedResponse))
           case Success(e @ EventResponse2(_)) => eventScheduler.schedule(e.event)
-          case Failure(ex) if expectsData.get() => readQueue.put(Left(ServerException(ex)))
+          case Failure(ex) if expectsData.get() => readQueue.put(Left(ClientReceiveException(ex)))
           case Failure(_) => // TODO: determine what to do on completely unexpected failure
         }
       }

@@ -9,7 +9,7 @@ package object v2 {
   trait Event2 { final type Res = Unit }
 
   sealed trait Request2
-  final case class CommandRequest2(data: Command) extends Request2
+  final case class CommandRequest2(data: Command2) extends Request2
   final case class QueryRequest2(data: Query2) extends Request2
 
   sealed trait Response2
