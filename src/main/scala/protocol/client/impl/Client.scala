@@ -1,10 +1,10 @@
 package protocol.client.impl
 
 import javax.annotation.concurrent.{GuardedBy, NotThreadSafe}
-import protocol.{Command, CommandRequest, DataResponse, Query, QueryRequest}
 import protocol.Exceptions.{CommunicationException, NotConnected}
 import protocol.client.api._
 import protocol.client.impl.Client.{Connected, TransportState, Unconnected}
+import protocol.{Command, CommandRequest, Query, QueryRequest}
 
 
 @NotThreadSafe // TODO: ensure thread safety!
@@ -30,18 +30,10 @@ final class Client(
   }
 
   override def sendCommand[A <: Command](command: A): Option[CommunicationException] = {
-    getTransport.flatMap(_.send[CommandRequest, DataResponse](CommandRequest(command))) match {
-      case Right(r) =>
-        r.data match {
-          case Right(_) => None
-          case Left(responseException) => Some(responseException)
-        }
-      case Left(ex) => Some(ex)
-    }
+    getTransport.flatMap(_.send[CommandRequest, Unit](CommandRequest(command))).left.toOption
   }
 
   override def sendQuery[A <: Query](query: A): Either[CommunicationException, A#Res] = {
-    // TODO: fix this, should deal with DataResponse here!
     getTransport.flatMap(_.send[QueryRequest, A#Res](QueryRequest(query)))
   }
 

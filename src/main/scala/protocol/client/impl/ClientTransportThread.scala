@@ -35,9 +35,17 @@ class ClientTransportThread(
         response match {
           case Left(ex) => Left(ex)
           case Right(data) =>
-            decode[B](data) match {
+            decode[DataResponse](data) match {
               case Failure(ex) => Left(ReadException(ex))
-              case Success(obj) => Right(obj)
+              case Success(decoded) =>
+                decoded.data match {
+                  case Left(responseException) => Left(responseException)
+                  case Right(any) =>
+                    decode[B](any) match {
+                      case Failure(ex) => Left(ReadException(ex))
+                      case Success(obj) => Right(obj)
+                    }
+                }
             }
         }
     }
