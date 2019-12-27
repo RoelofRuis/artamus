@@ -9,7 +9,7 @@ import protocol.server.api.ConnectionHandle
 
 import scala.util.{Failure, Success, Try}
 
-final case class ConnectionHandleImpl (
+private[server] final case class ConnectionHandleImpl (
   private val eventOut: ObjectOutputStream,
   id: UUID = UUID.randomUUID()
 ) extends ConnectionHandle {

@@ -12,7 +12,7 @@ import protocol.{DataResponse, EventResponse, ServerResponse}
 import scala.util.{Failure, Success, Try}
 
 @NotThreadSafe // for now `send` should only be called sequentially!"
-class ClientTransportThread(
+private[client] final class ClientTransportThread(
   val socket: Socket,
   val inputStream: ObjectInputStream,
   val outputStream: ObjectOutputStream,

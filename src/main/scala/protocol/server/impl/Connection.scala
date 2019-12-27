@@ -5,7 +5,7 @@ import java.net.Socket
 
 import protocol.server.api.ServerAPI
 
-class Connection(
+private[server] final class Connection(
   api: ServerAPI,
   socket: Socket,
   inputStream: ObjectInputStream,

@@ -5,7 +5,7 @@ import java.util.concurrent.{ArrayBlockingQueue, BlockingQueue}
 import protocol.Event
 import protocol.client.api.EventDispatcher
 
-class EventThread(
+private[client] final class EventThread(
   dispatcher: EventDispatcher
 ) extends Thread with EventScheduler {
 

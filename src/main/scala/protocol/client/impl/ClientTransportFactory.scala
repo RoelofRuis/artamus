@@ -8,7 +8,7 @@ import protocol.client.api.ClientConfig
 
 import scala.util.{Failure, Success, Try}
 
-object ClientTransportFactory {
+private[client] object ClientTransportFactory {
 
   def create(config: ClientConfig, eventScheduler: EventScheduler): Either[TransportException, ClientTransport] = {
     val transport = for {
