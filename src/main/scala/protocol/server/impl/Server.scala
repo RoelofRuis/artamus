@@ -9,6 +9,7 @@ import protocol.server.api.{ServerAPI, ServerInterface}
 import scala.concurrent.{Future, Promise}
 import scala.util.{Failure, Success, Try}
 
+// TODO: better errors and shutdown logic!
 class Server(serverSocket: ServerSocket, api: ServerAPI) extends ServerInterface {
 
   private val connectionExecutor: ExecutorService = Executors.newFixedThreadPool(1)
@@ -17,7 +18,7 @@ class Server(serverSocket: ServerSocket, api: ServerAPI) extends ServerInterface
     while ( ! connectionExecutor.isShutdown) {
       ConnectionFactory.acceptNext(serverSocket, api) match {
         case Left(_: IOException) if serverSocket.isClosed =>
-        // server is shut down
+          // server is shut down
 
         case Left(ex) =>
           // unable to set up transport
