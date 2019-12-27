@@ -6,12 +6,12 @@ package object protocol {
   trait Query { type Res }
   trait Event { final type Res = Unit }
 
-  sealed trait RequestMessage
-  final case class CommandMessage(command: Command) extends RequestMessage
-  final case class QueryMessage(query: Query) extends RequestMessage
+  sealed trait ServerRequest
+  final case class CommandRequest(command: Command) extends ServerRequest
+  final case class QueryRequest(query: Query) extends ServerRequest
 
-  sealed trait ResponseMessage
-  final case class DataMessage(data: Either[ResponseException, Any]) extends ResponseMessage
-  final case class EventMessage[A <: Event](event: A) extends ResponseMessage
+  sealed trait ServerResponse
+  final case class DataResponse(data: Either[ResponseException, Any]) extends ServerResponse
+  final case class EventResponse[A <: Event](event: A) extends ServerResponse
 
 }

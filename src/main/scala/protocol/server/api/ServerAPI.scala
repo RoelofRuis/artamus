@@ -1,6 +1,6 @@
 package protocol.server.api
 
-import protocol.DataMessage
+import protocol.DataResponse
 
 trait ServerAPI {
 
@@ -8,8 +8,8 @@ trait ServerAPI {
 
   def connectionClosed(connection: ConnectionRef): Unit
 
-  def afterRequest(connection: ConnectionRef, response: DataMessage): DataMessage
+  def afterRequest(connection: ConnectionRef, response: DataResponse): DataResponse
 
-  def handleRequest(connection: ConnectionRef, obj: Object): DataMessage
+  def handleRequest(connection: ConnectionRef, obj: Object): DataResponse
 
 }

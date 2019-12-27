@@ -5,7 +5,7 @@ import scala.reflect.{ClassTag, classTag}
 import scala.util.{Failure, Try}
 
 /* @NotThreadSafe */
-class SimpleDispatcher[R[_] <: RequestContainer[_], A <: Object { type Res }] extends Dispatcher[R, A] {
+class SimpleDispatcher[R[_] <: Dispatchable[_], A <: Object { type Res }] extends Dispatcher[R, A] {
 
   private var request = Map[String, Any]()
 

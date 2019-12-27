@@ -1,8 +1,8 @@
 package protocol.client.impl
 
 import javax.annotation.concurrent.{GuardedBy, NotThreadSafe}
-import protocol.{Command, CommandMessage, Query, QueryMessage}
-import protocol.Exceptions.{NotConnected, ResponseException}
+import protocol.{Command, CommandRequest, Query, QueryRequest}
+import protocol.Exceptions.{NotConnected, CommunicationException}
 import protocol.client.api._
 import protocol.client.impl.Client2.{Connected, TransportState, Unconnected}
 
@@ -15,7 +15,7 @@ final class Client2(
 
   @GuardedBy("transport") private var transport: TransportState = Unconnected(true)
 
-  private def getTransport: Either[ResponseException, Transport] = {
+  private def getTransport: Either[CommunicationException, Transport] = {
     transport match {
       case Connected(transport) => Right(transport)
       case Unconnected(false) => Left(NotConnected)
@@ -29,15 +29,15 @@ final class Client2(
     }
   }
 
-  override def sendCommand[A <: Command](command: A): Option[ResponseException] = {
-    getTransport.flatMap(_.send[CommandMessage, Unit](CommandMessage(command))) match {
+  override def sendCommand[A <: Command](command: A): Option[CommunicationException] = {
+    getTransport.flatMap(_.send[CommandRequest, Unit](CommandRequest(command))) match {
       case Right(_) => None
       case Left(ex) => Some(ex)
     }
   }
 
-  override def sendQuery[A <: Query](query: A): Either[ResponseException, A#Res] = {
-    getTransport.flatMap(_.send[QueryMessage, A#Res](QueryMessage(query)))
+  override def sendQuery[A <: Query](query: A): Either[CommunicationException, A#Res] = {
+    getTransport.flatMap(_.send[QueryRequest, A#Res](QueryRequest(query)))
   }
 
 }

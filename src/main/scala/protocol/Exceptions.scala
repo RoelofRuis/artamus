@@ -2,40 +2,31 @@ package protocol
 
 object Exceptions {
 
-  /** Any exception that caused incorrect server response */
-  sealed trait ResponseException extends Exception // TODO: maybe rename to ProtocolException
+  sealed trait CommunicationException extends Exception
 
-  /** Any error caused by the server */
-  sealed trait ServerException extends ResponseException
+  sealed trait ResponseException extends CommunicationException
+  /** There is no user authenticated for the request */
+  final case object Unauthenticated extends ResponseException
+  /** The message contains invalid parameters */
+  final case class InvalidParameters(message: String) extends ResponseException
+  /** The message could not be read */
+  final case object InvalidMessage extends ResponseException
+  /** There was an unexpected logic error */
+  final case object LogicError extends ResponseException
+  /** The sever encountered an invalid state (this is really bad!) */
+  final case object InvalidStateError extends ResponseException
 
-  final case object Unauthorized extends ServerException
-  final case class InvalidRequest(message: String) extends ServerException
 
-  final case object MessageException extends ServerException
-  final case object InvalidStateException extends ServerException
-  final case object StorageException extends ServerException
-  final case object LogicException extends ServerException
-
-
-  /** Any error caused by malfunctioning transport */
-  sealed trait TransportException extends ResponseException
-
-  /** The server sent an unexpected response  */
-  final case object UnexpectedResponse extends TransportException
-
-  /** The client is not connected to the server */
+  sealed trait TransportException extends CommunicationException
+  /** A data response was received when none was expected */
+  final case object UnexpectedDataResponse extends TransportException
+  /** There is no active connection and none could be made */
   final case object NotConnected extends TransportException
-
-  /** Any exception when trying to set up the connection to the server */
+  /** There was a problem when creating the connection */
   final case class ConnectException(cause: Throwable) extends TransportException
-
-  /** There was an error receiving a message */
-  final case class ClientReceiveException(cause: Throwable) extends TransportException
-
-  /** Any exception when writing data to the server connection */
+  /** There was a problem writing data */
   final case class WriteException(cause: Throwable) extends TransportException
-
-  /** Any exception when reading data from the server connection */
+  /** There was a problem reading data */
   final case class ReadException(cause: Throwable) extends TransportException
 
 }

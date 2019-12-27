@@ -8,7 +8,7 @@ import com.typesafe.scalalogging.LazyLogging
 import protocol.Exceptions.WriteException
 import protocol.server.api.{ConnectionRef, ServerAPI}
 import protocol.server.impl.ServerConnectionFactory.ServerConnection
-import protocol.{Event, EventMessage}
+import protocol.{Event, EventResponse}
 
 import scala.util.{Failure, Success, Try}
 
@@ -56,7 +56,7 @@ object ServerConnectionFactory {
     id: UUID = UUID.randomUUID()
   ) extends ConnectionRef {
     override def sendEvent(event: Event): Option[WriteException] = {
-      Try { eventOut.writeObject(EventMessage(event)) } match {
+      Try { eventOut.writeObject(EventResponse(event)) } match {
         case Success(_) => None
         case Failure(ex) => Some(WriteException(ex))
       }

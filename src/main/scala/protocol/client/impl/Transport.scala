@@ -1,9 +1,9 @@
 package protocol.client.impl
 
-import protocol.Exceptions.ResponseException
+import protocol.Exceptions.CommunicationException
 
 trait Transport {
 
-  def send[A, B](request: A): Either[ResponseException, B]
+  def send[A, B](request: A): Either[CommunicationException, B]
 
 }
