@@ -112,7 +112,6 @@ final class DispatchingServerAPI @Inject() (
       }
       response match {
         case Failure(ex) =>
-          // TODO: is LogicException the correct error here?
           logger.error("Error in server logic", ex)
           Left(LogicError)
 
