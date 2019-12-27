@@ -7,7 +7,7 @@ import com.google.inject.Provides
 import javax.inject.Singleton
 import net.codingwell.scalaguice.ScalaPrivateModule
 import protocol.Event
-import protocol.client.api.{ClientConfig, ClientInterface2}
+import protocol.client.api.{ClientConfig, ClientInterface}
 import pubsub.{Callback, Dispatcher}
 
 class ClientModule extends ScalaPrivateModule {
@@ -28,7 +28,7 @@ class ClientModule extends ScalaPrivateModule {
   }
 
   @Provides @Singleton
-  def client(dispatcher: Dispatcher[Callback, Event]): ClientInterface2 =
+  def client(dispatcher: Dispatcher[Callback, Event]): ClientInterface =
     protocol.client.api.createClient(ClientConfig("localhost", 9999), dispatcher)
 
 }

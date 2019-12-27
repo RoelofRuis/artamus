@@ -4,23 +4,23 @@ import javax.annotation.concurrent.{GuardedBy, NotThreadSafe}
 import protocol.{Command, CommandRequest, Query, QueryRequest}
 import protocol.Exceptions.{NotConnected, CommunicationException}
 import protocol.client.api._
-import protocol.client.impl.Client2.{Connected, TransportState, Unconnected}
+import protocol.client.impl.Client.{Connected, TransportState, Unconnected}
 
 
 @NotThreadSafe // TODO: ensure thread safety!
-final class Client2(
+final class Client(
   config: ClientConfig,
   eventScheduler: EventScheduler
-) extends ClientInterface2 {
+) extends ClientInterface {
 
   @GuardedBy("transport") private var transport: TransportState = Unconnected(true)
 
-  private def getTransport: Either[CommunicationException, Transport] = {
+  private def getTransport: Either[CommunicationException, ClientTransport] = {
     transport match {
       case Connected(transport) => Right(transport)
       case Unconnected(false) => Left(NotConnected)
       case Unconnected(true) =>
-        TransportFactory.create(config, eventScheduler) match {
+        ClientTransportFactory.create(config, eventScheduler) match {
           case r @ Right(t) => transport.synchronized { transport = Connected(t) }
             r
           case l @ Left(_) => transport.synchronized { transport = Unconnected(false) }
@@ -42,10 +42,10 @@ final class Client2(
 
 }
 
-object Client2 {
+object Client {
 
   sealed trait TransportState
   final case class Unconnected(canRetry: Boolean) extends TransportState
-  final case class Connected(transport: Transport) extends TransportState
+  final case class Connected(transport: ClientTransport) extends TransportState
 
 }

@@ -12,12 +12,12 @@ import protocol.{DataResponse, EventResponse, ServerResponse}
 import scala.util.{Failure, Success, Try}
 
 @NotThreadSafe // for now `send` should only be called sequentially!"
-class TransportThread(
+class ClientTransportThread(
   val socket: Socket,
   val inputStream: ObjectInputStream,
   val outputStream: ObjectOutputStream,
   val eventScheduler: EventScheduler,
-) extends Thread with Transport {
+) extends Thread with ClientTransport {
 
   private val readQueue: BlockingQueue[Either[CommunicationException, DataResponse]] = new ArrayBlockingQueue[Either[CommunicationException, DataResponse]](64)
   private val expectsData: AtomicBoolean = new AtomicBoolean(false)

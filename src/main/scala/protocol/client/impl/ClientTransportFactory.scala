@@ -3,22 +3,22 @@ package protocol.client.impl
 import java.io.{ObjectInputStream, ObjectOutputStream}
 import java.net.{InetAddress, Socket}
 
-import protocol.Exceptions.{ConnectException, TransportException}
+import protocol.Exceptions.{ConnectionException, TransportException}
 import protocol.client.api.ClientConfig
 
 import scala.util.{Failure, Success, Try}
 
-object TransportFactory {
+object ClientTransportFactory {
 
-  def create(config: ClientConfig, eventScheduler: EventScheduler): Either[TransportException, Transport] = {
-    val result = for {
+  def create(config: ClientConfig, eventScheduler: EventScheduler): Either[TransportException, ClientTransport] = {
+    val transport = for {
       socket <- Try { new Socket(InetAddress.getByName(config.host), config.port) }
       objOut <- Try { new ObjectOutputStream(socket.getOutputStream) }
       objIn <- Try { new ObjectInputStream(socket.getInputStream) }
-    } yield new TransportThread(socket, objIn, objOut, eventScheduler)
+    } yield new ClientTransportThread(socket, objIn, objOut, eventScheduler)
 
-    result match {
-      case Failure(ex) => Left(ConnectException(ex))
+    transport match {
+      case Failure(ex) => Left(ConnectionException(ex))
       case Success(clientTransport) =>
         clientTransport.setDaemon(true)
         clientTransport.start()

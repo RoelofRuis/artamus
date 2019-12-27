@@ -1,19 +1,15 @@
 package server
 
-import com.google.inject.Provides
-import javax.inject.Singleton
 import music.model.write.track.Track
 import net.codingwell.scalaguice.ScalaPrivateModule
-import protocol.server.api.{DefaultServer, ServerInterface}
 import server.actions.control.ServerControlHandler
 import server.actions.recording.RecordingCommandHandler
 import server.actions.writing.{TrackQueryHandler, TrackTaskHandler, TrackUpdateHandler}
-import server.analysis.{ChordAnalyser, PitchHistogramAnalyser}
 import server.analysis.blackboard.Controller
-import server.infra.{ConnectionLifetimeHooks, DispatchingServerAPI, ServerBindings, ServerInfraModule}
+import server.analysis.{ChordAnalyser, PitchHistogramAnalyser}
+import server.infra.ServerInfraModule
 import server.rendering.RenderingModule
 import storage.InMemoryStorageModule
-import storage.api.Database
 
 class ServerModule extends ScalaPrivateModule with ServerConfig {
 
@@ -43,18 +39,6 @@ class ServerModule extends ScalaPrivateModule with ServerConfig {
 
     bind[Bootstrapper].asEagerSingleton()
     expose[Bootstrapper]
-  }
-
-  @Provides @Singleton
-  def serverConnectionFactory(
-    db: Database,
-    serverBindings: ServerBindings,
-    hooks: ConnectionLifetimeHooks
-  ): ServerInterface = {
-    DefaultServer.apply(
-      port,
-      new DispatchingServerAPI(db, serverBindings, hooks)
-    )
   }
 
 }

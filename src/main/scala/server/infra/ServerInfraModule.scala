@@ -1,6 +1,7 @@
 package server.infra
 
 import net.codingwell.scalaguice.ScalaModule
+import protocol.server.api.{ServerAPI, ServerFactory}
 import protocol.{Command, Event, Query}
 import pubsub.{Dispatcher, EventBus}
 import server.Request
@@ -13,5 +14,8 @@ class ServerInfraModule extends ScalaModule {
 
     bind[ServerBindings].asEagerSingleton()
     bind[ConnectionLifetimeHooks].asEagerSingleton()
+
+    bind[ServerAPI].to[DispatchingServerAPI]
+    bind[ServerFactory]
   }
 }

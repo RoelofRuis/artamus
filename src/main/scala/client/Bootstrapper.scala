@@ -4,10 +4,10 @@ import client.events.RenderHandler
 import client.operations.{Operation, OperationRegistry}
 import javax.inject.Inject
 import protocol.Command
-import protocol.client.api.ClientInterface2
+import protocol.client.api.ClientInterface
 
 class Bootstrapper @Inject() (
-  client: ClientInterface2,
+  client: ClientInterface,
   registry: OperationRegistry,
   renderHandler: RenderHandler
 ) {

@@ -5,7 +5,7 @@ import java.util.UUID
 import protocol.Event
 import protocol.Exceptions.WriteException
 
-trait ConnectionRef {
+trait ConnectionHandle {
   val id: UUID
 
   def sendEvent(event: Event): Option[WriteException]

@@ -4,6 +4,4 @@ trait ServerInterface {
 
   def accept(): Unit
 
-  def shutdown(): Unit
-
 }

@@ -2,12 +2,12 @@ package client.operations
 
 import client.MusicPlayer
 import javax.inject.Inject
-import protocol.client.api.ClientInterface2
+import protocol.client.api.ClientInterface
 import server.actions.writing.Perform
 
 class TrackQueryOperations @Inject() (
   registry: OperationRegistry,
-  client: ClientInterface2,
+  client: ClientInterface,
   musicPlayer: MusicPlayer
 ){
 

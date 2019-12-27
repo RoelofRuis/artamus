@@ -4,12 +4,12 @@ import protocol.DataResponse
 
 trait ServerAPI {
 
-  def connectionOpened(connection: ConnectionRef): Unit
+  def connectionOpened(connection: ConnectionHandle): Unit
 
-  def connectionClosed(connection: ConnectionRef): Unit
+  def connectionClosed(connection: ConnectionHandle): Unit
 
-  def afterRequest(connection: ConnectionRef, response: DataResponse): DataResponse
+  def afterRequest(connection: ConnectionHandle, response: DataResponse): DataResponse
 
-  def handleRequest(connection: ConnectionRef, obj: Object): DataResponse
+  def handleRequest(connection: ConnectionHandle, obj: Object): DataResponse
 
 }

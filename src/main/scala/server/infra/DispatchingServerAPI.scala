@@ -6,34 +6,36 @@ import _root_.server.Request
 import _root_.server.actions.control.Authenticate
 import _root_.server.model.Users._
 import com.typesafe.scalalogging.LazyLogging
+import javax.inject.Singleton
 import music.model.write.user.User
 import protocol.Exceptions._
 import protocol._
-import protocol.server.api.{ConnectionRef, ServerAPI}
+import protocol.server.api.{ConnectionHandle, ServerAPI}
 import storage.api.{Database, DbIO, NotFound, Transaction}
 
 import scala.util.{Failure, Success, Try}
 
+@Singleton
 final class DispatchingServerAPI(
   db: Database,
   server: ServerBindings,
   hooks: ConnectionLifetimeHooks
 ) extends ServerAPI with LazyLogging {
 
-  private var connections: Map[ConnectionRef, Option[User]] = Map()
-  private val transactions: ConcurrentHashMap[ConnectionRef, Transaction] = new ConcurrentHashMap[ConnectionRef, Transaction]()
+  private var connections: Map[ConnectionHandle, Option[User]] = Map()
+  private val transactions: ConcurrentHashMap[ConnectionHandle, Transaction] = new ConcurrentHashMap[ConnectionHandle, Transaction]()
 
-  def connectionOpened(connection: ConnectionRef): Unit = {
+  def connectionOpened(connection: ConnectionHandle): Unit = {
     connections += (connection -> None)
   }
 
-  def connectionClosed(connection: ConnectionRef): Unit = {
+  def connectionClosed(connection: ConnectionHandle): Unit = {
     connections -= connection
     server.unsubscribeEvents(connection.toString)
     transactions.remove(connection)
   }
 
-  override def afterRequest(connection: ConnectionRef, response: DataResponse): DataResponse = {
+  override def afterRequest(connection: ConnectionHandle, response: DataResponse): DataResponse = {
     response.data match {
       case Right(_) =>
         Option(transactions.get(connection)) match {
@@ -56,7 +58,7 @@ final class DispatchingServerAPI(
     }
   }
 
-  def handleRequest(connection: ConnectionRef, request: Object): DataResponse = {
+  def handleRequest(connection: ConnectionHandle, request: Object): DataResponse = {
     val result = connections.get(connection) match {
       case None =>
         logger.error(s"Received message on unbound connection [$connection]")
@@ -77,7 +79,7 @@ final class DispatchingServerAPI(
     DataResponse(result)
   }
 
-  private def authenticate(connection: ConnectionRef, request: ServerRequest): Either[ResponseException, Any] = {
+  private def authenticate(connection: ConnectionHandle, request: ServerRequest): Either[ResponseException, Any] = {
     request match {
       case CommandRequest(Authenticate(userName)) =>
         db.getUserByName(userName) match {
@@ -101,7 +103,7 @@ final class DispatchingServerAPI(
     }
   }
 
-  private def executeRequest(connection: ConnectionRef, user: User, request: ServerRequest): Either[ResponseException, Any] = {
+  private def executeRequest(connection: ConnectionHandle, user: User, request: ServerRequest): Either[ResponseException, Any] = {
     try {
       val transaction = startTransaction(connection)
       val response = request match {
@@ -123,7 +125,7 @@ final class DispatchingServerAPI(
     }
   }
 
-  private def startTransaction(connection: ConnectionRef): DbIO with Transaction = {
+  private def startTransaction(connection: ConnectionHandle): DbIO with Transaction = {
     val transaction = db.newTransaction
     transactions.put(connection, transaction)
     transaction

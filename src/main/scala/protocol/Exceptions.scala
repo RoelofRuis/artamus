@@ -23,7 +23,7 @@ object Exceptions {
   /** There is no active connection and none could be made */
   final case object NotConnected extends TransportException
   /** There was a problem when creating the connection */
-  final case class ConnectException(cause: Throwable) extends TransportException
+  final case class ConnectionException(cause: Throwable) extends TransportException
   /** There was a problem writing data */
   final case class WriteException(cause: Throwable) extends TransportException
   /** There was a problem reading data */
