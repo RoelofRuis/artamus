@@ -20,6 +20,10 @@ libraryDependencies ++= Seq(
   "io.spray" %%  "spray-json" % sprayJsonVersion
 )
 
+libraryDependencies ++= Seq(
+  "com.lihaoyi" %% "utest" % "0.7.1" % Test
+)
+
 scalacOptions ++= Seq(
   "-encoding", "UTF-8",
   "-unchecked",
@@ -29,9 +33,11 @@ scalacOptions ++= Seq(
   "-language:implicitConversions",
 )
 
+testFrameworks += new TestFramework("utest.runner.Framework")
+
 // Make sure (midi) libraries can get loaded in the correct way
 fork in run := true
 connectInput in run := true
 outputStrategy in run := Some(StdoutOutput)
 
-mainClass in (Compile, run) := Some("server.Main")
+mainClass in (Compile, run) := Some("server.ServerApp")

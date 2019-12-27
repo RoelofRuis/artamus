@@ -5,21 +5,26 @@ import java.util.UUID
 import javax.inject.Inject
 import music.model.write.user.User
 import music.model.write.user.User.UserId
-import protocol.ServerInterface
+import protocol.server.api.ServerFactory
 import server.model.Users._
-import storage.api.DbWithRead
+import storage.api.Database
 
 class Bootstrapper @Inject() (
-  server: ServerInterface,
-  db: DbWithRead
+  serverFactory: ServerFactory,
+  db: Database
 ) {
 
   def run(): Unit = {
     createDefaultUser()
 
-    println("Starting server...")
+    serverFactory.create() match {
+      case Right(server) =>
+        println("Starting server...")
+        server.accept()
 
-    server.accept()
+      case Left(ex) =>
+        println(s"Unable to create server: [$ex]")
+    }
 
     println("\nProgram ended")
   }

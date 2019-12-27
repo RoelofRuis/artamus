@@ -33,8 +33,6 @@ class Editor @Inject() (
         frameLock.wait()
       } catch {
         case ex: InterruptedException => ex.printStackTrace()
-      } finally {
-        executor.exit()
       }
     }
   }

@@ -3,8 +3,8 @@ package server.rendering.model
 import music.analysis.TwelveToneTuning.TwelveToneFunctions
 import music.model.display.chord.ChordStaff
 import music.model.display.chord.ChordStaffGlyph.{ChordNameGlyph, ChordRestGlyph}
-import music.model.display.staff.Staff
-import music.model.display.staff.StaffGlyph.{KeyGlyph, NoteGroupGlyph, RestGlyph, TimeSignatureGlyph}
+import music.model.display.staff.{Bass, Clef, Staff, Treble}
+import music.model.display.staff.StaffGlyph.{FullBarRestGlyph, KeyGlyph, NoteGroupGlyph, RestGlyph, TimeSignatureGlyph}
 import music.primitives._
 
 import scala.annotation.tailrec
@@ -22,20 +22,44 @@ private[rendering] object LilypondFormat {
   }
 
   implicit val staffFormat: LilypondFormat[Staff] = staff => {
-    staff.glyphs.map {
+    val contents = staff.glyphs.map {
       case g: NoteGroupGlyph => g.toLilypond
       case g: RestGlyph => g.toLilypond
+      case g: FullBarRestGlyph => g.toLilypond
       case g: KeyGlyph => g.toLilypond
       case g: TimeSignatureGlyph => g.toLilypond
     }.mkString("\n")
+    s"""\\new Staff {
+       |\\numericTimeSignature
+       |\\override Score.BarNumber.break-visibility = ##(#f #t #t)
+       |\\set Score.barNumberVisibility = #all-bar-numbers-visible
+       |\\bar ""
+       |${staff.clef.toLilypond}
+       |$contents
+       |\\bar "|."
+       |}
+       |""".stripMargin
+  }
+
+  implicit val clefFormat: LilypondFormat[Clef] = {
+    case Treble => "\\clef treble"
+    case Bass => "\\clef bass"
   }
 
   implicit val chordStaffFormat: LilypondFormat[ChordStaff] = staff => {
-    staff.glyphs.map {
+    val contents = staff.glyphs.map {
       case g: ChordNameGlyph => g.toLilypond
       case g: ChordRestGlyph => g.toLilypond
     }.mkString("\n")
+
+    s"""\\new ChordNames {
+       |\\chordmode {
+       |$contents
+       |}
+       |}""".stripMargin
   }
+
+  implicit val fullBarRestGlyphToLilypond: LilypondFormat[FullBarRestGlyph] = rest => s"R" + rest.numberOfBars
 
   implicit val restToLilypond: LilypondFormat[RestGlyph] = rest => {
     val durationString = rest.duration.toLilypond

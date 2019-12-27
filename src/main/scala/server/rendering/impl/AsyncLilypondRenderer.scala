@@ -11,7 +11,7 @@ import protocol.Event
 import pubsub.EventBus
 import server.actions.writing.TrackRendered
 import server.rendering.AsyncRenderer
-import storage.api.DbWithRead
+import storage.api.Database
 
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.{Failure, Success}
@@ -20,7 +20,7 @@ private[rendering] class AsyncLilypondRenderer @Inject() (
   renderingService: LilypondCommandLineExecutor,
   interpreter: LilypondInterpreter,
   eventBus: EventBus[Event],
-  db: DbWithRead
+  db: Database
 ) extends AsyncRenderer with LazyLogging {
 
   private val executor: ExecutorService = Executors.newFixedThreadPool(1, (r: Runnable) => {

@@ -2,12 +2,10 @@ package client.operations
 
 import client.io.StdIOTools
 import com.google.inject.Inject
-import protocol.ClientInterface
 import server.actions.control.{Authenticate, Disconnect}
 
 class SystemOperations @Inject() (
   registry: OperationRegistry,
-  client: ClientInterface,
 ) {
 
   registry.registerOperation(OperationToken("auth", "system"), () => {
@@ -26,8 +24,8 @@ class SystemOperations @Inject() (
     List()
   })
 
-  registry.registerOperation(OperationToken("stop-server", "system"), () => {
-    List(Disconnect(true))
+  registry.registerOperation(OperationToken("quit", "system"), () => {
+    List(Disconnect())
   })
 
 }

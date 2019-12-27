@@ -6,7 +6,7 @@ import client.CommandExecutor
 import javax.imageio.ImageIO
 import protocol.Event
 import pubsub.{Callback, Dispatcher}
-import server.domain.writing.TrackRendered
+import server.actions.writing.TrackRendered
 
 import scala.swing.Swing
 import scala.swing.event.{Key, KeyTyped}

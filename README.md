@@ -6,7 +6,7 @@ PACKAGE             DESCRIPTION                                 DEPENDENCIES
 client              Contains the input and viewing logic        [midi, music, protocol, pubsub, server]
 midi                Contains midi interaction logic             [resource]
 music               Contains the music domain                   []
-protocol            Contains an abstract client-server protocol [pubsub, resource]
+protocol            Contains an abstract client-server protocol [pubsub]
 pubsub              Contains publish-subscribe logic            []
 resource            Contains resource management wrappers       []
 server              Contains the application state              [music, protocol, pubsub, storage]
@@ -25,15 +25,15 @@ http://lilypond.org/download.html
 .----------------|
 |    .===========|  0    0      1    60
 >----|XXXXXXXXXXX|  1           2    61
-|    |===========|  2    1      4    62
+|    >===========|  2    1      4    62
 >----|XXXXXXXXXXX|  3           8    63
 |    `===========|  4    2      16   64
 >----------------|
 |    .===========|  5    3      32   65
 >----|XXXXXXXXXXX|  6                66
-|    |===========|  7    4           67
+|    >===========|  7    4           67
 >----|XXXXXXXXXXX|  8                68
-|    |===========|  9    5           69
+|    >===========|  9    5           69
 >----|XXXXXXXXXXX|  10               70
 |    `===========|  11   6           71
 >----------------|

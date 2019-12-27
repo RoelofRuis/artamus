@@ -12,16 +12,27 @@ import music.model.write.user.User.UserId
 import music.primitives.{Accidental, Chord, Function, Key, Loudness, MidiNoteNumber, Note, NoteGroup, Octave, PitchClass, PitchSpelling, Scale, ScientificPitch, Step, TickPosition, TickResolution, TimeSignature, TimeSignatureDivision}
 import spray.json.{DefaultJsonProtocol, JsNumber, JsString, JsValue, JsonFormat, deserializationError}
 
-import scala.language.reflectiveCalls
 import scala.collection.immutable.SortedMap
+import scala.language.reflectiveCalls
 
 trait DomainProtocol extends DefaultJsonProtocol {
 
   implicit val tuning = TwelveToneTuning.tuning
 
-
   private val RATIONAL = """([0-9]+)/([0-9]+)""".r
   private def writeRational(n: Int, d: Int) = s"""$n/$d"""
+
+  // Helpers for SortedMap conversion
+  def savePositions[A](m: SortedMap[Position, A]): Map[String, A] = {
+    m.map { case (pos: Position, a) => (writeRational(pos.v.n, pos.v.d), a) }
+  }
+
+  def loadPositions[A](m: Map[String, A]): SortedMap[Position, A] = {
+    def positionFromString(s: String, a: A): (Position, A) = s match {
+      case RATIONAL(num, denom) => (Position(Rational(num.toInt, denom.toInt)), a)
+    }
+    SortedMap.from(m.map { case (s, a) => positionFromString(s, a) })
+  }
 
   implicit object TimeSignatureDivisionFormat extends JsonFormat[TimeSignatureDivision] {
     override def read(json: JsValue): TimeSignatureDivision = json match {
@@ -136,17 +147,5 @@ trait DomainProtocol extends DefaultJsonProtocol {
   implicit val loudnessFormat = jsonFormat1(Loudness)
   implicit val midiNoteNumberFormat = jsonFormat1(MidiNoteNumber.apply)
   implicit val rawMidiNoteFormat = jsonFormat3(RawMidiNote)
-
-  // Helpers for SortedMap conversion
-  def savePositions[A](m: SortedMap[Position, A]): Map[String, A] = {
-    m.map { case (pos: Position, a) => (writeRational(pos.v.n, pos.v.d), a) }
-  }
-
-  def loadPositions[A](m: Map[String, A]): SortedMap[Position, A] = {
-    def positionFromString(s: String, a: A): (Position, A) = s match {
-      case RATIONAL(num, denom) => (Position(Rational(num.toInt, denom.toInt)), a)
-    }
-    SortedMap.from(m.map { case (s, a) => positionFromString(s, a) })
-  }
 
 }

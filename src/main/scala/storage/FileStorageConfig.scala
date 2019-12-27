@@ -1,6 +1,6 @@
 package storage
 
 trait FileStorageConfig {
-  val dbRoot: Seq[String]
+  val dbRoot: String
   val cleanupThreshold: Int
 }

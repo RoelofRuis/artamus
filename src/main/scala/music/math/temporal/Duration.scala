@@ -2,13 +2,12 @@ package music.math.temporal
 
 import music.math.Rational
 
-/**
-  * A non-negative duration expressed by a [[Rational]] value.
+/** A rational-valued non-negative duration.
   *
   * @param v The duration value
   */
-final case class Duration private (v: Rational) extends Comparable[Duration] {
-  override def compareTo(o: Duration): Int = v compare o.v
+final case class Duration private (v: Rational) extends Ordered[Duration] {
+  override def compare(o: Duration): Int = v compare o.v
   def *(i: Int): Duration = Duration(v * i)
 }
 

@@ -2,25 +2,28 @@ package storage
 
 package object api {
 
-  trait DbIO extends DbRead with DbWrite
-  trait DbWithRead extends Db with DbRead
+  trait DbIO extends ModelReader with ModelWriter
 
-  final case class DataKey(name: String)
+  sealed trait DbException extends Exception
+  final case class NotFound() extends DbException
+  final case class BadData(cause: Throwable) extends DbException
 
-  sealed trait DatabaseError extends Exception
+  type DbResult[A] = Either[DbException, A]
 
-  final case class IOError(cause: Throwable) extends DatabaseError
-  final case class DataCorruptionException(cause: Throwable) extends DatabaseError
-  final case class ResourceNotFound() extends DatabaseError
-
-  type DbResult[A] = Either[DatabaseError, A]
+  implicit class DbResultOps[A](res: DbResult[A]) {
+    def ifNotFound(default: A): DbResult[A] = {
+      res match {
+        case Left(_: NotFound) => DbResult.found(default)
+        case x => x
+      }
+    }
+  }
 
   object DbResult {
-    def success[A](a: A): DbResult[A] = Right(a)
-    def done: DbResult[Unit] = Right(())
-    def ioError[A](cause: Throwable): DbResult[A] = Left(IOError(cause))
-    def notFound[A]: DbResult[A] = Left(ResourceNotFound())
-    def corruptData[A](cause: Throwable): DbResult[A] = Left(DataCorruptionException(cause))
+    def badData[A](ex: Throwable): DbResult[A] = Left(BadData(ex))
+    def notFound[A]: DbResult[A] = Left(NotFound())
+    def found[A](a: A): DbResult[A] = Right(a)
+    def ok: DbResult[Unit] = Right(())
   }
 
 }

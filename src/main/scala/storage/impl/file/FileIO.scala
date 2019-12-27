@@ -1,81 +1,61 @@
 package storage.impl.file
 
-import java.io._
-import java.nio.file.{Files, Paths, StandardCopyOption}
+import java.nio.charset.StandardCharsets
+import java.nio.file.{Files, NoSuchFileException, Path, StandardCopyOption}
 
 import storage.api.DbResult
 
-import scala.io.Source
+import scala.jdk.StreamConverters._
 import scala.util.{Failure, Success, Try}
 
 private[impl] object FileIO {
 
-  def read(path: String): DbResult[String] = {
-    Try { Source.fromFile(path) } match {
-      case Failure(_: FileNotFoundException) => DbResult.notFound
-      case Failure(ex) => DbResult.ioError(ex)
-      case Success(source) =>
-        try {
-          DbResult.success(source.getLines.mkString)
-        } catch {
-          case ex: IOException => DbResult.ioError(ex)
-        } finally {
-          source.close()
-        }
+  def read(path: Path): DbResult[String] = {
+    Try { Files.readAllBytes(path) } match {
+      case Failure(_: NoSuchFileException) => DbResult.notFound
+      case Failure(ex) => DbResult.badData(ex)
+      case Success(bytes) => DbResult.found(new String(bytes, StandardCharsets.UTF_8))
     }
   }
 
-  def write(path: String, data: String): DbResult[Unit] = {
-    val writerAtDir = for {
-      _ <- Try { new File(path).getParentFile.mkdirs }
-      writer <- Try { new BufferedWriter(new FileWriter(path)) }
-    } yield writer
+  def write(path: Path, data: String): DbResult[Unit] = {
+    val res = for {
+      _ <- Try { Files.createDirectories(path.getParent) }
+      _ <- Try { Files.write(path, data.getBytes(StandardCharsets.UTF_8)) }
+    } yield ()
 
-    writerAtDir match {
-      case Failure(ex) => DbResult.ioError(ex)
-      case Success(writer) =>
-        try {
-          DbResult.success(writer.write(data))
-        } catch {
-          case ex: IOException => DbResult.ioError(ex)
-        } finally {
-          writer.close()
-        }
+    res match {
+      case Failure(ex) => DbResult.badData(ex)
+      case Success(_) => DbResult.ok
     }
   }
 
-  def list(path: String, onlyDirs: Boolean): List[String] = {
-    Try { new File(path) } match {
+  def list(path: Path, onlyDirs: Boolean): List[Path] = {
+    Try { Files.list(path).toScala(List).filter(path => !onlyDirs || path.toFile.isDirectory) } match {
+      case Success(paths) => paths
       case Failure(_) => List()
-      case Success(file) =>
-        file
-          .listFiles()
-          .filter(file => !onlyDirs || file.isDirectory)
-          .map(_.getName)
-          .toList
     }
   }
 
-
-  def delete(path: String): DbResult[Unit] = {
+  def delete(path: Path): DbResult[Unit] = {
     Try {
-      Files.delete(Paths.get(path))
+      Files.delete(path)
     } match {
-      case Success(_) => DbResult.done
-      case Failure(ex) => DbResult.ioError(ex)
+      case Success(_) => DbResult.ok
+      case Failure(ex) => DbResult.badData(ex)
     }
   }
 
-  def move(path: String, target: String): DbResult[Unit] = {
+  def move(source: Path, target: Path): DbResult[Unit] = {
     Try {
       Files.move(
-        Paths.get(path),
-        Paths.get(target),
+        source,
+        target,
         StandardCopyOption.ATOMIC_MOVE
       )
     } match {
-      case Success(_) => DbResult.done
-      case Failure(ex) => DbResult.ioError(ex)
+      case Success(_) => DbResult.ok
+      case Failure(ex) => DbResult.badData(ex)
     }
   }
 

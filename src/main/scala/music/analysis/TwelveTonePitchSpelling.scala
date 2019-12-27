@@ -11,7 +11,11 @@ object TwelveTonePitchSpelling {
   def spellNote(note: Note, key: Key): ScientificPitch = {
     val spelledPitch = spellPc(note.pitchClass, key)
 
-    val newOctave = if (spelledPitch.span > tuning.span) Octave(note.octave.value - 1) else note.octave
+    val newOctave = spelledPitch.span match {
+      case span if span > tuning.span => Octave(note.octave.value - 1)
+      case span if span < 0 => Octave(note.octave.value + 1)
+      case _ => note.octave
+    }
 
     ScientificPitch(spelledPitch, newOctave)
   }
