@@ -6,7 +6,7 @@ import _root_.server.Request
 import _root_.server.actions.control.Authenticate
 import _root_.server.model.Users._
 import com.typesafe.scalalogging.LazyLogging
-import javax.inject.Singleton
+import javax.inject.{Inject, Singleton}
 import music.model.write.user.User
 import protocol.Exceptions._
 import protocol._
@@ -16,7 +16,7 @@ import storage.api.{Database, DbIO, NotFound, Transaction}
 import scala.util.{Failure, Success, Try}
 
 @Singleton
-final class DispatchingServerAPI(
+final class DispatchingServerAPI @Inject() (
   db: Database,
   server: ServerBindings,
   hooks: ConnectionLifetimeHooks

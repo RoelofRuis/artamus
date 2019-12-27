@@ -11,7 +11,7 @@ import server.infra.ServerInfraModule
 import server.rendering.RenderingModule
 import storage.InMemoryStorageModule
 
-class ServerModule extends ScalaPrivateModule with ServerConfig {
+class ServerModule extends ScalaPrivateModule with ServerSettings {
 
   override def configure(): Unit = {
     // -- pick either one storage
@@ -19,7 +19,7 @@ class ServerModule extends ScalaPrivateModule with ServerConfig {
     install(new InMemoryStorageModule)
     // --
 
-    install(new RenderingModule with ServerConfig)
+    install(new RenderingModule with ServerSettings)
     install(new ServerInfraModule)
 
     // Handlers
