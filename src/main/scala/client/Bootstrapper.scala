@@ -34,7 +34,10 @@ class Bootstrapper @Inject() (
           println(s"[$command] executed")
           sendCommands(rest)
         case Some(ex) =>
-          println(s"[$command] -> failed with [$ex] (skipping [${rest.length}] more)")
+          println(s"[$command] failed")
+          println(s"cause [${ex.name}: ${ex.description}]")
+          ex.cause.foreach(_.printStackTrace)
+          println(s"skipping [${rest.length}] more")
       }
   }
 
