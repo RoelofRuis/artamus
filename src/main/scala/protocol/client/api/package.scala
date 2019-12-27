@@ -14,4 +14,10 @@ package object api {
     new Client(config, eventScheduler)
   }
 
+  sealed trait ConnectionEvent extends Event
+  final case object ConnectingStarted extends ConnectionEvent
+  final case object ConnectingFailed extends ConnectionEvent
+  final case object ConnectionMade extends ConnectionEvent
+  final case object ConnectionLost extends ConnectionEvent
+
 }

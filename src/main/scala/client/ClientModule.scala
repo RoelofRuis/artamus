@@ -1,6 +1,6 @@
 package client
 
-import client.events.RenderHandler
+import client.events.{ConnectionEventHandler, RenderHandler}
 import client.io.midi.MidiIOModule
 import client.operations._
 import com.google.inject.Provides
@@ -22,6 +22,7 @@ class ClientModule extends ScalaPrivateModule {
 
     bind[Dispatcher[Callback, Event]].toInstance(pubsub.createDispatcher[Callback, Event]())
     bind[RenderHandler].asEagerSingleton()
+    bind[ConnectionEventHandler].asEagerSingleton()
 
     bind[Bootstrapper].asEagerSingleton()
     expose[Bootstrapper]

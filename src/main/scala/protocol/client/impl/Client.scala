@@ -1,7 +1,7 @@
 package protocol.client.impl
 
 import javax.annotation.concurrent.{GuardedBy, NotThreadSafe}
-import protocol.Exceptions.{CommunicationException, NotConnected}
+import protocol.Exceptions.{CommunicationException, NotConnected, ResponseException, TransportException}
 import protocol.client.api._
 import protocol.client.impl.Client.{Connected, TransportState, Unconnected}
 import protocol.{Command, CommandRequest, Query, QueryRequest}
@@ -13,6 +13,14 @@ final class Client(
   eventScheduler: EventScheduler
 ) extends ClientInterface {
 
+  override def sendCommand[A <: Command](command: A): Option[CommunicationException] = {
+    sendWithTransport[CommandRequest, Unit](CommandRequest(command)).left.toOption
+  }
+
+  override def sendQuery[A <: Query](query: A): Either[CommunicationException, A#Res] = {
+    sendWithTransport[QueryRequest, A#Res](QueryRequest(query))
+  }
+
   @GuardedBy("transport") private var transport: TransportState = Unconnected(true)
 
   private def getTransport: Either[CommunicationException, ClientTransport] = {
@@ -20,21 +28,31 @@ final class Client(
       case Connected(transport) => Right(transport)
       case Unconnected(false) => Left(NotConnected)
       case Unconnected(true) =>
+        eventScheduler.schedule(ConnectingStarted)
         ClientTransportFactory.create(config, eventScheduler) match {
-          case r @ Right(t) => transport.synchronized { transport = Connected(t) }
+          case r @ Right(t) =>
+            transport.synchronized { transport = Connected(t) }
+            eventScheduler.schedule(ConnectionMade)
             r
-          case l @ Left(_) => transport.synchronized { transport = Unconnected(false) }
+
+          case l @ Left(_) =>
+            transport.synchronized { transport = Unconnected(false) }
+            eventScheduler.schedule(ConnectingFailed)
             l
+
         }
     }
   }
 
-  override def sendCommand[A <: Command](command: A): Option[CommunicationException] = {
-    getTransport.flatMap(_.send[CommandRequest, Unit](CommandRequest(command))).left.toOption
-  }
-
-  override def sendQuery[A <: Query](query: A): Either[CommunicationException, A#Res] = {
-    getTransport.flatMap(_.send[QueryRequest, A#Res](QueryRequest(query)))
+  private def sendWithTransport[A, B](data: A): Either[CommunicationException, B] = {
+    getTransport.flatMap(_.send[A, B](data)) match {
+      case r @ Right(_) => r
+      case l @ Left(_: ResponseException) => l
+      case l @ Left(_: TransportException) =>
+        transport.synchronized { transport = Unconnected(true) }
+        eventScheduler.schedule(ConnectionLost)
+        l
+    }
   }
 
 }
