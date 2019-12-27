@@ -6,12 +6,14 @@ import protocol.client.api._
 import protocol.client.impl.Client.{Connected, TransportState, Unconnected}
 import protocol.{Command, CommandRequest, Query, QueryRequest}
 
-
 @NotThreadSafe // TODO: ensure thread safety!
 final class Client(
   config: ClientConfig,
-  eventScheduler: EventScheduler
+  eventScheduler: EventScheduler,
+  @GuardedBy("transport") private var transport: TransportState = Unconnected(true)
 ) extends ClientInterface {
+
+  if (config.connectEagerly) getTransport
 
   override def sendCommand[A <: Command](command: A): Option[CommunicationException] = {
     sendWithTransport[CommandRequest, Unit](CommandRequest(command)).left.toOption
@@ -20,8 +22,6 @@ final class Client(
   override def sendQuery[A <: Query](query: A): Either[CommunicationException, A#Res] = {
     sendWithTransport[QueryRequest, A#Res](QueryRequest(query))
   }
-
-  @GuardedBy("transport") private var transport: TransportState = Unconnected(true)
 
   private def getTransport: Either[CommunicationException, ClientTransport] = {
     transport match {
@@ -45,13 +45,16 @@ final class Client(
   }
 
   private def sendWithTransport[A, B](data: A): Either[CommunicationException, B] = {
-    getTransport.flatMap(_.send[A, B](data)) match {
-      case r @ Right(_) => r
-      case l @ Left(_: ResponseException) => l
-      case l @ Left(_: TransportException) =>
-        transport.synchronized { transport = Unconnected(true) }
-        eventScheduler.schedule(ConnectionLost)
-        l
+    getTransport match {
+      case Left(ex) => Left(ex)
+      case Right(conn) => conn.send[A, B](data) match {
+        case r @ Right(_) => r
+        case l @ Left(_: ResponseException) => l
+        case l @ Left(_: TransportException) =>
+          transport.synchronized { transport = Unconnected(true) }
+          eventScheduler.schedule(ConnectionLost)
+          l
+      }
     }
   }
 

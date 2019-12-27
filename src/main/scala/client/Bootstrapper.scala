@@ -15,7 +15,7 @@ class Bootstrapper @Inject() (
   def run(): Unit = {
     var isRunning = true
 
-    while(isRunning) {
+    while (isRunning) {
       val (input, op) = nextOperation
 
       sendCommands(op())
