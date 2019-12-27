@@ -1,12 +1,12 @@
 package music.model.display.staff
 
 import music.analysis.TwelveTonePitchSpelling
-import music.math.temporal.{Position, Window}
+import music.math.temporal.{Duration, Position, Window}
 import music.model.display.staff.Inclusion.InclusionStrategy
-import music.model.display.staff.StaffGlyph.{FullBarRestGlyph, KeyGlyph, NoteGroupGlyph, RestGlyph, TimeSignatureGlyph}
+import music.model.display.staff.StaffGlyph._
 import music.model.display.{Bars, NoteValues}
 import music.model.write.track.Track
-import music.primitives.{Key, ScientificPitch}
+import music.primitives.{Key, Note, NoteGroup}
 
 object StaffDisplay {
 
@@ -19,11 +19,9 @@ object StaffDisplay {
 
     // TODO: dynamic reading window
     def getStaves: (Staff, Staff) = {
-      val window = Window.instantAt(Position.ZERO)
-
       (
-        Staff(Treble, initialElements() ++ read(window, Inclusion.higherNoteNumbers(59))),
-        Staff(Bass, initialElements() ++ read(window, Inclusion.lowerEqualNoteNumbers(59)))
+        Staff(Treble, initialElements() ++ read(Inclusion.higherNoteNumbers(59))),
+        Staff(Bass, initialElements() ++ read(Inclusion.lowerEqualNoteNumbers(59)))
       )
     }
 
@@ -32,63 +30,79 @@ object StaffDisplay {
       KeyGlyph(initialKey.root, initialKey.scale)
     )
 
-    private def read(window: Window, include: InclusionStrategy): Iterator[StaffGlyph] = {
-      val notes = track.notes.readGroups()
-      def loop(lastWindow: Window): Iterator[StaffGlyph] = {
-        notes.nextOption() match {
-          case None =>
-            if (track.timeSignatures.endsInBar(lastWindow) == 0) Iterator(FullBarRestGlyph(1))
-            else {
-              track
-                .timeSignatures
-                .fit(track.timeSignatures.extendToFillBar(lastWindow))
-                .flatMap(_.duration.asNoteValues)
-                .map(RestGlyph(_, silent=false))
-                .iterator
+    private def read(include: InclusionStrategy): Iterator[StaffGlyph] = {
+      def loop(cursor: Position, groups: List[NoteGroup]): Iterator[StaffGlyph] = {
+        groups match {
+          case Nil => Iterator(FullBarRestGlyph(1))
+
+          case group :: Nil =>
+            include(group) match {
+              case Nil =>
+                val nextBarLinePos = track.timeSignatures.nextBarLine(group.window.end)
+                nextBarLinePos - cursor match {
+                  case Duration.ZERO => Iterator()
+                  case d =>
+                    track
+                      .timeSignatures
+                      .fit(Window(cursor, d))
+                      .flatMap(_.duration.asNoteValues)
+                      .map(RestGlyph(_, silent = false))
+                      .iterator
+                }
+
+              case notes =>
+                val glyphs = calculateGlyphs(cursor, group.window, notes)
+                val nextBarLine = track.timeSignatures.nextBarLine(group.window.end)
+                val finalRests = nextBarLine - group.window.end match {
+                  case Duration.ZERO => Iterator()
+                  case d =>
+                    track
+                      .timeSignatures
+                      .fit(Window(cursor, d))
+                      .flatMap(_.duration.asNoteValues)
+                      .map(RestGlyph(_, silent = false))
+                      .iterator
+                }
+                glyphs ++ finalRests
             }
 
-          case Some(nextGroup) if include(nextGroup).isEmpty =>
-            // windowing
-            val nextWindow = lastWindow.spanning(nextGroup.window)
-            loop(nextWindow)
-
-          case Some(nextGroup) =>
-            // windowing
-            val nextWindow = nextGroup.window
-            val nextNotes = include(nextGroup)
-
-            // rests
-            val rests = Window.instantAt(lastWindow.start).until(nextWindow) match {
-              case None => Iterator.empty
-              case Some(diff) =>
-                track
-                  .timeSignatures
-                  .fit(diff)
-                  .flatMap(_.duration.asNoteValues)
-                  .map(RestGlyph(_, silent=false))
-                  .iterator
+          case group :: tail =>
+            include(group) match {
+              case Nil => loop(cursor, tail)
+              case notes => calculateGlyphs(cursor, group.window, notes) ++ loop(group.window.end, tail)
             }
-
-            // pitches
-            // TODO: Use the 'active' key instead of initial key.
-            val pitches: Seq[ScientificPitch] = nextNotes.map(TwelveTonePitchSpelling.spellNote(_, initialKey))
-            val fittedDurations =
-              track
-                .timeSignatures
-                .fit(nextWindow)
-                .flatMap(_.duration.asNoteValues)
-
-            val lilyStrings = fittedDurations
-              .zipWithIndex
-              .map { case (dur, i) => NoteGroupGlyph(dur, pitches, i != (fittedDurations.size - 1)) }
-              .iterator
-
-            if (lilyStrings.isEmpty) rests ++ loop(Window.instantAt(nextWindow.end))
-            else rests ++ lilyStrings ++ loop(Window.instantAt(nextWindow.end))
         }
       }
-      loop(window)
+      loop(Position.ZERO, track.notes.readGroupsList())
     }
+
+    private def calculateGlyphs(cursor: Position, noteWindow: Window, notes: Seq[Note]): Iterator[StaffGlyph] = {
+      val restGlyphs = cursor - noteWindow.start match {
+        case Duration.ZERO => Iterator.empty
+        case d =>
+          track
+            .timeSignatures
+            .fit(Window(cursor, d))
+            .flatMap(_.duration.asNoteValues)
+            .map(RestGlyph(_, silent = false))
+            .iterator
+      }
+
+      val noteDurations = track
+        .timeSignatures
+        .fit(noteWindow)
+        .flatMap(_.duration.asNoteValues)
+
+      val pitches = notes.map(TwelveTonePitchSpelling.spellNote(_, initialKey))
+
+      val noteGlyphs = noteDurations
+        .zipWithIndex
+        .map { case (dur, i) => NoteGroupGlyph(dur, pitches, i != (noteDurations.size - 1)) }
+        .iterator
+
+      restGlyphs ++ noteGlyphs
+    }
+
   }
 
 }
