@@ -1,4 +1,4 @@
-package protocol.v2.client.impl
+package protocol.client.impl
 
 import java.io.{IOException, ObjectInputStream, ObjectOutputStream}
 import java.net.Socket
@@ -6,8 +6,8 @@ import java.util.concurrent.atomic.AtomicBoolean
 import java.util.concurrent.{ArrayBlockingQueue, BlockingQueue}
 
 import javax.annotation.concurrent.NotThreadSafe
-import protocol.v2.Exceptions._
-import protocol.v2.{DataResponse2, EventResponse2, Response2}
+import protocol.Exceptions._
+import protocol.{DataMessage, EventMessage, ResponseMessage}
 
 import scala.util.{Failure, Success, Try}
 
@@ -19,7 +19,7 @@ class TransportThread(
   val eventScheduler: EventScheduler,
 ) extends Thread with Transport {
 
-  private val readQueue: BlockingQueue[Either[ResponseException, DataResponse2]] = new ArrayBlockingQueue[Either[ResponseException, DataResponse2]](64)
+  private val readQueue: BlockingQueue[Either[ResponseException, DataMessage]] = new ArrayBlockingQueue[Either[ResponseException, DataMessage]](64)
   private val expectsData: AtomicBoolean = new AtomicBoolean(false)
 
   override def send[A, B](request: A): Either[ResponseException, B] = {
@@ -58,13 +58,13 @@ class TransportThread(
       while (! Thread.currentThread().isInterrupted) {
         val response = for {
           obj <- Try { inputStream.readObject() }
-          msg <- decode[Response2](obj)
+          msg <- decode[ResponseMessage](obj)
         } yield msg
 
         response match {
-          case Success(d @ DataResponse2(_)) if expectsData.get() => readQueue.put(Right(d))
-          case Success(_ @ DataResponse2(_)) => readQueue.put(Left(UnexpectedResponse))
-          case Success(e @ EventResponse2(_)) => eventScheduler.schedule(e.event)
+          case Success(d @ DataMessage(_)) if expectsData.get() => readQueue.put(Right(d))
+          case Success(_ @ DataMessage(_)) => readQueue.put(Left(UnexpectedResponse))
+          case Success(e @ EventMessage(_)) => eventScheduler.schedule(e.event)
           case Failure(ex) if expectsData.get() => readQueue.put(Left(ClientReceiveException(ex)))
           case Failure(_) => // TODO: determine what to do on completely unexpected failure
         }

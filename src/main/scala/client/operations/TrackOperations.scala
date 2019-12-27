@@ -7,7 +7,7 @@ import com.google.inject.Inject
 import music.math.Rational
 import music.math.temporal.{Duration, Position, Window}
 import music.primitives.{Note, NoteGroup, TimeSignature, _}
-import protocol.v2.Command2
+import protocol.Command
 import server.actions.writing._
 
 import scala.annotation.tailrec
@@ -81,7 +81,7 @@ class TrackOperations @Inject() (
     println(s"Reading [$numOnsets][$baseDuration] grid elements...")
 
     @tailrec
-    def read(elements: List[GridElement], commands: List[Command2] = List(), currentPos: Int = 0): List[Command2] = {
+    def read(elements: List[GridElement], commands: List[Command] = List(), currentPos: Int = 0): List[Command] = {
       elements match {
         case Nil => commands
         case Onset :: tail =>

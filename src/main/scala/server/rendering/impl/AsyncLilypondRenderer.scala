@@ -7,7 +7,7 @@ import javax.inject.Inject
 import music.model.display.Display
 import music.model.display.render.Render
 import music.model.write.track.Track
-import protocol.v2.Event2
+import protocol.Event
 import pubsub.EventBus
 import server.actions.writing.TrackRendered
 import server.rendering.AsyncRenderer
@@ -19,7 +19,7 @@ import scala.util.{Failure, Success}
 private[rendering] class AsyncLilypondRenderer @Inject() (
   renderingService: LilypondCommandLineExecutor,
   interpreter: LilypondInterpreter,
-  eventBus: EventBus[Event2],
+  eventBus: EventBus[Event],
   db: Database
 ) extends AsyncRenderer with LazyLogging {
 

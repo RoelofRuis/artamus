@@ -7,9 +7,9 @@ import _root_.server.actions.control.Authenticate
 import _root_.server.model.Users._
 import com.typesafe.scalalogging.LazyLogging
 import music.model.write.user.User
-import protocol.v2.Exceptions._
-import protocol.v2._
-import protocol.v2.server.api.{ConnectionRef, ServerAPI}
+import protocol.Exceptions._
+import protocol._
+import protocol.server.api.{ConnectionRef, ServerAPI}
 import storage.api.{Database, DbIO, NotFound, Transaction}
 
 import scala.util.{Failure, Success, Try}
@@ -33,7 +33,7 @@ final class DispatchingServerAPI(
     transactions.remove(connection)
   }
 
-  override def afterRequest(connection: ConnectionRef, response: DataResponse2): DataResponse2 = {
+  override def afterRequest(connection: ConnectionRef, response: DataMessage): DataMessage = {
     response.data match {
       case Right(_) =>
         Option(transactions.get(connection)) match {
@@ -46,7 +46,7 @@ final class DispatchingServerAPI(
 
             case Left(ex) => logger.error(s"Unable to commit changes", ex)
               ex.causes.zipWithIndex.foreach { case (err, idx) => logger.error(s"commit error [$idx]", err) }
-              DataResponse2(Left(StorageException))
+              DataMessage(Left(StorageException))
           }
         }
 
@@ -56,14 +56,14 @@ final class DispatchingServerAPI(
     }
   }
 
-  def handleRequest(connection: ConnectionRef, request: Object): DataResponse2 = {
+  def handleRequest(connection: ConnectionRef, request: Object): DataMessage = {
     val result = connections.get(connection) match {
       case None =>
         logger.error(s"Received message on unbound connection [$connection]")
         Left(InvalidStateException)
 
       case Some(identifier) =>
-        Try { request.asInstanceOf[Request2] } match {
+        Try { request.asInstanceOf[RequestMessage] } match {
           case Success(request) =>
             identifier match {
               case None => authenticate(connection, request)
@@ -74,12 +74,12 @@ final class DispatchingServerAPI(
             Left(MessageException)
         }
     }
-    DataResponse2(result)
+    DataMessage(result)
   }
 
-  private def authenticate(connection: ConnectionRef, request: Request2): Either[ServerException, Any] = {
+  private def authenticate(connection: ConnectionRef, request: RequestMessage): Either[ServerException, Any] = {
     request match {
-      case CommandRequest2(Authenticate(userName)) =>
+      case CommandMessage(Authenticate(userName)) =>
         db.getUserByName(userName) match {
           case Right(user) =>
             server.subscribeEvents(connection.toString, event => connection.sendEvent(event))
@@ -101,12 +101,12 @@ final class DispatchingServerAPI(
     }
   }
 
-  private def executeRequest(connection: ConnectionRef, user: User, request: Request2): Either[ServerException, Any] = {
+  private def executeRequest(connection: ConnectionRef, user: User, request: RequestMessage): Either[ServerException, Any] = {
     try {
       val transaction = startTransaction(connection)
       val response = request match {
-        case CommandRequest2(command) => server.handleCommand(Request(user, transaction, command))
-        case QueryRequest2(query) => server.handleQuery(Request(user, transaction, query))
+        case CommandMessage(command) => server.handleCommand(Request(user, transaction, command))
+        case QueryMessage(query) => server.handleQuery(Request(user, transaction, query))
       }
       response match {
         case Failure(ex) =>

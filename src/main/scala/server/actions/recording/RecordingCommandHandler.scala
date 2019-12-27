@@ -2,13 +2,13 @@ package server.actions.recording
 
 import javax.inject.Inject
 import music.model.record.Recording
-import protocol.v2.Command2
+import protocol.Command
 import pubsub.Dispatcher
 import server.{Request, Responses}
 import storage.api.DbResult
 
 private[server] class RecordingCommandHandler @Inject() (
-  dispatcher: Dispatcher[Request, Command2],
+  dispatcher: Dispatcher[Request, Command],
 ) {
 
   import server.model.Recordings._

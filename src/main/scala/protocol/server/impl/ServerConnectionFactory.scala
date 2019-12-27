@@ -1,14 +1,14 @@
-package protocol.v2.server.impl
+package protocol.server.impl
 
 import java.io.{EOFException, IOException, ObjectInputStream, ObjectOutputStream}
 import java.net.Socket
 import java.util.UUID
 
 import com.typesafe.scalalogging.LazyLogging
-import protocol.v2.Exceptions.WriteException
-import protocol.v2.server.api.{ConnectionRef, ServerAPI}
-import protocol.v2.server.impl.ServerConnectionFactory.ServerConnection
-import protocol.v2.{Event2, EventResponse2}
+import protocol.Exceptions.WriteException
+import protocol.server.api.{ConnectionRef, ServerAPI}
+import protocol.server.impl.ServerConnectionFactory.ServerConnection
+import protocol.{Event, EventMessage}
 
 import scala.util.{Failure, Success, Try}
 
@@ -55,8 +55,8 @@ object ServerConnectionFactory {
     private val eventOut: ObjectOutputStream,
     id: UUID = UUID.randomUUID()
   ) extends ConnectionRef {
-    override def sendEvent(event: Event2): Option[WriteException] = {
-      Try { eventOut.writeObject(EventResponse2(event)) } match {
+    override def sendEvent(event: Event): Option[WriteException] = {
+      Try { eventOut.writeObject(EventMessage(event)) } match {
         case Success(_) => None
         case Failure(ex) => Some(WriteException(ex))
       }

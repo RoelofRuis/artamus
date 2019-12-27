@@ -1,11 +1,11 @@
-package protocol.v2.server.api
+package protocol.server.api
 
 import java.io.IOException
 import java.net.ServerSocket
 import java.util.concurrent.{ExecutorService, Executors, RejectedExecutionException, TimeUnit}
 
 import com.typesafe.scalalogging.LazyLogging
-import protocol.v2.server.impl.ServerConnectionFactory
+import protocol.server.impl.ServerConnectionFactory
 import resource.Resource
 
 import scala.concurrent.{Future, Promise}

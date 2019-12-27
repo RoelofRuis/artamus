@@ -2,7 +2,7 @@ package client.operations
 
 import client.MusicPlayer
 import javax.inject.Inject
-import protocol.v2.client.api.ClientInterface2
+import protocol.client.api.ClientInterface2
 import server.actions.writing.Perform
 
 class TrackQueryOperations @Inject() (

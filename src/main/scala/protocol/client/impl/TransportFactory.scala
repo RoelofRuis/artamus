@@ -1,10 +1,10 @@
-package protocol.v2.client.impl
+package protocol.client.impl
 
 import java.io.{ObjectInputStream, ObjectOutputStream}
 import java.net.{InetAddress, Socket}
 
-import protocol.v2.Exceptions.{ConnectException, TransportException}
-import protocol.v2.client.api.ClientConfig
+import protocol.Exceptions.{ConnectException, TransportException}
+import protocol.client.api.ClientConfig
 
 import scala.util.{Failure, Success, Try}
 

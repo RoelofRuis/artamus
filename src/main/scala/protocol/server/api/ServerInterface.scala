@@ -1,4 +1,4 @@
-package protocol.v2.server.api
+package protocol.server.api
 
 trait ServerInterface {
 

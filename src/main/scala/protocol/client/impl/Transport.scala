@@ -1,6 +1,6 @@
-package protocol.v2.client.impl
+package protocol.client.impl
 
-import protocol.v2.Exceptions.ResponseException
+import protocol.Exceptions.ResponseException
 
 trait Transport {
 

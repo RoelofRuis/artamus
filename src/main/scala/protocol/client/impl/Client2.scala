@@ -1,10 +1,10 @@
-package protocol.v2.client.impl
+package protocol.client.impl
 
 import javax.annotation.concurrent.{GuardedBy, NotThreadSafe}
-import protocol.v2.{Command2, CommandRequest2, Query2, QueryRequest2}
-import protocol.v2.Exceptions.{NotConnected, ResponseException}
-import protocol.v2.client.api._
-import protocol.v2.client.impl.Client2.{Connected, TransportState, Unconnected}
+import protocol.{Command, CommandMessage, Query, QueryMessage}
+import protocol.Exceptions.{NotConnected, ResponseException}
+import protocol.client.api._
+import protocol.client.impl.Client2.{Connected, TransportState, Unconnected}
 
 
 @NotThreadSafe // TODO: ensure thread safety!
@@ -29,15 +29,15 @@ final class Client2(
     }
   }
 
-  override def sendCommand[A <: Command2](command: A): Option[ResponseException] = {
-    getTransport.flatMap(_.send[CommandRequest2, Unit](CommandRequest2(command))) match {
+  override def sendCommand[A <: Command](command: A): Option[ResponseException] = {
+    getTransport.flatMap(_.send[CommandMessage, Unit](CommandMessage(command))) match {
       case Right(_) => None
       case Left(ex) => Some(ex)
     }
   }
 
-  override def sendQuery[A <: Query2](query: A): Either[ResponseException, A#Res] = {
-    getTransport.flatMap(_.send[QueryRequest2, A#Res](QueryRequest2(query)))
+  override def sendQuery[A <: Query](query: A): Either[ResponseException, A#Res] = {
+    getTransport.flatMap(_.send[QueryMessage, A#Res](QueryMessage(query)))
   }
 
 }

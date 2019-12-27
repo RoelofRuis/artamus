@@ -1,19 +1,19 @@
-package protocol.v2.client.impl
+package protocol.client.impl
 
 import java.util.concurrent.{ArrayBlockingQueue, BlockingQueue}
 
-import protocol.v2.Event2
+import protocol.Event
 import pubsub.{Callback, Dispatcher}
 
 class EventThread(
-  dispatcher: Dispatcher[Callback, Event2]
+  dispatcher: Dispatcher[Callback, Event]
 ) extends Thread with EventScheduler {
 
   // TODO: improve error handling of `dispacher.handle` and `queue.put`
 
-  def schedule(event: Event2): Unit = queue.put(event)
+  def schedule(event: Event): Unit = queue.put(event)
 
-  private val queue: BlockingQueue[Event2] = new ArrayBlockingQueue[Event2](64)
+  private val queue: BlockingQueue[Event] = new ArrayBlockingQueue[Event](64)
 
   override def run(): Unit = {
     try {

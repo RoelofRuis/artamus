@@ -3,7 +3,7 @@ package server.actions.writing
 import javax.inject.Inject
 import music.model.write.track.Track
 import music.model.write.workspace.Workspace
-import protocol.v2.Command2
+import protocol.Command
 import pubsub.Dispatcher
 import server.analysis.blackboard.Controller
 import server.{Request, Responses}
@@ -12,7 +12,7 @@ import storage.api.{DbResult, NotFound}
 import scala.util.Try
 
 private[server] class TrackUpdateHandler @Inject() (
-  dispatcher: Dispatcher[Request, Command2],
+  dispatcher: Dispatcher[Request, Command],
   analysis: Controller[Track]
 ) {
 
@@ -59,7 +59,7 @@ private[server] class TrackUpdateHandler @Inject() (
     updateTrack(req, _.writeKey(req.attributes.position, req.attributes.symbol))
   }
 
-  def updateTrack(req: Request[Command2], f: Track => Track): Try[Unit] = {
+  def updateTrack(req: Request[Command], f: Track => Track): Try[Unit] = {
     val res = for {
       workspace <- req.db.getWorkspaceByOwner(req.user)
       track <- req.db.getTrackById(workspace.selectedTrack)

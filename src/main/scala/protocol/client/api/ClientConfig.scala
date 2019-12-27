@@ -1,4 +1,4 @@
-package protocol.v2.client.api
+package protocol.client.api
 
 final case class ClientConfig(
   host: String,

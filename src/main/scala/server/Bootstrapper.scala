@@ -5,7 +5,7 @@ import java.util.UUID
 import javax.inject.Inject
 import music.model.write.user.User
 import music.model.write.user.User.UserId
-import protocol.v2.server.api.ServerInterface
+import protocol.server.api.ServerInterface
 import server.model.Users._
 import storage.api.Database
 
