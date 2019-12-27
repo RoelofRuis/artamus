@@ -6,7 +6,7 @@ PACKAGE             DESCRIPTION                                 DEPENDENCIES
 client              Contains the input and viewing logic        [midi, music, protocol, pubsub, server]
 midi                Contains midi interaction logic             [resource]
 music               Contains the music domain                   []
-protocol            Contains an abstract client-server protocol [pubsub]
+protocol            Contains an abstract client-server protocol []
 pubsub              Contains publish-subscribe logic            []
 resource            Contains resource management wrappers       []
 server              Contains the application state              [music, protocol, pubsub, storage]
