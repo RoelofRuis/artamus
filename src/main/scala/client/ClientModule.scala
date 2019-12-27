@@ -31,7 +31,7 @@ class ClientModule extends ScalaPrivateModule {
   @Provides @Singleton
   def client(dispatcher: Dispatcher[Callback, Event]): ClientInterface =
     protocol.client.api.createClient(
-      ClientConfig("localhost", 9999, connectEagerly = true),
+      ClientConfig("localhost", 9999),
       (event: Event) => dispatcher.handle(Callback(event))
     )
 

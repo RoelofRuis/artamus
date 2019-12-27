@@ -13,8 +13,6 @@ private[client] final class Client(
   @GuardedBy("transport") private var transport: TransportState = Unconnected(true)
 ) extends ClientInterface {
 
-  if (config.connectEagerly) getTransport
-
   override def sendCommand[A <: Command](command: A): Option[CommunicationException] = {
     sendWithTransport[CommandRequest, Unit](CommandRequest(command)).left.toOption
   }

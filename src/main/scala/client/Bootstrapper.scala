@@ -5,6 +5,7 @@ import client.operations.{Operation, OperationRegistry}
 import javax.inject.Inject
 import protocol.Command
 import protocol.client.api.ClientInterface
+import server.actions.control.Authenticate
 
 class Bootstrapper @Inject() (
   client: ClientInterface,
@@ -14,6 +15,8 @@ class Bootstrapper @Inject() (
 
   def run(): Unit = {
     var isRunning = true
+
+    tryAuthenticate()
 
     while (isRunning) {
       val (input, op) = nextOperation
@@ -26,7 +29,11 @@ class Bootstrapper @Inject() (
     renderHandler.frame.dispose()
   }
 
-  def sendCommands(commands: List[Command]): Unit = commands match {
+  private def tryAuthenticate(): Unit = {
+    client.sendCommand(Authenticate("artamus"))
+  }
+
+  private def sendCommands(commands: List[Command]): Unit = commands match {
     case Nil =>
     case command :: rest =>
       client.sendCommand(command) match {
@@ -41,7 +48,7 @@ class Bootstrapper @Inject() (
       }
   }
 
-  def nextOperation: (String, Operation) = {
+  private def nextOperation: (String, Operation) = {
     println("Input next command:")
     val input = scala.io.StdIn.readLine()
     registry.getOperation(input) match {
