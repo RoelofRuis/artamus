@@ -39,30 +39,12 @@ object StaffDisplay {
             include(group) match {
               case Nil =>
                 val nextBarLinePos = track.timeSignatures.nextBarLine(group.window.end)
-                nextBarLinePos - cursor match {
-                  case Duration.ZERO => Iterator()
-                  case d =>
-                    track
-                      .timeSignatures
-                      .fit(Window(cursor, d))
-                      .flatMap(_.duration.asNoteValues)
-                      .map(RestGlyph(_, silent = false))
-                      .iterator
-                }
+                fillWithRests(cursor, nextBarLinePos)
 
               case notes =>
                 val glyphs = calculateGlyphs(cursor, group.window, notes)
                 val nextBarLine = track.timeSignatures.nextBarLine(group.window.end)
-                val finalRests = nextBarLine - group.window.end match {
-                  case Duration.ZERO => Iterator()
-                  case d =>
-                    track
-                      .timeSignatures
-                      .fit(Window(cursor, d))
-                      .flatMap(_.duration.asNoteValues)
-                      .map(RestGlyph(_, silent = false))
-                      .iterator
-                }
+                val finalRests = fillWithRests(group.window.end, nextBarLine)
                 glyphs ++ finalRests
             }
 
@@ -77,16 +59,7 @@ object StaffDisplay {
     }
 
     private def calculateGlyphs(cursor: Position, noteWindow: Window, notes: Seq[Note]): Iterator[StaffGlyph] = {
-      val restGlyphs = cursor - noteWindow.start match {
-        case Duration.ZERO => Iterator.empty
-        case d =>
-          track
-            .timeSignatures
-            .fit(Window(cursor, d))
-            .flatMap(_.duration.asNoteValues)
-            .map(RestGlyph(_, silent = false))
-            .iterator
-      }
+      val restGlyphs = fillWithRests(cursor, noteWindow.start)
 
       val noteDurations = track
         .timeSignatures
@@ -101,6 +74,16 @@ object StaffDisplay {
         .iterator
 
       restGlyphs ++ noteGlyphs
+    }
+
+    private def fillWithRests(from: Position, to: Position): Iterator[StaffGlyph] = to - from match {
+      case Duration.ZERO => Iterator.empty
+      case d => track
+        .timeSignatures
+        .fit(Window(from, d))
+        .flatMap(_.duration.asNoteValues)
+        .map(RestGlyph(_, silent=false))
+        .iterator
     }
 
   }

@@ -33,10 +33,6 @@ object Bars {
         .flatMap(window.intersect)
     }
 
-    def endsInBar(window: Window): BarNumber = {
-      durationFits(window.end, ts.division.barDuration, inclusive=false)
-    }
-
     private def getBarWindow(bar: BarNumber): Window = Window(
       Position.at(ts.division.barDuration * bar),
       ts.division.barDuration
