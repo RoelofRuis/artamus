@@ -1,6 +1,6 @@
 package protocol.server.impl
 
-import java.io.{EOFException, IOException, ObjectInputStream, ObjectOutputStream}
+import java.io.{ObjectInputStream, ObjectOutputStream}
 import java.net.Socket
 
 import protocol.server.api.ServerAPI
@@ -18,7 +18,7 @@ private[server] final class Connection(
     api.connectionOpened(CONNECTION)
 
     try {
-      while (socket.isConnected) {
+      while (! socket.isClosed) {
         val request = inputStream.readObject()
 
         val mainResponse = api.handleRequest(CONNECTION, request)
@@ -26,11 +26,10 @@ private[server] final class Connection(
 
         outputStream.writeObject(afterRequestResponse)
       }
+      api.connectionClosed(CONNECTION, None)
     } catch {
-      case _: EOFException => // shit is fokt!
-      case ex: IOException => // wat nu?
+      case ex: Throwable => api.connectionClosed(CONNECTION, Some(ex)) // TODO: handle different failures correctly!
     } finally {
-      api.connectionClosed(CONNECTION)
       socket.close()
     }
   }
