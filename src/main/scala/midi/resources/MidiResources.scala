@@ -3,6 +3,7 @@ import com.typesafe.scalalogging.LazyLogging
 import javax.sound.midi._
 import resource.Resource
 
+// TODO: Remove (at least) transmitter part!
 class MidiResources extends LazyLogging {
 
   private var devices: Map[MidiDevice.Info, Resource[MidiDevice]] = Map()

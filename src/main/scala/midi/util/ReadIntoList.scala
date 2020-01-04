@@ -3,6 +3,7 @@ package midi.util
 import com.typesafe.scalalogging.LazyLogging
 import midi.util.TemporalReadableBlockingQueue.BlockingQueueReadMethod
 
+@deprecated
 private[midi] object ReadIntoList extends LazyLogging {
 
   def take[A](n: Int): BlockingQueueReadMethod[A, List] = takeUntil(_.length == n, _ => true)

@@ -3,6 +3,7 @@ package midi.in
 import midi.util.ReadIntoList
 import javax.sound.midi.{MidiMessage, ShortMessage}
 
+@deprecated
 object Reading {
 
   implicit class MidiMessageReads(reader: MidiMessageReader) {

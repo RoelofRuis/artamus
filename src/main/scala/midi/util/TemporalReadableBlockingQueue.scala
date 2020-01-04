@@ -7,6 +7,7 @@ import midi.util.TemporalReadableBlockingQueue.BlockingQueueReadMethod
 
 import scala.language.higherKinds
 
+@deprecated
 private[midi] final class TemporalReadableBlockingQueue[A]() {
 
   @GuardedBy("this") private var queue: Option[LinkedBlockingQueue[A]] = None

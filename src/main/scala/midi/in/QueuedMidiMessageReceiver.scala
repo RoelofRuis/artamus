@@ -6,6 +6,7 @@ import javax.sound.midi.{MidiMessage, Receiver, Transmitter}
 
 import scala.language.higherKinds
 
+@deprecated
 private[midi] class QueuedMidiMessageReceiver(transmitter: Transmitter) extends MidiMessageReader with Receiver {
 
   private val queue = new TemporalReadableBlockingQueue[MidiMessage]
