@@ -1,27 +1,28 @@
-package midi.v2
+package midi.v2.impl
 
 import javax.sound.midi.{MidiDevice, MidiSystem}
 import midi.DeviceHash
+import midi.v2.api.{InitializationException, MidiIO, NonExistingDevice}
 
 import scala.util.{Failure, Success, Try}
 
-class MidiReadables {
+class MidiSourceLoader {
 
-  private val deviceList: Map[DeviceHash, MidiDevice.Info] = prepareDeviceList()
-  private var loadedReadables: Map[DeviceHash, MidiReadable] = Map()
+  private val deviceInfo: Map[DeviceHash, MidiDevice.Info] = prepareDeviceList()
+  private var loadedSources: Map[DeviceHash, MidiSource] = Map()
 
-  def readFrom(hash: DeviceHash): Either[MidiException, MidiReadable] = {
+  def loadSource(hash: DeviceHash): MidiIO[MidiSource] = {
     try {
-      deviceList
+      deviceInfo
         .get(hash)
         .map { deviceInfo =>
-          loadedReadables.get(hash) match {
+          loadedSources.get(hash) match {
             case Some(readable) => Right(readable)
             case None =>
               ReadableMidiReceiver(deviceInfo) match {
                 case l @ Left(_) => l
                 case Right(readable) =>
-                  loadedReadables += (hash -> readable)
+                  loadedSources += (hash -> readable)
                   Right(readable)
               }
           }

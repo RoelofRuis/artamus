@@ -1,8 +1,8 @@
-package midi.v2
+package midi.v2.impl
 
 import javax.sound.midi.MidiMessage
 
-trait MidiReader {
+trait MidiMessageReceiver {
 
   def receive(message: MidiMessage, timeStamp: Long): Unit
 
