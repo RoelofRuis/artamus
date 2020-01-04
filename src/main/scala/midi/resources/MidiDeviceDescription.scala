@@ -3,6 +3,7 @@ package midi.resources
 import javax.sound.midi.{MidiDevice, MidiSystem}
 import midi.DeviceHash
 
+@deprecated
 case class MidiDeviceDescription private (
   info: MidiDevice.Info,
   classType: String,
@@ -15,6 +16,7 @@ case class MidiDeviceDescription private (
   }
 }
 
+@deprecated
 object MidiDeviceDescription {
 
   def allDescriptions: Array[MidiDeviceDescription] = MidiSystem.getMidiDeviceInfo.map { MidiDeviceDescription(_) }
