@@ -6,6 +6,7 @@ import javax.inject.Inject
 import midi.in.MidiMessageReader
 import music.primitives._
 
+// TODO: refactor to use MidiInput instead of MidiMessageReader
 private[midi] class MidiMusicReader @Inject() (reader: MidiMessageReader) extends MusicReader {
 
   import midi.in.Reading._
