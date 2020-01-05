@@ -16,7 +16,7 @@ class TrackQueryOperations @Inject() (
       case Left(ex) => println(ex) // TODO: better error handling
       case Right(track) => musicPlayer.play(track)
     }
-    List()
+    Operation.none
   })
 
 }

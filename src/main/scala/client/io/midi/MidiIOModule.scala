@@ -1,9 +1,12 @@
 package client.io.midi
 
 import client.{MusicPlayer, MusicReader}
-import midi.in.MidiMessageReader
+import com.google.inject.Provides
+import javax.inject.{Named, Singleton}
 import midi.out.SequenceWriter
-import midi.{DeviceHash, loadReader, loadSequenceWriter}
+import midi.v2.api.MidiInput
+import midi.v2.impl.{MidiSourceLoader, SingleDeviceMidiInput}
+import midi.{DeviceHash, loadSequenceWriter}
 import net.codingwell.scalaguice.ScalaPrivateModule
 
 class MidiIOModule extends ScalaPrivateModule {
@@ -16,13 +19,11 @@ class MidiIOModule extends ScalaPrivateModule {
   }
 
   val midiOut: DeviceHash = MyDevices.FocusriteUSBMIDI_OUT
-  val midiIn: DeviceHash = MyDevices.iRigUSBMIDI_IN
 
   override def configure(): Unit = {
-    // READING
-    // TODO: Remove '.get', wrap with resource management!
-    bind[MidiMessageReader].toInstance(loadReader(midiIn).get)
-    bind[MusicReader].to[MidiMusicReader].asEagerSingleton()
+    bind[DeviceHash].annotatedWithName("midi-in").toInstance(MyDevices.iRigUSBMIDI_IN)
+    bind[MidiSourceLoader].toInstance(new MidiSourceLoader)
+    bind[MusicReader].to[MidiMusicReader]
 
     // WRITING (playback)
     // TODO: Remove '.get', wrap with resource management!
@@ -31,6 +32,13 @@ class MidiIOModule extends ScalaPrivateModule {
 
     expose[MusicPlayer]
     expose[MusicReader]
+  }
+
+  @Provides
+  @Named("default-midi-in")
+  @Singleton
+  def provideMidiIn(@Named("midi-in") midiIn: DeviceHash, loader: MidiSourceLoader): MidiInput = {
+    new SingleDeviceMidiInput(midiIn, loader)
   }
 
 }

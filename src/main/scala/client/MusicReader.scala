@@ -1,14 +1,15 @@
 package client
 
 import client.MusicReader.ReadMethod
+import midi.v2.api.MidiIO
 import music.primitives.{MidiNoteNumber, PitchClass, PitchSpelling, TimeSignatureDivision}
 
 trait MusicReader {
 
-  def readPitchSpelling: PitchSpelling
-  def readTimeSignatureDivision: TimeSignatureDivision
-  def readPitchClasses(method: ReadMethod): List[PitchClass]
-  def readMidiNoteNumbers(method: ReadMethod): List[MidiNoteNumber]
+  def readPitchSpelling: MidiIO[PitchSpelling]
+  def readTimeSignatureDivision: MidiIO[TimeSignatureDivision]
+  def readPitchClasses(method: ReadMethod): MidiIO[List[PitchClass]]
+  def readMidiNoteNumbers(method: ReadMethod): MidiIO[List[MidiNoteNumber]]
 
 }
 

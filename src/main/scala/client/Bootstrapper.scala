@@ -7,6 +7,8 @@ import protocol.Command
 import protocol.client.api.ClientInterface
 import server.actions.control.Authenticate
 
+import scala.util.{Failure, Success}
+
 class Bootstrapper @Inject() (
   client: ClientInterface,
   registry: OperationRegistry,
@@ -21,7 +23,12 @@ class Bootstrapper @Inject() (
     while (isRunning) {
       val (input, op) = nextOperation
 
-      sendCommands(op())
+      op() match {
+        case Success(commands) => sendCommands(commands)
+        case Failure(ex) =>
+          println("Unable to execute command:")
+          ex.printStackTrace()
+      }
 
       if (input == "quit") isRunning = false
     }

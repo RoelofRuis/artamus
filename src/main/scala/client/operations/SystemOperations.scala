@@ -10,7 +10,7 @@ class SystemOperations @Inject() (
 
   registry.registerOperation(OperationToken("auth", "system"), () => {
     val userName = StdIOTools.readString("User Name:")
-    List(Authenticate(userName))
+    Operation.list(Authenticate(userName))
   })
 
   registry.registerOperation(OperationToken("help", "system"), () => {
@@ -21,11 +21,11 @@ class SystemOperations @Inject() (
       println(s"[${token.registrar}] ${token.command}")
     }
 
-    List()
+    Operation.none
   })
 
   registry.registerOperation(OperationToken("quit", "system"), () => {
-    List(Disconnect())
+    Operation.list(Disconnect())
   })
 
 }

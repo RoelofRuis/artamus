@@ -2,46 +2,58 @@ package client.io.midi
 
 import client.MusicReader
 import client.MusicReader.{NoteOn, ReadMethod, Simultaneous}
-import javax.inject.Inject
-import midi.in.MidiMessageReader
+import javax.inject.{Inject, Named, Singleton}
+import javax.sound.midi.ShortMessage
+import midi.v2.api.{MidiIO, MidiInput}
 import music.primitives._
 
-// TODO: refactor to use MidiInput instead of MidiMessageReader
-private[midi] class MidiMusicReader @Inject() (reader: MidiMessageReader) extends MusicReader {
+// TODO: rewrite as implicit class enrichment around MidiInput
+@Singleton
+private[midi] class MidiMusicReader @Inject() (
+  @Named("default-midi-in") reader: MidiInput
+) extends MusicReader {
 
-  import midi.in.Reading._
+  import midi.v2.api.Midi._
   import music.analysis.TwelveToneTuning._
 
-  def readPitchSpelling: PitchSpelling = {
-    val midiNoteNumbers = readMidiNoteNumbers(NoteOn(2))
-    val firstStep = midiNoteNumbers.head.toPc.toStep
+  def readPitchSpelling: MidiIO[PitchSpelling] = {
+    val res = for {
+      numbers <- readMidiNoteNumbers(NoteOn(2))
+    } yield (numbers, numbers.head.toPc.toStep)
 
-    if (firstStep.isEmpty) readPitchSpelling
-    else {
-      PitchSpelling(Step(firstStep.get.value), Accidental(midiNoteNumbers.last.value - midiNoteNumbers.head.value))
+    res match {
+      case Left(ex) => Left(ex)
+      case Right((_, None)) => readPitchSpelling
+      case Right((numbers, Some(step))) =>
+        Right(PitchSpelling(step, Accidental(numbers.last.value - numbers.head.value)))
     }
   }
 
-  def readTimeSignatureDivision: TimeSignatureDivision = {
-    val num = numberFromBits(readMidiNoteNumbers(Simultaneous))
-    val denom = numberFromBits(readMidiNoteNumbers(NoteOn(1)))
+  def readTimeSignatureDivision: MidiIO[TimeSignatureDivision] = {
+    val res = for {
+      num <- readMidiNoteNumbers(Simultaneous)
+      denom <- readMidiNoteNumbers(NoteOn(1))
+    } yield TimeSignatureDivision(numberFromBits(num), numberFromBits(denom))
 
-    TimeSignatureDivision(num, denom) match {
-      case Some(t) => t
-      case _ => readTimeSignatureDivision
+    res match {
+      case Left(ex) => Left(ex)
+      case Right(None) => readTimeSignatureDivision
+      case Right(Some(x)) => Right(x)
     }
   }
 
-  def readPitchClasses(method: ReadMethod): List[PitchClass] = {
-    readMidiNoteNumbers(method).map(_.toPc)
+  def readPitchClasses(method: ReadMethod): MidiIO[List[PitchClass]] = {
+    for {
+      notes <- readMidiNoteNumbers(method)
+    } yield notes.map(_.toPc)
   }
 
-  def readMidiNoteNumbers(method: ReadMethod): List[MidiNoteNumber] = {
+  def readMidiNoteNumbers(method: ReadMethod): MidiIO[List[MidiNoteNumber]] = {
     val notes = method match {
       case NoteOn(n) => reader.noteOn(n)
       case Simultaneous => reader.simultaneousPressedOn
     }
-    notes.map(s => MidiNoteNumber(s.getData1))
+    notes.map(list => list.map(note => MidiNoteNumber(note.asInstanceOf[ShortMessage].getData1)))
   }
 
   private def numberFromBits(notes: List[MidiNoteNumber]): Int = {
