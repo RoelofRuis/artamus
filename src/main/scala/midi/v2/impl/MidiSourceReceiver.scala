@@ -3,11 +3,11 @@ package midi.v2.impl
 import java.util.concurrent.CopyOnWriteArraySet
 
 import javax.annotation.concurrent.ThreadSafe
-import javax.sound.midi.{MidiDevice, MidiMessage, MidiSystem, Receiver}
+import javax.sound.midi.{MidiDevice, MidiMessage, Receiver}
 import midi.v2.api.{InitializationException, MidiIO}
 
 @ThreadSafe
-class ReadableMidiReceiver extends MidiSource with Receiver {
+class MidiSourceReceiver extends MidiSource with Receiver {
 
   private val subscribers: CopyOnWriteArraySet[MidiMessageReceiver] = new CopyOnWriteArraySet[MidiMessageReceiver]()
 
@@ -19,13 +19,11 @@ class ReadableMidiReceiver extends MidiSource with Receiver {
 
 }
 
-object ReadableMidiReceiver {
+object MidiSourceReceiver {
 
-  def apply(info: MidiDevice.Info): MidiIO[ReadableMidiReceiver] = {
+  def fromDevice(device: MidiDevice): MidiIO[MidiSourceReceiver] = {
     try {
-      val device = MidiSystem.getMidiDevice(info)
-      if ( ! device.isOpen) device.open()
-      val readable = new ReadableMidiReceiver
+      val readable = new MidiSourceReceiver
       device.getTransmitter.setReceiver(readable)
       Right(readable)
     } catch {

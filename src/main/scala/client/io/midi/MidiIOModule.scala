@@ -22,7 +22,7 @@ class MidiIOModule extends ScalaPrivateModule {
 
   override def configure(): Unit = {
     bind[DeviceHash].annotatedWithName("midi-in").toInstance(MyDevices.iRigUSBMIDI_IN)
-    bind[MidiSourceLoader].toInstance(new MidiSourceLoader)
+    bind[MidiSourceLoader]
     bind[MusicReader].to[MidiMusicReader]
 
     // WRITING (playback)

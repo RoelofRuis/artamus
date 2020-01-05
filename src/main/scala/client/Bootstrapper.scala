@@ -3,6 +3,7 @@ package client
 import client.events.RenderHandler
 import client.operations.{Operation, OperationRegistry}
 import javax.inject.Inject
+import midi.v2.impl.MidiDeviceLoader
 import protocol.Command
 import protocol.client.api.ClientInterface
 import server.actions.control.Authenticate
@@ -12,7 +13,8 @@ import scala.util.{Failure, Success}
 class Bootstrapper @Inject() (
   client: ClientInterface,
   registry: OperationRegistry,
-  renderHandler: RenderHandler
+  renderHandler: RenderHandler,
+  midiDeviceLoader: MidiDeviceLoader
 ) {
 
   def run(): Unit = {
@@ -33,6 +35,7 @@ class Bootstrapper @Inject() (
       if (input == "quit") isRunning = false
     }
 
+    midiDeviceLoader.closeAll()
     renderHandler.frame.dispose()
   }
 
