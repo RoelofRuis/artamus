@@ -4,11 +4,10 @@ Artamus is a music analysis client/server application
 Package overview:
 PACKAGE             DESCRIPTION                                 DEPENDENCIES
 client              Contains the input and viewing logic        [midi, music, protocol, pubsub, server]
-midi                Contains midi interaction logic             [resource]
+midi                Contains midi interaction logic             []
 music               Contains the music domain                   []
 protocol            Contains an abstract client-server protocol []
 pubsub              Contains publish-subscribe logic            []
-resource            Contains resource management wrappers       []
 server              Contains the application state              [music, protocol, pubsub, storage]
 storage             Contains a lightweight memory/file storage  []
 ```
