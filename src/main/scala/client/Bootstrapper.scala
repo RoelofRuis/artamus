@@ -3,7 +3,7 @@ package client
 import client.events.RenderHandler
 import client.operations.{Operation, OperationRegistry}
 import javax.inject.Inject
-import midi.v2.MidiDeviceLoader
+import midi.v2.MidiResourceLoader
 import protocol.Command
 import protocol.client.api.ClientInterface
 import server.actions.control.Authenticate
@@ -14,7 +14,7 @@ class Bootstrapper @Inject() (
   client: ClientInterface,
   registry: OperationRegistry,
   renderHandler: RenderHandler,
-  midiDeviceLoader: MidiDeviceLoader
+  midiDeviceLoader: MidiResourceLoader
 ) {
 
   def run(): Unit = {

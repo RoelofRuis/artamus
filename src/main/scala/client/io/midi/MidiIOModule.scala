@@ -3,10 +3,11 @@ package client.io.midi
 import client.{MusicPlayer, MusicReader}
 import com.google.inject.Provides
 import javax.inject.{Named, Singleton}
-import midi.out.SequenceWriter
+import midi.v2.DeviceHash
 import midi.v2.in.api.MidiInput
 import midi.v2.in.impl.{MidiSourceLoader, SingleDeviceMidiInput}
-import midi.{DeviceHash, loadSequenceWriter}
+import midi.v2.out.api.MidiOutput
+import midi.v2.out.impl.{MidiSinkLoader, SingleDeviceMidiOutput}
 import net.codingwell.scalaguice.ScalaPrivateModule
 
 class MidiIOModule extends ScalaPrivateModule {
@@ -25,13 +26,19 @@ class MidiIOModule extends ScalaPrivateModule {
     bind[MidiSourceLoader]
     bind[MusicReader].to[MidiMusicReader]
 
-    // WRITING (playback)
-    // TODO: Remove '.get', wrap with resource management!
-    bind[SequenceWriter].toInstance(loadSequenceWriter(midiOut).get)
+    bind[DeviceHash].annotatedWithName("midi-out").toInstance(MyDevices.FocusriteUSBMIDI_OUT)
+    bind[MidiSinkLoader]
     bind[MusicPlayer].to[MidiMusicPlayer].asEagerSingleton()
 
     expose[MusicPlayer]
     expose[MusicReader]
+  }
+
+  @Provides
+  @Named("default-midi-out")
+  @Singleton
+  def provideMidiOut(@Named("midi-out") midiOut: DeviceHash, loader: MidiSinkLoader): MidiOutput = {
+    new SingleDeviceMidiOutput(midiOut, loader)
   }
 
   @Provides

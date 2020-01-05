@@ -13,6 +13,4 @@ object ClientApp extends App {
 
   app.run()
 
-  midi.midiResources.closeAll() // TODO: refine the resource management further
-
 }

@@ -2,17 +2,17 @@ package midi.v2
 
 import javax.annotation.concurrent.NotThreadSafe
 import javax.inject.Singleton
-import javax.sound.midi.{MidiDevice, MidiSystem}
-import midi.DeviceHash
+import javax.sound.midi.{MidiDevice, MidiSystem, Sequencer}
 
 import scala.util.{Failure, Success, Try}
 
 @NotThreadSafe
 @Singleton
-class MidiDeviceLoader {
+class MidiResourceLoader {
 
   private val deviceInfo: Map[DeviceHash, MidiDevice.Info] = prepareDeviceList()
   private var loadedDevices: Map[DeviceHash, MidiDevice] = Map()
+  private var loadedSequencers: List[Sequencer] = List()
 
   def loadDevice(hash: DeviceHash): MidiIO[MidiDevice] = {
     try {
@@ -34,11 +34,32 @@ class MidiDeviceLoader {
     }
   }
 
-  def closeAll(): Unit = {
+  def loadSequencer(): MidiIO[Sequencer] = {
+    val res = for {
+      sequencer <- Try { MidiSystem.getSequencer(false) }
+      _ <- Try { sequencer.open() }
+    } yield sequencer
+
+    res match {
+      case Success(sequencer) =>
+        loadedSequencers +:= sequencer
+        Right(sequencer)
+      case Failure(ex) =>
+        Left(InitializationException(ex))
+    }
+  }
+
+  def closeAll(): Unit = { // TODO: replace println with proper logging
     loadedDevices.foreach { case (hash, device) =>
       Try { device.close() } match {
         case Success(()) => println(s"Device [$hash] closed")
         case Failure(ex) => println(s"Unable to close device [$hash]: $ex")
+      }
+    }
+    loadedSequencers.foreach { sequencer =>
+      Try { sequencer.close() } match {
+        case Success(()) => println(s"Sequencer closed")
+        case Failure(ex) => println(s"Unable to close sequencer: $ex")
       }
     }
   }

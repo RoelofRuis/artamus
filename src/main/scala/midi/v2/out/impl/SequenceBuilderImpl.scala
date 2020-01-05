@@ -1,9 +1,11 @@
-package midi.out
+package midi.v2.out.impl
 
+import javax.annotation.concurrent.NotThreadSafe
 import javax.sound.midi.{MidiEvent, Sequence, ShortMessage}
 
 import scala.collection.mutable
 
+@NotThreadSafe
 private[midi] class SequenceBuilderImpl private[midi] extends SequenceBuilder {
 
   private case class BufferedNote(pitch: Int, start: Int, duration: Int, volume: Int)
@@ -17,7 +19,7 @@ private[midi] class SequenceBuilderImpl private[midi] extends SequenceBuilder {
     buffer += BufferedNote(pitch, start, duration, volume)
   }
 
-  def build(): Sequence = {
+  def build: Sequence = {
     val sequence = new Sequence(Sequence.PPQ, resolution, 1)
     val midiTrack = sequence.createTrack()
     buffer.foreach { case x @ BufferedNote(pitch, start, duration, volume) =>
@@ -28,3 +30,4 @@ private[midi] class SequenceBuilderImpl private[midi] extends SequenceBuilder {
   }
 
 }
+
