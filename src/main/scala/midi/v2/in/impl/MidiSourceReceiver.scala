@@ -1,10 +1,10 @@
-package midi.v2.impl
+package midi.v2.in.impl
 
 import java.util.concurrent.CopyOnWriteArraySet
 
 import javax.annotation.concurrent.ThreadSafe
 import javax.sound.midi.{MidiDevice, MidiMessage, Receiver}
-import midi.v2.api.{InitializationException, MidiIO}
+import midi.v2.{InitializationException, MidiIO}
 
 @ThreadSafe
 class MidiSourceReceiver extends MidiSource with Receiver {

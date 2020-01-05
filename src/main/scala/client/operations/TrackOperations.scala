@@ -4,7 +4,7 @@ import client.MusicReader
 import client.MusicReader.{NoteOn, Simultaneous}
 import client.io.StdIOTools
 import com.google.inject.Inject
-import midi.v2.api.MidiIO
+import midi.v2.MidiIO
 import music.math.Rational
 import music.math.temporal.{Duration, Position, Window}
 import music.primitives.{Note, NoteGroup, TimeSignature, _}

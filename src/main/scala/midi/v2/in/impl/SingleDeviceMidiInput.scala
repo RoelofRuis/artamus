@@ -1,8 +1,9 @@
-package midi.v2.impl
+package midi.v2.in.impl
 
 import javax.sound.midi.MidiMessage
 import midi.DeviceHash
-import midi.v2.api.{MidiIO, MidiInput, ReadAction}
+import midi.v2.MidiIO
+import midi.v2.in.api.MidiInput
 
 final class SingleDeviceMidiInput(deviceHash: DeviceHash, loader: MidiSourceLoader) extends MidiInput {
 

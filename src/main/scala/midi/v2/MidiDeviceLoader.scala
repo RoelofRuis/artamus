@@ -1,10 +1,9 @@
-package midi.v2.impl
+package midi.v2
 
 import javax.annotation.concurrent.NotThreadSafe
 import javax.inject.Singleton
 import javax.sound.midi.{MidiDevice, MidiSystem}
 import midi.DeviceHash
-import midi.v2.api.{InitializationException, MidiIO, NonExistingDevice}
 
 import scala.util.{Failure, Success, Try}
 

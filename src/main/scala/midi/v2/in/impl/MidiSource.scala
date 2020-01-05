@@ -1,4 +1,4 @@
-package midi.v2.impl
+package midi.v2.in.impl
 
 trait MidiSource {
 

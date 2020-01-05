@@ -1,7 +1,7 @@
 package client
 
 import client.MusicReader.ReadMethod
-import midi.v2.api.MidiIO
+import midi.v2.MidiIO
 import music.primitives.{MidiNoteNumber, PitchClass, PitchSpelling, TimeSignatureDivision}
 
 trait MusicReader {

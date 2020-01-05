@@ -4,8 +4,8 @@ import client.{MusicPlayer, MusicReader}
 import com.google.inject.Provides
 import javax.inject.{Named, Singleton}
 import midi.out.SequenceWriter
-import midi.v2.api.MidiInput
-import midi.v2.impl.{MidiSourceLoader, SingleDeviceMidiInput}
+import midi.v2.in.api.MidiInput
+import midi.v2.in.impl.{MidiSourceLoader, SingleDeviceMidiInput}
 import midi.{DeviceHash, loadSequenceWriter}
 import net.codingwell.scalaguice.ScalaPrivateModule
 

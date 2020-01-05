@@ -8,6 +8,7 @@ package object midi {
   // TODO: Use DI to get components, do not depend on globally available resource manager!
   final val midiResources: MidiResources = new MidiResources()
 
+  @deprecated
   def loadSequenceWriter(deviceHash: DeviceHash): Option[SequenceWriter] = {
     MidiDeviceDescription.findDeviceInfo(deviceHash) match {
       case None => println(s"Unknown device hash! [$deviceHash]"); None

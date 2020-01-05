@@ -1,9 +1,10 @@
-package midi.v2.impl
+package midi.v2.in.impl
 
 import javax.annotation.concurrent.NotThreadSafe
 import javax.inject.{Inject, Singleton}
 import midi.DeviceHash
-import midi.v2.api.MidiIO
+import midi.v2.MidiDeviceLoader
+import midi.v2.MidiIO
 
 @NotThreadSafe
 @Singleton

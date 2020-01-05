@@ -1,6 +1,6 @@
-package midi.v2
+package midi
 
-package object api {
+package object v2 {
 
   sealed trait MidiException extends Exception
   final case object NonExistingDevice extends MidiException
@@ -9,7 +9,5 @@ package object api {
   type MidiIO[A] = Either[MidiException, A]
 
   // TODO: add MidiIOOps for easy manipulation of results
-
-  final case class ReadAction(shouldKeep: Boolean, shouldContinue: Boolean)
 
 }
