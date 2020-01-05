@@ -1,6 +1,7 @@
 package client
 
 import client.events.RenderHandler
+import client.io.IOLifetimeManager
 import client.operations.{Operation, OperationRegistry}
 import javax.inject.Inject
 import midi.MidiResourceLoader
@@ -14,10 +15,11 @@ class Bootstrapper @Inject() (
   client: ClientInterface,
   registry: OperationRegistry,
   renderHandler: RenderHandler,
-  midiDeviceLoader: MidiResourceLoader
+  ioManager: IOLifetimeManager
 ) {
 
   def run(): Unit = {
+    ioManager.initializeAll()
     var isRunning = true
 
     tryAuthenticate()
@@ -35,7 +37,7 @@ class Bootstrapper @Inject() (
       if (input == "quit") isRunning = false
     }
 
-    midiDeviceLoader.closeAll()
+    ioManager.closeAll()
     renderHandler.frame.dispose()
   }
 

@@ -1,10 +1,11 @@
 package client.io.midi
 
 import client.MusicPlayer
-import javax.inject.{Inject, Named}
+import javax.inject.{Inject, Named, Singleton}
 import midi.out.api.MidiOutput
 import music.model.perform.TrackPerformance
 
+@Singleton
 private[midi] class MidiMusicPlayer @Inject() (
   @Named("default-midi-out") midiOutput: MidiOutput,
 ) extends MusicPlayer {

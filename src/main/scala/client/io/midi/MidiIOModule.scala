@@ -1,9 +1,10 @@
 package client.io.midi
 
+import client.io.IOLifetimeManager
 import client.{MusicPlayer, MusicReader}
 import com.google.inject.Provides
 import javax.inject.{Named, Singleton}
-import midi.DeviceHash
+import midi.{DeviceHash, MidiConnector}
 import midi.in.api.MidiInput
 import midi.in.impl.{MidiSourceLoader, SingleDeviceMidiInput}
 import midi.out.api.MidiOutput
@@ -28,10 +29,14 @@ class MidiIOModule extends ScalaPrivateModule {
 
     bind[DeviceHash].annotatedWithName("midi-out").toInstance(MyDevices.FocusriteUSBMIDI_OUT)
     bind[MidiSinkLoader]
-    bind[MusicPlayer].to[MidiMusicPlayer].asEagerSingleton()
+    bind[MusicPlayer].to[MidiMusicPlayer]
+
+    bind[MidiConnector]
+    bind[IOLifetimeManager].to[MidiIOLifetimeManager]
 
     expose[MusicPlayer]
     expose[MusicReader]
+    expose[IOLifetimeManager]
   }
 
   @Provides

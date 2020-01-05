@@ -14,7 +14,7 @@ import storage.InMemoryStorageModule
 class ServerModule extends ScalaPrivateModule with ServerSettings {
 
   override def configure(): Unit = {
-    // -- pick either one storage
+    // -- pick a storage module
     // install(new FileStorageModule with ServerConfig)
     install(new InMemoryStorageModule)
     // --

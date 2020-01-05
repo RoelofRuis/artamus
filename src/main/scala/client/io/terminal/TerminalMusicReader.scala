@@ -3,9 +3,11 @@ package client.io.terminal
 import client.MusicReader
 import client.MusicReader.{NoteOn, Simultaneous}
 import client.io.StdIOTools
+import javax.inject.Singleton
 import midi.MidiIO
 import music.primitives._
 
+@Singleton
 class TerminalMusicReader extends MusicReader {
 
   import music.analysis.TwelveToneTuning._

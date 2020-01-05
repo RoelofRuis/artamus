@@ -13,7 +13,10 @@ import pubsub.{Callback, Dispatcher}
 class ClientModule extends ScalaPrivateModule {
 
   override def configure(): Unit = {
+    // -- pick an io module
+    // install(new TerminalIOModule)
     install(new MidiIOModule)
+    // --
 
     bind[OperationRegistry].toInstance(new ClientOperationRegistry())
     bind[SystemOperations].asEagerSingleton()
