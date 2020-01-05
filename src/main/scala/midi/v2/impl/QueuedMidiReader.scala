@@ -18,7 +18,7 @@ class QueuedMidiReader extends MidiMessageReceiver with MidiReader {
   def read(pick: List[MidiMessage] => ReadAction): List[MidiMessage] = {
     @tailrec
     def loop(acc: List[MidiMessage]): List[MidiMessage] = {
-      val newAcc = acc :+ queue.take()
+      val newAcc = queue.take() +: acc
       pick(newAcc) match {
         case ReadAction(true, true) => loop(newAcc)
         case ReadAction(true, false) => newAcc

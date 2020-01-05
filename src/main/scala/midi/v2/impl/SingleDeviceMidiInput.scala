@@ -6,13 +6,13 @@ import midi.v2.api.{MidiIO, MidiInput, ReadAction}
 
 final class SingleDeviceMidiInput(deviceHash: DeviceHash, loader: MidiSourceLoader) extends MidiInput {
 
-  def readFrom(read: List[MidiMessage] => ReadAction): MidiIO[List[MidiMessage]] = {
+  def readFrom(pick: List[MidiMessage] => ReadAction): MidiIO[List[MidiMessage]] = {
     val reader = new QueuedMidiReader
     for {
       source <- loader.loadSource(deviceHash)
     } yield {
       source.connect(reader)
-      val result = reader.read(read)
+      val result = reader.read(pick)
       source.disconnect(reader)
       result
     }

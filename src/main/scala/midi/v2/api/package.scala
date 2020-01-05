@@ -8,6 +8,8 @@ package object api {
 
   type MidiIO[A] = Either[MidiException, A]
 
+  // TODO: add MidiIOOps for easy manipulation of results
+
   final case class ReadAction(shouldKeep: Boolean, shouldContinue: Boolean)
 
 }

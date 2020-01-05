@@ -29,9 +29,9 @@ object Midi {
       input.readFrom { list =>
         ReadAction(
           shouldKeep     = list.headOption.exists(m => IsNoteOn(m) || IsNoteOff(m)),
-          shouldContinue = list.nonEmpty && (list.count(IsNoteOn) == list.count(IsNoteOff))
+          shouldContinue = list.isEmpty || (list.count(IsNoteOn) != list.count(IsNoteOff))
         )
-      }
+      }.map(_.filter(IsNoteOn))
     }
   }
 
