@@ -1,8 +1,8 @@
-package midi.v2.in.api
+package midi.in.api
 
 import javax.sound.midi.MidiMessage
-import midi.v2.MidiIO
-import midi.v2.in.impl.ReadAction
+import midi.MidiIO
+import midi.in.impl.ReadAction
 
 trait MidiInput {
 

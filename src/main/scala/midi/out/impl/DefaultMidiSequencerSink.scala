@@ -1,7 +1,7 @@
-package midi.v2.out.impl
+package midi.out.impl
 
 import javax.sound.midi.{MetaMessage, MidiDevice, Sequence, Sequencer}
-import midi.v2.{CommunicationException, InitializationException, MidiIO}
+import midi.MidiIO
 
 class DefaultMidiSequencerSink(sequencer: Sequencer) extends MidiSequencerSink {
 
@@ -18,9 +18,9 @@ class DefaultMidiSequencerSink(sequencer: Sequencer) extends MidiSequencerSink {
       sequencer.setTickPosition(0)
       sequencer.setTempoInBPM(120)
       sequencer.start()
-      Right(())
+      MidiIO.ok
     }catch {
-      case ex: Throwable => Left(CommunicationException(ex))
+      case ex: Throwable => MidiIO.communicationException(ex)
     }
   }
 
@@ -31,9 +31,9 @@ object DefaultMidiSequencerSink {
   def sequenceToDevice(sequencer: Sequencer, device: MidiDevice): MidiIO[DefaultMidiSequencerSink] = {
     try {
       sequencer.getTransmitter.setReceiver(device.getReceiver)
-      Right(new DefaultMidiSequencerSink(sequencer))
+      MidiIO.of(new DefaultMidiSequencerSink(sequencer))
     } catch {
-      case ex: Throwable => Left(InitializationException(ex))
+      case ex: Throwable => MidiIO.unableToInitialize(ex)
     }
   }
 

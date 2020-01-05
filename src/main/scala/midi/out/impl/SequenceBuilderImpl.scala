@@ -1,4 +1,4 @@
-package midi.v2.out.impl
+package midi.out.impl
 
 import javax.annotation.concurrent.NotThreadSafe
 import javax.sound.midi.{MidiEvent, Sequence, ShortMessage}
@@ -30,4 +30,3 @@ private[midi] class SequenceBuilderImpl private[midi] extends SequenceBuilder {
   }
 
 }
-

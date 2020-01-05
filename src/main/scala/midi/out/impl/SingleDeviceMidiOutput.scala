@@ -1,8 +1,8 @@
-package midi.v2.out.impl
+package midi.out.impl
 
 import javax.sound.midi.Sequence
-import midi.v2.{DeviceHash, MidiIO}
-import midi.v2.out.api.MidiOutput
+import midi.out.api.MidiOutput
+import midi.{DeviceHash, MidiIO}
 
 final class SingleDeviceMidiOutput(deviceHash: DeviceHash, loader: MidiSinkLoader) extends MidiOutput {
 

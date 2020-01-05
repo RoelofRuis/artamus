@@ -2,7 +2,7 @@ package client.io.midi
 
 import client.MusicPlayer
 import javax.inject.{Inject, Named}
-import midi.v2.out.api.MidiOutput
+import midi.out.api.MidiOutput
 import music.model.perform.TrackPerformance
 
 private[midi] class MidiMusicPlayer @Inject() (
@@ -12,7 +12,7 @@ private[midi] class MidiMusicPlayer @Inject() (
   val TICKS_PER_WHOLE = 96
 
   override def play(track: TrackPerformance): Unit = {
-    val builder = midi.v2.out.api.sequenceBuilder
+    val builder = midi.out.api.sequenceBuilder
     builder.setResolution(TICKS_PER_WHOLE / 4)
     track.notes.toSeq.foreach { midiNote =>
       builder.addNote(

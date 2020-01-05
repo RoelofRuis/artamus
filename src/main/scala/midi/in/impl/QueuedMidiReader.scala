@@ -1,4 +1,4 @@
-package midi.v2.in.impl
+package midi.in.impl
 
 import java.util.concurrent.{BlockingQueue, LinkedBlockingQueue}
 

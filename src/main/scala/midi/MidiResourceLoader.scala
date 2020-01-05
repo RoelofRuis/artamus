@@ -1,4 +1,4 @@
-package midi.v2
+package midi
 
 import javax.annotation.concurrent.NotThreadSafe
 import javax.inject.Singleton
@@ -20,17 +20,17 @@ class MidiResourceLoader {
         .get(hash)
         .map { deviceInfo =>
           loadedDevices.get(hash) match {
-            case Some(device) => Right(device)
+            case Some(device) => MidiIO.of(device)
             case None =>
               val device = MidiSystem.getMidiDevice(deviceInfo)
               if ( ! device.isOpen) device.open()
               loadedDevices += (hash -> device)
-              Right(device)
+              MidiIO.of(device)
           }
         }
-        .getOrElse(Left(NonExistingDevice))
+        .getOrElse(MidiIO.nonExistingDevice)
     } catch {
-      case ex: Throwable => Left(InitializationException(ex))
+      case ex: Throwable => MidiIO.unableToInitialize(ex)
     }
   }
 
@@ -43,9 +43,9 @@ class MidiResourceLoader {
     res match {
       case Success(sequencer) =>
         loadedSequencers +:= sequencer
-        Right(sequencer)
+        MidiIO.of(sequencer)
       case Failure(ex) =>
-        Left(InitializationException(ex))
+        MidiIO.unableToInitialize(ex)
     }
   }
 

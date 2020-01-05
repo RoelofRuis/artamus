@@ -1,6 +1,4 @@
-package midi
-
-package object v2 {
+package object midi {
 
   type DeviceHash = String
 
@@ -11,7 +9,13 @@ package object v2 {
 
   type MidiIO[A] = Either[MidiException, A]
 
-  // TODO: add MidiIOOps for easy manipulation of results
+  object MidiIO {
+    def of[A](a: A): MidiIO[A] = Right(a)
+    def ok: MidiIO[Unit] = Right(())
+    def unableToInitialize[A](ex: Throwable): MidiIO[A] = Left(InitializationException(ex))
+    def nonExistingDevice[A]: MidiIO[A] = Left(NonExistingDevice)
+    def communicationException[A](ex: Throwable): MidiIO[A] = Left(CommunicationException(ex))
+  }
   // TODO: add MidiIO companion object for cleaner creation of instances!
 
 }

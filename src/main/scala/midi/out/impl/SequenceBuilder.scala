@@ -1,4 +1,4 @@
-package midi.v2.out.impl
+package midi.out.impl
 
 import javax.sound.midi.Sequence
 

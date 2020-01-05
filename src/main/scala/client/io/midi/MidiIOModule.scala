@@ -3,11 +3,11 @@ package client.io.midi
 import client.{MusicPlayer, MusicReader}
 import com.google.inject.Provides
 import javax.inject.{Named, Singleton}
-import midi.v2.DeviceHash
-import midi.v2.in.api.MidiInput
-import midi.v2.in.impl.{MidiSourceLoader, SingleDeviceMidiInput}
-import midi.v2.out.api.MidiOutput
-import midi.v2.out.impl.{MidiSinkLoader, SingleDeviceMidiOutput}
+import midi.DeviceHash
+import midi.in.api.MidiInput
+import midi.in.impl.{MidiSourceLoader, SingleDeviceMidiInput}
+import midi.out.api.MidiOutput
+import midi.out.impl.{MidiSinkLoader, SingleDeviceMidiOutput}
 import net.codingwell.scalaguice.ScalaPrivateModule
 
 class MidiIOModule extends ScalaPrivateModule {

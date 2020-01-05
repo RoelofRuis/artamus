@@ -1,9 +1,9 @@
-package midi.v2.out.impl
+package midi.out.api
 
 import javax.sound.midi.Sequence
-import midi.v2.MidiIO
+import midi.MidiIO
 
-trait MidiSequencerSink {
+trait MidiOutput {
 
   def writeSequence(sequence: Sequence): MidiIO[Unit]
 

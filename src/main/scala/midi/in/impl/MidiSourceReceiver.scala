@@ -1,10 +1,10 @@
-package midi.v2.in.impl
+package midi.in.impl
 
 import java.util.concurrent.CopyOnWriteArraySet
 
 import javax.annotation.concurrent.ThreadSafe
 import javax.sound.midi.{MidiDevice, MidiMessage, Receiver}
-import midi.v2.{InitializationException, MidiIO}
+import midi.MidiIO
 
 @ThreadSafe
 class MidiSourceReceiver extends MidiSource with Receiver {
@@ -25,9 +25,9 @@ object MidiSourceReceiver {
     try {
       val readable = new MidiSourceReceiver
       device.getTransmitter.setReceiver(readable)
-      Right(readable)
+      MidiIO.of(readable)
     } catch {
-      case ex: Throwable => Left(InitializationException(ex))
+      case ex: Throwable => MidiIO.unableToInitialize(ex)
     }
   }
 

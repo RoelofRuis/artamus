@@ -1,6 +1,6 @@
-package midi.v2.out
+package midi.out
 
-import midi.v2.out.impl.{SequenceBuilder, SequenceBuilderImpl}
+import midi.out.impl.{SequenceBuilder, SequenceBuilderImpl}
 
 package object api {
 
