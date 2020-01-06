@@ -4,7 +4,7 @@ package object midi {
 
   type DeviceHash = String
 
-  final case class MidiIOException(cause: Throwable)
+  final case class MidiIOException(cause: Throwable) extends Exception
 
   type MidiIO[A] = Either[MidiIOException, A]
 
