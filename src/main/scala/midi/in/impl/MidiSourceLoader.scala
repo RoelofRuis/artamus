@@ -11,7 +11,7 @@ class MidiSourceLoader @Inject() (resourceLoader: MidiResourceLoader) {
   private var loadedSources: Map[DeviceHash, MidiSource] = Map()
 
   def loadSource(hash: DeviceHash): MidiIO[MidiSource] = loadedSources.get(hash) match {
-    case Some(source) => MidiIO.of(source)
+    case Some(source) => MidiIO(source)
     case None => resourceLoader
       .loadDevice(hash)
       .flatMap { device =>

@@ -22,14 +22,10 @@ class MidiSourceReceiver extends MidiSource with Receiver {
 object MidiSourceReceiver {
 
   def fromDevice(device: MidiDevice): MidiIO[MidiSourceReceiver] = {
-    try {
-      val readable = new MidiSourceReceiver
-      device.getTransmitter.setReceiver(readable)
-      MidiIO.of(readable)
-    } catch {
-      case ex: Throwable => MidiIO.unableToInitialize(ex)
-    }
+    val readable = new MidiSourceReceiver
+    for {
+      _ <- MidiIO(device.getTransmitter.setReceiver(readable))
+    } yield readable
   }
-
 
 }

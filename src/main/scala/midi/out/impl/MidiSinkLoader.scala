@@ -11,7 +11,7 @@ class MidiSinkLoader @Inject() (resourceLoader: MidiResourceLoader) {
   private var loadedSinks: Map[DeviceHash, MidiSequencerSink] = Map()
 
   def loadSequencerSink(hash: DeviceHash): MidiIO[MidiSequencerSink] = loadedSinks.get(hash) match {
-    case Some(sink) => MidiIO.of(sink)
+    case Some(sink) => MidiIO(sink)
     case None =>
       val res = for {
         device <- resourceLoader.loadDevice(hash)

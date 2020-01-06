@@ -15,37 +15,30 @@ class MidiResourceLoader {
   private var loadedSequencers: List[Sequencer] = List()
 
   def loadDevice(hash: DeviceHash): MidiIO[MidiDevice] = {
-    try {
-      deviceInfo
-        .get(hash)
-        .map { deviceInfo =>
-          loadedDevices.get(hash) match {
-            case Some(device) => MidiIO.of(device)
-            case None =>
-              val device = MidiSystem.getMidiDevice(deviceInfo)
-              if ( ! device.isOpen) device.open()
+    deviceInfo
+      .get(hash)
+      .map { deviceInfo =>
+        loadedDevices.get(hash) match {
+          case Some(device) => MidiIO(device)
+          case None =>
+            for {
+              device <- MidiIO(MidiSystem.getMidiDevice(deviceInfo))
+              _ <- MidiIO { if (! device.isOpen) device.open() }
+            } yield {
               loadedDevices += (hash -> device)
-              MidiIO.of(device)
-          }
+              device
+            }
         }
-        .getOrElse(MidiIO.nonExistingDevice)
-    } catch {
-      case ex: Throwable => MidiIO.unableToInitialize(ex)
-    }
+      }.getOrElse(MidiIO.failure(new Exception(s"Non existing MIDI device with hash [$hash]")))
   }
 
   def loadSequencer(): MidiIO[Sequencer] = {
-    val res = for {
-      sequencer <- Try { MidiSystem.getSequencer(false) }
-      _ <- Try { sequencer.open() }
-    } yield sequencer
-
-    res match {
-      case Success(sequencer) =>
-        loadedSequencers +:= sequencer
-        MidiIO.of(sequencer)
-      case Failure(ex) =>
-        MidiIO.unableToInitialize(ex)
+    for {
+      sequencer <- MidiIO(MidiSystem.getSequencer(false))
+      _ <- MidiIO(sequencer.open())
+    } yield {
+      loadedSequencers +:= sequencer
+      sequencer
     }
   }
 

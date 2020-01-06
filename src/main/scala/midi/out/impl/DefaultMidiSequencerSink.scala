@@ -12,15 +12,12 @@ class DefaultMidiSequencerSink(sequencer: Sequencer) extends MidiSequencerSink {
   })
 
   def writeSequence(sequence: Sequence): MidiIO[Unit] = {
-    try {
+    MidiIO {
       if (sequencer.isRunning) sequencer.stop()
       sequencer.setSequence(sequence)
       sequencer.setTickPosition(0)
       sequencer.setTempoInBPM(120)
       sequencer.start()
-      MidiIO.ok
-    }catch {
-      case ex: Throwable => MidiIO.communicationException(ex)
     }
   }
 
@@ -29,12 +26,9 @@ class DefaultMidiSequencerSink(sequencer: Sequencer) extends MidiSequencerSink {
 object DefaultMidiSequencerSink {
 
   def sequenceToDevice(sequencer: Sequencer, device: MidiDevice): MidiIO[DefaultMidiSequencerSink] = {
-    try {
-      sequencer.getTransmitter.setReceiver(device.getReceiver)
-      MidiIO.of(new DefaultMidiSequencerSink(sequencer))
-    } catch {
-      case ex: Throwable => MidiIO.unableToInitialize(ex)
-    }
+    for {
+      _ <- MidiIO(sequencer.getTransmitter.setReceiver(device.getReceiver))
+    } yield new DefaultMidiSequencerSink(sequencer)
   }
 
 }
