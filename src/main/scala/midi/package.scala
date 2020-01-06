@@ -19,6 +19,4 @@ package object midi {
     def failure[A](ex: Throwable): MidiIO[A] = Left(MidiIOException(ex))
   }
 
-  // TODO: add MidiIO companion object for cleaner creation of instances!
-
 }
