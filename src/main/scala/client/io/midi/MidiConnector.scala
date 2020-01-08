@@ -2,7 +2,7 @@ package client.io.midi
 
 import javax.inject.Inject
 import midi.{DeviceHash, MidiIO, MidiResourceLoader}
-import patchpanel.PatchPanel
+import patching.PatchPanel
 
 class MidiConnector @Inject() (
   loader: MidiResourceLoader,

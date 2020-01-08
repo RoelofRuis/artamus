@@ -2,7 +2,7 @@ import java.util.UUID
 
 import scala.util.{Failure, Try}
 
-package object patchpanel {
+package object patching {
 
   type PatchId = UUID
   type DeviceId = String

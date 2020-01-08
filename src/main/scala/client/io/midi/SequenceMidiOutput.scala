@@ -4,7 +4,7 @@ import javax.inject.{Inject, Named}
 import javax.sound.midi.{MetaMessage, Sequence, Sequencer}
 import midi.write.MidiOutput
 import midi.{DeviceHash, MidiIO, MidiResourceLoader}
-import patchpanel.PatchPanel
+import patching.PatchPanel
 
 class SequenceMidiOutput @Inject() (
   @Named("midi-out") deviceHash: DeviceHash,

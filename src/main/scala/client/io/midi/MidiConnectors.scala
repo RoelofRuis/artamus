@@ -1,7 +1,7 @@
 package client.io.midi
 
 import javax.sound.midi.{Receiver, Transmitter}
-import patchpanel.CanConnect
+import patching.CanConnect
 
 import scala.util.Try
 

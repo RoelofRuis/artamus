@@ -1,9 +1,9 @@
-package patchpanel
+package patching
 
 import java.util.concurrent.ConcurrentHashMap
 
 import javax.inject.Inject
-import patchpanel.PatchPanel.PatchCable
+import patching.PatchPanel.PatchCable
 
 import scala.util.{Failure, Success}
 

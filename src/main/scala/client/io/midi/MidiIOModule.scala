@@ -6,7 +6,7 @@ import midi.read.MidiInput
 import midi.write.MidiOutput
 import midi.{DeviceHash, MidiResourceLoader}
 import net.codingwell.scalaguice.ScalaPrivateModule
-import patchpanel.PatchPanel
+import patching.PatchPanel
 
 class MidiIOModule extends ScalaPrivateModule {
 

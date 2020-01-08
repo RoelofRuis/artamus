@@ -1,4 +1,4 @@
-package patchpanel
+package patching
 
 import scala.util.Try
 
