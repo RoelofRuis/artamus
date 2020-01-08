@@ -1,8 +1,8 @@
-package client.io.midi.nyt
+package client.io.midi
 
 import javax.inject.{Inject, Named}
 import javax.sound.midi.MidiMessage
-import midi.receiver.{AsyncReadableReceiver, MidiInput, ReadAction}
+import midi.read.{AsyncReadableReceiver, MidiInput, ReadAction}
 import midi.{DeviceHash, MidiIO, MidiResourceLoader}
 import patchpanel.PatchPanel
 
@@ -12,7 +12,7 @@ class ReadableMidiInput @Inject() (
   patchPanel: PatchPanel
 ) extends MidiInput {
 
-  import MidiConnectors.canConnectMidi
+  import client.io.midi.MidiConnectors.canConnectMidi
 
   def readFrom(pick: List[MidiMessage] => ReadAction): MidiIO[List[MidiMessage]] = {
     val reader = new AsyncReadableReceiver

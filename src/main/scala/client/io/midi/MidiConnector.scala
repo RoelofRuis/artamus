@@ -1,4 +1,4 @@
-package client.io.midi.nyt
+package client.io.midi
 
 import javax.inject.Inject
 import midi.{DeviceHash, MidiIO, MidiResourceLoader}

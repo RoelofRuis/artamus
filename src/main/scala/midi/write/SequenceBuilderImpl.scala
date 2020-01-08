@@ -1,4 +1,4 @@
-package midi.out.impl
+package midi.write
 
 import javax.annotation.concurrent.NotThreadSafe
 import javax.sound.midi.{MidiEvent, Sequence, ShortMessage}

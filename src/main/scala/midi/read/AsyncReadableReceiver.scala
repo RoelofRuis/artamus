@@ -1,4 +1,4 @@
-package midi.receiver
+package midi.read
 
 import java.util.concurrent.{BlockingQueue, LinkedBlockingQueue}
 

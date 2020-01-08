@@ -2,7 +2,6 @@ package client.io.midi
 
 import client.MusicReader
 import client.MusicReader.{NoteOn, ReadMethod, Simultaneous}
-import client.io.midi.nyt.ReadableMidiInput
 import javax.inject.{Inject, Singleton}
 import javax.sound.midi.ShortMessage
 import midi.MidiIO
@@ -14,7 +13,7 @@ private[midi] class MidiMusicReader @Inject() (
   reader: ReadableMidiInput
 ) extends MusicReader {
 
-  import midi.receiver.Midi._
+  import midi.read.Midi._
   import music.analysis.TwelveToneTuning._
 
   def readPitchSpelling: MidiIO[PitchSpelling] = {

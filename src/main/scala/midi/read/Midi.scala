@@ -1,4 +1,4 @@
-package midi.receiver
+package midi.read
 
 import javax.sound.midi.{MidiMessage, ShortMessage}
 import midi.MidiIO

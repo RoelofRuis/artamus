@@ -1,7 +1,6 @@
 package client.io.midi
 
 import client.io.IOLifetimeManager
-import client.io.midi.nyt.MidiConnector
 import javax.inject.{Inject, Named}
 import midi.{DeviceHash, MidiResourceLoader}
 
@@ -13,7 +12,10 @@ class MidiIOLifetimeManager @Inject() (
 ) extends IOLifetimeManager {
 
   override def initializeAll(): Unit = {
-    connector.connect(midiIn, midiOut)
+    connector.connect(midiIn, midiOut) match {
+      case Left(ex) => ex.cause.printStackTrace()
+      case Right(_) =>
+    }
   }
 
   override def closeAll(): Unit = {
