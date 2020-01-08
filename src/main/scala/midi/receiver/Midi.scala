@@ -1,8 +1,7 @@
-package midi.in.api
+package midi.receiver
 
 import javax.sound.midi.{MidiMessage, ShortMessage}
 import midi.MidiIO
-import midi.in.impl.ReadAction
 
 object Midi {
 

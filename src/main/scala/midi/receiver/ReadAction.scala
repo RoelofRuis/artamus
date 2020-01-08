@@ -1,4 +1,3 @@
-package midi.in.impl
+package midi.receiver
 
-@deprecated
 final case class ReadAction(shouldKeep: Boolean, shouldContinue: Boolean)

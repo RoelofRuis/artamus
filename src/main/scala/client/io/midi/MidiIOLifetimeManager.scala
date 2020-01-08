@@ -1,8 +1,9 @@
 package client.io.midi
 
 import client.io.IOLifetimeManager
+import client.io.midi.nyt.MidiConnector
 import javax.inject.{Inject, Named}
-import midi.{DeviceHash, MidiConnector, MidiResourceLoader}
+import midi.{DeviceHash, MidiResourceLoader}
 
 class MidiIOLifetimeManager @Inject() (
   loader: MidiResourceLoader,

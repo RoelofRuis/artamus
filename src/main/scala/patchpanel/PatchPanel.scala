@@ -1,47 +1,36 @@
 package patchpanel
 
-import java.util.concurrent.CopyOnWriteArrayList
+import java.util.concurrent.ConcurrentHashMap
 
 import javax.inject.Inject
-import patchpanel.PatchPanel.{PatchCable, PatchingException}
+import patchpanel.PatchPanel.PatchCable
 
 import scala.util.{Failure, Success}
 
 class PatchPanel @Inject() () {
 
-  private val cables = new CopyOnWriteArrayList[PatchCable]()
+  private val cables = new ConcurrentHashMap[PatchCableId, PatchCable]()
 
-  def plugIn[T <: AutoCloseable, R <: AutoCloseable](
-    transmitter: TransmitterDevice[T],
-    receiver: ReceiverDevice[R]
-  )(implicit connector: CanConnect[T, R]): Seq[PatchingException] = {
-    transmitter.newTransmitterJack match {
-      case Failure(outputException) => Seq(PatchingException(outputException))
-      case Success(transmitterJack) =>
-        receiver.newReceiverJack match {
-          case f @ Failure(_) =>
-            Seq(
-              f,
-              transmitterJack.close()
-            ).collect { case Failure(ex) => PatchingException(ex) }
-          case Success(receiverJack) =>
-            connector.connect(transmitterJack, receiverJack) match {
-              case Success(()) =>
-                cables.add(PatchCable(
-                  transmitter.deviceId,
-                  receiver.deviceId,
-                  transmitterJack,
-                  receiverJack
-                ))
-                Seq()
-              case f @ Failure(_) =>
-                Seq(
-                  f,
-                  transmitterJack.close(),
-                  receiverJack.close()
-                ).collect{ case Failure(ex) => PatchingException(ex) }
-            }
-        }
+  def connect[A <: AutoCloseable, B <: AutoCloseable](
+    from: A,
+    to: B
+  )(implicit connector: CanConnect[A, B]): Either[PatchingException, PatchCableId] = {
+    connector.connect(from, to) match {
+      case Failure(ex) => Left(PatchingException(ex))
+      case Success(()) =>
+        val id = PatchCableId()
+        val cable = PatchCable(from, to)
+        cables.put(id, cable)
+        Right(id)
+    }
+  }
+
+  def disconnect(cableId: PatchCableId): Unit = {
+    Option(cables.remove(cableId)) match {
+      case Some(cable) =>
+        cable.from.close()
+        cable.to.close()
+      case None =>
     }
   }
 
@@ -50,12 +39,8 @@ class PatchPanel @Inject() () {
 object PatchPanel {
 
   final case class PatchCable(
-    transmitterDeviceId: DeviceId,
-    receiverDeviceId: DeviceId,
-    transmitterJack: AutoCloseable,
-    receiverJack: AutoCloseable
+    from: AutoCloseable,
+    to: AutoCloseable
   )
-
-  final case class PatchingException(cause: Throwable)
 
 }

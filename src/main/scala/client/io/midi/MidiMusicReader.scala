@@ -2,19 +2,19 @@ package client.io.midi
 
 import client.MusicReader
 import client.MusicReader.{NoteOn, ReadMethod, Simultaneous}
-import javax.inject.{Inject, Named, Singleton}
+import client.io.midi.nyt.ReadableMidiInput
+import javax.inject.{Inject, Singleton}
 import javax.sound.midi.ShortMessage
 import midi.MidiIO
-import midi.in.api.MidiInput
 import music.primitives._
 
 // TODO: rewrite as implicit class enrichment around MidiInput
 @Singleton
 private[midi] class MidiMusicReader @Inject() (
-  @Named("default-midi-in") reader: MidiInput
+  reader: ReadableMidiInput
 ) extends MusicReader {
 
-  import midi.in.api.Midi._
+  import midi.receiver.Midi._
   import music.analysis.TwelveToneTuning._
 
   def readPitchSpelling: MidiIO[PitchSpelling] = {
