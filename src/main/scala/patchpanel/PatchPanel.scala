@@ -11,7 +11,7 @@ class PatchPanel @Inject() () {
 
   private val cables = new CopyOnWriteArrayList[PatchCable]()
 
-  def plugIn[T <: TransmitterJack, R <: ReceiverJack](
+  def plugIn[T <: AutoCloseable, R <: AutoCloseable](
     transmitter: TransmitterDevice[T],
     receiver: ReceiverDevice[R]
   )(implicit connector: CanConnect[T, R]): Seq[PatchingException] = {
@@ -52,8 +52,8 @@ object PatchPanel {
   final case class PatchCable(
     transmitterDeviceId: DeviceId,
     receiverDeviceId: DeviceId,
-    transmitterJack: TransmitterJack,
-    receiverJack: ReceiverJack
+    transmitterJack: AutoCloseable,
+    receiverJack: AutoCloseable
   )
 
   final case class PatchingException(cause: Throwable)

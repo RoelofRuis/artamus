@@ -1,19 +1,17 @@
-package midi.in.impl
+package midi.in.v2
 
 import java.util.concurrent.{BlockingQueue, LinkedBlockingQueue}
 
-import javax.sound.midi.MidiMessage
+import javax.sound.midi.{MidiMessage, Receiver}
+import midi.in.impl.ReadAction
 
 import scala.annotation.tailrec
 
-@deprecated
-class QueuedMidiReader extends MidiMessageReceiver with MidiReader {
+class AsyncReadableReceiver extends Receiver {
 
   private val queue: BlockingQueue[MidiMessage] = new LinkedBlockingQueue[MidiMessage]()
 
-  override def receive(message: MidiMessage, timeStamp: Long): Unit = { queue.offer(message) }
-
-  override def closed(): Unit = {}
+  override def send(message: MidiMessage, timeStamp: Long): Unit = { queue.offer(message) }
 
   def read(pick: List[MidiMessage] => ReadAction): List[MidiMessage] = {
     @tailrec
@@ -28,5 +26,7 @@ class QueuedMidiReader extends MidiMessageReceiver with MidiReader {
     }
     loop(List())
   }
+
+  override def close(): Unit = {}
 
 }

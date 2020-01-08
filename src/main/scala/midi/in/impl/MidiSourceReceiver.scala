@@ -6,6 +6,7 @@ import javax.annotation.concurrent.ThreadSafe
 import javax.sound.midi.{MidiDevice, MidiMessage, Receiver}
 import midi.MidiIO
 
+@deprecated
 @ThreadSafe
 class MidiSourceReceiver extends MidiSource with Receiver {
 

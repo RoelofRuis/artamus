@@ -5,6 +5,7 @@ import javax.inject.{Inject, Singleton}
 @Singleton
 class MidiConnector @Inject() (loader: MidiResourceLoader) {
 
+  @deprecated
   def connect(midiIn: DeviceHash, midiOut: DeviceHash): MidiIO[Unit] = {
     for {
       inDevice <- loader.loadDevice(midiIn)
