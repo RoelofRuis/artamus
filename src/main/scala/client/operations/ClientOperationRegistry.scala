@@ -1,5 +1,7 @@
 package client.operations
 
+import client.operations.Operations.{Operation, OperationRegistry, OperationToken}
+
 class ClientOperationRegistry extends OperationRegistry {
 
   private var operations: Map[OperationToken, Operation] = Map[OperationToken, Operation]()

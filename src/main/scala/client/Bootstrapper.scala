@@ -2,13 +2,13 @@ package client
 
 import client.events.RenderHandler
 import client.io.IOLifetimeManager
-import client.operations.{Operation, OperationRegistry}
+import client.operations.Operations.{LocalOperation, Operation, OperationRegistry, ServerOperation}
 import javax.inject.Inject
-import midi.MidiResourceLoader
 import protocol.Command
 import protocol.client.api.ClientInterface
 import server.actions.control.Authenticate
 
+import scala.annotation.tailrec
 import scala.util.{Failure, Success}
 
 class Bootstrapper @Inject() (
@@ -25,16 +25,24 @@ class Bootstrapper @Inject() (
     tryAuthenticate()
 
     while (isRunning) {
-      val (input, op) = nextOperation
+      nextOperation match {
+        case ("quit", _) => isRunning = false
+        case (_, op: LocalOperation) =>
+          op.f() match {
+            case Success(()) =>
+            case Failure(ex) =>
+              println("Error when running command:")
+              ex.printStackTrace()
+          }
 
-      op() match {
-        case Success(commands) => sendCommands(commands)
-        case Failure(ex) =>
-          println("Unable to execute command:")
-          ex.printStackTrace()
+        case (_, op: ServerOperation) =>
+          op.f() match {
+            case Success(commands) => sendCommands(commands)
+            case Failure(ex) =>
+              println("Unable to get commands:")
+              ex.printStackTrace()
+          }
       }
-
-      if (input == "quit") isRunning = false
     }
 
     ioManager.closeAll()
@@ -45,6 +53,7 @@ class Bootstrapper @Inject() (
     client.sendCommand(Authenticate("artamus"))
   }
 
+  @tailrec
   private def sendCommands(commands: List[Command]): Unit = commands match {
     case Nil =>
     case command :: rest =>
@@ -60,6 +69,7 @@ class Bootstrapper @Inject() (
       }
   }
 
+  @tailrec
   private def nextOperation: (String, Operation) = {
     println("Input next command:")
     val input = scala.io.StdIn.readLine()

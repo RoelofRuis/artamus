@@ -3,7 +3,8 @@ package client.operations
 import client.MusicReader
 import client.MusicReader.{NoteOn, Simultaneous}
 import client.io.StdIOTools
-import com.google.inject.Inject
+import client.operations.Operations.{OperationRegistry, ServerOperation}
+import javax.inject.Inject
 import midi.MidiIO
 import music.math.Rational
 import music.math.temporal.{Duration, Position, Window}
@@ -20,15 +21,15 @@ class TrackOperations @Inject() (
 
   import music.analysis.TwelveToneTuning._
 
-  registry.registerOperation(OperationToken("analyse", "track"), () => {
-    Operation.list(Analyse, Render)
+  registry.server("analyse", "track", {
+    ServerOperation(Analyse, Render)
   })
 
-  registry.registerOperation(OperationToken("new", "workspace"), () => {
-    Operation.list(NewWorkspace, Render)
+  registry.server("new", "workspace", {
+    ServerOperation(NewWorkspace, Render)
   })
 
-  registry.registerOperation(OperationToken("time-signature", "track"), () => {
+  registry.server("time-signature", "track", {
     println(s"Reading time signature...")
     val res = for {
       division <- reader.readTimeSignatureDivision
@@ -37,7 +38,7 @@ class TrackOperations @Inject() (
     res.toTry
   })
 
-  registry.registerOperation(OperationToken("key", "track"), () => {
+  registry.server("key", "track", {
     println(s"Reading key...")
     val res = for {
       root <- reader.readPitchSpelling
@@ -58,7 +59,7 @@ class TrackOperations @Inject() (
     res.toTry
   })
 
-  registry.registerOperation(OperationToken("notes", "track"), () => {
+  registry.server("notes", "track", {
     val gridSpacing = StdIOTools.readInt("Grid spacing of 1/_?")
     val elementLayout = StdIOTools.read("Element layout?\n. : onset\n- : continuation\nr : rest", "Invalid input", {
         val line = scala.io.StdIn.readLine

@@ -2,6 +2,7 @@ package client
 
 import client.events.{ConnectionEventHandler, RenderHandler}
 import client.io.midi.MidiIOModule
+import client.operations.Operations.OperationRegistry
 import client.operations._
 import com.google.inject.Provides
 import javax.inject.Singleton
