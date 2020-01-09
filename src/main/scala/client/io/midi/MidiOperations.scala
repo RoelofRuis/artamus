@@ -24,7 +24,10 @@ class MidiOperations @Inject() (
   })
 
   registry.local("patchboard", "midi", {
-    patchPanel.viewConnections.foreach(cable => println(cable))
+    patchPanel.viewConnections.foreach { case (description, id) =>
+      println(s"Patch [${id.id}]\n[$description]")
+      println()
+    }
   })
 
 }

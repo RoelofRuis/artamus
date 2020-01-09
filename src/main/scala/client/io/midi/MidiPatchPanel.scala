@@ -17,7 +17,7 @@ class MidiPatchPanel @Inject() (
       receiverDevice <- loader.loadDevice(midiOut)
       transmitter <- MidiIO(transmitterDevice.getTransmitter)
       receiver <- MidiIO(receiverDevice.getReceiver)
-      _ <- MidiIO.wrap(patchPanel.connect(transmitter, receiver))
+      _ <- MidiIO.wrap(patchPanel.connect(transmitter, receiver, "Midi In -> Midi Out"))
     } yield ()
   }
 

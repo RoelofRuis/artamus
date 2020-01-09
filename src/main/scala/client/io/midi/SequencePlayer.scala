@@ -24,7 +24,7 @@ class SequencePlayer @Inject() (
         receiver <- MidiIO(outputDevice.getReceiver)
         sequencer <- loadedSequencer
         transmitter <- MidiIO(sequencer.getTransmitter)
-        _ <- MidiIO.wrap(patchPanel.connect(transmitter, receiver, Some(PATCH_ID)))
+        _ <- MidiIO.wrap(patchPanel.connect(transmitter, receiver, "Sequence Player", Some(PATCH_ID)))
         _ <- writeSequence(sequencer, sequence)
       } yield ()
     } else {

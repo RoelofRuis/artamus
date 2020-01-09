@@ -20,7 +20,7 @@ class ReadableMidiInput @Inject() (
     for {
       inputDevice <- loader.loadDevice(deviceHash)
       transmitter <- MidiIO(inputDevice.getTransmitter)
-      patchCableId <- MidiIO.wrap(patchPanel.connect(transmitter, reader))
+      patchCableId <- MidiIO.wrap(patchPanel.connect(transmitter, reader, "ReadableMidiInput"))
     } yield {
       val result = reader.read(pick)
       patchPanel.disconnect(patchCableId)

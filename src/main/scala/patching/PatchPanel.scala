@@ -10,13 +10,16 @@ import scala.util.{Failure, Success}
 
 class PatchPanel @Inject() () {
 
-  private val cables = new ConcurrentHashMap[PatchCableId, PatchCable]()
+  type Description = String
+
+  private val cables = new ConcurrentHashMap[PatchCableId, (Description, PatchCable)]()
 
   def hasPatchCable(id: PatchCableId): Boolean = cables.contains(id)
 
   def connect[A <: AutoCloseable, B <: AutoCloseable](
     from: A,
     to: B,
+    description: Description,
     id: Option[PatchCableId] = None
   )(implicit connector: CanConnect[A, B]): Either[PatchingException, PatchCableId] = {
     connector.connect(from, to) match {
@@ -24,21 +27,23 @@ class PatchPanel @Inject() () {
       case Success(()) =>
         val cableId = id.getOrElse(PatchCableId())
         val cable = PatchCable(from, to)
-        cables.put(cableId, cable)
+        cables.put(cableId, (description, cable))
         Right(cableId)
     }
   }
 
   def disconnect(cableId: PatchCableId): Unit = {
     Option(cables.remove(cableId)) match {
-      case Some(cable) =>
+      case Some((_, cable)) =>
         cable.from.close()
         cable.to.close()
       case None =>
     }
   }
 
-  def viewConnections: List[PatchCableId] = cables.asScala.keys.toList
+  def viewConnections: List[(Description, PatchCableId)] = {
+    cables.asScala.toList.map { case (id, (descr, _)) => (descr, id)}
+  }
 
 }
 
