@@ -57,6 +57,8 @@ class MidiResourceLoader {
     }
   }
 
+  def viewAvailableDevices: List[(DeviceHash, MidiDevice.Info)] = deviceInfo.toList
+
   private def prepareDeviceList(): Map[DeviceHash, MidiDevice.Info] = {
     MidiSystem.getMidiDeviceInfo
       .map(info => Try { (info, MidiSystem.getMidiDevice(info)) })

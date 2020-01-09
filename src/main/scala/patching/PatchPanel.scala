@@ -4,6 +4,7 @@ import java.util.concurrent.ConcurrentHashMap
 
 import javax.inject.Inject
 import patching.PatchPanel.PatchCable
+import scala.jdk.CollectionConverters._
 
 import scala.util.{Failure, Success}
 
@@ -36,6 +37,8 @@ class PatchPanel @Inject() () {
       case None =>
     }
   }
+
+  def viewConnections: List[PatchCableId] = cables.asScala.keys.toList
 
 }
 

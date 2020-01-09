@@ -18,6 +18,8 @@ class MidiIOModule extends ScalaPrivateModule {
   }
 
   override def configure(): Unit = {
+    bind[MidiOperations].asEagerSingleton()
+
     bind[PatchPanel].asEagerSingleton()
     bind[MidiResourceLoader].asEagerSingleton()
     bind[MidiPatchPanel]
