@@ -12,18 +12,27 @@ class SequencePlayer @Inject() (
   patchPanel: PatchPanel
 ) extends MidiSequenceWriter {
 
+  private val SEQUENCE_PATCH = "SequencePatch"
+  private lazy val loadedSequencer: MidiIO[Sequencer] = loader.loadSequencer()
+
   import client.io.midi.MidiConnectors._
 
-  // TODO: do not connect every time!
   override def writeSequence(sequence: Sequence): MidiIO[Unit] = {
-    for {
-      outputDevice <- loader.loadDevice(deviceHash)
-      receiver <- MidiIO(outputDevice.getReceiver)
-      sequencer <- loader.loadSequencer()
-      transmitter <- MidiIO(sequencer.getTransmitter)
-      _ <- MidiIO.wrap(patchPanel.connect(transmitter, receiver))
-      _ <- writeSequence(sequencer, sequence)
-    } yield ()
+    if ( ! patchPanel.hasNamedPatch(SEQUENCE_PATCH)) {
+      for {
+        outputDevice <- loader.loadDevice(deviceHash)
+        receiver <- MidiIO(outputDevice.getReceiver)
+        sequencer <- loadedSequencer
+        transmitter <- MidiIO(sequencer.getTransmitter)
+        _ <- MidiIO.wrap(patchPanel.connect(transmitter, receiver))
+        _ <- writeSequence(sequencer, sequence)
+      } yield ()
+    } else {
+      for {
+        sequencer <- loadedSequencer
+        _ <- writeSequence(sequencer, sequence)
+      } yield ()
+    }
   }
 
   private val END_OF_TRACK = 47
