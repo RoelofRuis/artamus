@@ -7,13 +7,11 @@ import protocol.client.impl.Client.{Connected, TransportState, Unconnected}
 import protocol.{Command, CommandRequest, Query, QueryRequest}
 
 @NotThreadSafe // TODO: ensure thread safety!
-final class Client(
+private[client] final class Client(
   config: ClientConfig,
   eventScheduler: EventScheduler,
   @GuardedBy("transport") private var transport: TransportState = Unconnected(true)
 ) extends ClientInterface {
-
-  if (config.connectEagerly) getTransport
 
   override def sendCommand[A <: Command](command: A): Option[CommunicationException] = {
     sendWithTransport[CommandRequest, Unit](CommandRequest(command)).left.toOption

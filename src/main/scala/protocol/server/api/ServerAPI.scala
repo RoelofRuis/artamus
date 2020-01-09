@@ -6,7 +6,7 @@ trait ServerAPI {
 
   def connectionOpened(connection: ConnectionHandle): Unit
 
-  def connectionClosed(connection: ConnectionHandle): Unit
+  def connectionClosed(connection: ConnectionHandle, error: Option[Throwable]): Unit
 
   def afterRequest(connection: ConnectionHandle, response: DataResponse): DataResponse
 

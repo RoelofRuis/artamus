@@ -15,6 +15,4 @@ object ClientApp extends App {
   editorThread.start()
   editorThread.join()
 
-  midi.midiResources.closeAll() // TODO: refine the resource management further
-
 }

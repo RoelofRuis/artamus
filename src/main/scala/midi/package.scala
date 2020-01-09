@@ -1,29 +1,27 @@
-import midi.in.{MidiMessageReader, QueuedMidiMessageReceiver}
-import midi.out.{SequenceWriter, SequenceWriterImpl}
-import midi.resources.{MidiDeviceDescription, MidiResources}
+import scala.util.{Failure, Success, Try}
 
 package object midi {
 
   type DeviceHash = String
 
-  // TODO: Use DI to get components, do not depend on globally available resource manager!
-  final val midiResources: MidiResources = new MidiResources()
+  final case class MidiIOException(cause: Throwable) extends Exception
 
-  def loadReader(deviceHash: DeviceHash): Option[MidiMessageReader] =
-    MidiDeviceDescription.findDeviceInfo(deviceHash) match {
-      case None => println(s"Unknown device hash! [$deviceHash]"); None
-      case Some(info) => midiResources.loadTransmitter(info).map(new QueuedMidiMessageReceiver(_))
-    }
+  type MidiIO[A] = Either[MidiIOException, A]
 
-  def loadSequenceWriter(deviceHash: DeviceHash): Option[SequenceWriter] = {
-    MidiDeviceDescription.findDeviceInfo(deviceHash) match {
-      case None => println(s"Unknown device hash! [$deviceHash]"); None
-      case Some(info) =>
-        for {
-          receiver <- midiResources.loadReceiver(info)
-          sequencer <- midiResources.loadSequencer
-        } yield new SequenceWriterImpl(receiver, sequencer)
+  object MidiIO {
+    def wrap[E <: Throwable, A](e: Either[E, A]): MidiIO[A] = {
+      e match {
+        case Right(value) => Right(value)
+        case Left(ex) => Left(MidiIOException(ex))
+      }
     }
+    def apply[A](x: => A): MidiIO[A] = {
+      Try { x } match {
+        case Success(value) => Right(value)
+        case Failure(ex) => Left(MidiIOException(ex))
+      }
+    }
+    def failure[A](ex: Throwable): MidiIO[A] = Left(MidiIOException(ex))
   }
 
 }

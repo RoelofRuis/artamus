@@ -3,14 +3,14 @@ Artamus is a music analysis client/server application
 ```
 Package overview:
 PACKAGE             DESCRIPTION                                 DEPENDENCIES
-client              Contains the input and viewing logic        [midi, music, protocol, pubsub, server]
-midi                Contains midi interaction logic             [resource]
-music               Contains the music domain                   []
-protocol            Contains an abstract client-server protocol [pubsub]
-pubsub              Contains publish-subscribe logic            []
-resource            Contains resource management wrappers       []
-server              Contains the application state              [music, protocol, pubsub, storage]
-storage             Contains a lightweight memory/file storage  []
+client              Contains the input and viewing logic              [midi, music, patching, protocol, pubsub, server]
+midi                Contains midi interaction logic                   []
+music               Contains the music domain                         []
+patching            Contains logic for patching data streams together []
+protocol            Contains an abstract client-server protocol       []
+pubsub              Contains publish-subscribe logic                  []
+server              Contains the application state                    [music, protocol, pubsub, storage]
+storage             Contains a lightweight memory/file storage        []
 ```
 
 The server application requires `Lilypond` which can be downloaded at:

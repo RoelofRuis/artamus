@@ -17,9 +17,9 @@ object Bars {
 
     def initialTimeSignature: TimeSignature = ts
 
-    def extendToFillBar(window: Window): Window = {
-      val bar = durationFits(window.end, ts.division.barDuration, inclusive=false)
-      window.spanning(Window.instantAt(getBarWindow(bar).start))
+    def nextBarLine(position: Position): Position = {
+      val bar = durationFits(position, ts.division.barDuration, inclusive=true)
+      getBarWindow(bar).end
     }
 
     def fit(window: Window): Seq[Window] = {
@@ -31,10 +31,6 @@ object Bars {
       else Range.inclusive(startBar, endBar)
         .map(getBarWindow)
         .flatMap(window.intersect)
-    }
-
-    def endsInBar(window: Window): BarNumber = {
-      durationFits(window.end, ts.division.barDuration, inclusive=false)
     }
 
     private def getBarWindow(bar: BarNumber): Window = Window(

@@ -3,6 +3,7 @@ package client
 import client.events.ConnectionEventHandler
 import client.gui.Editor
 import client.io.midi.MidiIOModule
+import client.operations.Operations.OperationRegistry
 import client.operations._
 import com.google.inject.Provides
 import javax.inject.Singleton
@@ -14,7 +15,10 @@ import pubsub.{Callback, Dispatcher}
 class ClientModule extends ScalaPrivateModule {
 
   override def configure(): Unit = {
+    // -- pick an io module
+    // install(new TerminalIOModule)
     install(new MidiIOModule)
+    // --
 
     bind[OperationRegistry].toInstance(new ClientOperationRegistry())
     bind[SystemOperations].asEagerSingleton()
@@ -33,8 +37,8 @@ class ClientModule extends ScalaPrivateModule {
   @Provides @Singleton
   def client(dispatcher: Dispatcher[Callback, Event]): ClientInterface =
     protocol.client.api.createClient(
-      ClientConfig("localhost", 9999, connectEagerly = true),
-      dispatcher
+      ClientConfig("localhost", 9999),
+      (event: Event) => dispatcher.handle(Callback(event))
     )
 
 }

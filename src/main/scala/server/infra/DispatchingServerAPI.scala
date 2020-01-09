@@ -29,10 +29,14 @@ final class DispatchingServerAPI @Inject() (
     connections += (connection -> None)
   }
 
-  def connectionClosed(connection: ConnectionHandle): Unit = {
+  def connectionClosed(connection: ConnectionHandle, cause: Option[Throwable]): Unit = {
     connections -= connection
     server.unsubscribeEvents(connection.toString)
     transactions.remove(connection)
+    cause match {
+      case None => logger.info(s"Connection [$connection] closed")
+      case Some(ex) => logger.warn(s"Connection [$connection] closed with error", ex)
+    }
   }
 
   override def afterRequest(connection: ConnectionHandle, response: DataResponse): DataResponse = {

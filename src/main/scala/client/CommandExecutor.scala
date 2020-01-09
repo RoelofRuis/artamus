@@ -1,11 +1,12 @@
 package client
 
-import client.operations.OperationRegistry
+import client.operations.Operations.{LocalOperation, OperationRegistry, ServerOperation}
 import javax.inject.Inject
 import protocol.Command
 import protocol.client.api.ClientInterface
 
 import scala.annotation.tailrec
+import scala.util.{Failure, Success}
 
 class CommandExecutor @Inject() (
   client: ClientInterface,
@@ -15,9 +16,22 @@ class CommandExecutor @Inject() (
   def execute(input: String): Boolean = {
     registry.getOperation(input) match {
       case None => false
-      case Some(op) =>
-        // TODO: improve user feedback
-        sendCommands(op())
+      case Some(op: LocalOperation) =>
+        op.f() match {
+          case Success(()) =>
+          case Failure(ex) =>
+            println("Error when running command:")
+            ex.printStackTrace()
+        }
+        true
+
+      case Some(op: ServerOperation) =>
+        op.f() match {
+          case Success(commands) => sendCommands(commands)
+          case Failure(ex) =>
+            println("Unable to get commands:")
+            ex.printStackTrace()
+        }
         true
     }
   }

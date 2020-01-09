@@ -8,7 +8,7 @@ import protocol.server.api.ServerAPI
 
 import scala.util.{Failure, Success, Try}
 
-object ConnectionFactory {
+private[server] object ConnectionFactory {
 
   def acceptNext(serverSocket: ServerSocket, api: ServerAPI): Either[TransportException, Connection] = {
     val transport = for {

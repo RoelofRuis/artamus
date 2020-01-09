@@ -9,6 +9,7 @@ final case class Notes private (
   notes: SortedMap[Position, NoteGroup]
 ) {
 
+  def readGroupsList(): List[NoteGroup] = notes.values.toList
   def readGroups(): Iterator[NoteGroup] = notes.valuesIterator
   def read(): Iterator[Note] = notes.valuesIterator.flatMap(_.notes).buffered
 

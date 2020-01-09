@@ -3,13 +3,13 @@ package protocol.client.impl
 import java.util.concurrent.{ArrayBlockingQueue, BlockingQueue}
 
 import protocol.Event
-import pubsub.{Callback, Dispatcher}
+import protocol.client.api.EventDispatcher
 
-class EventThread(
-  dispatcher: Dispatcher[Callback, Event]
+private[client] final class EventThread(
+  dispatcher: EventDispatcher
 ) extends Thread with EventScheduler {
 
-  // TODO: improve error handling of `dispacher.handle` and `queue.put`
+  // TODO: improve error handling of `queue.put`
 
   def schedule(event: Event): Unit = queue.put(event)
 
@@ -18,8 +18,7 @@ class EventThread(
   override def run(): Unit = {
     try {
       while (! Thread.currentThread().isInterrupted) {
-        val callback = Callback(queue.take())
-        dispatcher.handle(callback)
+        dispatcher.dispatch(queue.take())
       }
     } catch {
       case _: InterruptedException =>

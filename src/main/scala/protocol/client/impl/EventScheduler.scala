@@ -2,7 +2,7 @@ package protocol.client.impl
 
 import protocol.Event
 
-trait EventScheduler {
+private[client] trait EventScheduler {
 
   def schedule(event: Event): Unit
 

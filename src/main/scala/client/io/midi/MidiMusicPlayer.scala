@@ -1,12 +1,29 @@
 package client.io.midi
 
 import client.MusicPlayer
-import javax.inject.Inject
-import midi.out.SequenceWriter
+import javax.inject.{Inject, Named, Singleton}
+import midi.write.MidiSequenceWriter
 import music.model.perform.TrackPerformance
 
-private[midi] class MidiMusicPlayer @Inject() (writer: SequenceWriter) extends MusicPlayer {
+@Singleton
+private[midi] class MidiMusicPlayer @Inject() (
+  midiOutput: MidiSequenceWriter,
+) extends MusicPlayer {
 
-  override def play(track: TrackPerformance): Unit = writer.writeFromFormat(MidiNoteFormat(track.notes.toSeq))
+  val TICKS_PER_WHOLE = 96
+
+  override def play(track: TrackPerformance): Unit = {
+    val builder = midi.write.sequenceBuilder
+    builder.setResolution(TICKS_PER_WHOLE / 4)
+    track.notes.toSeq.foreach { midiNote =>
+      builder.addNote(
+        midiNote.noteNumber.value,
+        (midiNote.window.start * TICKS_PER_WHOLE).v.n,
+        (midiNote.window.duration * TICKS_PER_WHOLE).v.n,
+        midiNote.loudness.value
+      )
+    }
+    midiOutput.writeSequence(builder.build) // TODO: pass on the return type or do logging!
+  }
 
 }

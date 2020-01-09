@@ -1,10 +1,12 @@
 package client.io.midi
 
+import client.io.IOLifetimeManager
 import client.{MusicPlayer, MusicReader}
-import midi.in.MidiMessageReader
-import midi.out.SequenceWriter
-import midi.{DeviceHash, loadReader, loadSequenceWriter}
+import midi.read.MidiInput
+import midi.write.MidiSequenceWriter
+import midi.{DeviceHash, MidiResourceLoader}
 import net.codingwell.scalaguice.ScalaPrivateModule
+import patching.PatchPanel
 
 class MidiIOModule extends ScalaPrivateModule {
 
@@ -15,22 +17,26 @@ class MidiIOModule extends ScalaPrivateModule {
     val iRigUSBMIDI_IN: DeviceHash = "e98b95f2"
   }
 
-  val midiOut: DeviceHash = MyDevices.FocusriteUSBMIDI_OUT
-  val midiIn: DeviceHash = MyDevices.iRigUSBMIDI_IN
-
   override def configure(): Unit = {
-    // READING
-    // TODO: Remove '.get', wrap with resource management!
-    bind[MidiMessageReader].toInstance(loadReader(midiIn).get)
-    bind[MusicReader].to[MidiMusicReader].asEagerSingleton()
+    bind[MidiOperations].asEagerSingleton()
 
-    // WRITING (playback)
-    // TODO: Remove '.get', wrap with resource management!
-    bind[SequenceWriter].toInstance(loadSequenceWriter(midiOut).get)
-    bind[MusicPlayer].to[MidiMusicPlayer].asEagerSingleton()
+    bind[PatchPanel].asEagerSingleton()
+    bind[MidiResourceLoader].asEagerSingleton()
+    bind[MidiPatchPanel]
+
+    bind[DeviceHash].annotatedWithName("midi-in").toInstance(MyDevices.iRigUSBMIDI_IN)
+    bind[MidiInput].to[ReadableMidiInput]
+    bind[MusicReader].to[MidiMusicReader]
+
+    bind[DeviceHash].annotatedWithName("midi-out").toInstance(MyDevices.FocusriteUSBMIDI_OUT)
+    bind[MidiSequenceWriter].to[SequencePlayer]
+    bind[MusicPlayer].to[MidiMusicPlayer]
+
+    bind[IOLifetimeManager].to[MidiIOLifetimeManager]
 
     expose[MusicPlayer]
     expose[MusicReader]
+    expose[IOLifetimeManager]
   }
 
 }

@@ -1,31 +1,30 @@
 package client.operations
 
 import client.io.StdIOTools
-import com.google.inject.Inject
+import client.operations.Operations.{OperationRegistry, ServerOperation}
+import javax.inject.Inject
 import server.actions.control.{Authenticate, Disconnect}
 
 class SystemOperations @Inject() (
   registry: OperationRegistry,
 ) {
 
-  registry.registerOperation(OperationToken("auth", "system"), () => {
+  registry.server("auth", "system", {
     val userName = StdIOTools.readString("User Name:")
-    List(Authenticate(userName))
+    ServerOperation(Authenticate(userName))
   })
 
-  registry.registerOperation(OperationToken("help", "system"), () => {
+  registry.local("help", "system", {
     println("Available operations:")
     val tokens = registry.getRegisteredTokens
 
     tokens.toList.sortBy(t => t.registrar + t.command).foreach{ token =>
       println(s"[${token.registrar}] ${token.command}")
     }
-
-    List()
   })
 
-  registry.registerOperation(OperationToken("quit", "system"), () => {
-    List(Disconnect())
+  registry.server("quit", "system", {
+    ServerOperation(Disconnect())
   })
 
 }
