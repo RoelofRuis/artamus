@@ -21,7 +21,6 @@ package object midi {
         case Failure(ex) => Left(MidiIOException(ex))
       }
     }
-    def ok: MidiIO[Unit] = Right(())
     def failure[A](ex: Throwable): MidiIO[A] = Left(MidiIOException(ex))
   }
 

@@ -2,6 +2,7 @@ package midi.read
 
 import javax.sound.midi.{MidiMessage, ShortMessage}
 import midi.MidiIO
+import midi.read.MidiInput.ReadAction
 
 object Midi {
 

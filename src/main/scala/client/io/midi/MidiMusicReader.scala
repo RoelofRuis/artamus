@@ -5,12 +5,12 @@ import client.MusicReader.{NoteOn, ReadMethod, Simultaneous}
 import javax.inject.{Inject, Singleton}
 import javax.sound.midi.ShortMessage
 import midi.MidiIO
+import midi.read.MidiInput
 import music.primitives._
 
-// TODO: rewrite as implicit class enrichment around MidiInput
 @Singleton
 private[midi] class MidiMusicReader @Inject() (
-  reader: ReadableMidiInput
+  reader: MidiInput
 ) extends MusicReader {
 
   import midi.read.Midi._

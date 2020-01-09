@@ -2,15 +2,15 @@ package client.io.midi
 
 import javax.inject.{Inject, Named}
 import javax.sound.midi.{MetaMessage, Sequence, Sequencer}
-import midi.write.MidiOutput
+import midi.write.MidiSequenceWriter
 import midi.{DeviceHash, MidiIO, MidiResourceLoader}
 import patching.PatchPanel
 
-class SequenceMidiOutput @Inject() (
+class SequencePlayer @Inject() (
   @Named("midi-out") deviceHash: DeviceHash,
   loader: MidiResourceLoader,
   patchPanel: PatchPanel
-) extends MidiOutput {
+) extends MidiSequenceWriter {
 
   import client.io.midi.MidiConnectors._
 

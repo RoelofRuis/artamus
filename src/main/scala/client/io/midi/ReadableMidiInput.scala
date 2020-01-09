@@ -2,7 +2,8 @@ package client.io.midi
 
 import javax.inject.{Inject, Named}
 import javax.sound.midi.MidiMessage
-import midi.read.{AsyncReadableReceiver, MidiInput, ReadAction}
+import midi.read.MidiInput.ReadAction
+import midi.read.{AsyncReadableReceiver, MidiInput}
 import midi.{DeviceHash, MidiIO, MidiResourceLoader}
 import patching.PatchPanel
 

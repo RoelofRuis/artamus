@@ -2,12 +2,12 @@ package client.io.midi
 
 import client.MusicPlayer
 import javax.inject.{Inject, Named, Singleton}
-import midi.write.MidiOutput
+import midi.write.MidiSequenceWriter
 import music.model.perform.TrackPerformance
 
 @Singleton
 private[midi] class MidiMusicPlayer @Inject() (
-  midiOutput: MidiOutput,
+  midiOutput: MidiSequenceWriter,
 ) extends MusicPlayer {
 
   val TICKS_PER_WHOLE = 96

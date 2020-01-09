@@ -3,7 +3,7 @@ package midi.write
 import javax.sound.midi.Sequence
 import midi.MidiIO
 
-trait MidiOutput {
+trait MidiSequenceWriter {
 
   def writeSequence(sequence: Sequence): MidiIO[Unit]
 

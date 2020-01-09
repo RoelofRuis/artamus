@@ -1,7 +1,9 @@
 package midi.write
 
+import javax.annotation.concurrent.NotThreadSafe
 import javax.sound.midi.Sequence
 
+@NotThreadSafe
 trait SequenceBuilder {
 
   def setResolution(ticksPerQuarter: Int): Unit

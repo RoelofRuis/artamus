@@ -4,7 +4,7 @@ import javax.inject.Inject
 import midi.{DeviceHash, MidiIO, MidiResourceLoader}
 import patching.PatchPanel
 
-class MidiConnector @Inject() (
+class MidiPatchPanel @Inject() (
   loader: MidiResourceLoader,
   patchPanel: PatchPanel
 ) {

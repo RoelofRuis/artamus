@@ -3,10 +3,11 @@ package midi.read
 import java.util.concurrent.{BlockingQueue, LinkedBlockingQueue}
 
 import javax.sound.midi.{MidiMessage, Receiver}
+import midi.read.MidiInput.ReadAction
 
 import scala.annotation.tailrec
 
-class AsyncReadableReceiver extends Receiver {
+final class AsyncReadableReceiver extends Receiver {
 
   private val queue: BlockingQueue[MidiMessage] = new LinkedBlockingQueue[MidiMessage]()
 

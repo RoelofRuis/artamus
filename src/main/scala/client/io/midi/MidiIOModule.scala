@@ -3,7 +3,7 @@ package client.io.midi
 import client.io.IOLifetimeManager
 import client.{MusicPlayer, MusicReader}
 import midi.read.MidiInput
-import midi.write.MidiOutput
+import midi.write.MidiSequenceWriter
 import midi.{DeviceHash, MidiResourceLoader}
 import net.codingwell.scalaguice.ScalaPrivateModule
 import patching.PatchPanel
@@ -20,14 +20,14 @@ class MidiIOModule extends ScalaPrivateModule {
   override def configure(): Unit = {
     bind[PatchPanel].asEagerSingleton()
     bind[MidiResourceLoader].asEagerSingleton()
-    bind[MidiConnector]
+    bind[MidiPatchPanel]
 
     bind[DeviceHash].annotatedWithName("midi-in").toInstance(MyDevices.iRigUSBMIDI_IN)
     bind[MidiInput].to[ReadableMidiInput]
     bind[MusicReader].to[MidiMusicReader]
 
     bind[DeviceHash].annotatedWithName("midi-out").toInstance(MyDevices.FocusriteUSBMIDI_OUT)
-    bind[MidiOutput].to[SequenceMidiOutput]
+    bind[MidiSequenceWriter].to[SequencePlayer]
     bind[MusicPlayer].to[MidiMusicPlayer]
 
     bind[IOLifetimeManager].to[MidiIOLifetimeManager]
