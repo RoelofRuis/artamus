@@ -7,7 +7,11 @@ package object patching {
   type PatchId = UUID
   type DeviceId = String
 
-  final case class PatchCableId(id: UUID = UUID.randomUUID())
+  final case class PatchCableId private (id: UUID)
+
+  object PatchCableId {
+    def apply(): PatchCableId = PatchCableId(UUID.randomUUID())
+  }
 
   final case class PatchingException(causes: Throwable*) extends Throwable
 
