@@ -9,7 +9,7 @@ import music.model.record.Recording.RecordingId
 import music.model.record.{InputOnly, RawMidiNote, RecordingMode}
 import music.model.write.track.Track.TrackId
 import music.model.write.user.User.UserId
-import music.primitives.{Accidental, Chord, Function, Key, Loudness, MidiNoteNumber, Note, NoteGroup, Octave, PitchClass, PitchSpelling, Scale, ScientificPitch, Step, TickPosition, TickResolution, TimeSignature, TimeSignatureDivision}
+import music.primitives.{Accidental, Chord, Function, Key, Loudness, MidiNoteNumber, MillisecondPosition, Note, NoteGroup, Octave, PitchClass, PitchSpelling, Scale, ScientificPitch, Step, TimeSignature, TimeSignatureDivision}
 import spray.json.{DefaultJsonProtocol, JsNumber, JsString, JsValue, JsonFormat, deserializationError}
 
 import scala.collection.immutable.SortedMap
@@ -142,8 +142,7 @@ trait DomainProtocol extends DefaultJsonProtocol {
   implicit val functionFormat = jsonFormat2(Function)
   implicit val chordFormat = jsonFormat2(Chord.apply)
   implicit val noteGroupFormat = jsonFormat2(NoteGroup)
-  implicit val tickResolutionFormat = jsonFormat1(TickResolution)
-  implicit val tickPositionFormat = jsonFormat1(TickPosition)
+  implicit val tickPositionFormat = jsonFormat1(MillisecondPosition)
   implicit val loudnessFormat = jsonFormat1(Loudness)
   implicit val midiNoteNumberFormat = jsonFormat1(MidiNoteNumber.apply)
   implicit val rawMidiNoteFormat = jsonFormat3(RawMidiNote)

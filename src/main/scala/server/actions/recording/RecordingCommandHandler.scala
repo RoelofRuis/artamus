@@ -11,7 +11,7 @@ private[server] class RecordingCommandHandler @Inject() (
 ) {
 
   dispatcher.subscribe[StartRecording] { req =>
-    storage.startRecording(req.user.id, req.attributes.resolution)
+    storage.startRecording(req.user.id)
 
     Responses.ok
   }

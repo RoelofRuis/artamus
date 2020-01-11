@@ -3,7 +3,6 @@ package server.actions.recording
 import javax.inject.Singleton
 import music.model.record.{RawMidiNote, Recording}
 import music.model.write.user.User.UserId
-import music.primitives.TickResolution
 
 import scala.collection.concurrent.TrieMap
 
@@ -12,8 +11,8 @@ class RecordingStorage() {
 
   private val activeRecordings = new TrieMap[UserId, Recording]
 
-  def startRecording(userId: UserId, resolution: TickResolution): Unit = {
-    activeRecordings.put(userId, Recording(resolution))
+  def startRecording(userId: UserId): Unit = {
+    activeRecordings.put(userId, Recording())
   }
 
   def recordNote(userId: UserId, note: RawMidiNote): Unit = {
