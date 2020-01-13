@@ -22,7 +22,7 @@ class MidiIOModule extends ScalaPrivateModule {
 
     bind[PatchPanel].asEagerSingleton()
     bind[MidiResourceLoader].asEagerSingleton()
-    bind[MidiPatchPanel]
+    bind[MidiRecorder].asEagerSingleton()
 
     bind[DeviceHash].annotatedWithName("midi-in").toInstance(MyDevices.iRigUSBMIDI_IN)
     bind[MidiInput].to[ReadableMidiInput]
