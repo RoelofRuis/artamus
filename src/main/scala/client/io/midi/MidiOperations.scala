@@ -1,16 +1,21 @@
 package client.io.midi
 
-import client.operations.Operations.OperationRegistry
+import client.operations.Operations.{OperationRegistry, ServerOperation}
 import com.google.inject.Inject
 import javax.sound.midi.MidiDevice.Info
 import midi.MidiResourceLoader
 import patching.PatchPanel
+import server.actions.recording.StartRecording
 
 class MidiOperations @Inject() (
   patchPanel: PatchPanel,
   loader: MidiResourceLoader,
   registry: OperationRegistry,
 ) {
+
+  registry.server("record", "midi", {
+    ServerOperation(StartRecording())
+  })
 
   registry.local("devices", "midi", {
     loader.viewAvailableDevices.foreach { case (hash, info: Info) =>

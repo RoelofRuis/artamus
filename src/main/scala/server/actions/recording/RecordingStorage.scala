@@ -20,6 +20,9 @@ class RecordingStorage() {
       case None => None
       case Some(r) => Some(r.recordNote(note))
     }
+    activeRecordings.get(userId).foreach { r =>
+      r.notes.foreach(println)
+    }
   }
 
 }
