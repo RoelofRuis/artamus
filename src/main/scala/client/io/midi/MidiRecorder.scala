@@ -16,6 +16,7 @@ class MidiRecorder @Inject() (
 
   private val queue: BlockingQueue[(MidiMessage, Long)] = new LinkedBlockingQueue[(MidiMessage, Long)]()
 
+  // TODO: maybe allow for similar injection of command registry as in Bootstrapper
   override def run(): Unit = {
     try {
       while ( ! isInterrupted ) {
