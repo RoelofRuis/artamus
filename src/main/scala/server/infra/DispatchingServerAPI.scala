@@ -46,8 +46,12 @@ final class DispatchingServerAPI @Inject() (
           case None => response
 
           case Some(transaction) => transaction.commit() match {
-            case Right(numChanges) =>
+            case Right(numChanges) if numChanges > 0 =>
               logger.debug(s"Committed [$numChanges] changes")
+              response
+
+            case Right(numChanges) if numChanges == 0 =>
+              logger.debug(s"No changes to commit")
               response
 
             case Left(ex) => logger.error(s"Unable to commit changes", ex)
