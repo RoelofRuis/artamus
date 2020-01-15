@@ -16,7 +16,7 @@ class SystemOperations @Inject() (
 
   registry.local("help", "system", {
     println("Available operations:")
-    val tokens = registry.getRegisteredTokens
+    val tokens = registry.viewRegisteredTokens
 
     tokens.toList.sortBy(t => t.registrar + t.command).foreach{ token =>
       println(s"[${token.registrar}] ${token.command}")

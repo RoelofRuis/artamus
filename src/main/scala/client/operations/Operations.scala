@@ -18,7 +18,7 @@ object Operations {
 
   trait OperationRegistry {
     def getOperation(token: String): Option[Operation]
-    def getRegisteredTokens: Seq[OperationToken] // rename to view!
+    def viewRegisteredTokens: Seq[OperationToken]
     def registerOperation(token: OperationToken, operation: Operation): Unit
 
     def local(command: String, registrar: String, f: => Unit): Unit =
