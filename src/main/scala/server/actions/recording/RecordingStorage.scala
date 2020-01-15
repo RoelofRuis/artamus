@@ -9,6 +9,8 @@ import scala.collection.concurrent.TrieMap
 @Singleton
 class RecordingStorage() {
 
+  // TODO: add map that stores starts of notes
+
   private val activeRecordings = new TrieMap[UserId, Recording]
 
   def startRecording(userId: UserId): Unit = {
@@ -20,8 +22,8 @@ class RecordingStorage() {
       case None => None
       case Some(r) => Some(r.recordNote(note))
     }
-    activeRecordings.get(userId).foreach { r =>
-      r.notes.foreach(println)
+    activeRecordings.get(userId).foreach { r => // TODO: remove printing
+      r.notes.map(_.starts).foreach(println)
     }
   }
 
