@@ -5,7 +5,8 @@ import com.google.inject.Inject
 import javax.sound.midi.MidiDevice.Info
 import midi.MidiResourceLoader
 import patching.PatchPanel
-import server.actions.recording.StartRecording
+import server.actions.recording.{StartRecording, StopRecording}
+import server.actions.writing.Render
 
 class MidiOperations @Inject() (
   patchPanel: PatchPanel,
@@ -13,8 +14,12 @@ class MidiOperations @Inject() (
   registry: OperationRegistry,
 ) {
 
-  registry.server("record", "midi", {
+  registry.server("startrec", "midi", {
     ServerOperation(StartRecording())
+  })
+
+  registry.server("stoprec", "midi", {
+    ServerOperation(StopRecording(), Render)
   })
 
   registry.local("devices", "midi", {
