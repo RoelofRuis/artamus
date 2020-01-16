@@ -1,24 +1,31 @@
 package music.analysis
 
 import music.math.HierarchicalClustering.Centroid
-import music.math.{HierarchicalClustering, Rational}
 import music.math.temporal.{Duration, Position}
+import music.math.{HierarchicalClustering, Rational}
 
 import scala.annotation.tailrec
 
 object Quantization {
 
-  implicit val doubleOrdering: Ordering[Double] = Ordering.Double.IeeeOrdering
+  private implicit val doubleOrdering: Ordering[Double] = Ordering.Double.IeeeOrdering
 
   def millisToPosition(input: Seq[Int]): List[Position] = {
+    if (input.isEmpty) List()
+    else if (input.size == 1) List(Position.ZERO)
+    else if (input.size == 2) List(Position.ZERO, Position(Rational(1, 4)))
+    else determinePositions(input)
+  }
+
+  private def determinePositions(input: Seq[Int]): List[Position] = {
     // Preprocess data
-    val data = input.map(_.toDouble)
-    val dataPoints = (data drop 1)
-      .lazyZip(data)
+    val inputToDouble = input.map(_.toDouble)
+    val differenceList = (inputToDouble drop 1)
+      .lazyZip(inputToDouble)
       .map(_ - _)
 
     val clusterSettings = HierarchicalClustering.Settings(distanceThreshold = 100)
-    val clusters = HierarchicalClustering.cluster(dataPoints, clusterSettings)
+    val clusters = HierarchicalClustering.cluster(differenceList, clusterSettings)
 
     // TODO: cluster to duration determination has to be expanded!
     val bpm = 120D
@@ -36,12 +43,12 @@ object Quantization {
       data match {
         case Nil => acc
         case head :: tail =>
-          val bestCentroid = centroidMap.keys.minBy { c => Math.abs(c - head) }
-          val nextPos: Position = acc.last + centroidMap(bestCentroid)
+          val matchingDuration = centroidMap.minBy { case (c, _) => Math.abs(c - head) }._2
+          val nextPos: Position = acc.last + matchingDuration
           pickDistances(tail, acc :+ nextPos)
       }
     }
-    pickDistances(data, List(Position.ZERO))
+    pickDistances(differenceList, List(Position.ZERO))
   }
 
 }

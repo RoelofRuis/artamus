@@ -10,7 +10,7 @@ object HierarchicalClustering {
   type Cluster = (Centroid, Nodes)
   type Clusters = Map[Nodes, Centroid]
 
-  implicit val doubleOrdering: Ordering[Double] = Ordering.Double.IeeeOrdering
+  private implicit val doubleOrdering: Ordering[Double] = Ordering.Double.IeeeOrdering
 
   final case class Settings(
     distanceThreshold: Double
