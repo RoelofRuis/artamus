@@ -19,13 +19,13 @@ private[midi] class MidiMusicReader @Inject() (
   def readPitchSpelling: MidiIO[PitchSpelling] = {
     val res = for {
       numbers <- readMidiNoteNumbers(NoteOn(2))
-    } yield (numbers, numbers.head.toPc.toStep)
+    } yield (numbers, numbers.last.toPc.toStep)
 
     res match {
       case Left(ex) => Left(ex)
       case Right((_, None)) => readPitchSpelling
       case Right((numbers, Some(step))) =>
-        Right(PitchSpelling(step, Accidental(numbers.last.value - numbers.head.value)))
+        Right(PitchSpelling(step, Accidental(numbers.head.value - numbers.last.value)))
     }
   }
 
