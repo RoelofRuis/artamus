@@ -33,6 +33,14 @@ final case class Rational private (n: Int, d: Int) extends Ordered[Rational] {
     else (this - that).n
   }
 
+  def reciprocal: Rational = Rational(d, n)
+
+  /** Casting to double probably loses precision! */
+  def toDouble: Double = {
+    if (d == 0) 0D
+    else n / d.toDouble
+  }
+
   override def toString: String = {
     if (n == 0 || d == 0) "0"
     else {

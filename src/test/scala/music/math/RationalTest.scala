@@ -25,10 +25,18 @@ object RationalTest extends TestSuite {
         Rational(-2, 4) == Rational(-1, 2)
       )
     }
-    test("reciprocal values") {
+    test("instantiate reciprocal") {
       assert(
         Rational.reciprocal(7) == Rational(1, 7),
         Rational.reciprocal(-7) == Rational(-1, 7)
+      )
+    }
+    test("reciprocal value") {
+      assert(
+        Rational(1, 4).reciprocal == Rational(4, 1),
+        Rational(7, 13).reciprocal == Rational(13, 7),
+        Rational(0, 0).reciprocal == Rational(0),
+        Rational(-1, 2).reciprocal == Rational(-2, 1)
       )
     }
     test("addition") {
@@ -79,6 +87,16 @@ object RationalTest extends TestSuite {
         Rational(-1, 2).toString == "-1/2",
         Rational(-3, 2).toString == "-1 1/2",
         Rational(3, -2).toString == "-1 1/2",
+      )
+    }
+    test("cast to double") {
+      assert(
+        Rational(0).toDouble < 1e-100,
+        Rational(1).toDouble - 1 < 1e-100,
+        Rational(1, 2).toDouble - 0.5 < 1e-100,
+        Rational(1, 3).toDouble - 0.3333333333 < 1e-10,
+        Rational(22, 7).toDouble - 3.142 < 1e-3,
+        Rational(355, 113).toDouble - 3.1415929 < 1e-7
       )
     }
   }
