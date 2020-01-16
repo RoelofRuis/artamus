@@ -1,7 +1,6 @@
 package server.actions.recording
 
 import javax.inject.Singleton
-import music.analysis.Quantization
 import music.model.record.{RawMidiNote, Recording}
 import music.model.write.user.User.UserId
 
@@ -23,10 +22,10 @@ class RecordingStorage() {
       case None => None
       case Some(r) => Some(r.recordNote(note))
     }
-    activeRecordings.get(userId).foreach { r => // TODO: remove printing
-      val q = Quantization.millisToPosition(r.notes.map(n => (n.starts.v / 1000).toInt))
-      println(q)
-    }
+  }
+
+  def getAndResetRecording(userId: UserId): Option[Recording] = {
+    activeRecordings.remove(userId)
   }
 
 }

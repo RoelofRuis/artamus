@@ -25,14 +25,8 @@ private[server] class TrackUpdateHandler @Inject() (
       _ <- req.db.removeTrackById(workspace.selectedTrack)
     } yield ()
 
-    val recoveredDelete = delete match {
-      case Left(_: NotFound) => DbResult.ok
-      case l @ Left(_) => l
-      case r @ Right(_) => r
-    }
-
     val res = for {
-      _ <- recoveredDelete
+      _ <- delete.ifNotFound(DbResult.ok)
       track = Track()
       workspace = Workspace(req.user.id, track.id)
       newWorkspace = workspace.selectTrack(track)

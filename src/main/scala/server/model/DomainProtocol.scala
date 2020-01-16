@@ -5,7 +5,6 @@ import java.util.UUID
 import music.analysis.TwelveToneTuning
 import music.math.Rational
 import music.math.temporal.{Duration, Position, Window}
-import music.model.record.Recording.RecordingId
 import music.model.record.{InputOnly, RawMidiNote, RecordingMode}
 import music.model.write.track.Track.TrackId
 import music.model.write.user.User.UserId
@@ -85,10 +84,6 @@ trait DomainProtocol extends DefaultJsonProtocol {
       case err => deserializationError(s"Invalid RecordingId [$err]")
     }
     override def write(obj: A): JsValue = JsString(obj.id.toString)
-  }
-
-  implicit object RecordingIdFormat extends IdFormat[RecordingId] {
-    def create(id: UUID): RecordingId = RecordingId(id)
   }
 
   implicit object TrackIdFormat extends IdFormat[TrackId] {
