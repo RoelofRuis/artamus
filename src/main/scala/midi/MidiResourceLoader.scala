@@ -1,15 +1,18 @@
 package midi
 
+import com.typesafe.scalalogging.LazyLogging
 import javax.annotation.concurrent.NotThreadSafe
 import javax.inject.Singleton
 import javax.sound.midi.{MidiDevice, MidiSystem, Sequencer}
 
+import scala.collection.mutable.ListBuffer
 import scala.util.{Failure, Success, Try}
 
 @NotThreadSafe
 @Singleton
-class MidiResourceLoader {
+class MidiResourceLoader extends LazyLogging {
 
+  private val deviceLoadingExceptions = new ListBuffer[Throwable]()
   private val deviceInfo: Map[DeviceHash, MidiDevice.Info] = prepareDeviceList()
   private var loadedDevices: Map[DeviceHash, MidiDevice] = Map()
   private var loadedSequencers: List[Sequencer] = List()
@@ -42,20 +45,20 @@ class MidiResourceLoader {
     }
   }
 
-  def closeAll(): Unit = { // TODO: replace println with proper logging
-    loadedDevices.foreach { case (hash, device) =>
-      Try { device.close() } match {
-        case Success(()) => println(s"Device [$hash] closed")
-        case Failure(ex) => println(s"Unable to close device [$hash]: $ex")
-      }
-    }
-    loadedSequencers.foreach { sequencer =>
-      Try { sequencer.close() } match {
-        case Success(()) => println(s"Sequencer closed")
-        case Failure(ex) => println(s"Unable to close sequencer: $ex")
-      }
-    }
+  def closeAll(): Iterable[MidiIOException] = {
+    val deviceErrors = loadedDevices
+      .values
+      .map(device => Try(device.close()))
+      .collect { case Failure(ex) => MidiIOException(ex) }
+
+    val sequencerErrors = loadedSequencers
+      .map(device => Try(device.close()))
+      .collect { case Failure(ex) => MidiIOException(ex) }
+
+    deviceErrors ++ sequencerErrors
   }
+
+  def getDeviceLoadingExceptions: List[Throwable] = deviceLoadingExceptions.toList
 
   def viewAvailableDevices: List[(DeviceHash, MidiDevice.Info)] = deviceInfo.toList
 
@@ -67,9 +70,9 @@ class MidiResourceLoader {
           case Success((info, device)) =>
             acc + ((info.getName + device.getClass.getSimpleName).hashCode.toHexString.padTo(8, '0') -> info)
 
-          case Failure(_) =>
-          // log loading exception
-          acc
+          case Failure(ex) =>
+            deviceLoadingExceptions.addOne(ex)
+            acc
         }
       }
   }

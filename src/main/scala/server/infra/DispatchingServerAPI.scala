@@ -11,6 +11,7 @@ import music.model.write.user.User
 import protocol.Exceptions._
 import protocol._
 import protocol.server.api.{ConnectionHandle, ServerAPI}
+import pubsub.{Dispatcher, EventBus}
 import storage.api.{Database, DbIO, NotFound, Transaction}
 
 import scala.util.{Failure, Success, Try}
@@ -18,16 +19,16 @@ import scala.util.{Failure, Success, Try}
 @Singleton
 final class DispatchingServerAPI @Inject() (
   db: Database,
-  server: ServerBindings,
-  hooks: ConnectionLifetimeHooks
+  hooks: ConnectionLifetimeHooks,
+  eventBus: EventBus[Event],
+  commandHandler: Dispatcher[Request, Command],
+  queryHandler: Dispatcher[Request, Query],
 ) extends ServerAPI with LazyLogging {
 
   private var connections: Map[ConnectionHandle, Option[User]] = Map()
   private val transactions: ConcurrentHashMap[ConnectionHandle, Transaction] = new ConcurrentHashMap[ConnectionHandle, Transaction]()
 
-  override def serverStarted(): Unit = {
-    logger.info("Server started")
-  }
+  override def serverStarted(): Unit = logger.info("Server started")
 
   override def serverShuttingDown(error: Option[Throwable]): Unit = {
     error match {
@@ -43,12 +44,33 @@ final class DispatchingServerAPI @Inject() (
 
   override def connectionClosed(connection: ConnectionHandle, cause: Option[Throwable]): Unit = {
     connections -= connection
-    server.unsubscribeEvents(connection.toString)
+    eventBus.unsubscribe(connection.toString)
     transactions.remove(connection)
     cause match {
       case None => logger.info(s"Connection [$connection] closed")
       case Some(ex) => logger.warn(s"Connection [$connection] closed with error", ex)
     }
+  }
+
+  def handleRequest(connection: ConnectionHandle, request: Object): DataResponse = {
+    val result = connections.get(connection) match {
+      case None =>
+        logger.error(s"Received message on unbound connection [$connection]")
+        Left(InvalidStateError)
+
+      case Some(identifier) =>
+        Try { request.asInstanceOf[ServerRequest] } match {
+          case Success(request) =>
+            identifier match {
+              case None => authenticate(connection, request)
+              case Some(user) => executeRequest(connection, user, request)
+            }
+          case Failure(ex) =>
+            logger.warn(s"Unable to read message.", ex)
+            Left(InvalidMessage)
+        }
+    }
+    DataResponse(result)
   }
 
   override def afterRequest(connection: ConnectionHandle, response: DataResponse): DataResponse = {
@@ -78,33 +100,12 @@ final class DispatchingServerAPI @Inject() (
     }
   }
 
-  def handleRequest(connection: ConnectionHandle, request: Object): DataResponse = {
-    val result = connections.get(connection) match {
-      case None =>
-        logger.error(s"Received message on unbound connection [$connection]")
-        Left(InvalidStateError)
-
-      case Some(identifier) =>
-        Try { request.asInstanceOf[ServerRequest] } match {
-          case Success(request) =>
-            identifier match {
-              case None => authenticate(connection, request)
-              case Some(user) => executeRequest(connection, user, request)
-            }
-          case Failure(ex) =>
-            logger.warn(s"Unable to read message.", ex)
-            Left(InvalidMessage)
-        }
-    }
-    DataResponse(result)
-  }
-
   private def authenticate(connection: ConnectionHandle, request: ServerRequest): Either[ResponseException, Any] = {
     request match {
       case CommandRequest(Authenticate(userName)) =>
         db.getUserByName(userName) match {
           case Right(user) =>
-            server.subscribeEvents(connection.toString, event => connection.sendEvent(event))
+            eventBus.subscribe(connection.toString, event => connection.sendEvent(event))
             connections = connections.updated(connection, Some(user))
             hooks.onAuthenticated(startTransaction(connection), user)
             Right(true)
@@ -127,8 +128,8 @@ final class DispatchingServerAPI @Inject() (
     try {
       val transaction = startTransaction(connection)
       val response = request match {
-        case CommandRequest(command) => server.handleCommand(Request(user, transaction, command))
-        case QueryRequest(query) => server.handleQuery(Request(user, transaction, query))
+        case CommandRequest(command) => commandHandler.handle(Request(user, transaction, command))
+        case QueryRequest(query) => queryHandler.handle(Request(user, transaction, query))
       }
       response match {
         case Failure(ex) =>

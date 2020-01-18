@@ -1,6 +1,6 @@
 package client.operations
 
-import client.MusicPlayer
+import client.{ClientLogging, MusicPlayer}
 import client.operations.Operations.OperationRegistry
 import javax.inject.Inject
 import protocol.client.api.ClientInterface
@@ -12,8 +12,10 @@ class TrackQueryOperations @Inject() (
   musicPlayer: MusicPlayer
 ){
 
+  import ClientLogging._
+
   registry.local("play", "track-query", {
-    client.sendQuery(Perform) match {
+    client.sendQueryLogged(Perform) match {
       case Left(ex) => println(ex) // TODO: better error handling
       case Right(track) => musicPlayer.play(track)
     }

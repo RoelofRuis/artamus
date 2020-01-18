@@ -18,9 +18,4 @@ class EventBus[A] extends Publisher[A, Unit] with Subscriber[String, A, Unit] {
 
   override def publish(a: A): Unit = activeSubscribers.values.foreach(_(a))
 
-  override def viewSubscriptions: Seq[String] = {
-    val allKeys = activeSubscribers.keys.map(s => s"ACTIVE   [$s]") ++ inactiveSubscribers.keys.map(s => s"INACTIVE [$s]")
-    allKeys.toSeq
-  }
-
 }

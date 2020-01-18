@@ -17,12 +17,19 @@ class MidiIOLifetimeManager @Inject() (
   import MidiConnectors.canConnectMidi
 
   override def initializeAll(): Unit = {
+    loader.getDeviceLoadingExceptions match {
+      case Nil =>
+      case list => logger.error("There were errors when loading the MIDI devices")
+        list.foreach(logger.warn("MIDI device error", _))
+    }
+
     connectDefaultIO()
     connectMidiRecorder()
   }
 
   override def closeAll(): Unit = {
-    loader.closeAll()
+    logger.info("Closing all resources")
+    loader.closeAll().foreach { ex => logger.error("Error when closing MIDI resource", ex) }
     recorder.close()
   }
 

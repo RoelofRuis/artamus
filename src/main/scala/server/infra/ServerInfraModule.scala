@@ -12,7 +12,6 @@ class ServerInfraModule extends ScalaModule {
     bind[Dispatcher[Request, Command]].toInstance(pubsub.createDispatcher[Request, Command]())
     bind[EventBus[Event]].toInstance(new EventBus[Event])
 
-    bind[ServerBindings].asEagerSingleton()
     bind[ConnectionLifetimeHooks].asEagerSingleton()
 
     bind[ServerConfig].toInstance(ServerConfig(9999))
