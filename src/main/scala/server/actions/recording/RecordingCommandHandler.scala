@@ -38,10 +38,10 @@ private[server] class RecordingCommandHandler @Inject() (
         val quantized = Quantization.millisToPosition(recording.notes.map(n => (n.starts.v / 1000).toInt))
         val recordedTrack = recording
           .notes
-          .zip(quantized)
-          .map { case (rawMidiNote, position) =>
+          .zip(quantized.zip(quantized.drop(1).appended(quantized.last + Duration(Rational(1, 4)))))
+          .map { case (rawMidiNote, (position, nextPosition)) =>
             NoteGroup(
-              Window(position, Duration(Rational(1, 8))), // TODO: also determine quantized duration
+              Window(position, nextPosition - position), // TODO: also determine quantized duration
               Seq(Note(rawMidiNote.noteNumber.toOct, rawMidiNote.noteNumber.toPc))
             )
           }

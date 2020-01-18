@@ -1,6 +1,6 @@
 package music.analysis
 
-import music.math.HierarchicalClustering.{Centroid, Clusters}
+import music.math.HierarchicalClustering.Centroid
 import music.math.temporal.{Duration, Position}
 import music.math.{HierarchicalClustering, Rational}
 
