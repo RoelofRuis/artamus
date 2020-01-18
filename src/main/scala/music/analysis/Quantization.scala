@@ -16,24 +16,21 @@ object Quantization {
   private implicit val doubleOrdering: Ordering[Double] = Ordering.Double.IeeeOrdering
 
   def millisToPosition(input: Seq[Long]): List[Position] = {
-    if (input.isEmpty) List()
-    else if (input.size == 1) List(Position.ZERO)
-    else determinePositions(input)
-  }
-
-  private def determinePositions(input: Seq[Long]): List[Position] = {
     val differenceList = (input drop 1)
       .lazyZip(input)
       .map((`n+1`, n) => (`n+1` - n).toDouble)
 
-    val filteredDifferences = differenceList.filter(_ > instantaneousThreshold)
+    val nonInstantDifferences = differenceList.filter(_ > instantaneousThreshold)
 
-    val clusterSettings = HierarchicalClustering.Settings(distanceThreshold = 100)
-    val clusters = HierarchicalClustering.cluster(filteredDifferences, clusterSettings)
+    if (nonInstantDifferences.isEmpty) List.fill(input.size)(Position.ZERO)
+    else {
+      val clusterSettings = HierarchicalClustering.Settings(distanceThreshold = 100)
+      val clusters = HierarchicalClustering.cluster(nonInstantDifferences, clusterSettings)
 
-    val centroidMap = determineCentroidMap(clusters)
+      val centroidMap = determineCentroidMap(clusters)
 
-    pickDistances(differenceList, centroidMap)
+      pickDistances(differenceList, centroidMap)
+    }
   }
 
   private def pickDistances(differenceList: Seq[Double], centroidMap: Map[Centroid, Duration]): List[Position] = {
