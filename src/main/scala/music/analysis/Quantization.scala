@@ -8,36 +8,49 @@ import scala.annotation.tailrec
 
 object Quantization {
 
+  /* This is an assumption: based on 120 BPM a 64th note would be just above 31 ms inter onset interval.
+   * 12 ms inter onset interval is human limit
+   * If MIDI real time measurement gets more accurate, this could be reduced. */
+  private val instantaneousThreshold = 30
+
   private implicit val doubleOrdering: Ordering[Double] = Ordering.Double.IeeeOrdering
 
-  def millisToPosition(input: Seq[Int]): List[Position] = {
+  def millisToPosition(input: Seq[Long]): List[Position] = {
     if (input.isEmpty) List()
     else if (input.size == 1) List(Position.ZERO)
     else determinePositions(input)
   }
 
-  private def determinePositions(input: Seq[Int]): List[Position] = {
-    val inputToDouble = input.map(_.toDouble)
-    val differenceList = (inputToDouble drop 1)
-      .lazyZip(inputToDouble)
-      .map(_ - _)
+  private def determinePositions(input: Seq[Long]): List[Position] = {
+    val differenceList = (input drop 1)
+      .lazyZip(input)
+      .map((`n+1`, n) => (`n+1` - n).toDouble)
+
+    val filteredDifferences = differenceList.filter(_ > instantaneousThreshold)
 
     val clusterSettings = HierarchicalClustering.Settings(distanceThreshold = 100)
-    val clusters = HierarchicalClustering.cluster(differenceList, clusterSettings)
+    val clusters = HierarchicalClustering.cluster(filteredDifferences, clusterSettings)
 
     val centroidMap = determineCentroidMap(clusters)
 
+    pickDistances(differenceList, centroidMap)
+  }
+
+  private def pickDistances(differenceList: Seq[Double], centroidMap: Map[Centroid, Duration]): List[Position] = {
     @tailrec
-    def pickDistances(data: Seq[Double], acc: List[Position]): List[Position] = {
+    def loop(data: Seq[Double], acc: List[Position]): List[Position] = {
       data match {
         case Nil => acc
         case head :: tail =>
-          val matchingDuration = centroidMap.minBy { case (c, _) => Math.abs(c - head) }._2
-          val nextPos: Position = acc.last + matchingDuration
-          pickDistances(tail, acc :+ nextPos)
+          if (head < instantaneousThreshold) loop(tail, acc :+ acc.last)
+          else {
+            val matchingDuration = centroidMap.minBy { case (c, _) => Math.abs(c - head) }._2
+            val nextPos: Position = acc.last + matchingDuration
+            loop(tail, acc :+ nextPos)
+          }
       }
     }
-    pickDistances(differenceList, List(Position.ZERO))
+    loop(differenceList, List(Position.ZERO))
   }
 
   // TODO: improve this still terrible algorithm!
