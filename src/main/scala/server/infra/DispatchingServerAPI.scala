@@ -25,11 +25,23 @@ final class DispatchingServerAPI @Inject() (
   private var connections: Map[ConnectionHandle, Option[User]] = Map()
   private val transactions: ConcurrentHashMap[ConnectionHandle, Transaction] = new ConcurrentHashMap[ConnectionHandle, Transaction]()
 
-  def connectionOpened(connection: ConnectionHandle): Unit = {
+  override def serverStarted(): Unit = {
+    logger.info("Server started")
+  }
+
+  override def serverShuttingDown(error: Option[Throwable]): Unit = {
+    error match {
+      case None => logger.info("Server stopped")
+      case Some(ex) => logger.error("Server stopped with error", ex)
+    }
+  }
+
+  override def connectionOpened(connection: ConnectionHandle): Unit = {
+    logger.info(s"Connection [$connection] opened")
     connections += (connection -> None)
   }
 
-  def connectionClosed(connection: ConnectionHandle, cause: Option[Throwable]): Unit = {
+  override def connectionClosed(connection: ConnectionHandle, cause: Option[Throwable]): Unit = {
     connections -= connection
     server.unsubscribeEvents(connection.toString)
     transactions.remove(connection)

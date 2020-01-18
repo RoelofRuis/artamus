@@ -18,12 +18,8 @@ class Bootstrapper @Inject() (
     createDefaultUser()
 
     serverFactory.create() match {
-      case Right(server) =>
-        println("Starting server...")
-        server.accept()
-
-      case Left(ex) =>
-        println(s"Unable to create server: [$ex]")
+      case Right(server) => server.accept()
+      case Left(ex) => println(s"Unable to create server: [$ex]")
     }
 
     println("\nProgram ended")

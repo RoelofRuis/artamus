@@ -9,32 +9,32 @@ import protocol.server.api.{ServerAPI, ServerInterface}
 import scala.concurrent.{Future, Promise}
 import scala.util.{Failure, Success, Try}
 
-// TODO: better errors and shutdown logic!
 private[server] final class Server(serverSocket: ServerSocket, api: ServerAPI) extends ServerInterface {
 
   private val connectionExecutor: ExecutorService = Executors.newFixedThreadPool(1)
 
   override def accept(): Unit = {
+    api.serverStarted()
     while ( ! connectionExecutor.isShutdown) {
       ConnectionFactory.acceptNext(serverSocket, api) match {
         case Left(_: IOException) if serverSocket.isClosed =>
-          // server is shut down
+          api.serverShuttingDown()
 
         case Left(ex) =>
-          // unable to set up transport
+          api.serverShuttingDown(Some(ex))
           shutdown()
 
         case Right(connection) =>
           Try { connectionExecutor.execute(connection) } match {
             case Failure(_: RejectedExecutionException) if ! connectionExecutor.isShutdown =>
-            // unable to accept connection, should not fail
+              // unable to accept connection, server can continue
 
             case Failure(ex) =>
-              // failed executing
+              api.serverShuttingDown(Some(ex))
               shutdown()
 
             case Success(_) =>
-            // was accepted
+              // was accepted
           }
       }
     }

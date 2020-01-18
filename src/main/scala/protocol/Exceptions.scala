@@ -2,7 +2,7 @@ package protocol
 
 object Exceptions {
 
-  sealed trait CommunicationException {
+  sealed trait CommunicationException extends Throwable {
     val name: String
     val description: String
     val cause: Option[Throwable]
