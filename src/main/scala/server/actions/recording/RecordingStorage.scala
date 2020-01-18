@@ -24,8 +24,7 @@ class RecordingStorage() {
     }
   }
 
-  def getAndResetRecording(userId: UserId): Option[Recording] = {
-    activeRecordings.remove(userId)
-  }
+  def getRecording(userId: UserId): Option[Recording] = activeRecordings.get(userId)
+  def getAndResetRecording(userId: UserId): Option[Recording] = activeRecordings.remove(userId)
 
 }
