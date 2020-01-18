@@ -3,7 +3,7 @@ package server.actions.recording
 import javax.inject.Inject
 import music.analysis.Quantization
 import music.math.Rational
-import music.math.temporal.{Duration, Window}
+import music.math.temporal.{Duration, Position, Window}
 import music.model.write.track.Track
 import music.primitives.{Note, NoteGroup}
 import protocol.Command
@@ -39,13 +39,17 @@ private[server] class RecordingCommandHandler @Inject() (
         val recordedTrack = recording
           .notes
           .zip(quantized.zip(quantized.drop(1).appended(quantized.last + Duration(Rational(1, 4)))))
-          .map { case (rawMidiNote, (position, nextPosition)) =>
-            NoteGroup(
-              Window(position, nextPosition - position), // TODO: also determine quantized duration
-              Seq(Note(rawMidiNote.noteNumber.toOct, rawMidiNote.noteNumber.toPc))
-            )
+          .foldLeft(Map[Position, (Seq[Note], Duration)]()) { case (acc, (rawMidiNote, (position, nextPosition))) =>
+            val duration = nextPosition - position // TODO: determine proper duration
+            val note = Note(rawMidiNote.noteNumber.toOct, rawMidiNote.noteNumber.toPc)
+            acc.updatedWith(position) {
+              case None => Some(Seq(note), Seq(Duration.ZERO, duration).max)
+              case Some((seq, prevDur)) => Some(seq :+ note, Seq(duration, prevDur).max)
+            }
           }
-          .foldLeft(Track())(_.writeNoteGroup(_))
+          .foldLeft(Track()) { case (track, (position, (notes, duration))) =>
+            track.writeNoteGroup(NoteGroup(Window(position, duration), notes))
+          }
 
         val res = for {
           workspace <- req.db.getWorkspaceByOwner(req.user)
