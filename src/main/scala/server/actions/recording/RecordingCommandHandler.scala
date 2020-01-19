@@ -1,6 +1,6 @@
 package server.actions.recording
 
-import javax.inject.Inject
+import javax.inject.{Inject, Singleton}
 import music.analysis.Quantization
 import music.math.Rational
 import music.math.temporal.{Duration, Position, Window}
@@ -10,6 +10,7 @@ import protocol.Command
 import pubsub.Dispatcher
 import server.{Request, Responses}
 
+@Singleton
 private[server] class RecordingCommandHandler @Inject() (
   dispatcher: Dispatcher[Request, Command],
   storage: RecordingStorage,

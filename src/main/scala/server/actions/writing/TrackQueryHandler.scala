@@ -1,6 +1,6 @@
 package server.actions.writing
 
-import javax.inject.Inject
+import javax.inject.{Inject, Singleton}
 import music.math.temporal.Position
 import music.model.write.track.Track
 import protocol.Query
@@ -9,6 +9,7 @@ import server.{Request, Responses}
 
 import scala.util.Try
 
+@Singleton
 private[server] class TrackQueryHandler @Inject() (
   dispatcher: Dispatcher[Request, Query]
 ) {

@@ -1,6 +1,6 @@
 package server.actions.writing
 
-import javax.inject.Inject
+import javax.inject.{Inject, Singleton}
 import music.model.write.track.Track
 import music.model.write.workspace.Workspace
 import protocol.Command
@@ -11,6 +11,7 @@ import storage.api.{DbResult, NotFound}
 
 import scala.util.Try
 
+@Singleton
 private[server] class TrackUpdateHandler @Inject() (
   dispatcher: Dispatcher[Request, Command],
   analysis: Controller[Track]

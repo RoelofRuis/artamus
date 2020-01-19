@@ -2,9 +2,7 @@ package server
 
 import music.model.write.track.Track
 import net.codingwell.scalaguice.ScalaPrivateModule
-import server.actions.control.ServerControlHandler
-import server.actions.recording.{RecordingCommandHandler, RecordingQueryHandler, RecordingStorage}
-import server.actions.writing.{TrackQueryHandler, TrackTaskHandler, TrackUpdateHandler}
+import server.actions.ActionsModule
 import server.analysis.blackboard.Controller
 import server.analysis.{ChordAnalyser, PitchHistogramAnalyser}
 import server.infra.ServerInfraModule
@@ -19,18 +17,9 @@ class ServerModule extends ScalaPrivateModule with ServerSettings {
     install(new InMemoryStorageModule)
     // --
 
-    install(new RenderingModule with ServerSettings)
     install(new ServerInfraModule)
-
-    // Handlers
-    bind[ServerControlHandler].asEagerSingleton()
-    bind[TrackQueryHandler].asEagerSingleton()
-    bind[TrackUpdateHandler].asEagerSingleton()
-    bind[TrackTaskHandler].asEagerSingleton()
-
-    bind[RecordingStorage]
-    bind[RecordingCommandHandler].asEagerSingleton()
-    bind[RecordingQueryHandler].asEagerSingleton()
+    install(new RenderingModule with ServerSettings)
+    install(new ActionsModule)
 
     bind[Controller[Track]]
       .toInstance(new Controller(

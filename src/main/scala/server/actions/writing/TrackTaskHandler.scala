@@ -1,11 +1,12 @@
 package server.actions.writing
 
-import javax.inject.Inject
+import javax.inject.{Inject, Singleton}
 import protocol.Command
 import pubsub.Dispatcher
 import server.rendering.AsyncRenderer
 import server.{Request, Responses}
 
+@Singleton
 private[server] class TrackTaskHandler @Inject() (
   dispatcher: Dispatcher[Request, Command],
   renderer: AsyncRenderer,

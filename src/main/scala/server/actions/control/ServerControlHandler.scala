@@ -1,10 +1,11 @@
 package server.actions.control
 
-import javax.inject.Inject
+import javax.inject.{Inject, Singleton}
 import protocol.Command
 import pubsub.Dispatcher
 import server.{Request, Responses}
 
+@Singleton
 private[server] class ServerControlHandler @Inject() (
   dispatcher: Dispatcher[Request, Command]
 ) {
