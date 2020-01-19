@@ -1,4 +1,4 @@
-package server
+package server.actions
 
 import storage.api.DbResult
 

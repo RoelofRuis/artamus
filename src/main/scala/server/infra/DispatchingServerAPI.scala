@@ -28,7 +28,10 @@ final class DispatchingServerAPI @Inject() (
   private var connections: Map[ConnectionHandle, Option[User]] = Map()
   private val transactions: ConcurrentHashMap[ConnectionHandle, Transaction] = new ConcurrentHashMap[ConnectionHandle, Transaction]()
 
-  override def serverStarted(): Unit = logger.info("Server started")
+  override def serverStarted(): Unit = {
+    hooks.onServerStarted()
+    logger.info("Server started")
+  }
 
   override def serverShuttingDown(error: Option[Throwable]): Unit = {
     error match {
@@ -107,7 +110,7 @@ final class DispatchingServerAPI @Inject() (
           case Right(user) =>
             eventBus.subscribe(connection.toString, event => connection.sendEvent(event))
             connections = connections.updated(connection, Some(user))
-            hooks.onAuthenticated(startTransaction(connection), user)
+            hooks.onAuthenticated(user)
             Right(true)
 
           case Left(NotFound()) =>

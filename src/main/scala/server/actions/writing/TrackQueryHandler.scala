@@ -5,7 +5,8 @@ import music.math.temporal.Position
 import music.model.write.track.Track
 import protocol.Query
 import pubsub.Dispatcher
-import server.{Request, Responses}
+import server.Request
+import server.actions.Responses
 
 import scala.util.Try
 

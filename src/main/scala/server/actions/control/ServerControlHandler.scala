@@ -3,7 +3,8 @@ package server.actions.control
 import javax.inject.{Inject, Singleton}
 import protocol.Command
 import pubsub.Dispatcher
-import server.{Request, Responses}
+import server.Request
+import server.actions.Responses
 
 @Singleton
 private[server] class ServerControlHandler @Inject() (

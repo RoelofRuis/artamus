@@ -6,7 +6,8 @@ import music.model.write.workspace.Workspace
 import protocol.Command
 import pubsub.Dispatcher
 import server.analysis.blackboard.Controller
-import server.{Request, Responses}
+import server.Request
+import server.actions.Responses
 import storage.api.{DbResult, NotFound}
 
 import scala.util.Try
