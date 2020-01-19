@@ -15,7 +15,7 @@ import server.actions.writing.{RenderingStarted, TrackRendered}
 
 import scala.util.{Failure, Success, Try}
 
-@NotThreadSafe // TODO: proper GUI
+@NotThreadSafe
 class RenderHandler @Inject() (
   dispatcher: Dispatcher[Callback, Event],
 ) extends LazyLogging {

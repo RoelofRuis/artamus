@@ -16,8 +16,8 @@ class TrackQueryOperations @Inject() (
 
   registry.local("play", "track-query", {
     client.sendQueryLogged(Perform) match {
-      case Left(ex) => println(ex) // TODO: better error handling
       case Right(track) => musicPlayer.play(track)
+      case _ =>
     }
   })
 

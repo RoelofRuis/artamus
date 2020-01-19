@@ -9,11 +9,10 @@ private[client] final class EventThread(
   dispatcher: EventDispatcher
 ) extends Thread with EventScheduler {
 
-  // TODO: improve error handling of `queue.put`
-
-  def schedule(event: Event): Unit = queue.put(event)
-
   private val queue: BlockingQueue[Event] = new ArrayBlockingQueue[Event](64)
+
+  // TODO: improve error handling of `queue.put`
+  def schedule(event: Event): Unit = queue.put(event)
 
   override def run(): Unit = {
     try {

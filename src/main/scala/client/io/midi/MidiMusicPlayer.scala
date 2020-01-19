@@ -1,14 +1,15 @@
 package client.io.midi
 
 import client.MusicPlayer
-import javax.inject.{Inject, Named, Singleton}
+import com.typesafe.scalalogging.LazyLogging
+import javax.inject.{Inject, Singleton}
 import midi.write.MidiSequenceWriter
 import music.model.perform.TrackPerformance
 
 @Singleton
 private[midi] class MidiMusicPlayer @Inject() (
   midiOutput: MidiSequenceWriter,
-) extends MusicPlayer {
+) extends MusicPlayer with LazyLogging {
 
   val TICKS_PER_WHOLE = 96
 
@@ -23,7 +24,10 @@ private[midi] class MidiMusicPlayer @Inject() (
         midiNote.loudness.value
       )
     }
-    midiOutput.writeSequence(builder.build) // TODO: pass on the return type or do logging!
+    midiOutput.writeSequence(builder.build) match {
+      case Left(ex) => logger.warn("Error while writing MIDI sequence", ex)
+      case _ =>
+    }
   }
 
 }

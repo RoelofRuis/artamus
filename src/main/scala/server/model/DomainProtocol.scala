@@ -5,7 +5,7 @@ import java.util.UUID
 import music.analysis.TwelveToneTuning
 import music.math.Rational
 import music.math.temporal.{Duration, Position, Window}
-import music.model.record.{InputOnly, RawMidiNote, RecordingMode}
+import music.model.record.RawMidiNote
 import music.model.write.track.Track.TrackId
 import music.model.write.user.User.UserId
 import music.primitives.{Accidental, Chord, Function, Key, Loudness, MidiNoteNumber, MillisecondPosition, Note, NoteGroup, Octave, PitchClass, PitchSpelling, Scale, ScientificPitch, Step, TimeSignature, TimeSignatureDivision}
@@ -108,22 +108,6 @@ trait DomainProtocol extends DefaultJsonProtocol {
       case _ => deserializationError(s"Invalid octave")
     }
     override def write(obj: Octave): JsValue = JsNumber(obj.value)
-  }
-
-  implicit object RecordingModelFormat extends JsonFormat[RecordingMode] {
-    override def write(obj: RecordingMode): JsValue = {
-      obj match {
-        case InputOnly => JsNumber(0)
-      }
-    }
-
-    override def read(json: JsValue): RecordingMode = json match {
-      case JsNumber(i) => i.intValue match {
-        case 1 => InputOnly
-        case _ => deserializationError(s"Invalid recording mode")
-      }
-      case _ => deserializationError(s"Invalid recording mode")
-    }
   }
 
   implicit val rationalModel = jsonFormat2(Rational.apply)
