@@ -2,16 +2,15 @@ package music.primitives
 
 import music.analysis.TuningSystem
 
-final class Step private (val value: Int) extends Serializable {
-
+trait Step {
+  val value: Int
   def toPc(implicit tuning: TuningSystem): PitchClass = PitchClass(tuning.pcSeq(value))
-
 }
 
 object Step {
 
-  def apply(i: Int)(implicit tuning: TuningSystem): Step = {
-    new Step(i % tuning.numSteps)
-  }
+  def apply(i: Int)(implicit tuning: TuningSystem): Step = StepImpl(i % tuning.numSteps)
+
+  private final case class StepImpl(value: Int) extends Step
 
 }

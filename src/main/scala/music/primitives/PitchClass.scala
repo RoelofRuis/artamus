@@ -2,7 +2,8 @@ package music.primitives
 
 import music.analysis.TuningSystem
 
-final class PitchClass private (val value: Int) extends Serializable {
+trait PitchClass {
+  val value: Int
 
   def toStep(implicit tuning: TuningSystem): Option[Step] = {
     tuning.pcSeq.indexOf(value) match {
@@ -16,16 +17,14 @@ final class PitchClass private (val value: Int) extends Serializable {
     if (diff < 0) diff + tuning.numPitchClasses
     else diff
   }
-
 }
 
 object PitchClass {
 
-  def apply(i: Int)(implicit tuning: TuningSystem): PitchClass = {
-    new PitchClass(i % tuning.numPitchClasses)
-  }
+  def apply(i: Int)(implicit tuning: TuningSystem): PitchClass = PitchClassImpl(i % tuning.numPitchClasses)
 
-  def listAll(implicit tuning: TuningSystem): Seq[PitchClass] =
-    Range(0, tuning.numPitchClasses).map(PitchClass.apply(_))
+  def listAll(implicit tuning: TuningSystem): Seq[PitchClass] = Range(0, tuning.numPitchClasses).map(PitchClass.apply(_))
+
+  private final case class PitchClassImpl(value: Int) extends PitchClass
 
 }
