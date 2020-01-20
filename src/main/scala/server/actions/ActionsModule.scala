@@ -8,14 +8,14 @@ import server.actions.writing.{TrackQueryHandler, TrackTaskHandler, TrackUpdateH
 class ActionsModule extends ScalaModule {
 
   override def configure(): Unit = {
-    bind[ServerControlHandler]
-    bind[TrackQueryHandler]
-    bind[TrackUpdateHandler]
-    bind[TrackTaskHandler]
+    bind[ServerControlHandler].asEagerSingleton()
+    bind[TrackQueryHandler].asEagerSingleton()
+    bind[TrackUpdateHandler].asEagerSingleton()
+    bind[TrackTaskHandler].asEagerSingleton()
 
-    bind[RecordingStorage]
-    bind[RecordingCommandHandler]
-    bind[RecordingQueryHandler]
+    bind[RecordingStorage].asEagerSingleton()
+    bind[RecordingCommandHandler].asEagerSingleton()
+    bind[RecordingQueryHandler].asEagerSingleton()
   }
 
 }
