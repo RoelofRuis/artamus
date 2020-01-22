@@ -52,6 +52,8 @@ private[rendering] object LilypondFormat {
       case g: ChordRestGlyph => g.toLilypond
     }.mkString("\n")
 
+    // TODO: implement better font (http://lilypond-frogs.2124236.n2.nabble.com/Changing-Chord-Name-Font-Size-td4008276.htmlhttp://lilypond-frogs.2124236.n2.nabble.com/Changing-Chord-Name-Font-Size-td4008276.html)
+
     s"""\\new ChordNames {
        |\\chordmode {
        |$contents
