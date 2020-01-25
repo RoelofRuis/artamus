@@ -56,6 +56,7 @@ private[rendering] object LilypondFormat {
 
     s"""\\new ChordNames {
        |\\chordmode {
+       |\\override ChordName #'font-series = #'medium'
        |$contents
        |}
        |}""".stripMargin
