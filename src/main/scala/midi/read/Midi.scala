@@ -7,12 +7,13 @@ import midi.read.MidiInput.ReadAction
 object Midi {
 
   val IsNoteOn: MidiMessage => Boolean = {
-    case msg: ShortMessage if msg.getCommand == ShortMessage.NOTE_ON => true
+    case msg: ShortMessage if msg.getCommand == ShortMessage.NOTE_ON && (msg.getData2 > 0) => true
     case _ => false
   }
 
   val IsNoteOff: MidiMessage => Boolean = {
     case msg: ShortMessage if msg.getCommand == ShortMessage.NOTE_OFF => true
+    case msg: ShortMessage if msg.getCommand == ShortMessage.NOTE_ON && (msg.getData2 == 0) => true
     case _ => false
   }
 

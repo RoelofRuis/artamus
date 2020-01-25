@@ -5,6 +5,7 @@ import java.util.concurrent.{BlockingQueue, LinkedBlockingQueue}
 import com.typesafe.scalalogging.LazyLogging
 import javax.inject.Inject
 import javax.sound.midi.{MidiMessage, Receiver, ShortMessage}
+import midi.read.Midi
 import music.model.record.RawMidiNote
 import music.primitives.{Loudness, MidiNoteNumber, MillisecondPosition}
 import protocol.client.api.ClientInterface
@@ -21,7 +22,7 @@ class MidiRecorder @Inject() (
       while ( ! isInterrupted ) {
         val (message, timestamp) = queue.take()
         message match {
-          case msg: ShortMessage if msg.getCommand == ShortMessage.NOTE_ON =>
+          case msg: ShortMessage if Midi.IsNoteOn(msg) =>
             val note = RawMidiNote(
               MidiNoteNumber(msg.getData1),
               Loudness(msg.getData2),
