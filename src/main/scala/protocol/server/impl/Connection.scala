@@ -28,7 +28,7 @@ private[server] final class Connection(
       }
       api.connectionClosed(CONNECTION, None)
     } catch {
-      case ex: Throwable => api.connectionClosed(CONNECTION, Some(ex)) // TODO: handle different failures correctly!
+      case ex: Throwable => api.connectionClosed(CONNECTION, Some(ex))
     } finally {
       socket.close()
     }
