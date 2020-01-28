@@ -1,7 +1,8 @@
 package client
 
 import client.events.{ConnectionEventHandler, RenderHandler}
-import client.io.midi.MidiIOModule
+import client.midi.MidiModule
+import client.terminal.TerminalModule
 import client.operations.Operations.OperationRegistry
 import client.operations._
 import com.google.inject.Provides
@@ -14,14 +15,11 @@ import pubsub.{Callback, Dispatcher}
 class ClientModule extends ScalaPrivateModule {
 
   override def configure(): Unit = {
-    // -- pick an io module
-    // install(new TerminalIOModule)
-    install(new MidiIOModule)
-    // --
+    install(new TerminalModule)
+    install(new MidiModule)
 
     bind[OperationRegistry].toInstance(new ClientOperationRegistry())
     bind[SystemOperations].asEagerSingleton()
-    bind[TrackOperations].asEagerSingleton()
     bind[TrackQueryOperations].asEagerSingleton()
 
     bind[Dispatcher[Callback, Event]].toInstance(pubsub.createDispatcher[Callback, Event]())

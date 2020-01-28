@@ -1,6 +1,6 @@
 package client.operations
 
-import client.io.StdIOTools
+import client.StdIOTools
 import client.operations.Operations.{OperationRegistry, ServerOperation}
 import javax.inject.Inject
 import server.actions.control.{Authenticate, Disconnect}

@@ -1,4 +1,4 @@
-package client.io.midi
+package client.midi
 
 import javax.inject.{Inject, Named}
 import javax.sound.midi.MidiMessage
@@ -13,7 +13,7 @@ class ReadableMidiInput @Inject() (
   patchPanel: PatchPanel
 ) extends MidiInput {
 
-  import client.io.midi.MidiConnectors.canConnectMidi
+  import client.midi.MidiConnectors.canConnectMidi
 
   def readFrom(pick: List[MidiMessage] => ReadAction): MidiIO[List[MidiMessage]] = {
     val reader = new AsyncReadableReceiver

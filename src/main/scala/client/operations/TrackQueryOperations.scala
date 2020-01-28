@@ -14,6 +14,7 @@ class TrackQueryOperations @Inject() (
 
   import ClientLogging._
 
+  // TODO: this can be split as well
   registry.local("play", "track-query", {
     client.sendQueryLogged(Perform) match {
       case Right(track) => musicPlayer.play(track)

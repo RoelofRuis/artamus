@@ -1,7 +1,6 @@
 package client
 
 import client.events.RenderHandler
-import client.io.IOLifetimeManager
 import client.operations.Operations.{LocalOperation, Operation, OperationRegistry, ServerOperation}
 import com.typesafe.scalalogging.LazyLogging
 import javax.inject.Inject
@@ -10,19 +9,20 @@ import protocol.client.api.ClientInterface
 import server.actions.control.Authenticate
 
 import scala.annotation.tailrec
+import scala.collection.immutable
 import scala.util.{Failure, Success}
 
 class Bootstrapper @Inject() (
   client: ClientInterface,
   registry: OperationRegistry,
   renderHandler: RenderHandler,
-  ioManager: IOLifetimeManager
+  ioManagers: immutable.Set[ModuleLifetimeHooks]
 ) extends LazyLogging {
 
   import ClientLogging._
 
   def run(): Unit = {
-    ioManager.initializeAll()
+    ioManagers.foreach(_.initializeAll())
     var isRunning = true
 
     tryAuthenticate()
@@ -44,7 +44,7 @@ class Bootstrapper @Inject() (
       }
     }
 
-    ioManager.closeAll()
+    ioManagers.foreach(_.closeAll())
     renderHandler.frame.dispose()
   }
 

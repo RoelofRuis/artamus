@@ -1,18 +1,19 @@
-package client.io.midi
+package client.midi
 
-import client.io.IOLifetimeManager
+import client.ModuleLifetimeHooks
 import com.typesafe.scalalogging.LazyLogging
-import javax.inject.{Inject, Named}
+import javax.inject.{Inject, Named, Singleton}
 import midi.{DeviceHash, MidiIO, MidiResourceLoader}
 import patching.PatchPanel
 
-class MidiIOLifetimeManager @Inject() (
+@Singleton
+class MidiLifetimeHooks @Inject() (
   loader: MidiResourceLoader,
   patchPanel: PatchPanel,
   recorder: MidiRecorder,
   @Named("midi-in") midiIn: DeviceHash,
   @Named("midi-out") midiOut: DeviceHash
-) extends IOLifetimeManager with LazyLogging {
+) extends ModuleLifetimeHooks with LazyLogging {
 
   import MidiConnectors.canConnectMidi
 

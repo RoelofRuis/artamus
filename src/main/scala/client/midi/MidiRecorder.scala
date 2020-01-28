@@ -1,4 +1,4 @@
-package client.io.midi
+package client.midi
 
 import java.util.concurrent.{BlockingQueue, LinkedBlockingQueue}
 

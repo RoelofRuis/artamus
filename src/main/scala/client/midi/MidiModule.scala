@@ -1,14 +1,13 @@
-package client.io.midi
+package client.midi
 
-import client.io.IOLifetimeManager
-import client.{MusicPlayer, MusicReader}
+import client.{ModuleLifetimeHooks, MusicPlayer}
 import midi.read.MidiInput
 import midi.write.MidiSequenceWriter
 import midi.{DeviceHash, MidiResourceLoader}
-import net.codingwell.scalaguice.ScalaPrivateModule
+import net.codingwell.scalaguice.{ScalaMultibinder, ScalaPrivateModule}
 import patching.PatchPanel
 
-class MidiIOModule extends ScalaPrivateModule {
+class MidiModule extends ScalaPrivateModule {
 
   private object MyDevices {
     val GervillSoftSynt: DeviceHash = "55c8a757"
@@ -18,6 +17,9 @@ class MidiIOModule extends ScalaPrivateModule {
   }
 
   override def configure(): Unit = {
+    val ioLifetimeBinder = ScalaMultibinder.newSetBinder[ModuleLifetimeHooks](binder)
+    ioLifetimeBinder.addBinding.to[MidiLifetimeHooks]
+
     bind[MidiOperations].asEagerSingleton()
     bind[MidiDebugOperations].asEagerSingleton()
 
@@ -27,17 +29,13 @@ class MidiIOModule extends ScalaPrivateModule {
 
     bind[DeviceHash].annotatedWithName("midi-in").toInstance(MyDevices.iRigUSBMIDI_IN)
     bind[MidiInput].to[ReadableMidiInput]
-    bind[MusicReader].to[MidiMusicReader]
 
     bind[DeviceHash].annotatedWithName("midi-out").toInstance(MyDevices.FocusriteUSBMIDI_OUT)
     bind[MidiSequenceWriter].to[SequencePlayer]
     bind[MusicPlayer].to[MidiMusicPlayer]
 
-    bind[IOLifetimeManager].to[MidiIOLifetimeManager]
-
     expose[MusicPlayer]
-    expose[MusicReader]
-    expose[IOLifetimeManager]
+    expose[ModuleLifetimeHooks]
   }
 
 }

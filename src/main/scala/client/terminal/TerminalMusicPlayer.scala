@@ -1,4 +1,4 @@
-package client.io.terminal
+package client.terminal
 
 import client.MusicPlayer
 import javax.inject.Singleton

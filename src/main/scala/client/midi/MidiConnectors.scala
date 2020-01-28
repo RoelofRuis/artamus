@@ -1,4 +1,4 @@
-package client.io.midi
+package client.midi
 
 import javax.sound.midi.{Receiver, Transmitter}
 import patching.CanConnect

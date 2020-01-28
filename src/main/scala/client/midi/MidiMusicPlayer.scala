@@ -1,4 +1,4 @@
-package client.io.midi
+package client.midi
 
 import client.MusicPlayer
 import com.typesafe.scalalogging.LazyLogging

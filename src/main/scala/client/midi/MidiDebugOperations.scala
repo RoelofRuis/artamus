@@ -1,4 +1,4 @@
-package client.io.midi
+package client.midi
 
 import client.ClientLogging
 import client.operations.Operations.OperationRegistry

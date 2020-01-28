@@ -1,6 +1,6 @@
-package client.io
+package client
 
-trait IOLifetimeManager {
+trait ModuleLifetimeHooks {
 
   def initializeAll(): Unit
 

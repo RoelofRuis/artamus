@@ -1,15 +1,18 @@
-package client.io.midi
+package client.midi
 
-import client.MusicReader.{NoteOn, ReadMethod, Simultaneous}
 import javax.sound.midi.ShortMessage
 import midi.MidiIO
 import midi.read.MidiInput
-import music.primitives.{Accidental, MidiNoteNumber, PitchClass, PitchSpelling, TimeSignatureDivision}
+import music.primitives._
 
 object MusicReader {
 
   import midi.read.Midi._
   import music.analysis.TwelveToneTuning._
+
+  sealed trait ReadMethod
+  case class NoteOn(n: Int) extends ReadMethod
+  case object Simultaneous extends ReadMethod
 
   implicit class InputMusicReader(midiInput: MidiInput) {
     def readPitchSpelling: MidiIO[PitchSpelling] = {

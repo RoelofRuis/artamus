@@ -1,4 +1,4 @@
-package client.io.midi
+package client.midi
 
 import javax.inject.{Inject, Named}
 import javax.sound.midi.{MetaMessage, Sequence, Sequencer}
@@ -15,7 +15,7 @@ class SequencePlayer @Inject() (
   private val PATCH_ID = PatchCableId()
   private lazy val loadedSequencer: MidiIO[Sequencer] = loader.loadSequencer()
 
-  import client.io.midi.MidiConnectors._
+  import client.midi.MidiConnectors._
 
   override def writeSequence(sequence: Sequence): MidiIO[Unit] = {
     if ( ! patchPanel.hasPatchCable(PATCH_ID)) {
