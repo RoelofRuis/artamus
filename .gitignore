@@ -2,5 +2,7 @@
 
 target/
 
+sandbox/*
+
 # any worksheet higher up in the sources tree
 src/**/*.sc
