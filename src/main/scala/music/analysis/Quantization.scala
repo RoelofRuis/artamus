@@ -50,23 +50,61 @@ object Quantization {
     loop(differenceList, List(Position.ZERO))
   }
 
-  // TODO: improve this still terrible algorithm!
-  private def determineCentroidMap(clusters: Seq[Centroid]): Map[Centroid, Duration] = {
-    def closestTo(x: Double): Centroid = clusters.minBy(v => Math.abs(v - x))
+  val lengthList = Set(
+    Rational(1, 8),
+    Rational(1, 4),
+    Rational(3, 8),
+    Rational(1, 2),
+    Rational(5, 8),
+    Rational(3, 4),
+    Rational(7, 8),
+    Rational(1, 2)
+  )
 
-    val quarterCentroid = closestTo(500) // just assumption! (quarter note based on 120BPM)
-    if (clusters.sorted.indexOf(quarterCentroid) == 0) {
-      val halfCentroid = closestTo(quarterCentroid * 2)
-      Map(
-        quarterCentroid -> Duration(Rational(1, 4)),
-        halfCentroid -> Duration(Rational(1, 2))
-      )
-    } else {
-      val eightCentroid = closestTo(quarterCentroid / 2)
-      Map(
-        eightCentroid -> Duration(Rational(1, 8)),
-        quarterCentroid -> Duration(Rational(1, 4)),
-      )
+  // Choose a cluster C
+  // For every L in lengthList
+  //     n = C / L
+  //     calc error (sum of distances of n*l to closest cluster)
+  // Pick Smallest error (with most 'conventional' durations)
+  private def determineCentroidMap(clusters: Seq[Centroid]): Map[Centroid, Duration] = {
+    clusters match {
+      case head :: tail =>
+        val (resultMap, _) = lengthList.map { chosenLength =>
+          val scalingFactor = head / chosenLength.toDouble
+          val otherLengths = (lengthList - chosenLength)
+            .map(r => (r.toDouble * scalingFactor, r))
+            .zipWithIndex
+            .map { case (length, index) => index -> length }
+            .toMap
+          calcError(tail, otherLengths, Map(head -> chosenLength), 0D)
+        }.minBy { case (_, error) => error }
+
+        resultMap.view.mapValues(r => Duration(r)).toMap
+    }
+  }
+
+  type Error = Double
+
+  @tailrec
+  def calcError(
+    centroids: List[Centroid],
+    otherLengths: Map[Int, (Double, Rational)],
+    resultMap: Map[Centroid, Rational],
+    error: Error
+  ): (Map[Centroid, Rational], Error) = {
+    centroids match {
+      case Nil => (resultMap, error)
+      case head :: tail =>
+        val (nextError, rational, index) = otherLengths
+          .map { case (i, (scaled, rational)) => (Math.abs(scaled - head), rational, i) }
+          .minBy { case (score, _, _) => score}
+
+        calcError(
+          tail,
+          otherLengths.removed(index),
+          resultMap.updated(head, rational),
+          error + nextError,
+        )
     }
   }
 
