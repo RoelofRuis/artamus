@@ -1,17 +1,32 @@
-package client.terminal
+package client.module.terminal
 
-import client.StdIOTools
-import client.operations.Operations.{OperationRegistry, ServerOperation}
+import client.util.{StdIOTools, ClientLogging}
+import client.module.Operations.{OperationRegistry, ServerOperation}
 import javax.inject.Inject
 import music.math.Rational
 import music.math.temporal.{Duration, Position, Window}
 import music.primitives.{NoteGroup, TimeSignature}
 import protocol.Command
-import server.actions.writing.{Render, WriteKey, WriteNoteGroup, WriteTimeSignature}
+import protocol.client.api.ClientInterface
+import server.actions.writing.{Perform, Render, WriteKey, WriteNoteGroup, WriteTimeSignature}
 
 import scala.annotation.tailrec
 
-class TerminalEditOperations @Inject() (registry: OperationRegistry) {
+class TerminalOperations @Inject() (
+  registry: OperationRegistry,
+  client: ClientInterface,
+) {
+
+  import ClientLogging._
+
+  registry.local("print-notes", "query (terminal)", {
+    client.sendQueryLogged(Perform) match {
+      case Right(track) =>
+        println("Playing:")
+        track.notes.foreach { note => println(note) }
+      case _ =>
+    }
+  })
 
   registry.server("time-signature", "edit (terminal)", {
     println(s"Reading time signature...")

@@ -1,4 +1,4 @@
-package client.midi
+package client.module.midi
 
 import client.ModuleLifetimeHooks
 import com.typesafe.scalalogging.LazyLogging

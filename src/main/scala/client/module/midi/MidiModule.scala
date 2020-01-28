@@ -1,6 +1,6 @@
-package client.midi
+package client.module.midi
 
-import client.{ModuleLifetimeHooks, MusicPlayer}
+import client.ModuleLifetimeHooks
 import midi.read.MidiInput
 import midi.write.MidiSequenceWriter
 import midi.{DeviceHash, MidiResourceLoader}
@@ -17,11 +17,12 @@ class MidiModule extends ScalaPrivateModule {
   }
 
   override def configure(): Unit = {
-    val ioLifetimeBinder = ScalaMultibinder.newSetBinder[ModuleLifetimeHooks](binder)
-    ioLifetimeBinder.addBinding.to[MidiLifetimeHooks]
+    bind[ModuleLifetimeHooks].to[MidiLifetimeHooks]
 
     bind[MidiOperations].asEagerSingleton()
     bind[MidiDebugOperations].asEagerSingleton()
+    bind[MidiEditOperations].asEagerSingleton()
+    bind[MidiPlaybackOperations].asEagerSingleton()
 
     bind[PatchPanel].asEagerSingleton()
     bind[MidiResourceLoader].asEagerSingleton()
@@ -32,9 +33,7 @@ class MidiModule extends ScalaPrivateModule {
 
     bind[DeviceHash].annotatedWithName("midi-out").toInstance(MyDevices.FocusriteUSBMIDI_OUT)
     bind[MidiSequenceWriter].to[SequencePlayer]
-    bind[MusicPlayer].to[MidiMusicPlayer]
 
-    expose[MusicPlayer]
     expose[ModuleLifetimeHooks]
   }
 

@@ -1,10 +1,11 @@
 package client
 
 import client.events.{ConnectionEventHandler, RenderHandler}
-import client.midi.MidiModule
-import client.terminal.TerminalModule
-import client.operations.Operations.OperationRegistry
-import client.operations._
+import client.module.ClientOperationRegistry
+import client.module.Operations.OperationRegistry
+import client.module.midi.MidiModule
+import client.module.system.SystemModule
+import client.module.terminal.TerminalModule
 import com.google.inject.Provides
 import javax.inject.Singleton
 import net.codingwell.scalaguice.ScalaPrivateModule
@@ -17,10 +18,9 @@ class ClientModule extends ScalaPrivateModule {
   override def configure(): Unit = {
     install(new TerminalModule)
     install(new MidiModule)
+    install(new SystemModule)
 
     bind[OperationRegistry].toInstance(new ClientOperationRegistry())
-    bind[SystemOperations].asEagerSingleton()
-    bind[TrackQueryOperations].asEagerSingleton()
 
     bind[Dispatcher[Callback, Event]].toInstance(pubsub.createDispatcher[Callback, Event]())
     bind[RenderHandler].asEagerSingleton()

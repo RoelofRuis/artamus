@@ -1,6 +1,6 @@
-package client.midi
+package client.module.midi
 
-import client.operations.Operations.{OperationRegistry, ServerOperation}
+import client.module.Operations.{OperationRegistry, ServerOperation}
 import com.google.inject.Inject
 import javax.sound.midi.MidiDevice.Info
 import midi.MidiResourceLoader

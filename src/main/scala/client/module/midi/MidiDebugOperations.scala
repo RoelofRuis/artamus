@@ -1,7 +1,7 @@
-package client.midi
+package client.module.midi
 
-import client.ClientLogging
-import client.operations.Operations.OperationRegistry
+import client.util.ClientLogging
+import client.module.Operations.OperationRegistry
 import com.google.inject.Inject
 import protocol.client.api.ClientInterface
 import server.actions.recording.GetCurrentRecording

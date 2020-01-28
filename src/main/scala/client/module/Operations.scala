@@ -1,4 +1,4 @@
-package client.operations
+package client.module
 
 import protocol.Command
 

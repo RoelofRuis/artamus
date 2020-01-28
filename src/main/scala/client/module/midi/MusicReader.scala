@@ -1,4 +1,4 @@
-package client.midi
+package client.module.midi
 
 import javax.sound.midi.ShortMessage
 import midi.MidiIO

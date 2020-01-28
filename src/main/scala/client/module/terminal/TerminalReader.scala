@@ -1,6 +1,6 @@
-package client.terminal
+package client.module.terminal
 
-import client.StdIOTools
+import client.util.StdIOTools
 import music.primitives._
 
 import scala.annotation.tailrec
@@ -26,8 +26,8 @@ object TerminalReader {
 
   @tailrec
   def readKey: Key = {
-    val (root, tpe) = StdIOTools.read[(PitchSpelling, String)]("Input key (`step` `acc` `type`", "Invalid key type", {
-      val elems = scala.io.StdIn.readLine.split("-")
+    val (root, tpe) = StdIOTools.read[(PitchSpelling, String)]("Input key ('step' 'acc' 'type')", "Invalid key type", {
+      val elems = scala.io.StdIn.readLine.split(" ")
       val ps = PitchSpelling(Step(elems(0).toInt), Accidental(elems(1).toInt))
       (ps, elems(2).toLowerCase)
     })

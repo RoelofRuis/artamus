@@ -1,9 +1,9 @@
-package client
+package client.util
 
 import com.typesafe.scalalogging.LazyLogging
-import protocol.{Command, Query}
 import protocol.Exceptions.CommunicationException
 import protocol.client.api.ClientInterface
+import protocol.{Command, Query}
 
 object ClientLogging {
 
