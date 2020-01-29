@@ -21,7 +21,7 @@ private[rendering] class LilypondCommandLineExecutor(
 
       import sys.process._
 
-      val result = getLilypondCommand(sourceFile.getAbsolutePath).!!
+      val result = getLilypondCommand(sourceFile.getAbsolutePath, resourceRootPath).!!
 
       if (targetFile.exists()) Right(RenderingResult(targetFile))
       else Left(new Exception(result))
@@ -36,8 +36,8 @@ private[rendering] class LilypondCommandLineExecutor(
   /**
     * @see http://lilypond.org/doc/v2.18/Documentation/usage/command_002dline-usage
     */
-  private def getLilypondCommand(outputPath: String): String = {
-    s"lilypond -fpng -odata -dresolution=$pngResolution $outputPath"
+  private def getLilypondCommand(sourcePath: String, outputPath: String): String = {
+    s"""lilypond -fpng --output="$outputPath" -dresolution=$pngResolution "$sourcePath""""
   }
 
 }
