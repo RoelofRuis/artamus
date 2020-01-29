@@ -1,37 +1,12 @@
-name in ThisBuild := "artamus"
+import Dependencies._
+import Scalac._
+
 version in ThisBuild := "0.1"
 startYear in ThisBuild := Some(2019)
-description in ThisBuild := "Music analysis client/server application - Photoshop for symbolic music"
 licenses in ThisBuild := Seq("Apache 2.0" -> new URL("http://www.apache.org/licenses/LICENSE-2.0.txt"))
 organization in ThisBuild := "nl.roelofruis"
 
 scalaVersion in ThisBuild := "2.13.1"
-
-lazy val dependencies = new {
-  val scalaGuiceVersion = "4.2.6"
-  val scalaLoggingVersion = "3.9.2"
-  val slf4jSimpleVersion = "1.7.28"
-  val sprayJsonVersion = "1.3.5"
-  val microtestVersion = "0.7.1"
-
-  val javaxInject     = "javax.inject" % "javax.inject" % "1"
-  val scalaGuice      = "net.codingwell" %% "scala-guice" % scalaGuiceVersion
-  val scalaLogging    = "com.typesafe.scala-logging" %% "scala-logging" % scalaLoggingVersion
-  val slf4jSimple     = "org.slf4j" % "slf4j-simple" % slf4jSimpleVersion
-  val sprayJson       = "io.spray" %%  "spray-json" % sprayJsonVersion
-  val microtest       = "com.lihaoyi" %% "utest" % microtestVersion
-}
-
-lazy val compilerFlags = Seq(
-  scalacOptions ++= Seq(
-    "-encoding", "UTF-8",
-    "-unchecked",
-    "-deprecation",
-    "-Ywarn-dead-code",
-    "-feature",
-    "-language:implicitConversions",
-  )
-)
 
 lazy val global = (project in file("."))
   .settings(compilerFlags)
@@ -44,6 +19,8 @@ lazy val global = (project in file("."))
 
 lazy val common = (project in file("common"))
   .settings(
+    name := "artamus-common",
+    description := "Common packages for Artamus",
     compilerFlags,
     libraryDependencies ++= Seq(
       dependencies.scalaGuice,
@@ -53,6 +30,8 @@ lazy val common = (project in file("common"))
 
 lazy val storage = (project in file("storage"))
   .settings(
+    name := "storage",
+    description := "Ligthweight in-memory/file storage",
     compilerFlags,
     libraryDependencies ++= Seq(
       dependencies.scalaGuice // TODO: maybe try to remove?
@@ -61,6 +40,8 @@ lazy val storage = (project in file("storage"))
 
 lazy val client = (project in file("client"))
   .settings(
+    name := "artamus-client",
+    description := "A Music analysis client - part of Artamus",
     compilerFlags,
     // Make sure (midi) libraries can get loaded in the correct way
     fork in run := true,
@@ -80,6 +61,8 @@ lazy val client = (project in file("client"))
 
 lazy val server = (project in file("server"))
   .settings(
+    name := "artamus-server",
+    description := "A Music analysis server - part of Artamus",
     compilerFlags,
     // Dependencies
     libraryDependencies ++= Seq(
