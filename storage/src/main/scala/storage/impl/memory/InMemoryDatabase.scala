@@ -27,7 +27,7 @@ private[storage] class InMemoryDatabase() extends TransactionalDatabase {
     Option(state.get(model.key)) match {
       case Some(data) => model.deserialize(data) match {
         case Success(obj) => DbResult.found(obj)
-        case Failure(ex) => DbResult.badData(ex)
+        case Failure(ex) => DbResult.ioError(ex)
       }
       case None => DbResult.notFound
     }

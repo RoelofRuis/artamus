@@ -26,7 +26,7 @@ private[impl] final class UnitOfWork private (
       case Some(data) =>
         model.deserialize(data) match {
           case Success(obj) => DbResult.found(obj)
-          case Failure(ex) => DbResult.badData(ex)
+          case Failure(ex) => DbResult.ioError(ex)
         }
       case None => db.readModel match {
         case Right(obj) => DbResult.found(obj)
@@ -38,7 +38,7 @@ private[impl] final class UnitOfWork private (
   override def writeModel[A : DataModel](obj: A): DbResult[Unit] = {
     val model = implicitly[DataModel[A]]
     model.serialize(obj) match {
-      case Failure(ex) => DbResult.badData(ex)
+      case Failure(ex) => DbResult.ioError(ex)
       case Success(data) =>
         dirtyData.put(model.key, data)
         DbResult.ok

@@ -6,7 +6,7 @@ package object api {
 
   sealed trait DbException extends Exception
   final case class NotFound() extends DbException
-  final case class BadData(cause: Throwable) extends DbException
+  final case class IOError(cause: Throwable) extends DbException
 
   type DbResult[A] = Either[DbException, A]
 
@@ -20,7 +20,7 @@ package object api {
   }
 
   object DbResult {
-    def badData[A](ex: Throwable): DbResult[A] = Left(BadData(ex))
+    def ioError[A](ex: Throwable): DbResult[A] = Left(IOError(ex))
     def notFound[A]: DbResult[A] = Left(NotFound())
     def found[A](a: A): DbResult[A] = Right(a)
     def ok: DbResult[Unit] = Right(())

@@ -13,7 +13,7 @@ private[impl] object FileIO {
   def read(path: Path): DbResult[String] = {
     Try { Files.readAllBytes(path) } match {
       case Failure(_: NoSuchFileException) => DbResult.notFound
-      case Failure(ex) => DbResult.badData(ex)
+      case Failure(ex) => DbResult.ioError(ex)
       case Success(bytes) => DbResult.found(new String(bytes, StandardCharsets.UTF_8))
     }
   }
@@ -25,7 +25,7 @@ private[impl] object FileIO {
     } yield ()
 
     res match {
-      case Failure(ex) => DbResult.badData(ex)
+      case Failure(ex) => DbResult.ioError(ex)
       case Success(_) => DbResult.ok
     }
   }
@@ -42,7 +42,7 @@ private[impl] object FileIO {
       Files.delete(path)
     } match {
       case Success(_) => DbResult.ok
-      case Failure(ex) => DbResult.badData(ex)
+      case Failure(ex) => DbResult.ioError(ex)
     }
   }
 
@@ -55,7 +55,7 @@ private[impl] object FileIO {
       )
     } match {
       case Success(_) => DbResult.ok
-      case Failure(ex) => DbResult.badData(ex)
+      case Failure(ex) => DbResult.ioError(ex)
     }
   }
 

@@ -69,7 +69,7 @@ private[storage] class FileDatabase(config: FileDatabaseConfig) extends Transact
     dbResult match {
       case Right(data) => model.deserialize(data) match {
         case Success(obj) => DbResult.found(obj)
-        case Failure(ex) => DbResult.badData(ex)
+        case Failure(ex) => DbResult.ioError(ex)
       }
       case Left(ex) => Left(ex)
     }
