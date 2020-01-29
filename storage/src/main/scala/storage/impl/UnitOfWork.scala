@@ -8,7 +8,7 @@ import storage.api.DataModel.DataKey
 import storage.api.Transaction.CommitResult
 import storage.api.{DataModel, DbIO, DbResult, Transaction}
 
-import scala.collection.JavaConverters._
+import scala.jdk.CollectionConverters._
 import scala.util.{Failure, Success}
 
 @ThreadSafe

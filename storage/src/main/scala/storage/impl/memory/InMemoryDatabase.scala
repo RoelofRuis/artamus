@@ -9,7 +9,7 @@ import storage.api.Transaction.CommitResult
 import storage.api.{DataModel, DbResult, Transaction}
 import storage.impl.{TransactionalDatabase, UnitOfWork}
 
-import scala.collection.JavaConverters._
+import scala.jdk.CollectionConverters._
 import scala.util.{Failure, Success}
 
 @ThreadSafe
