@@ -37,21 +37,24 @@ private[server] class RecordingCommandHandler @Inject() (
     storage.getAndResetRecording(req.user.id) match {
       case None => Responses.ok
       case Some(recording) =>
-        val quantized = Quantization.millisToPosition(recording.notes.map(n => (n.starts.v / 1000).toInt))
-        val recordedTrack = recording
-          .notes
-          .zip(quantized.zip(quantized.drop(1).appended(quantized.last + Duration(Rational(1, 4)))))
-          .foldLeft(Map[Position, (Seq[Note], Duration)]()) { case (acc, (rawMidiNote, (position, nextPosition))) =>
-            val duration = nextPosition - position // TODO: determine proper duration
-            val note = Note(rawMidiNote.noteNumber.toOct, rawMidiNote.noteNumber.toPc)
-            acc.updatedWith(position) {
-              case None => Some(Seq(note), Seq(Duration.ZERO, duration).max)
-              case Some((seq, prevDur)) => Some(seq :+ note, Seq(duration, prevDur).max)
+        val recordedTrack = if (recording.notes.isEmpty) Track()
+        else {
+          val quantized = Quantization.millisToPosition(recording.notes.map(n => (n.starts.v / 1000).toInt))
+          recording
+            .notes
+            .zip(quantized.zip(quantized.drop(1).appended(quantized.last + Duration(Rational(1, 4)))))
+            .foldLeft(Map[Position, (Seq[Note], Duration)]()) { case (acc, (rawMidiNote, (position, nextPosition))) =>
+              val duration = nextPosition - position // TODO: determine proper duration
+              val note = Note(rawMidiNote.noteNumber.toOct, rawMidiNote.noteNumber.toPc)
+              acc.updatedWith(position) {
+                case None => Some(Seq(note), Seq(Duration.ZERO, duration).max)
+                case Some((seq, prevDur)) => Some(seq :+ note, Seq(duration, prevDur).max)
+              }
             }
-          }
-          .foldLeft(Track()) { case (track, (position, (notes, duration))) =>
-            track.writeNoteGroup(NoteGroup(Window(position, duration), notes))
-          }
+            .foldLeft(Track()) { case (track, (position, (notes, duration))) =>
+              track.writeNoteGroup(NoteGroup(Window(position, duration), notes))
+            }
+        }
 
         val res = for {
           workspace <- req.db.getWorkspaceByOwner(req.user)
