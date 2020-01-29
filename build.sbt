@@ -23,7 +23,8 @@ lazy val common = (project in file("common"))
     description := "Common packages for Artamus",
     compilerFlags,
     libraryDependencies ++= Seq(
-      dependencies.scalaGuice,
+      dependencies.javaxInject,
+      dependencies.findbugs,
       dependencies.microtest % Test
     )
   )
@@ -34,7 +35,7 @@ lazy val storage = (project in file("storage"))
     description := "Ligthweight in-memory/file storage",
     compilerFlags,
     libraryDependencies ++= Seq(
-      dependencies.scalaGuice // TODO: maybe try to remove?
+      dependencies.findbugs
     )
   )
 
@@ -43,10 +44,12 @@ lazy val client = (project in file("client"))
     name := "artamus-client",
     description := "A Music analysis client - part of Artamus",
     compilerFlags,
+
     // Make sure (midi) libraries can get loaded in the correct way
     fork in run := true,
     connectInput in run := true,
     outputStrategy in run := Some(StdoutOutput),
+
     // Dependencies
     libraryDependencies ++= Seq(
       dependencies.scalaGuice,

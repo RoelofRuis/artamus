@@ -7,15 +7,13 @@ import server.analysis.blackboard.Controller
 import server.analysis.{ChordAnalyser, PitchHistogramAnalyser}
 import server.infra.ServerInfraModule
 import server.rendering.RenderingModule
-import storage.InMemoryStorageModule
+import storage.api.Database
 
 class ServerModule extends ScalaPrivateModule with ServerSettings {
 
   override def configure(): Unit = {
-    // -- pick a storage module
-    // install(new FileStorageModule with ServerConfig)
-    install(new InMemoryStorageModule)
-    // --
+    bind[Database].toInstance(storage.fileDatabase(fileDatabaseConfig))
+    bind[Database].toInstance(storage.inMemoryDatabase())
 
     install(new ServerInfraModule)
     install(new RenderingModule with ServerSettings)

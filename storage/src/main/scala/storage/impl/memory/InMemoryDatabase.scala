@@ -3,7 +3,6 @@ package storage.impl.memory
 import java.util.concurrent.ConcurrentHashMap
 
 import javax.annotation.concurrent.ThreadSafe
-import javax.inject.{Inject, Singleton}
 import storage.api.DataModel.DataKey
 import storage.api.Transaction.CommitResult
 import storage.api.{DataModel, DbResult, Transaction}
@@ -13,8 +12,7 @@ import scala.jdk.CollectionConverters._
 import scala.util.{Failure, Success}
 
 @ThreadSafe
-@Singleton
-private[storage] class InMemoryDatabase @Inject() () extends TransactionalDatabase {
+private[storage] class InMemoryDatabase() extends TransactionalDatabase {
 
   private val state = new ConcurrentHashMap[DataKey, String]()
 

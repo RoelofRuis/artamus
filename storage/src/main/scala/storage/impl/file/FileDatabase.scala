@@ -3,7 +3,7 @@ package storage.impl.file
 import java.nio.file.{Path, Paths}
 
 import javax.annotation.concurrent.{GuardedBy, ThreadSafe}
-import javax.inject.{Inject, Named, Singleton}
+import storage.FileDatabaseConfig
 import storage.api.DataModel.{DataKey, JSON, Raw}
 import storage.api.Transaction.CommitResult
 import storage.api.{DataModel, DbException, DbResult, NotFound, Transaction}
@@ -14,11 +14,7 @@ import scala.util.matching.Regex
 import scala.util.{Failure, Success, Try}
 
 @ThreadSafe
-@Singleton
-private[storage] class FileDatabase @Inject() (
-  @Named("db-root-path") rootPath: String,
-  @Named("cleanup-threshold") cleanupThreshold: Int
-) extends TransactionalDatabase {
+private[storage] class FileDatabase(config: FileDatabaseConfig) extends TransactionalDatabase {
 
   private val VersionPath = keyToPath(DataKey("_version", Raw), 0)
 
@@ -84,7 +80,7 @@ private[storage] class FileDatabase @Inject() (
   private def checkCleanup(): Unit = {
     val filesState = getActiveFilesPerKey
     val oldFiles = filesState.foldRight(0) { case ((_, old), acc) => acc + old.size }
-    if (oldFiles > cleanupThreshold) performCleanup()
+    if (oldFiles > config.cleanupThreshold) performCleanup()
   }
 
   private def performCleanup(): Unit = writeLock.synchronized {
@@ -117,7 +113,7 @@ private[storage] class FileDatabase @Inject() (
 
   private def getActiveFilesPerKey: Seq[(Path, List[Path])] = {
     FileIO
-      .list(Paths.get(rootPath), onlyDirs=true)
+      .list(Paths.get(config.rootPath), onlyDirs=true)
       .flatMap { root =>
         val validFiles = FileIO.list(root, onlyDirs = false)
           .map(_.getFileName.toString)
@@ -145,7 +141,7 @@ private[storage] class FileDatabase @Inject() (
       case Raw => "dat"
     }
     val dataFile = s"$versionString.$extension"
-    Paths.get(rootPath, key.name, dataFile)
+    Paths.get(config.rootPath, key.name, dataFile)
   }
 
 }

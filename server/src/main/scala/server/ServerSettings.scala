@@ -1,9 +1,9 @@
 package server
 
 import server.rendering.RenderingConfig
-import storage.FileStorageConfig
+import storage.FileDatabaseConfig
 
-trait ServerSettings extends RenderingConfig with FileStorageConfig {
+trait ServerSettings extends RenderingConfig {
 
   val port = 9999
 
@@ -13,7 +13,9 @@ trait ServerSettings extends RenderingConfig with FileStorageConfig {
   val lyVersion: String = "2.18"
   val paperSize: String = "a6landscape"
 
-  val dbRoot: String = "data/db"
-  val cleanupThreshold: Int = 5
+  val fileDatabaseConfig: FileDatabaseConfig = FileDatabaseConfig(
+    "data/db",
+    5,
+  )
 
 }

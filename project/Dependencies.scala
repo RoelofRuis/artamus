@@ -9,6 +9,8 @@ object Dependencies {
     val microtestVersion = "0.7.1"
 
     val javaxInject     = "javax.inject" % "javax.inject" % "1"
+    val findbugs        = "com.google.code.findbugs" % "jsr305" % "3.0.2" // For javax.annotations.concurrency
+
     val scalaGuice      = "net.codingwell" %% "scala-guice" % scalaGuiceVersion
     val scalaLogging    = "com.typesafe.scala-logging" %% "scala-logging" % scalaLoggingVersion
     val slf4jSimple     = "org.slf4j" % "slf4j-simple" % slf4jSimpleVersion
