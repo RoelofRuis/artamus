@@ -14,7 +14,7 @@ object PositionTest extends TestSuite {
     test("compare") {
       assert(
         Position(Rational(-1)).compare(Position.ZERO) == -1,
-        Position.ZERO.compare(Position(Rational(-1))) == -1,
+        Position.ZERO.compare(Position(Rational(-1))) == 1,
         Position.ZERO.compare(Position.ZERO) == 0
       )
     }

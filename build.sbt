@@ -35,7 +35,8 @@ lazy val storage = (project in file("storage"))
     description := "Ligthweight in-memory/file storage",
     compilerFlags,
     libraryDependencies ++= Seq(
-      dependencies.findbugs
+      dependencies.findbugs,
+      dependencies.microtest % Test
     )
   )
 
