@@ -33,7 +33,7 @@ object Quantization {
     }
   }
 
-  private def pickDistances(differenceList: Seq[Double], centroidMap: Map[Centroid, Duration]): List[Position] = {
+  private def pickDistances(differenceList: Seq[Double], centroidMap: Map[Centroid, Rational]): List[Position] = {
     @tailrec
     def loop(data: Seq[Double], acc: List[Position]): List[Position] = {
       data match {
@@ -41,8 +41,8 @@ object Quantization {
         case head :: tail =>
           if (head < instantaneousThreshold) loop(tail, acc :+ acc.last)
           else {
-            val matchingDuration = centroidMap.minBy { case (c, _) => Math.abs(c - head) }._2
-            val nextPos: Position = acc.last + matchingDuration
+            val matchingLength = centroidMap.minBy { case (c, _) => Math.abs(c - head) }._2
+            val nextPos: Position = acc.last + Duration(matchingLength)
             loop(tail, acc :+ nextPos)
           }
       }
@@ -58,53 +58,66 @@ object Quantization {
     Rational(5, 8),
     Rational(3, 4),
     Rational(7, 8),
-    Rational(1, 2)
+    Rational(1, 2),
   )
 
-  // Choose a cluster C
-  // For every L in lengthList
-  //     n = C / L
-  //     calc error (sum of distances of n*l to closest cluster)
-  // Pick Smallest error (with most 'conventional' durations)
-  private def determineCentroidMap(clusters: Seq[Centroid]): Map[Centroid, Duration] = {
+  private def determineCentroidMap(clusters: Seq[Centroid]): Map[Centroid, Rational] = {
     clusters match {
       case head :: tail =>
-        val (resultMap, _) = lengthList.map { chosenLength =>
+        // Choose a cluster C
+        // For every L in lengthList
+        //     n = C / L
+        //     calc error (sum of distances of n*l to closest cluster)
+        // Pick Smallest error (with most 'conventional' durations)
+        val mapsWithErrors = lengthList.map { chosenLength =>
           val scalingFactor = head / chosenLength.toDouble
           val otherLengths = (lengthList - chosenLength)
-            .map(r => (r.toDouble * scalingFactor, r))
+            .map(dur => (dur.toDouble * scalingFactor, dur))
             .zipWithIndex
             .map { case (length, index) => index -> length }
             .toMap
-          calcError(tail, otherLengths, Map(head -> chosenLength), 0D)
-        }.minBy { case (_, error) => error }
-
-        resultMap.view.mapValues(r => Duration(r)).toMap
+          calculateCentroidError(tail, otherLengths, Map(head -> chosenLength), 0D)
+        }
+        pickTempoOptimizedCentroidMap(mapsWithErrors)
     }
   }
 
   type Error = Double
 
   @tailrec
-  def calcError(
+  private def calculateCentroidError(
     centroids: List[Centroid],
     otherLengths: Map[Int, (Double, Rational)],
     resultMap: Map[Centroid, Rational],
     error: Error
-  ): (Map[Centroid, Rational], Error) = {
+  ): (Error, Map[Centroid, Rational]) = {
     centroids match {
-      case Nil => (resultMap, error)
+      case Nil => (error, resultMap)
       case head :: tail =>
-        val (nextError, rational, index) = otherLengths
+        val (nextError, length, index) = otherLengths
           .map { case (i, (scaled, rational)) => (Math.abs(scaled - head), rational, i) }
           .minBy { case (score, _, _) => score}
 
-        calcError(
+        calculateCentroidError(
           tail,
           otherLengths.removed(index),
-          resultMap.updated(head, rational),
+          resultMap.updated(head, length),
           error + nextError,
         )
+    }
+  }
+
+  private def pickTempoOptimizedCentroidMap(centroidMaps: Set[(Error, Map[Centroid, Rational])]): Map[Centroid, Rational] = {
+    val minimumError = centroidMaps.minBy(f => f._1)._1
+    centroidMaps.toSeq.collect { case (error, map) if error == minimumError => map } match {
+      case Seq(head) => head
+      case seq =>
+        seq.map { centroidMap =>
+          val wholeNoteDurations = centroidMap.map { case (centroid, length) => centroid * length.reciprocal.toDouble }
+          val averageWholeNote = wholeNoteDurations.sum / wholeNoteDurations.size
+          val wholeNoteError = Math.abs(averageWholeNote - 2000) // whole note duration in 120 BPM
+          (wholeNoteError, centroidMap)
+        }.minBy { case (wholeNoteError, _) => wholeNoteError }._2
     }
   }
 
