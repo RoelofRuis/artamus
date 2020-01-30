@@ -1,6 +1,5 @@
 package storage.impl
 
-import java.util.UUID
 import java.util.concurrent.ConcurrentHashMap
 
 import javax.annotation.concurrent.ThreadSafe
@@ -13,7 +12,6 @@ import scala.util.{Failure, Success}
 
 @ThreadSafe
 private[impl] final class UnitOfWork private (
-  id: UUID,
   private val db: TransactionalDatabase
 ) extends Transaction with DbIO {
 
@@ -69,6 +67,6 @@ private[impl] final class UnitOfWork private (
 
 object UnitOfWork {
 
-  def apply(db: TransactionalDatabase): UnitOfWork = new UnitOfWork(UUID.randomUUID(), db)
+  def apply(db: TransactionalDatabase): UnitOfWork = new UnitOfWork(db)
 
 }

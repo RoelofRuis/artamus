@@ -4,7 +4,7 @@ import client.ModuleLifetimeHooks
 import midi.read.MidiInput
 import midi.write.MidiSequenceWriter
 import midi.{DeviceHash, MidiResourceLoader}
-import net.codingwell.scalaguice.{ScalaMultibinder, ScalaPrivateModule}
+import net.codingwell.scalaguice.ScalaPrivateModule
 import patching.PatchPanel
 
 class MidiModule extends ScalaPrivateModule {

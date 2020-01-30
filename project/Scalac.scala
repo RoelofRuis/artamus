@@ -11,14 +11,12 @@ object Scalac {
       "-unchecked",
       "-Xlint:infer-any",
       "-Xlint:type-parameter-shadow",
-      "-Xlint:unsound-match",
       "-Ywarn-unused:imports",
       "-Ywarn-unused:locals",
       "-Ywarn-unused:params",
       "-Ywarn-unused:patvars",
       "-Ywarn-unused:privates",
       "-Ywarn-dead-code",
-      "-Yno-imports",
     )
   )
 }
