@@ -4,7 +4,7 @@ import music.analysis.TwelveTonePitchSpelling
 import music.math.temporal.{Position, Window}
 import music.model.display.{Bars, NoteValues}
 import music.model.display.chord.ChordStaffGlyph.{ChordNameGlyph, ChordRestGlyph}
-import music.model.write.track.Track
+import music.model.write.Track
 
 object ChordDisplay {
 

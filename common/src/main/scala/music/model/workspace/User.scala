@@ -1,8 +1,8 @@
-package music.model.write.user
+package music.model.workspace
 
 import java.util.UUID
 
-import music.model.write.user.User.UserId
+import music.model.workspace.User.UserId
 
 final case class User(
   id: UserId,

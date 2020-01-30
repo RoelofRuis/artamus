@@ -1,6 +1,6 @@
 package music.model.perform
 
-import music.model.write.track.Track
+import music.model.write.Track
 import music.primitives.{Loudness, MidiNoteNumber}
 
 object Interpretation {

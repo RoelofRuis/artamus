@@ -4,7 +4,7 @@ import javax.inject.{Inject, Singleton}
 import music.analysis.Quantization
 import music.math.Rational
 import music.math.temporal.{Duration, Position, Window}
-import music.model.write.track.Track
+import music.model.write.Track
 import music.primitives.{Note, NoteGroup}
 import protocol.Command
 import pubsub.Dispatcher

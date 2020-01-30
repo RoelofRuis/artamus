@@ -5,7 +5,7 @@ import music.math.temporal.{Duration, Position, Window}
 import music.model.display.staff.Inclusion.InclusionStrategy
 import music.model.display.staff.StaffGlyph._
 import music.model.display.{Bars, NoteValues}
-import music.model.write.track.Track
+import music.model.write.Track
 import music.primitives.{Key, Note, NoteGroup}
 
 object StaffDisplay {

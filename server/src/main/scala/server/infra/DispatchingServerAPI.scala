@@ -6,7 +6,7 @@ import server.Request
 import server.actions.control.Authenticate
 import com.typesafe.scalalogging.LazyLogging
 import javax.inject.{Inject, Singleton}
-import music.model.write.user.User
+import music.model.workspace.User
 import protocol.{Command, CommandRequest, DataResponse, Event, Query, QueryRequest, ServerRequest}
 import protocol.Exceptions._
 import protocol.server.api.{ConnectionHandle, ServerAPI}

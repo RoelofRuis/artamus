@@ -6,7 +6,7 @@ import com.typesafe.scalalogging.LazyLogging
 import javax.inject.Inject
 import music.model.display.Display
 import music.model.display.render.Render
-import music.model.write.track.Track
+import music.model.write.Track
 import protocol.Event
 import pubsub.EventBus
 import server.actions.writing.TrackRendered

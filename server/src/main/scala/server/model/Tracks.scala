@@ -1,8 +1,8 @@
 package server.model
 
 import music.math.temporal.Window
-import music.model.write.track.Track.TrackId
-import music.model.write.track._
+import music.model.write.Track.TrackId
+import music.model.write._
 import music.primitives._
 import spray.json.RootJsonFormat
 import storage.api.{DbIO, DbResult, ModelReader}

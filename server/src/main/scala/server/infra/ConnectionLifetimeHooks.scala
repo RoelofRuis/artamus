@@ -3,8 +3,8 @@ package server.infra
 import java.util.UUID
 
 import javax.inject.Inject
-import music.model.write.user.User
-import music.model.write.user.User.UserId
+import music.model.workspace.User
+import music.model.workspace.User.UserId
 import protocol.Event
 import pubsub.EventBus
 import server.actions.writing.TrackRendered

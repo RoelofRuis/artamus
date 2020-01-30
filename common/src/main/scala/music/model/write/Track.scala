@@ -1,9 +1,9 @@
-package music.model.write.track
+package music.model.write
 
 import java.util.UUID
 
 import music.math.temporal.Position
-import music.model.write.track.Track.TrackId
+import music.model.write.Track.TrackId
 import music.primitives.{Key, NoteGroup, TimeSignature}
 
 final case class Track(

@@ -1,6 +1,6 @@
 package music.model.display
 
-import music.model.write.track.Track
+import music.model.write.Track
 
 object Display {
 

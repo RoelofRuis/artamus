@@ -1,7 +1,7 @@
-package music.model.write.track
+package music.model.write
 
 import music.math.temporal.Position
-import music.primitives.{Accidental, Key, PitchSpelling, Scale, Step}
+import music.primitives._
 
 import scala.collection.immutable.SortedMap
 

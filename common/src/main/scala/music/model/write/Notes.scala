@@ -1,4 +1,4 @@
-package music.model.write.track
+package music.model.write
 
 import music.math.temporal.Position
 import music.primitives.{Note, NoteGroup}

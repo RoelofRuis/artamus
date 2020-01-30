@@ -1,6 +1,6 @@
 package server.analysis
 
-import music.model.write.track.Track
+import music.model.write.Track
 import server.analysis.blackboard.KnowledgeSource
 
 import scala.collection.immutable.SortedMap

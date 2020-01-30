@@ -1,7 +1,7 @@
 package server.analysis
 
 import music.analysis.TwelveToneChordAnalysis
-import music.model.write.track.{Chords, Track}
+import music.model.write.{Chords, Track}
 import server.analysis.blackboard.KnowledgeSource
 
 class ChordAnalyser extends KnowledgeSource[Track] {

@@ -1,7 +1,7 @@
 package server.actions.writing
 
 import javax.inject.{Inject, Singleton}
-import music.model.write.track.Track
+import music.model.write.Track
 import protocol.Query
 import pubsub.Dispatcher
 import server.Request
