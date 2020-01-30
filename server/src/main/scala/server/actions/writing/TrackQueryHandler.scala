@@ -1,7 +1,6 @@
 package server.actions.writing
 
 import javax.inject.{Inject, Singleton}
-import music.math.temporal.Position
 import music.model.write.track.Track
 import protocol.Query
 import pubsub.Dispatcher
@@ -21,7 +20,7 @@ private[server] class TrackQueryHandler @Inject() (
   dispatcher.subscribe[Perform.type]{ req =>
     import music.model.perform._
 
-    readTrack(req, _.perform(Position.ZERO), TrackPerformance())
+    readTrack(req, Interpretation.perform, TrackPerformance())
   }
 
   def readTrack[A](req: Request[Query], f: Track => A, onNotFound: => A): Try[A] = {

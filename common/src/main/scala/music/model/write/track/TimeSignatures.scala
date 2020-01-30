@@ -1,7 +1,7 @@
 package music.model.write.track
 
 import music.math.temporal.Position
-import music.primitives.{TimeSignature, TimeSignatureDivision}
+import music.primitives.TimeSignature
 
 import scala.collection.immutable.SortedMap
 
@@ -16,7 +16,7 @@ final case class TimeSignatures private (
 object TimeSignatures {
 
   def apply(): TimeSignatures = {
-    new TimeSignatures(SortedMap(Position.ZERO -> TimeSignature(TimeSignatureDivision.`4/4`)))
+    new TimeSignatures(SortedMap(Position.ZERO -> TimeSignature.`4/4`))
   }
 
 }

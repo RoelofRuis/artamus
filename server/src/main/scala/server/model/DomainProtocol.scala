@@ -111,7 +111,7 @@ trait DomainProtocol extends DefaultJsonProtocol {
   }
 
   implicit val rationalModel = jsonFormat2(Rational.apply)
-  implicit val timeSignatureFormat = jsonFormat1(TimeSignature)
+  implicit val timeSignatureFormat = jsonFormat1(TimeSignature.apply)
   implicit val scaleFormat = jsonFormat1(Scale.apply)
   implicit val pitchSpellingFormat = jsonFormat2(PitchSpelling)
   implicit val keyFormat = jsonFormat2(Key)

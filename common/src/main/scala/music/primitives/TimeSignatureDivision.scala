@@ -17,6 +17,4 @@ object TimeSignatureDivision {
     else None
   }
 
-  lazy val `4/4`: TimeSignatureDivision = TimeSignatureDivision(4, 4).get
-
 }
