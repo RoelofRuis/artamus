@@ -17,7 +17,7 @@ private[server] class RecordingCommandHandler @Inject() (
   storage: RecordingStorage,
 ) {
 
-  dispatcher.subscribe[StartRecording] { req =>
+  dispatcher.subscribe[ClearRecording] { req =>
     storage.startRecording(req.user.id)
 
     Responses.ok
@@ -33,13 +33,14 @@ private[server] class RecordingCommandHandler @Inject() (
   import music.analysis.TwelveToneTuning._
   import server.model.Tracks._
   import server.model.Workspaces._
-  dispatcher.subscribe[StopRecording] { req =>
-    storage.getAndResetRecording(req.user.id) match {
+  import Quantization._
+  dispatcher.subscribe[Quantize] { req =>
+    storage.getRecording(req.user.id) match {
       case None => Responses.ok
       case Some(recording) =>
         val recordedTrack = if (recording.notes.isEmpty) Track()
         else {
-          val quantized = Quantization.millisToPosition(recording.notes.map(n => (n.starts.v / 1000).toInt))
+          val quantized = Quantizable(recording.notes.map(n => (n.starts.v / 1000).toInt)).toPositionList
           recording
             .notes
             .zip(quantized.zip(quantized.drop(1).appended(quantized.last + Duration(Rational(1, 4)))))
