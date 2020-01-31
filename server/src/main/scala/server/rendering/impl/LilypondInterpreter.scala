@@ -22,13 +22,7 @@ private[rendering] class LilypondInterpreter(
         |}
         |
         |\\score {
-        |<<
-        |\\new GrandStaff <<
-        |${track.upper.toLilypond}
-        |${track.lower.toLilypond}
-        |>>
-        |${track.chords.toLilypond}
-        |>>
+        |${track.staffGroup.toLilypond}
         |}
         |""".stripMargin
     LyFile(contents)

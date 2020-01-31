@@ -4,7 +4,7 @@ import music.analysis.TwelveTonePitchSpelling
 import music.math.temporal.{Duration, Position, Window}
 import music.model.display.staff.Inclusion.InclusionStrategy
 import music.model.display.staff.StaffGlyph._
-import music.model.display.{Bars, NoteValues}
+import music.model.display.{Bars, NoteValues, StaffGroup}
 import music.model.write.Track
 import music.primitives.{Key, Note, NoteGroup}
 
@@ -18,10 +18,12 @@ object StaffDisplay {
     private val initialKey: Key = track.keys.initialKey
 
     // TODO: dynamic reading window
-    def getStaves: (Staff, Staff) = {
-      (
-        Staff(Treble, initialElements() ++ read(Inclusion.higherNoteNumbers(59))),
-        Staff(Bass, initialElements() ++ read(Inclusion.lowerEqualNoteNumbers(59)))
+    def getNoteStaffGroup: StaffGroup = {
+      StaffGroup(
+        GrandStaff(
+          NoteStaff(Treble, initialElements() ++ read(Inclusion.higherNoteNumbers(59))),
+          NoteStaff(Bass, initialElements() ++ read(Inclusion.lowerEqualNoteNumbers(59)))
+        )
       )
     }
 
