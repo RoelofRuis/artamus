@@ -1,5 +1,6 @@
 package client.module.midi
 
+import java.util.concurrent.atomic.AtomicBoolean
 import java.util.concurrent.{BlockingQueue, LinkedBlockingQueue}
 
 import com.typesafe.scalalogging.LazyLogging
@@ -15,24 +16,30 @@ class MidiRecorder @Inject() (
   client: ClientInterface
 ) extends Thread with Receiver with LazyLogging {
 
+  private val active: AtomicBoolean = new AtomicBoolean(false)
   private val queue: BlockingQueue[(MidiMessage, Long)] = new LinkedBlockingQueue[(MidiMessage, Long)]()
+
+  def activate(): Unit = active.set(true)
+  def deactivate(): Unit = active.set(false)
 
   override def run(): Unit = {
     try {
       while ( ! isInterrupted ) {
         val (message, microsecondTimestamp) = queue.take()
-        message match {
-          case msg: ShortMessage if Midi.IsNoteOn(msg) =>
-            val note = RawMidiNote(
-              MidiNoteNumber(msg.getData1),
-              Loudness(msg.getData2),
-              MillisecondPosition.fromMicroseconds(microsecondTimestamp)
-            )
-            client.sendCommand(RecordNote(note)) match {
-              case None =>
-              case Some(ex) => logger.error("Unable to send recorded note", ex)
-            }
-          case _ =>
+        if (active.get()) {
+          message match {
+            case msg: ShortMessage if Midi.IsNoteOn(msg) =>
+              val note = RawMidiNote(
+                MidiNoteNumber(msg.getData1),
+                Loudness(msg.getData2),
+                MillisecondPosition.fromMicroseconds(microsecondTimestamp)
+              )
+              client.sendCommand(RecordNote(note)) match {
+                case None =>
+                case Some(ex) => logger.error("Unable to send recorded note", ex)
+              }
+            case _ =>
+          }
         }
       }
     } catch {
