@@ -1,9 +1,9 @@
 package server.actions.recording
 
 import javax.inject.{Inject, Singleton}
-import music.analysis.Quantization
 import music.math.Rational
 import music.math.temporal.{Duration, Position, Window}
+import music.model.record.{Quantization, Quantizer}
 import music.model.write.Track
 import music.primitives.{Note, NoteGroup}
 import protocol.Command
@@ -30,20 +30,17 @@ private[server] class RecordingCommandHandler @Inject() (
   }
 
   // TODO: extract track writing logic
+  import Quantization._
   import music.analysis.TwelveToneTuning._
   import server.model.Tracks._
   import server.model.Workspaces._
-  import Quantization._
   dispatcher.subscribe[Quantize] { req =>
     storage.getRecording(req.user.id) match {
       case None => Responses.ok
       case Some(recording) =>
         val recordedTrack = if (recording.notes.isEmpty) Track()
         else {
-          val quantized = Quantizable(
-            recording.notes.map(_.starts),
-            wholeNoteDuration = req.attributes.wholeNoteDuration.getOrElse(2000)
-          ).toPositionList
+          val quantized = req.attributes.customQuantizer.getOrElse(Quantizer()).quantize(recording.notes.map(_.starts))
           recording
             .notes
             .zip(quantized.zip(quantized.drop(1).appended(quantized.last + Duration(Rational(1, 4)))))

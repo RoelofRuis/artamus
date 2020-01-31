@@ -4,6 +4,7 @@ import client.module.Operations.{OperationRegistry, ServerOperation}
 import client.module.midi.MidiRecorder
 import client.util.StdIOTools
 import com.google.inject.Inject
+import music.model.record.Quantizer
 import server.actions.recording.{ClearRecording, Quantize}
 import server.actions.writing.Render
 
@@ -32,7 +33,7 @@ class RecordingOperations @Inject() (
     val wholeNoteDuration: Int = StdIOTools.readInt("whole note duration")
 
     ServerOperation(
-      Quantize(Some(wholeNoteDuration)),
+      Quantize(Some(Quantizer(wholeNoteDuration = wholeNoteDuration))),
       Render
     )
   })
