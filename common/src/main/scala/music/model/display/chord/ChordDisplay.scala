@@ -16,7 +16,7 @@ object ChordDisplay {
     private val chords = track.chords.read
     private val initialKey = track.keys.initialKey
 
-    def getChordStaffGroup: StaffGroup = {
+    def getChords: StaffGroup = {
       // TODO: dynamic reading window
       val window = Window.instantAt(Position.ZERO)
       StaffGroup(ChordStaff(read(window)))

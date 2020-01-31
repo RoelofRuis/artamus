@@ -13,4 +13,7 @@ object Inclusion {
 
   def lowerEqualNoteNumbers(bound: Int): InclusionStrategy = noteGroup =>
     noteGroup.notes.filter(note => MidiNoteNumber(note.octave, note.pitchClass).value <= bound)
+
+  def all: InclusionStrategy = noteGroup => noteGroup.notes
+
 }

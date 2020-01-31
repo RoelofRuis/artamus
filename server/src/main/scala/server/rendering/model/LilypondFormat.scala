@@ -4,7 +4,7 @@ import music.analysis.TwelveToneTuning.TwelveToneFunctions
 import music.model.display.StaffGroup
 import music.model.display.chord.ChordStaff
 import music.model.display.chord.ChordStaffGlyph.{ChordNameGlyph, ChordRestGlyph}
-import music.model.display.staff.{Bass, Clef, GrandStaff, NoteStaff, Treble}
+import music.model.display.staff.{Bass, Clef, GrandStaff, NoteStaff, RhythmicStaff, Treble}
 import music.model.display.staff.StaffGlyph.{FullBarRestGlyph, KeyGlyph, NoteGroupGlyph, RestGlyph, TimeSignatureGlyph}
 import music.primitives._
 
@@ -27,8 +27,22 @@ private[rendering] object LilypondFormat {
       case s: NoteStaff => s.toLilypond
       case s: ChordStaff => s.toLilypond
       case s: GrandStaff => s.toLilypond
+      case s: RhythmicStaff => s.toLilypond
       case _ => ""
     }.mkString("\n<<", "", "\n>>")
+  }
+
+  implicit val rhythmicStaffFormat: LilypondFormat[RhythmicStaff] = staff => {
+    val contents = staff.glyphs.map {
+      case g: NoteGroupGlyph => s"c${g.duration.toLilypond}"
+      case g: RestGlyph => g.toLilypond
+      case g: FullBarRestGlyph => g.toLilypond
+      case g: TimeSignatureGlyph => g.toLilypond
+      case _ => ""
+    }.mkString("\n")
+    s"""\\new RhythmicStaff {
+       |${contents}
+       |}""".stripMargin
   }
 
   implicit val grandStaffFormat: LilypondFormat[GrandStaff] = staff => {
@@ -55,8 +69,7 @@ private[rendering] object LilypondFormat {
        |${staff.clef.toLilypond}
        |$contents
        |\\bar "|."
-       |}
-       |""".stripMargin
+       |}""".stripMargin
   }
 
   implicit val clefFormat: LilypondFormat[Clef] = {

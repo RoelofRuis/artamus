@@ -8,8 +8,8 @@ object Display {
   import music.model.display.staff.StaffDisplay._
 
   def displayTrack(track: Track): TrackDisplay = {
-    val noteStaffGroup = track.getNoteStaffGroup
-    val chordStaffGroup = track.getChordStaffGroup
+    val noteStaffGroup = track.getNotes
+    val chordStaffGroup = track.getChords
 
     TrackDisplay(noteStaffGroup + chordStaffGroup)
   }

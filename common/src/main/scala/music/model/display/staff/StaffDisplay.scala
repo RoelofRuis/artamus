@@ -18,7 +18,14 @@ object StaffDisplay {
     private val initialKey: Key = track.keys.initialKey
 
     // TODO: dynamic reading window
-    def getNoteStaffGroup: StaffGroup = {
+
+    def getRhythm: StaffGroup = {
+      StaffGroup(
+        RhythmicStaff(initialElements() ++ read(Inclusion.all))
+      )
+    }
+
+    def getNotes: StaffGroup = {
       StaffGroup(
         GrandStaff(
           NoteStaff(Treble, initialElements() ++ read(Inclusion.higherNoteNumbers(59))),
