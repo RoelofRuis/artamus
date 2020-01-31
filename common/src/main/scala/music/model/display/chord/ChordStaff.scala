@@ -1,3 +1,5 @@
 package music.model.display.chord
 
-final case class ChordStaff(glyphs: Iterator[ChordStaffGlyph])
+import music.model.display.Staff
+
+final case class ChordStaff(glyphs: Iterator[ChordStaffGlyph]) extends Staff

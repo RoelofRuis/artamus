@@ -2,7 +2,7 @@ package music.model.display.chord
 
 import music.analysis.TwelveTonePitchSpelling
 import music.math.temporal.{Position, Window}
-import music.model.display.{Bars, NoteValues}
+import music.model.display.{Bars, NoteValues, StaffGroup}
 import music.model.display.chord.ChordStaffGlyph.{ChordNameGlyph, ChordRestGlyph}
 import music.model.write.Track
 
@@ -16,10 +16,10 @@ object ChordDisplay {
     private val chords = track.chords.read
     private val initialKey = track.keys.initialKey
 
-    def getChordStaff: ChordStaff = {
+    def getChordStaffGroup: StaffGroup = {
       // TODO: dynamic reading window
       val window = Window.instantAt(Position.ZERO)
-      ChordStaff(read(window))
+      StaffGroup(ChordStaff(read(window)))
     }
 
     private def read(window: Window): Iterator[ChordStaffGlyph] = {
