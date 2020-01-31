@@ -1,6 +1,7 @@
 package client.module.midi
 
 import client.ModuleLifetimeHooks
+import client.module.midi.operations.{DebugOperations, DeviceOperations, EditOperations, PlaybackOperations}
 import midi.read.MidiInput
 import midi.write.MidiSequenceWriter
 import midi.{DeviceHash, MidiResourceLoader}
@@ -19,10 +20,10 @@ class MidiModule extends ScalaPrivateModule {
   override def configure(): Unit = {
     bind[ModuleLifetimeHooks].to[MidiLifetimeHooks]
 
-    bind[MidiOperations].asEagerSingleton()
-    bind[MidiDebugOperations].asEagerSingleton()
-    bind[MidiEditOperations].asEagerSingleton()
-    bind[MidiPlaybackOperations].asEagerSingleton()
+    bind[DeviceOperations].asEagerSingleton()
+    bind[DebugOperations].asEagerSingleton()
+    bind[EditOperations].asEagerSingleton()
+    bind[PlaybackOperations].asEagerSingleton()
 
     bind[PatchPanel].asEagerSingleton()
     bind[MidiResourceLoader].asEagerSingleton()

@@ -1,13 +1,14 @@
-package client.module.midi
+package client.module.midi.operations
 
 import client.module.Operations.OperationRegistry
+import client.module.midi.MusicReader
 import javax.inject.Inject
 import midi.read.MidiInput
 import music.math.temporal.Position
 import music.primitives.{TimeSignature, _}
 import server.actions.writing._
 
-class MidiEditOperations @Inject() (
+class EditOperations @Inject() (
   registry: OperationRegistry,
   midiInput: MidiInput,
 ) {

@@ -1,14 +1,15 @@
-package client.module.midi
+package client.module.midi.operations
 
-import client.util.ClientLogging
 import client.module.Operations.OperationRegistry
+import client.module.midi.MusicWriter
+import client.util.ClientLogging
 import com.typesafe.scalalogging.LazyLogging
 import javax.inject.Inject
 import midi.write.MidiSequenceWriter
 import protocol.client.api.ClientInterface
 import server.actions.writing._
 
-class MidiPlaybackOperations @Inject() (
+class PlaybackOperations @Inject() (
   registry: OperationRegistry,
   midiOutput: MidiSequenceWriter,
   client: ClientInterface

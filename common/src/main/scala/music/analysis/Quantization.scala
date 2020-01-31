@@ -3,6 +3,7 @@ package music.analysis
 import music.math.HierarchicalClustering.Centroid
 import music.math.temporal.{Duration, Position}
 import music.math.{HierarchicalClustering, Rational}
+import music.primitives.MillisecondPosition
 
 import scala.annotation.tailrec
 
@@ -25,7 +26,7 @@ object Quantization {
    * @param debug Whether printing of debug information is allowed. // TODO: implement!
    */
   final case class Quantizable(
-    input: Seq[Long],
+    input: Seq[MillisecondPosition],
     instantaneousThreshold: Int = 30,
     interClusterDistance: Int = 100,
     wholeNoteDuration: Int = 2000,
@@ -42,7 +43,7 @@ object Quantization {
     def toPositionList: List[Position] = {
       val differenceList = (quantizable.input drop 1)
         .lazyZip(quantizable.input)
-        .map((`n+1`, n) => (`n+1` - n).toDouble)
+        .map((`n+1`, n) => (`n+1`.v - n.v).toDouble)
 
       val nonInstantDifferences = differenceList.filter(_ > quantizable.instantaneousThreshold)
 

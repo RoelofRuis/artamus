@@ -121,7 +121,7 @@ trait DomainProtocol extends DefaultJsonProtocol {
   implicit val functionFormat = jsonFormat2(Function)
   implicit val chordFormat = jsonFormat2(Chord.apply)
   implicit val noteGroupFormat = jsonFormat2(NoteGroup)
-  implicit val tickPositionFormat = jsonFormat1(MillisecondPosition)
+  implicit val tickPositionFormat = jsonFormat1(MillisecondPosition.apply)
   implicit val loudnessFormat = jsonFormat1(Loudness)
   implicit val midiNoteNumberFormat = jsonFormat1(MidiNoteNumber.apply)
   implicit val rawMidiNoteFormat = jsonFormat3(RawMidiNote)

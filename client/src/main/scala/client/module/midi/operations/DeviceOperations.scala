@@ -1,26 +1,16 @@
-package client.module.midi
+package client.module.midi.operations
 
-import client.module.Operations.{OperationRegistry, ServerOperation}
+import client.module.Operations.OperationRegistry
 import com.google.inject.Inject
 import javax.sound.midi.MidiDevice.Info
 import midi.MidiResourceLoader
 import patching.PatchPanel
-import server.actions.recording.{ClearRecording, Quantize}
-import server.actions.writing.Render
 
-class MidiOperations @Inject() (
+class DeviceOperations @Inject() (
   patchPanel: PatchPanel,
   loader: MidiResourceLoader,
   registry: OperationRegistry,
 ) {
-
-  registry.server("rec", "midi", {
-    ServerOperation(ClearRecording())
-  })
-
-  registry.server("quantize", "midi", {
-    ServerOperation(Quantize(), Render)
-  })
 
   registry.local("devices", "midi", {
     loader.viewAvailableDevices.foreach { case (hash, info: Info) =>

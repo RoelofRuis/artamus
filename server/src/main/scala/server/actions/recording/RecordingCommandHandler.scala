@@ -40,7 +40,9 @@ private[server] class RecordingCommandHandler @Inject() (
       case Some(recording) =>
         val recordedTrack = if (recording.notes.isEmpty) Track()
         else {
-          val quantized = Quantizable(recording.notes.map(n => (n.starts.v / 1000).toInt)).toPositionList
+          val quantized = Quantizable(
+            recording.notes.map(_.starts)
+          ).toPositionList
           recording
             .notes
             .zip(quantized.zip(quantized.drop(1).appended(quantized.last + Duration(Rational(1, 4)))))

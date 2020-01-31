@@ -20,13 +20,13 @@ class MidiRecorder @Inject() (
   override def run(): Unit = {
     try {
       while ( ! isInterrupted ) {
-        val (message, timestamp) = queue.take()
+        val (message, microsecondTimestamp) = queue.take()
         message match {
           case msg: ShortMessage if Midi.IsNoteOn(msg) =>
             val note = RawMidiNote(
               MidiNoteNumber(msg.getData1),
               Loudness(msg.getData2),
-              MillisecondPosition(timestamp)
+              MillisecondPosition.fromMicroseconds(microsecondTimestamp)
             )
             client.sendCommand(RecordNote(note)) match {
               case None =>
@@ -40,8 +40,8 @@ class MidiRecorder @Inject() (
     }
   }
 
-  override def send(message: MidiMessage, timeStamp: Long): Unit = {
-    val elem = (message, timeStamp)
+  override def send(message: MidiMessage, microsecondPosition: Long): Unit = {
+    val elem = (message, microsecondPosition)
     queue.offer(elem)
   }
 
