@@ -4,16 +4,16 @@ import java.util.concurrent.atomic.AtomicBoolean
 import java.util.concurrent.{BlockingQueue, LinkedBlockingQueue}
 
 import api.Record.RecordNote
+import client.Client
 import com.typesafe.scalalogging.LazyLogging
 import domain.primitives.{Loudness, MidiNoteNumber}
 import domain.record.{MillisecondPosition, RawMidiNote}
 import javax.inject.Inject
 import javax.sound.midi.{MidiMessage, Receiver, ShortMessage}
 import midi.read.Midi
-import protocol.client.api.ClientInterface
 
 class MidiRecorder @Inject() (
-  client: ClientInterface
+  client: Client
 ) extends Thread with Receiver with LazyLogging {
 
   private val active: AtomicBoolean = new AtomicBoolean(false)

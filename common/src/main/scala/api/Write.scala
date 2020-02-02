@@ -4,7 +4,6 @@ import domain.display.render.Render
 import domain.math.temporal.Position
 import domain.perform.TrackPerformance
 import domain.primitives.{Key, NoteGroup, TimeSignature}
-import protocol.{Command, Event, Query}
 
 object Write {
 

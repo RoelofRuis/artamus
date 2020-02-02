@@ -1,21 +1,20 @@
 package server.infra
 
+import api.{Event, Req}
 import net.codingwell.scalaguice.ScalaModule
 import protocol.server.api.{ServerAPI, ServerConfig, ServerFactory}
-import protocol.{Command, Event, Query}
-import pubsub.{Dispatcher, EventBus}
+import pubsub.EventBus
 import server.Request
 
 class ServerInfraModule extends ScalaModule {
   override def configure(): Unit = {
-    bind[Dispatcher[Request, Query]].toInstance(pubsub.createDispatcher[Request, Query]())
-    bind[Dispatcher[Request, Command]].toInstance(pubsub.createDispatcher[Request, Command]())
-    bind[EventBus[Event]].toInstance(new EventBus[Event])
+    bind[ServerDispatcher].toInstance(pubsub.createDispatcher[Request, Req]())
+    bind[ServerEventBus].toInstance(new EventBus[Event])
 
     bind[ConnectionLifetimeHooks].asEagerSingleton()
 
     bind[ServerConfig].toInstance(ServerConfig(9999))
-    bind[ServerAPI].to[DispatchingServerAPI]
-    bind[ServerFactory]
+    bind[ServerAPI[Event]].to[DispatchingServerAPI]
+    bind[ServerFactory[Event]]
   }
 }

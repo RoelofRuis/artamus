@@ -1,14 +1,14 @@
 package client.module.midi.operations
 
 import api.Record.GetCurrentRecording
+import client.Client
 import client.module.Operations.OperationRegistry
 import client.util.ClientLogging
 import com.google.inject.Inject
-import protocol.client.api.ClientInterface
 
 class DebugOperations @Inject() (
   registry: OperationRegistry,
-  client: ClientInterface
+  client: Client
 ) {
 
   import ClientLogging._

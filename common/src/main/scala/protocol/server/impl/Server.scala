@@ -9,14 +9,14 @@ import protocol.server.api.{ServerAPI, ServerInterface}
 import scala.concurrent.{Future, Promise}
 import scala.util.{Failure, Success, Try}
 
-private[server] final class Server(serverSocket: ServerSocket, api: ServerAPI) extends ServerInterface {
+private[server] final class Server[E](serverSocket: ServerSocket, api: ServerAPI[E]) extends ServerInterface {
 
   private val connectionExecutor: ExecutorService = Executors.newFixedThreadPool(1)
 
   override def accept(): Unit = {
     api.serverStarted()
     while ( ! connectionExecutor.isShutdown) {
-      ConnectionFactory.acceptNext(serverSocket, api) match {
+      ConnectionFactory.acceptNext[E](serverSocket, api) match {
         case Left(_: IOException) if serverSocket.isClosed =>
           api.serverShuttingDown()
 

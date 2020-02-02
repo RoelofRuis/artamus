@@ -2,14 +2,13 @@ package client.events
 
 import com.google.inject.Inject
 import com.typesafe.scalalogging.LazyLogging
-import protocol.Event
-import protocol.client.api.{ConnectingFailed, ConnectingStarted, ConnectionLost, ConnectionMade}
+import protocol.client.api._
 import pubsub.{Callback, Dispatcher}
 
 import scala.util.Success
 
 class ConnectionEventHandler @Inject() (
-  dispatcher: Dispatcher[Callback, Event],
+  dispatcher: Dispatcher[Callback, ConnectionEvent],
 ) extends LazyLogging {
 
   dispatcher.subscribe[ConnectingStarted.type] { _ =>

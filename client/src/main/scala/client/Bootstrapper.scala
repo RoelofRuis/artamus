@@ -1,19 +1,18 @@
 package client
 
+import api.Command
 import api.Control.Authenticate
 import client.events.RenderHandler
 import client.module.Operations.{LocalOperation, Operation, OperationRegistry, ServerOperation}
 import client.util.ClientLogging
 import com.typesafe.scalalogging.LazyLogging
 import javax.inject.Inject
-import protocol.Command
-import protocol.client.api.ClientInterface
 
 import scala.annotation.tailrec
 import scala.util.{Failure, Success}
 
 class Bootstrapper @Inject() (
-  client: ClientInterface,
+  client: Client,
   registry: OperationRegistry,
   renderHandler: RenderHandler,
   moduleLifetimeHooks: ModuleLifetimeHooks // Expand only as more hooks are needed

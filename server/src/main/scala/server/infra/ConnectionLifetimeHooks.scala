@@ -6,13 +6,11 @@ import api.Write.TrackRendered
 import domain.workspace.User
 import domain.workspace.User.UserId
 import javax.inject.Inject
-import protocol.Event
-import pubsub.EventBus
 import storage.api.Database
 
 final class ConnectionLifetimeHooks @Inject() (
   db: Database,
-  eventbus: EventBus[Event],
+  eventbus: ServerEventBus,
 ) {
 
   import server.model.Renders._

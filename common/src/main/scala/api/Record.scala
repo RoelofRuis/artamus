@@ -1,7 +1,6 @@
 package api
 
 import domain.record.{Quantizer, RawMidiNote, Recording}
-import protocol.{Command, Query}
 
 object Record {
 

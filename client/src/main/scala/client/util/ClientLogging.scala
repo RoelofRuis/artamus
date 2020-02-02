@@ -1,15 +1,15 @@
 package client.util
 
+import api.{Command, Query}
+import client.Client
 import com.typesafe.scalalogging.LazyLogging
 import protocol.Exceptions.CommunicationException
-import protocol.client.api.ClientInterface
-import protocol.{Command, Query}
 
 object ClientLogging {
 
-  implicit class LoggedClientOps(client: ClientInterface) extends LazyLogging {
+  implicit class LoggedClientOps(client: Client) extends LazyLogging {
     def sendCommandLogged[A <: Command](command: A): Option[CommunicationException] = {
-      client.sendCommand(command: A) match {
+      client.sendCommand(command) match {
         case None =>
           logger.debug(s"Command [$command] executed")
           None

@@ -1,18 +1,18 @@
 package server.actions.writing
 
+import api.Query
 import api.Write.Perform
-import javax.inject.{Inject, Singleton}
 import domain.write.Track
-import protocol.Query
-import pubsub.Dispatcher
+import javax.inject.{Inject, Singleton}
 import server.Request
 import server.actions.Responses
+import server.infra.ServerDispatcher
 
 import scala.util.Try
 
 @Singleton
 private[server] class TrackQueryHandler @Inject() (
-  dispatcher: Dispatcher[Request, Query]
+  dispatcher: ServerDispatcher
 ) {
 
   import server.model.Tracks._

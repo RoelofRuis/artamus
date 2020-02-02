@@ -1,20 +1,18 @@
 package server.actions.recording
 
 import api.Record.{ClearRecording, Quantize, RecordNote}
-import javax.inject.{Inject, Singleton}
 import domain.math.Rational
 import domain.math.temporal.{Duration, Position, Window}
+import domain.primitives.{Note, NoteGroup}
 import domain.record.{Quantization, Quantizer}
 import domain.write.Track
-import domain.primitives.{Note, NoteGroup}
-import protocol.Command
-import pubsub.Dispatcher
-import server.Request
+import javax.inject.{Inject, Singleton}
 import server.actions.Responses
+import server.infra.ServerDispatcher
 
 @Singleton
 private[server] class RecordingCommandHandler @Inject() (
-  dispatcher: Dispatcher[Request, Command],
+  dispatcher: ServerDispatcher,
   storage: RecordingStorage,
 ) {
 

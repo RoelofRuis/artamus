@@ -1,20 +1,20 @@
 package client.module.terminal
 
-import api.Write.{Perform, Render, WriteKey, WriteNoteGroup, WriteTimeSignature}
+import api.Command
+import api.Write._
+import client.Client
 import client.module.Operations.{OperationRegistry, ServerOperation}
 import client.util.{ClientLogging, StdIOTools}
 import domain.math.Rational
 import domain.math.temporal.{Duration, Position, Window}
 import domain.primitives.{NoteGroup, TimeSignature}
 import javax.inject.Inject
-import protocol.Command
-import protocol.client.api.ClientInterface
 
 import scala.annotation.tailrec
 
 class TerminalOperations @Inject() (
   registry: OperationRegistry,
-  client: ClientInterface,
+  client: Client,
 ) {
 
   import ClientLogging._

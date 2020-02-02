@@ -1,21 +1,21 @@
 package server.actions.writing
 
-import api.Write.{Analyse, NewWorkspace, WriteKey, WriteNoteGroup, WriteTimeSignature}
-import javax.inject.{Inject, Singleton}
+import api.Command
+import api.Write._
 import domain.workspace.Workspace
 import domain.write.Track
-import protocol.Command
-import pubsub.Dispatcher
+import javax.inject.{Inject, Singleton}
 import server.Request
 import server.actions.Responses
 import server.analysis.blackboard.Controller
+import server.infra.ServerDispatcher
 import storage.api.DbResult
 
 import scala.util.Try
 
 @Singleton
 private[server] class TrackUpdateHandler @Inject() (
-  dispatcher: Dispatcher[Request, Command],
+  dispatcher: ServerDispatcher,
   analysis: Controller[Track]
 ) {
 

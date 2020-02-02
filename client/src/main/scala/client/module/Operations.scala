@@ -1,6 +1,6 @@
 package client.module
 
-import protocol.Command
+import api.Command
 
 import scala.util.{Success, Try}
 

@@ -5,14 +5,14 @@ import java.net.Socket
 
 import protocol.server.api.ServerAPI
 
-private[server] final class Connection(
-  api: ServerAPI,
+private[server] final class Connection[E](
+  api: ServerAPI[E],
   socket: Socket,
   inputStream: ObjectInputStream,
   outputStream: ObjectOutputStream
 ) extends Runnable {
 
-  final private val CONNECTION = ConnectionHandleImpl(outputStream)
+  final private val CONNECTION = ConnectionHandleImpl[E](outputStream)
 
   override def run(): Unit = {
     api.connectionOpened(CONNECTION)

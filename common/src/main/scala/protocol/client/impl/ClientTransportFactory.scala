@@ -10,7 +10,7 @@ import scala.util.{Failure, Success, Try}
 
 private[client] object ClientTransportFactory {
 
-  def create(config: ClientConfig, eventScheduler: EventScheduler): Either[TransportException, ClientTransport] = {
+  def create[E](config: ClientConfig, eventScheduler: EventScheduler[E]): Either[TransportException, ClientTransport] = {
     val transport = for {
       socket <- Try { new Socket(InetAddress.getByName(config.host), config.port) }
       objOut <- Try { new ObjectOutputStream(socket.getOutputStream) }

@@ -1,9 +1,7 @@
 package protocol.client.api
 
-import protocol.Event
+trait EventDispatcher[E] {
 
-trait EventDispatcher {
-
-  def dispatch(event: Event): Unit
+  def dispatch(event: E): Unit
 
 }

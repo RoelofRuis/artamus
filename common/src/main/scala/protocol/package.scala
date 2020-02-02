@@ -2,16 +2,10 @@ import protocol.Exceptions.ResponseException
 
 package object protocol {
 
-  trait Command { final type Res = Unit }
-  trait Query { type Res }
-  trait Event { final type Res = Unit }
+  final case class RequestMessage[A](req: A)
 
-  sealed trait ServerRequest
-  final case class CommandRequest(command: Command) extends ServerRequest
-  final case class QueryRequest(query: Query) extends ServerRequest
-
-  sealed trait ServerResponse
-  final case class DataResponse(data: Either[ResponseException, Any]) extends ServerResponse
-  final case class EventResponse[A <: Event](event: A) extends ServerResponse
+  private[protocol] sealed trait ResponseMessage
+  private[protocol] final case class DataResponseMessage(data: Either[ResponseException, Any]) extends ResponseMessage
+  private[protocol] final case class EventResponseMessage[A](event: A) extends ResponseMessage
 
 }
