@@ -3,6 +3,7 @@ package protocol.server.impl
 import java.io.{ObjectInputStream, ObjectOutputStream}
 import java.net.Socket
 
+import protocol.DataResponseMessage
 import protocol.server.api.ServerAPI
 
 import scala.util.{Failure, Success, Try}
@@ -25,14 +26,14 @@ private[server] final class Connection[R, E](
 
         val response = Try { requestObject.asInstanceOf[R] } match {
           case Failure(ex) =>
-            api.handleReceiveFailure(CONNECTION, ex)
+            Left(api.handleReceiveFailure(CONNECTION, ex))
 
           case Success(req) =>
             val mainResponse = api.handleRequest(CONNECTION, req)
             api.afterRequest(CONNECTION, mainResponse)
         }
 
-        outputStream.writeObject(response)
+        outputStream.writeObject(DataResponseMessage(response))
       }
       api.connectionClosed(CONNECTION, None)
     } catch {

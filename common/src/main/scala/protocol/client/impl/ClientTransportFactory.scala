@@ -4,13 +4,13 @@ import java.io.{ObjectInputStream, ObjectOutputStream}
 import java.net.{InetAddress, Socket}
 
 import protocol.Exceptions.{ConnectionException, TransportException}
-import protocol.client.api.ClientConfig
+import protocol.client.api.{ClientConfig, ConnectionEvent}
 
 import scala.util.{Failure, Success, Try}
 
 private[client] object ClientTransportFactory {
 
-  def create[E](config: ClientConfig, eventScheduler: EventScheduler[E]): Either[TransportException, ClientTransport] = {
+  def create[E](config: ClientConfig, eventScheduler: EventScheduler[Either[ConnectionEvent, E]]): Either[TransportException, ClientTransport] = {
     val transport = for {
       socket <- Try { new Socket(InetAddress.getByName(config.host), config.port) }
       objOut <- Try { new ObjectOutputStream(socket.getOutputStream) }

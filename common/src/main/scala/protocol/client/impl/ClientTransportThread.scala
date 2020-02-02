@@ -8,6 +8,7 @@ import java.util.concurrent.{ArrayBlockingQueue, BlockingQueue}
 import javax.annotation.concurrent.NotThreadSafe
 import protocol.{DataResponseMessage, EventResponseMessage, ResponseMessage}
 import protocol.Exceptions._
+import protocol.client.api.ConnectionEvent
 
 import scala.util.{Failure, Success, Try}
 
@@ -16,7 +17,7 @@ private[client] final class ClientTransportThread[E](
   val socket: Socket,
   val inputStream: ObjectInputStream,
   val outputStream: ObjectOutputStream,
-  val eventScheduler: EventScheduler[E],
+  val eventScheduler: EventScheduler[Either[ConnectionEvent, E]],
 ) extends Thread with ClientTransport {
 
   private val readQueue: BlockingQueue[Either[CommunicationException, DataResponseMessage]] = new ArrayBlockingQueue[Either[CommunicationException, DataResponseMessage]](64)
@@ -72,14 +73,15 @@ private[client] final class ClientTransportThread[E](
         response match {
           case Success(d @ DataResponseMessage(_)) if expectsData.get() => readQueue.put(Right(d))
           case Success(_ @ DataResponseMessage(_)) => readQueue.put(Left(UnexpectedDataResponse))
-          case Success(e @ EventResponseMessage(_)) =>
-            decode[E](e.event) match {
-              case Success(e) => eventScheduler.schedule(e)
-              case Failure(ex) if expectsData.get() => readQueue.put(Left(ReadException(ex)))
-              case Failure(_) => // TODO: determine what to do on completely unexpected failure
+          case Success(EventResponseMessage(event)) =>
+            decode[E](event) match {
+              case Success(e) => eventScheduler.schedule(Right(e))
+              case Failure(ex) =>
+                ex.printStackTrace() // TODO: determine what to do on completely unexpected failure
             }
           case Failure(ex) if expectsData.get() => readQueue.put(Left(ReadException(ex)))
-          case Failure(_) => // TODO: determine what to do on completely unexpected failure
+          case Failure(ex) =>
+            ex.printStackTrace()// TODO: determine what to do on completely unexpected failure
         }
       }
     } catch {
