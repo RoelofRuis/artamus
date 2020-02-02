@@ -7,5 +7,6 @@ final case class StaffGroup(staves: Seq[Staff]) {
 object StaffGroup {
 
   def apply(staff: Staff): StaffGroup = StaffGroup(Seq(staff))
+  def empty: StaffGroup = StaffGroup(Seq())
 
 }

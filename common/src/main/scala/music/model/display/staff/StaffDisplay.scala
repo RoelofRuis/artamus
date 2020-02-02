@@ -5,7 +5,7 @@ import music.math.temporal.{Duration, Position, Window}
 import music.model.display.staff.Inclusion.InclusionStrategy
 import music.model.display.staff.StaffGlyph._
 import music.model.display.{Bars, NoteValues, StaffGroup}
-import music.model.write.Track
+import music.model.write.{Keys, Notes, TimeSignatures}
 import music.primitives.{Key, Note, NoteGroup}
 
 object StaffDisplay {
@@ -13,9 +13,15 @@ object StaffDisplay {
   import Bars._
   import NoteValues._
 
-  implicit class StaffDisplayOps(track: Track) {
+  final case class StaffDisplayable(
+    timeSignatures: TimeSignatures,
+    keys: Keys,
+    notes: Notes
+  )
 
-    private val initialKey: Key = track.keys.initialKey
+  implicit class StaffDisplayableOps(disp: StaffDisplayable) {
+
+    private val initialKey: Key = disp.keys.initialKey
 
     // TODO: dynamic reading window
 
@@ -35,7 +41,7 @@ object StaffDisplay {
     }
 
     private def initialElements(): Iterator[StaffGlyph] = Iterator(
-      TimeSignatureGlyph(track.timeSignatures.initialTimeSignature.division),
+      TimeSignatureGlyph(disp.timeSignatures.initialTimeSignature.division),
       KeyGlyph(initialKey.root, initialKey.scale)
     )
 
@@ -47,12 +53,12 @@ object StaffDisplay {
           case group :: Nil =>
             include(group) match {
               case Nil =>
-                val nextBarLinePos = track.timeSignatures.nextBarLine(group.window.end)
+                val nextBarLinePos = disp.timeSignatures.nextBarLine(group.window.end)
                 fillWithRests(cursor, nextBarLinePos)
 
               case notes =>
                 val glyphs = calculateGlyphs(cursor, group.window, notes)
-                val nextBarLine = track.timeSignatures.nextBarLine(group.window.end)
+                val nextBarLine = disp.timeSignatures.nextBarLine(group.window.end)
                 val finalRests = fillWithRests(group.window.end, nextBarLine)
                 glyphs ++ finalRests
             }
@@ -64,13 +70,13 @@ object StaffDisplay {
             }
         }
       }
-      loop(Position.ZERO, track.notes.readGroupsList())
+      loop(Position.ZERO, disp.notes.readGroupsList())
     }
 
     private def calculateGlyphs(cursor: Position, noteWindow: Window, notes: Seq[Note]): Iterator[StaffGlyph] = {
       val restGlyphs = fillWithRests(cursor, noteWindow.start)
 
-      val noteDurations = track
+      val noteDurations = disp
         .timeSignatures
         .fit(noteWindow)
         .flatMap(_.duration.asNoteValues)
@@ -87,7 +93,7 @@ object StaffDisplay {
 
     private def fillWithRests(from: Position, to: Position): Iterator[StaffGlyph] = to - from match {
       case Duration.ZERO => Iterator.empty
-      case d => track
+      case d => disp
         .timeSignatures
         .fit(Window(from, d))
         .flatMap(_.duration.asNoteValues)

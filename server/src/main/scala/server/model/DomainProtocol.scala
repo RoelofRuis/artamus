@@ -9,7 +9,7 @@ import music.model.record.RawMidiNote
 import music.model.workspace.User.UserId
 import music.model.write.Track.TrackId
 import music.primitives.{Accidental, Chord, Function, Key, Loudness, MidiNoteNumber, MillisecondPosition, Note, NoteGroup, Octave, PitchClass, PitchSpelling, Scale, ScientificPitch, Step, TimeSignature, TimeSignatureDivision}
-import spray.json.{DefaultJsonProtocol, JsNumber, JsString, JsValue, JsonFormat, deserializationError}
+import spray.json._
 
 import scala.collection.immutable.SortedMap
 import scala.language.reflectiveCalls

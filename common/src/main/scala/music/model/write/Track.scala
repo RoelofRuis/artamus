@@ -3,32 +3,40 @@ package music.model.write
 import java.util.UUID
 
 import music.math.temporal.Position
+import music.model.write.Layers.{ChordLayer, Layer, NoteLayer, RhythmLayer}
 import music.model.write.Track.TrackId
 import music.primitives.{Key, NoteGroup, TimeSignature}
 
 final case class Track(
   id: TrackId = TrackId(),
-  timeSignatures: TimeSignatures = TimeSignatures(),
-  keys: Keys = Keys(),
-  chords: Chords = Chords(),
-  notes: Notes = Notes()
+  layers: List[Layer] = List()
 ) {
 
-
   def writeTimeSignature(pos: Position, timeSignature: TimeSignature): Track = copy(
-    timeSignatures = timeSignatures.writeTimeSignature(pos, timeSignature)
+    layers = layers.map {
+      case x: ChordLayer => x.writeTimeSignature(pos, timeSignature)
+      case x: NoteLayer => x.writeTimeSignature(pos, timeSignature)
+      case x: RhythmLayer => x.writeTimeSignature(pos, timeSignature)
+    }
   )
 
   def writeKey(pos: Position, key: Key): Track = copy(
-    keys = keys.writeKey(pos, key)
+    layers = layers.map {
+      case x: NoteLayer => x.writeKey(pos, key)
+      case x => x
+    }
   )
 
-  def writeChords(chords: Chords): Track = copy(
-    chords = chords
+  def addLayer(layer: Layer): Track = copy(
+    layers = layers :+ layer
   )
 
   def writeNoteGroup(noteGroup: NoteGroup): Track = copy(
-    notes = notes.writeNoteGroup(noteGroup)
+    layers = layers.map {
+      case x: NoteLayer => x.writeNoteGroup(noteGroup)
+      case x: RhythmLayer => x.writeNoteGroup(noteGroup)
+      case x => x
+    }
   )
 }
 

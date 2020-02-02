@@ -1,25 +1,59 @@
 package server.model
 
 import music.math.temporal.Window
+import music.model.write.Layers.{ChordLayer, Layer, NoteLayer, RhythmLayer}
 import music.model.write.Track.TrackId
 import music.model.write._
-import music.primitives._
-import spray.json.RootJsonFormat
+import music.primitives.{Chord, Key, NoteGroup, TimeSignature}
+import spray.json._
 import storage.api.{DbIO, DbResult, ModelReader}
 
 object Tracks {
 
-  private final case class TrackContentModel(
-    id: TrackId,
-    bars: Map[String, TimeSignature],
-    chords: Map[String, (Window, Chord)],
-    keys: Map[String, Key],
-    notes: Map[String, NoteGroup]
-  )
-
-  private implicit val table: JsonTableDataModel[TrackContentModel] = new JsonTableDataModel[TrackContentModel] {
+  private implicit val table: JsonTableDataModel[Track] = new JsonTableDataModel[Track] {
     override val tableName: String = "track"
-    override implicit val format: RootJsonFormat[TrackContentModel] = jsonFormat5(TrackContentModel)
+
+    implicit object TimeSignaturesFormat extends JsonFormat[TimeSignatures] {
+      override def read(json: JsValue): TimeSignatures = TimeSignatures(loadPositions(json.convertTo[Map[String, TimeSignature]]))
+      override def write(obj: TimeSignatures): JsValue = savePositions(obj.timeSignatures).toJson
+    }
+
+    implicit object KeysFormat extends JsonFormat[Keys] {
+      override def read(json: JsValue): Keys = Keys(loadPositions(json.convertTo[Map[String, Key]]))
+      override def write(obj: Keys): JsValue = savePositions(obj.keys).toJson
+    }
+
+    implicit object ChordsFormat extends JsonFormat[Chords] {
+      override def read(json: JsValue): Chords = Chords(loadPositions(json.convertTo[Map[String, (Window, Chord)]]))
+      override def write(obj: Chords): JsValue = savePositions(obj.chords).toJson
+    }
+
+    implicit object NotesFormat extends JsonFormat[Notes] {
+      override def read(json: JsValue): Notes = Notes(loadPositions(json.convertTo[Map[String, NoteGroup]]))
+      override def write(obj: Notes): JsValue = savePositions(obj.notes).toJson
+    }
+
+    implicit val noteLayerFormat: JsonFormat[NoteLayer] = jsonFormat3(NoteLayer.apply)
+    implicit val chordLayerFormat: JsonFormat[ChordLayer] = jsonFormat3(ChordLayer.apply)
+    implicit val rhythmLayerFormat: JsonFormat[RhythmLayer] = jsonFormat2(RhythmLayer.apply)
+
+    implicit object LayerFormat extends RootJsonFormat[Layer] {
+      override def write(obj: Layer): JsValue =
+        JsObject((obj match {
+          case l: NoteLayer => l.toJson
+          case l: ChordLayer => l.toJson
+          case l: RhythmLayer => l.toJson
+        }).asJsObject.fields)
+
+      override def read(json: JsValue): Layer =
+        json.asJsObject.getFields("messageType") match {
+          case Seq(JsString("noteLayer")) => json.convertTo[NoteLayer]
+          case Seq(JsString("chordLayer")) => json.convertTo[ChordLayer]
+          case tpe => serializationError(s"Unrecognized LayerFormat [$tpe]")
+        }
+    }
+
+    override implicit val format: RootJsonFormat[Track] = jsonFormat2(Track.apply)
   }
 
   implicit class TrackQueries(db: ModelReader) {
@@ -27,15 +61,7 @@ object Tracks {
       db.readModel[table.Shape].ifNotFound(table.empty).flatMap {
         _.get(id.id.toString) match {
           case None => DbResult.notFound
-          case Some(w) => DbResult.found(
-            Track(
-              w.id,
-              TimeSignatures(table.loadPositions(w.bars)),
-              Keys(table.loadPositions(w.keys)),
-              Chords(table.loadPositions(w.chords)),
-              Notes(table.loadPositions(w.notes))
-            )
-          )
+          case Some(track) => DbResult.found(track)
         }
       }
     }
@@ -45,16 +71,7 @@ object Tracks {
     def saveTrack(track: Track): DbResult[Unit] = {
       db.updateModel[table.Shape](
         table.empty,
-        _.updated(
-          track.id.id.toString,
-          TrackContentModel(
-            track.id,
-            table.savePositions(track.timeSignatures.timeSignatures),
-            table.savePositions(track.chords.chords),
-            table.savePositions(track.keys.keys),
-            table.savePositions(track.notes.notes)
-          )
-        )
+        _.updated(track.id.id.toString, track)
       )
     }
 

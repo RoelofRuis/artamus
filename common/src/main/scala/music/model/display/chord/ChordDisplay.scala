@@ -4,17 +4,17 @@ import music.analysis.TwelveTonePitchSpelling
 import music.math.temporal.{Position, Window}
 import music.model.display.{Bars, NoteValues, StaffGroup}
 import music.model.display.chord.ChordStaffGlyph.{ChordNameGlyph, ChordRestGlyph}
-import music.model.write.Track
+import music.model.write.Layers.ChordLayer
 
 object ChordDisplay {
 
   import Bars._
   import NoteValues._
 
-  implicit class ChordStaffDisplay(track: Track) {
+  implicit class ChordLayerDisplay(layer: ChordLayer) {
 
-    private val chords = track.chords.read
-    private val initialKey = track.keys.initialKey
+    private val chords = layer.chords.read
+    private val initialKey = layer.keys.initialKey
 
     def getChords: StaffGroup = {
       // TODO: dynamic reading window
@@ -43,7 +43,7 @@ object ChordDisplay {
           val rests = window.until(nextWindow) match {
             case None => Iterator.empty
             case Some(diff) =>
-              track
+              layer
                 .timeSignatures
                 .fit(diff)
                 .flatMap(_.duration.asNoteValues)

@@ -1,5 +1,6 @@
 package server.analysis
 
+import music.model.write.Layers.NoteLayer
 import music.model.write.Track
 import server.analysis.blackboard.KnowledgeSource
 
@@ -24,8 +25,13 @@ class PitchHistogramAnalyser extends KnowledgeSource[Track] {
     )
 
     val histogram = track
-      .notes
-      .read()
+      .layers
+      .collectFirst { case noteLayer: NoteLayer =>
+        noteLayer
+          .notes
+          .read()
+      }
+      .getOrElse(Iterator())
       .map(_.pitchClass)
       .foldRight(zero) { case (pc, acc) => acc.updated(pc.value, acc.get(pc.value).map(_ + 1L).get) }
 

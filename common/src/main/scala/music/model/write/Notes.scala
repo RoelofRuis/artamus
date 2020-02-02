@@ -5,7 +5,7 @@ import music.primitives.{Note, NoteGroup}
 
 import scala.collection.immutable.SortedMap
 
-final case class Notes private (
+final case class Notes private ( // TODO: see if still required
   notes: SortedMap[Position, NoteGroup]
 ) {
 
