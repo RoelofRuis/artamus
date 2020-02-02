@@ -7,7 +7,7 @@ import scala.annotation.tailrec
 
 object TerminalReader {
 
-  import music.analysis.TwelveToneTuning._
+  import music.model.write.analysis.TwelveToneTuning._
 
   @tailrec
   def readTimeSignatureDivision: TimeSignatureDivision = {

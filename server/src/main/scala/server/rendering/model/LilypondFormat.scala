@@ -1,6 +1,6 @@
 package server.rendering.model
 
-import music.analysis.TwelveToneTuning.TwelveToneFunctions
+import music.model.write.analysis.TwelveToneTuning.TwelveToneFunctions
 import music.model.display.StaffGroup
 import music.model.display.chord.ChordStaff
 import music.model.display.chord.ChordStaffGlyph.{ChordNameGlyph, ChordRestGlyph}

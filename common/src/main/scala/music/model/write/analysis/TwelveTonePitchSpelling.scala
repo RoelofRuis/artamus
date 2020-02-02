@@ -1,10 +1,10 @@
-package music.analysis
+package music.model.write.analysis
 
 import music.primitives.{Note, _}
 
 object TwelveTonePitchSpelling {
 
-  import music.analysis.TwelveToneTuning._
+  import music.model.write.analysis.TwelveToneTuning._
 
   def spellChord(chord: Chord, key: Key): PitchSpelling = spellPc(chord.root, key)
 

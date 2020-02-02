@@ -1,6 +1,6 @@
-package music.analysis
+package music.model.write.analysis
 
-import music.analysis.Analysis.{Chords, Functions, Intervals}
+import music.model.write.analysis.Analysis.{Chords, Functions, Intervals}
 import music.primitives.{Function, Interval, PitchClass}
 
 final case class TuningSystem(pcSeq: Seq[Int]) {

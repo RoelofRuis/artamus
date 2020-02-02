@@ -6,7 +6,7 @@ object Inclusion {
 
   trait InclusionStrategy extends (NoteGroup => Seq[Note])
 
-  import music.analysis.TwelveToneTuning._
+  import music.model.write.analysis.TwelveToneTuning._
 
   def higherNoteNumbers(bound: Int): InclusionStrategy = noteGroup =>
     noteGroup.notes.filter(note => MidiNoteNumber(note.octave, note.pitchClass).value > bound)

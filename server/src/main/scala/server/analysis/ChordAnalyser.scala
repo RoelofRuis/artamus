@@ -1,6 +1,6 @@
 package server.analysis
 
-import music.analysis.TwelveToneChordAnalysis
+import music.model.write.analysis.TwelveToneChordAnalysis
 import music.model.write.Layers.{ChordLayer, NoteLayer}
 import music.model.write.{Chords, Track}
 import server.analysis.blackboard.KnowledgeSource

@@ -1,6 +1,6 @@
-package music.analysis
+package music.model.write.analysis
 
-import music.analysis.Interpretation.{AllOf, OneOf}
+import music.model.write.analysis.Interpretation.{AllOf, OneOf}
 
 /**
   * Models an interpretation of some phenomenon as a disjunction of conjunctions.

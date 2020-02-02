@@ -1,4 +1,4 @@
-package music.analysis
+package music.model.write.analysis
 
 import music.primitives._
 

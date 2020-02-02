@@ -1,6 +1,6 @@
 package music.model.display.chord
 
-import music.analysis.TwelveTonePitchSpelling
+import music.model.write.analysis.TwelveTonePitchSpelling
 import math.temporal.{Position, Window}
 import music.model.display.{Bars, NoteValues, StaffGroup}
 import music.model.display.chord.ChordStaffGlyph.{ChordNameGlyph, ChordRestGlyph}

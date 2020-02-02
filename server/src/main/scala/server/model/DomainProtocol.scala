@@ -3,7 +3,7 @@ package server.model
 import java.util.UUID
 
 import math.Rational
-import music.analysis.TwelveToneTuning
+import music.model.write.analysis.TwelveToneTuning
 import math.temporal.{Duration, Position, Window}
 import music.model.record.{MillisecondPosition, RawMidiNote}
 import music.model.workspace.User.UserId

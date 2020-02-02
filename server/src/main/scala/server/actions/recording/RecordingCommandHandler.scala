@@ -31,7 +31,7 @@ private[server] class RecordingCommandHandler @Inject() (
 
   // TODO: extract track writing logic
   import Quantization._
-  import music.analysis.TwelveToneTuning._
+  import music.model.write.analysis.TwelveToneTuning._
   import server.model.Tracks._
   import server.model.Workspaces._
   dispatcher.subscribe[Quantize] { req =>

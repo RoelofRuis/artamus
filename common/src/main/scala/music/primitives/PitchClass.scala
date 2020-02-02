@@ -1,6 +1,6 @@
 package music.primitives
 
-import music.analysis.TuningSystem
+import music.model.write.analysis.TuningSystem
 
 trait PitchClass {
   val value: Int

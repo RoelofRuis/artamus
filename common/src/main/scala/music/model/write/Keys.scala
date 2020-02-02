@@ -19,7 +19,7 @@ final case class Keys private (
 object Keys {
 
   def apply(): Keys = {
-    import music.analysis.TwelveToneTuning._
+    import music.model.write.analysis.TwelveToneTuning._
     new Keys(SortedMap(Position.ZERO -> Key(PitchSpelling(Step(0), Accidental(0)), Scale.MAJOR)))
   }
 

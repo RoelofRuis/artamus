@@ -8,7 +8,7 @@ import music.primitives._
 object MusicReader {
 
   import midi.read.Midi._
-  import music.analysis.TwelveToneTuning._
+  import music.model.write.analysis.TwelveToneTuning._
 
   sealed trait ReadMethod
   case class NoteOn(n: Int) extends ReadMethod

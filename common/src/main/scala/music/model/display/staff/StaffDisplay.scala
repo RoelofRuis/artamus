@@ -1,6 +1,6 @@
 package music.model.display.staff
 
-import music.analysis.TwelveTonePitchSpelling
+import music.model.write.analysis.TwelveTonePitchSpelling
 import math.temporal.{Duration, Position, Window}
 import music.model.display.staff.Inclusion.InclusionStrategy
 import music.model.display.staff.StaffGlyph._

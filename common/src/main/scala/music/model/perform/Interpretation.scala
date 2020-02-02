@@ -6,7 +6,7 @@ import music.primitives.{Loudness, MidiNoteNumber}
 
 object Interpretation {
 
-  import music.analysis.TwelveToneTuning._
+  import music.model.write.analysis.TwelveToneTuning._
 
   val VOLUME = 64
 
