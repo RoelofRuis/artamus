@@ -6,8 +6,8 @@ import java.util.concurrent.atomic.AtomicBoolean
 import java.util.concurrent.{ArrayBlockingQueue, BlockingQueue}
 
 import javax.annotation.concurrent.NotThreadSafe
-import protocol.Exceptions._
 import protocol.{DataResponseMessage, EventResponseMessage, ResponseMessage}
+import protocol.Exceptions._
 
 import scala.util.{Failure, Success, Try}
 
