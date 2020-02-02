@@ -4,14 +4,14 @@ import java.awt.image.BufferedImage
 import java.awt.{BorderLayout, Color}
 import java.io.File
 
+import api.Event
+import api.Write.{RenderingStarted, TrackRendered}
 import com.google.inject.Inject
 import com.typesafe.scalalogging.LazyLogging
 import javax.annotation.concurrent.NotThreadSafe
 import javax.imageio.ImageIO
 import javax.swing.{ImageIcon, JFrame, JLabel, WindowConstants}
-import protocol.Event
 import pubsub.{Callback, Dispatcher}
-import server.actions.writing.{RenderingStarted, TrackRendered}
 
 import scala.util.{Failure, Success, Try}
 

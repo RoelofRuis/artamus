@@ -1,25 +1,25 @@
 package client.module.midi.operations
 
+import api.Write.Perform
+import client.Client
 import client.module.Operations.OperationRegistry
 import client.module.midi.MusicWriter
-import client.util.ClientLogging
+import client.util.ClientInteraction
 import com.typesafe.scalalogging.LazyLogging
 import javax.inject.Inject
 import midi.write.MidiSequenceWriter
-import protocol.client.api.ClientInterface
-import server.actions.writing._
 
 class PlaybackOperations @Inject() (
   registry: OperationRegistry,
   midiOutput: MidiSequenceWriter,
-  client: ClientInterface
+  client: Client
 ) extends LazyLogging {
 
-  import ClientLogging._
+  import ClientInteraction._
   import MusicWriter._
 
   registry.local("play", "query (terminal)", {
-    client.sendQueryLogged(Perform) match {
+    client.sendQuery(Perform) match {
       case Right(track) => midiOutput.play(track)  match {
         case Left(ex) => logger.warn("Error while playing MIDI sequence", ex)
         case _ =>

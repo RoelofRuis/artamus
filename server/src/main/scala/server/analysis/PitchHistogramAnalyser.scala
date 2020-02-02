@@ -1,7 +1,7 @@
 package server.analysis
 
-import music.model.write.Layers.NoteLayer
-import music.model.write.Track
+import domain.write.Layers.NoteLayer
+import domain.write.Track
 import server.analysis.blackboard.KnowledgeSource
 
 import scala.collection.immutable.SortedMap

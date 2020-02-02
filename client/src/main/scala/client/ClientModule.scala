@@ -1,5 +1,6 @@
 package client
 
+import api.Event
 import client.events.{ConnectionEventHandler, RenderHandler}
 import client.module.ClientOperationRegistry
 import client.module.Operations.OperationRegistry
@@ -9,8 +10,7 @@ import client.module.terminal.TerminalModule
 import com.google.inject.Provides
 import javax.inject.Singleton
 import net.codingwell.scalaguice.ScalaPrivateModule
-import protocol.Event
-import protocol.client.api.{ClientConfig, ClientInterface}
+import protocol.client.api.{ClientConfig, ConnectionEvent}
 import pubsub.{Callback, Dispatcher}
 
 class ClientModule extends ScalaPrivateModule {
@@ -23,18 +23,27 @@ class ClientModule extends ScalaPrivateModule {
     bind[OperationRegistry].toInstance(new ClientOperationRegistry())
 
     bind[Dispatcher[Callback, Event]].toInstance(pubsub.createDispatcher[Callback, Event]())
+    bind[Dispatcher[Callback, ConnectionEvent]].toInstance(pubsub.createDispatcher[Callback, ConnectionEvent]())
     bind[RenderHandler].asEagerSingleton()
+
     bind[ConnectionEventHandler].asEagerSingleton()
 
     bind[Bootstrapper].asEagerSingleton()
     expose[Bootstrapper]
   }
 
+  //noinspection MatchToPartialFunction
   @Provides @Singleton
-  def client(dispatcher: Dispatcher[Callback, Event]): ClientInterface =
+  def client(
+    connectionEventDispatcher: Dispatcher[Callback, ConnectionEvent],
+    serverEventDispatcher: Dispatcher[Callback, Event]
+  ): Client =
     protocol.client.api.createClient(
       ClientConfig("localhost", 9999),
-      (event: Event) => dispatcher.handle(Callback(event))
+      (e: Either[ConnectionEvent, Event]) => e match {
+        case Left(c) => connectionEventDispatcher.handle(Callback(c))
+        case Right(e) => serverEventDispatcher.handle(Callback(e))
+      }
     )
 
 }

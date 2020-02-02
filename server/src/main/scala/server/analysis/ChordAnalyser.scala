@@ -1,8 +1,8 @@
 package server.analysis
 
-import music.analysis.TwelveToneChordAnalysis
-import music.model.write.Layers.{ChordLayer, NoteLayer}
-import music.model.write.{Chords, Track}
+import domain.write.analysis.TwelveToneChordAnalysis
+import domain.write.Layers.{ChordLayer, NoteLayer}
+import domain.write.{Chords, Track}
 import server.analysis.blackboard.KnowledgeSource
 
 class ChordAnalyser extends KnowledgeSource[Track] {

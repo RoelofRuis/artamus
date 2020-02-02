@@ -1,10 +1,10 @@
 package server.model
 
-import music.math.temporal.Window
-import music.model.write.Layers.{ChordLayer, Layer, NoteLayer, RhythmLayer}
-import music.model.write.Track.TrackId
-import music.model.write._
-import music.primitives.{Chord, Key, NoteGroup, TimeSignature}
+import domain.math.temporal.Window
+import domain.write.Layers.{ChordLayer, Layer, NoteLayer, RhythmLayer}
+import domain.write.Track.TrackId
+import domain.write._
+import domain.primitives.{Chord, Key, NoteGroup, TimeSignature}
 import spray.json._
 import storage.api.{DbIO, DbResult, ModelReader}
 

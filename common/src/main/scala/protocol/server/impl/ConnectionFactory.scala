@@ -10,7 +10,7 @@ import scala.util.{Failure, Success, Try}
 
 private[server] object ConnectionFactory {
 
-  def acceptNext(serverSocket: ServerSocket, api: ServerAPI): Either[TransportException, Connection] = {
+  def acceptNext[R, E](serverSocket: ServerSocket, api: ServerAPI[R, E]): Either[TransportException, Connection[R, E]] = {
     val transport = for {
       socket <- Try { serverSocket.accept() }
       objOut <- Try { new ObjectOutputStream(socket.getOutputStream) }

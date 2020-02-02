@@ -1,26 +1,26 @@
 package client.module.terminal
 
-import client.util.{ClientLogging, StdIOTools}
+import api.Command
+import api.Write._
+import client.Client
 import client.module.Operations.{OperationRegistry, ServerOperation}
+import client.util.{ClientInteraction, StdIOTools}
+import domain.math.Rational
+import domain.math.temporal.{Duration, Position, Window}
+import domain.primitives.{NoteGroup, TimeSignature}
 import javax.inject.Inject
-import music.math.Rational
-import music.math.temporal.{Duration, Position, Window}
-import music.primitives.{NoteGroup, TimeSignature}
-import protocol.Command
-import protocol.client.api.ClientInterface
-import server.actions.writing.{Perform, Render, WriteKey, WriteNoteGroup, WriteTimeSignature}
 
 import scala.annotation.tailrec
 
 class TerminalOperations @Inject() (
   registry: OperationRegistry,
-  client: ClientInterface,
+  client: Client,
 ) {
 
-  import ClientLogging._
+  import ClientInteraction._
 
   registry.local("print-notes", "query (terminal)", {
-    client.sendQueryLogged(Perform) match {
+    client.sendQuery(Perform) match {
       case Right(track) =>
         println("Playing:")
         track.notes.foreach { note => println(note) }

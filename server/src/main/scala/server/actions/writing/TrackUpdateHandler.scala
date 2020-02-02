@@ -1,20 +1,21 @@
 package server.actions.writing
 
+import api.Command
+import api.Write._
+import domain.workspace.Workspace
+import domain.write.Track
 import javax.inject.{Inject, Singleton}
-import music.model.workspace.Workspace
-import music.model.write.Track
-import protocol.Command
-import pubsub.Dispatcher
-import server.Request
+import server.ServerRequest
 import server.actions.Responses
 import server.analysis.blackboard.Controller
+import server.infra.ServerDispatcher
 import storage.api.DbResult
 
 import scala.util.Try
 
 @Singleton
 private[server] class TrackUpdateHandler @Inject() (
-  dispatcher: Dispatcher[Request, Command],
+  dispatcher: ServerDispatcher,
   analysis: Controller[Track]
 ) {
 
@@ -55,7 +56,7 @@ private[server] class TrackUpdateHandler @Inject() (
     updateTrack(req, _.writeKey(req.attributes.position, req.attributes.symbol))
   }
 
-  def updateTrack(req: Request[Command], f: Track => Track): Try[Unit] = {
+  def updateTrack(req: ServerRequest[Command], f: Track => Track): Try[Unit] = {
     val res = for {
       workspace <- req.db.getWorkspaceByOwner(req.user)
       track <- req.db.getTrackById(workspace.selectedTrack)

@@ -2,14 +2,13 @@ package server.rendering.impl
 
 import java.util.concurrent.{ExecutorService, Executors}
 
+import api.Write.TrackRendered
 import com.typesafe.scalalogging.LazyLogging
+import domain.display.Display
+import domain.display.render.Render
+import domain.write.Track
 import javax.inject.Inject
-import music.model.display.Display
-import music.model.display.render.Render
-import music.model.write.Track
-import protocol.Event
-import pubsub.EventBus
-import server.actions.writing.TrackRendered
+import server.infra.ServerEventBus
 import server.rendering.AsyncRenderer
 import storage.api.Database
 
@@ -19,7 +18,7 @@ import scala.util.{Failure, Success}
 private[rendering] class AsyncLilypondRenderer @Inject() (
   renderingService: LilypondCommandLineExecutor,
   interpreter: LilypondInterpreter,
-  eventBus: EventBus[Event],
+  eventBus: ServerEventBus,
   db: Database
 ) extends AsyncRenderer with LazyLogging {
 

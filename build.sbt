@@ -46,7 +46,7 @@ lazy val client = (project in file("client"))
     description := "A Music analysis client - part of Artamus",
     compilerFlags,
 
-    // Make sure (midi) libraries can get loaded in the correct way
+    // Makes sure (midi) libraries can get loaded in the correct way
     fork in run := true,
     connectInput in run := true,
     outputStrategy in run := Some(StdoutOutput),
@@ -58,10 +58,7 @@ lazy val client = (project in file("client"))
       dependencies.slf4jSimple,
     )
   )
-  .dependsOn(
-    common,
-    server // TODO: Refactor to remove this dependency!
-  )
+  .dependsOn(common)
 
 lazy val server = (project in file("server"))
   .settings(

@@ -1,9 +1,7 @@
 package protocol.client.impl
 
-import protocol.Event
+private[client] trait EventScheduler[E] {
 
-private[client] trait EventScheduler {
-
-  def schedule(event: Event): Unit
+  def schedule(event: E): Unit
 
 }
