@@ -3,7 +3,6 @@ package music.model.record
 import music.math.HierarchicalClustering.Centroid
 import music.math.temporal.{Duration, Position}
 import music.math.{HierarchicalClustering, Rational}
-import music.primitives.MillisecondPosition
 
 import scala.annotation.tailrec
 

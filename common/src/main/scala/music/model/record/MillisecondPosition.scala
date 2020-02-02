@@ -1,4 +1,4 @@
-package music.primitives
+package music.model.record
 
 final case class MillisecondPosition(v: Long)
 

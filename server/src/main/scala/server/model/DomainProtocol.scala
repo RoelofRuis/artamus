@@ -5,10 +5,10 @@ import java.util.UUID
 import music.analysis.TwelveToneTuning
 import music.math.Rational
 import music.math.temporal.{Duration, Position, Window}
-import music.model.record.RawMidiNote
+import music.model.record.{MillisecondPosition, RawMidiNote}
 import music.model.workspace.User.UserId
 import music.model.write.Track.TrackId
-import music.primitives.{Accidental, Chord, Function, Key, Loudness, MidiNoteNumber, MillisecondPosition, Note, NoteGroup, Octave, PitchClass, PitchSpelling, Scale, ScientificPitch, Step, TimeSignature, TimeSignatureDivision}
+import music.primitives.{Accidental, Chord, Function, Key, Loudness, MidiNoteNumber, Note, NoteGroup, Octave, PitchClass, PitchSpelling, Scale, ScientificPitch, Step, TimeSignature, TimeSignatureDivision}
 import spray.json._
 
 import scala.collection.immutable.SortedMap

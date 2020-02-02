@@ -8,7 +8,7 @@ import javax.inject.Inject
 import javax.sound.midi.{MidiMessage, Receiver, ShortMessage}
 import midi.read.Midi
 import music.model.record.RawMidiNote
-import music.primitives.{Loudness, MidiNoteNumber, MillisecondPosition}
+import music.primitives.{Loudness, MidiNoteNumber}
 import protocol.client.api.ClientInterface
 import server.actions.recording.RecordNote
 

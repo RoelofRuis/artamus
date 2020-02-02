@@ -41,6 +41,10 @@ private[rendering] object LilypondFormat {
       case _ => ""
     }.mkString("\n")
     s"""\\new RhythmicStaff {
+       |\\numericTimeSignature
+       |\\override Score.BarNumber.break-visibility = ##(#f #t #t)
+       |\\set Score.barNumberVisibility = #all-bar-numbers-visible
+       |\\bar ""
        |${contents}
        |}""".stripMargin
   }

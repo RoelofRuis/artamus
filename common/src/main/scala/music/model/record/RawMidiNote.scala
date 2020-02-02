@@ -1,6 +1,6 @@
 package music.model.record
 
-import music.primitives.{Loudness, MidiNoteNumber, MillisecondPosition}
+import music.primitives.{Loudness, MidiNoteNumber}
 
 final case class RawMidiNote(
   noteNumber: MidiNoteNumber,
