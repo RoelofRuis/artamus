@@ -1,6 +1,6 @@
 package server.rendering.impl
 
-import music.model.display.TrackDisplay
+import domain.display.TrackDisplay
 import server.rendering.model.LilypondFormat
 
 private[rendering] class LilypondInterpreter(

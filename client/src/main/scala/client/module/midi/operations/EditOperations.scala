@@ -1,12 +1,12 @@
 package client.module.midi.operations
 
+import api.Write.{Render, WriteKey, WriteTimeSignature}
 import client.module.Operations.OperationRegistry
 import client.module.midi.MusicReader
+import domain.math.temporal.Position
+import domain.primitives.{TimeSignature, _}
 import javax.inject.Inject
 import midi.read.MidiInput
-import math.temporal.Position
-import music.primitives.{TimeSignature, _}
-import server.actions.writing._
 
 class EditOperations @Inject() (
   registry: OperationRegistry,

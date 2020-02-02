@@ -1,12 +1,12 @@
 package client.module.midi.operations
 
+import api.Record.{ClearRecording, Quantize}
+import api.Write.Render
 import client.module.Operations.{OperationRegistry, ServerOperation}
 import client.module.midi.MidiRecorder
 import client.util.StdIOTools
 import com.google.inject.Inject
-import music.model.record.Quantizer
-import server.actions.recording.{ClearRecording, Quantize}
-import server.actions.writing.Render
+import domain.record.Quantizer
 
 class RecordingOperations @Inject() (
   registry: OperationRegistry,

@@ -3,14 +3,14 @@ package client.module.midi
 import java.util.concurrent.atomic.AtomicBoolean
 import java.util.concurrent.{BlockingQueue, LinkedBlockingQueue}
 
+import api.Record.RecordNote
 import com.typesafe.scalalogging.LazyLogging
+import domain.primitives.{Loudness, MidiNoteNumber}
+import domain.record.{MillisecondPosition, RawMidiNote}
 import javax.inject.Inject
 import javax.sound.midi.{MidiMessage, Receiver, ShortMessage}
 import midi.read.Midi
-import music.model.record.{MillisecondPosition, RawMidiNote}
-import music.primitives.{Loudness, MidiNoteNumber}
 import protocol.client.api.ClientInterface
-import server.actions.recording.RecordNote
 
 class MidiRecorder @Inject() (
   client: ClientInterface

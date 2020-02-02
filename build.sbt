@@ -58,10 +58,7 @@ lazy val client = (project in file("client"))
       dependencies.slf4jSimple,
     )
   )
-  .dependsOn(
-    common,
-    server // TODO: Refactor to remove this dependency!
-  )
+  .dependsOn(common)
 
 lazy val server = (project in file("server"))
   .settings(

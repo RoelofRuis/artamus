@@ -1,6 +1,6 @@
 package server
 
-import music.model.write.Track
+import domain.write.Track
 import net.codingwell.scalaguice.ScalaPrivateModule
 import server.actions.ActionsModule
 import server.analysis.blackboard.Controller

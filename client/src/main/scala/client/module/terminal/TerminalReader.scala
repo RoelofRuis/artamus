@@ -1,13 +1,13 @@
 package client.module.terminal
 
 import client.util.StdIOTools
-import music.primitives._
+import domain.primitives._
 
 import scala.annotation.tailrec
 
 object TerminalReader {
 
-  import music.model.write.analysis.TwelveToneTuning._
+  import domain.write.analysis.TwelveToneTuning._
 
   @tailrec
   def readTimeSignatureDivision: TimeSignatureDivision = {

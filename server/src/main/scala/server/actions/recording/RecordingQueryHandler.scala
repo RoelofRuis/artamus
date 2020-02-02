@@ -1,5 +1,6 @@
 package server.actions.recording
 
+import api.Record.GetCurrentRecording
 import javax.inject.{Inject, Singleton}
 import protocol.Query
 import pubsub.Dispatcher

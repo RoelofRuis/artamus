@@ -1,8 +1,9 @@
 package server.actions.writing
 
+import api.Write.{Analyse, NewWorkspace, WriteKey, WriteNoteGroup, WriteTimeSignature}
 import javax.inject.{Inject, Singleton}
-import music.model.workspace.Workspace
-import music.model.write.Track
+import domain.workspace.Workspace
+import domain.write.Track
 import protocol.Command
 import pubsub.Dispatcher
 import server.Request

@@ -1,6 +1,6 @@
 package server
 
-import music.model.workspace.User
+import domain.workspace.User
 import pubsub.Dispatchable
 import storage.api.DbIO
 

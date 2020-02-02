@@ -1,5 +1,6 @@
 package server.actions.writing
 
+import api.Write.Render
 import javax.inject.{Inject, Singleton}
 import protocol.Command
 import pubsub.Dispatcher

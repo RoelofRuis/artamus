@@ -1,5 +1,6 @@
 package server.actions.control
 
+import api.Control.Disconnect
 import javax.inject.{Inject, Singleton}
 import protocol.Command
 import pubsub.Dispatcher

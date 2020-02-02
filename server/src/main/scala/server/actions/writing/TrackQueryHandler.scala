@@ -1,7 +1,8 @@
 package server.actions.writing
 
+import api.Write.Perform
 import javax.inject.{Inject, Singleton}
-import music.model.write.Track
+import domain.write.Track
 import protocol.Query
 import pubsub.Dispatcher
 import server.Request
@@ -18,7 +19,7 @@ private[server] class TrackQueryHandler @Inject() (
   import server.model.Workspaces._
 
   dispatcher.subscribe[Perform.type]{ req =>
-    import music.model.perform._
+    import domain.perform._
 
     readTrack(req, Interpretation.perform, TrackPerformance())
   }

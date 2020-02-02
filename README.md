@@ -4,14 +4,14 @@ Artamus is a music analysis client/server application
 The application is separated into several packages to keep concerns separated
 - **Client** Contains the client application with the input and viewing logic
 - **Server** Contains the application state and does the heavy lifting
-- **Common** Contains common packages (these could have an even better separation)
-- **Storage** Contains a lightweight memory/file storage (which might be split off entirely into a separate package if it has matured enough)
+- **Common** Contains common packages
+- **Storage** Contains a lightweight memory/file storage (which might be split off entirely into a separate package eventually)
 
 ```
 Dependency overview:
 PACKAGE             DEPENDENCIES
-client              [common.midi, common.music, common.patching, common.protocol, common.pubsub, server]
-server              [common.music, common.protocol, common.pubsub, storage]
+client              [common.domain, common.midi, common.patching, common.protocol, common.pubsub, server]
+server              [common.domain, common.protocol, common.pubsub, storage]
 ```
 
 The server application requires `Lilypond` which can be downloaded at:

@@ -2,13 +2,13 @@ package server.model
 
 import java.util.UUID
 
-import math.Rational
-import music.model.write.analysis.TwelveToneTuning
-import math.temporal.{Duration, Position, Window}
-import music.model.record.{MillisecondPosition, RawMidiNote}
-import music.model.workspace.User.UserId
-import music.model.write.Track.TrackId
-import music.primitives.{Accidental, Chord, Function, Key, Loudness, MidiNoteNumber, Note, NoteGroup, Octave, PitchClass, PitchSpelling, Scale, ScientificPitch, Step, TimeSignature, TimeSignatureDivision}
+import domain.math.Rational
+import domain.write.analysis.TwelveToneTuning
+import domain.math.temporal.{Duration, Position, Window}
+import domain.record.{MillisecondPosition, RawMidiNote}
+import domain.workspace.User.UserId
+import domain.write.Track.TrackId
+import domain.primitives.{Accidental, Chord, Function, Key, Loudness, MidiNoteNumber, Note, NoteGroup, Octave, PitchClass, PitchSpelling, Scale, ScientificPitch, Step, TimeSignature, TimeSignatureDivision}
 import spray.json._
 
 import scala.collection.immutable.SortedMap

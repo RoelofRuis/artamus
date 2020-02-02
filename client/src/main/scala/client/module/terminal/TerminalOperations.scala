@@ -1,14 +1,14 @@
 package client.module.terminal
 
-import client.util.{ClientLogging, StdIOTools}
+import api.Write.{Perform, Render, WriteKey, WriteNoteGroup, WriteTimeSignature}
 import client.module.Operations.{OperationRegistry, ServerOperation}
+import client.util.{ClientLogging, StdIOTools}
+import domain.math.Rational
+import domain.math.temporal.{Duration, Position, Window}
+import domain.primitives.{NoteGroup, TimeSignature}
 import javax.inject.Inject
-import math.Rational
-import math.temporal.{Duration, Position, Window}
-import music.primitives.{NoteGroup, TimeSignature}
 import protocol.Command
 import protocol.client.api.ClientInterface
-import server.actions.writing.{Perform, Render, WriteKey, WriteNoteGroup, WriteTimeSignature}
 
 import scala.annotation.tailrec
 

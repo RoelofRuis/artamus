@@ -2,15 +2,15 @@ package server.infra
 
 import java.util.concurrent.ConcurrentHashMap
 
-import server.Request
-import server.actions.control.Authenticate
 import com.typesafe.scalalogging.LazyLogging
+import domain.workspace.User
 import javax.inject.{Inject, Singleton}
-import music.model.workspace.User
 import protocol.{Command, CommandRequest, DataResponse, Event, Query, QueryRequest, ServerRequest}
 import protocol.Exceptions._
 import protocol.server.api.{ConnectionHandle, ServerAPI}
 import pubsub.{Dispatcher, EventBus}
+import _root_.server.Request
+import api.Control.Authenticate
 import storage.api.{Database, DbIO, NotFound, Transaction}
 
 import scala.util.{Failure, Success, Try}

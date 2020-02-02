@@ -1,10 +1,10 @@
 package client.module.midi.operations
 
+import api.Record.GetCurrentRecording
 import client.module.Operations.OperationRegistry
 import client.util.ClientLogging
 import com.google.inject.Inject
 import protocol.client.api.ClientInterface
-import server.actions.recording.GetCurrentRecording
 
 class DebugOperations @Inject() (
   registry: OperationRegistry,

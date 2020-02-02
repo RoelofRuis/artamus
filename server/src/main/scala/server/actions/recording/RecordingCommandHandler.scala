@@ -1,11 +1,12 @@
 package server.actions.recording
 
+import api.Record.{ClearRecording, Quantize, RecordNote}
 import javax.inject.{Inject, Singleton}
-import math.Rational
-import math.temporal.{Duration, Position, Window}
-import music.model.record.{Quantization, Quantizer}
-import music.model.write.Track
-import music.primitives.{Note, NoteGroup}
+import domain.math.Rational
+import domain.math.temporal.{Duration, Position, Window}
+import domain.record.{Quantization, Quantizer}
+import domain.write.Track
+import domain.primitives.{Note, NoteGroup}
 import protocol.Command
 import pubsub.Dispatcher
 import server.Request
@@ -31,7 +32,7 @@ private[server] class RecordingCommandHandler @Inject() (
 
   // TODO: extract track writing logic
   import Quantization._
-  import music.model.write.analysis.TwelveToneTuning._
+  import domain.write.analysis.TwelveToneTuning._
   import server.model.Tracks._
   import server.model.Workspaces._
   dispatcher.subscribe[Quantize] { req =>

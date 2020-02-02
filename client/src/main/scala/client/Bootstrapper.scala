@@ -1,5 +1,6 @@
 package client
 
+import api.Control.Authenticate
 import client.events.RenderHandler
 import client.module.Operations.{LocalOperation, Operation, OperationRegistry, ServerOperation}
 import client.util.ClientLogging
@@ -7,7 +8,6 @@ import com.typesafe.scalalogging.LazyLogging
 import javax.inject.Inject
 import protocol.Command
 import protocol.client.api.ClientInterface
-import server.actions.control.Authenticate
 
 import scala.annotation.tailrec
 import scala.util.{Failure, Success}

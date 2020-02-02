@@ -3,12 +3,12 @@ package client.module.midi
 import javax.sound.midi.ShortMessage
 import midi.MidiIO
 import midi.read.MidiInput
-import music.primitives._
+import domain.primitives._
 
 object MusicReader {
 
   import midi.read.Midi._
-  import music.model.write.analysis.TwelveToneTuning._
+  import domain.write.analysis.TwelveToneTuning._
 
   sealed trait ReadMethod
   case class NoteOn(n: Int) extends ReadMethod
