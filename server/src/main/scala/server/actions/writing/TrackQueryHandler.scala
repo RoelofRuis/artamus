@@ -4,7 +4,7 @@ import api.Query
 import api.Write.Perform
 import domain.write.Track
 import javax.inject.{Inject, Singleton}
-import server.Request
+import server.ServerRequest
 import server.actions.Responses
 import server.infra.ServerDispatcher
 
@@ -24,7 +24,7 @@ private[server] class TrackQueryHandler @Inject() (
     readTrack(req, Interpretation.perform, TrackPerformance())
   }
 
-  def readTrack[A](req: Request[Query], f: Track => A, onNotFound: => A): Try[A] = {
+  def readTrack[A](req: ServerRequest[Query], f: Track => A, onNotFound: => A): Try[A] = {
     val res = for {
       workspace <- req.db.getWorkspaceByOwner(req.user)
       track <- req.db.getTrackById(workspace.selectedTrack)

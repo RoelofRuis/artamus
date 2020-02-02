@@ -5,8 +5,10 @@ import java.net.Socket
 
 import protocol.server.api.ServerAPI
 
-private[server] final class Connection[E](
-  api: ServerAPI[E],
+import scala.util.{Failure, Success, Try}
+
+private[server] final class Connection[R, E](
+  api: ServerAPI[R, E],
   socket: Socket,
   inputStream: ObjectInputStream,
   outputStream: ObjectOutputStream
@@ -19,12 +21,18 @@ private[server] final class Connection[E](
 
     try {
       while (! socket.isClosed) {
-        val request = inputStream.readObject()
+        val requestObject = inputStream.readObject()
 
-        val mainResponse = api.handleRequest(CONNECTION, request)
-        val afterRequestResponse = api.afterRequest(CONNECTION, mainResponse)
+        val response = Try { requestObject.asInstanceOf[R] } match {
+          case Failure(ex) =>
+            api.handleReceiveFailure(CONNECTION, ex)
 
-        outputStream.writeObject(afterRequestResponse)
+          case Success(req) =>
+            val mainResponse = api.handleRequest(CONNECTION, req)
+            api.afterRequest(CONNECTION, mainResponse)
+        }
+
+        outputStream.writeObject(response)
       }
       api.connectionClosed(CONNECTION, None)
     } catch {

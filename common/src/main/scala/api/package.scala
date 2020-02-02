@@ -1,8 +1,9 @@
 package object api {
 
-  trait Req { type Res}
-  trait Command extends Req { final type Res = Unit }
-  trait Query extends Req
-  trait Event extends Req { final type Res = Unit }
+  trait Request { type Res}
+  trait Command extends Request { final type Res = Unit }
+  trait Query extends Request
+
+  trait Event { final type Res = Unit }
 
 }

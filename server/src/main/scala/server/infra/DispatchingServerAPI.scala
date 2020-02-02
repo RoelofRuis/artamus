@@ -2,18 +2,17 @@ package server.infra
 
 import java.util.concurrent.ConcurrentHashMap
 
-import _root_.server.Request
+import _root_.server.ServerRequest
 import api.Control.Authenticate
-import api.Event
+import api.{Event, Request}
 import com.typesafe.scalalogging.LazyLogging
 import domain.workspace.User
 import javax.inject.{Inject, Singleton}
 import protocol.Exceptions._
-import protocol.RequestMessage
 import protocol.server.api.{ConnectionHandle, ServerAPI}
 import storage.api.{Database, DbIO, NotFound, Transaction}
 
-import scala.util.{Failure, Success, Try}
+import scala.util.{Failure, Success}
 
 @Singleton
 final class DispatchingServerAPI @Inject() (
@@ -21,7 +20,7 @@ final class DispatchingServerAPI @Inject() (
   hooks: ConnectionLifetimeHooks,
   eventBus: ServerEventBus,
   serverDispatcher: ServerDispatcher
-) extends ServerAPI[Event] with LazyLogging {
+) extends ServerAPI[Request, Event] with LazyLogging {
 
   import server.model.Users._
 
@@ -55,25 +54,24 @@ final class DispatchingServerAPI @Inject() (
     }
   }
 
-  def handleRequest(connection: ConnectionHandle[Event], request: Object): Either[ResponseException, Any] = {
+  def handleReceiveFailure(connection: ConnectionHandle[Event], cause: Throwable): ResponseException = {
+    logger.warn(s"Received invalid message on connection [$connection]", cause)
+    InvalidMessage
+  }
+
+  def handleRequest(connection: ConnectionHandle[Event], request: Request): Either[ResponseException, Any] = {
     connections.get(connection) match {
       case None =>
         logger.error(s"Received message on unbound connection [$connection]")
         Left(InvalidStateError)
 
       case Some(identifier) =>
-        Try { request.asInstanceOf[ClientRequest] } match {
-          case Success(request) =>
-            identifier match {
-              case None => authenticate(connection, request)
-              case Some(user) => executeRequest(connection, user, request)
-            }
-          case Failure(ex) =>
-            logger.warn(s"Unable to read message.", ex)
-            Left(InvalidMessage)
+          identifier match {
+            case None => authenticate(connection, request)
+            case Some(user) => executeRequest(connection, user, request)
+          }
         }
     }
-  }
 
   override def afterRequest(connection: ConnectionHandle[Event], response: Either[ResponseException, Any]): Either[ResponseException, Any] = {
     response match {
@@ -102,9 +100,9 @@ final class DispatchingServerAPI @Inject() (
     }
   }
 
-  private def authenticate(connection: ConnectionHandle[Event], request: ClientRequest): Either[ResponseException, Any] = {
+  private def authenticate(connection: ConnectionHandle[Event], request: Request): Either[ResponseException, Any] = {
     request match {
-      case RequestMessage(Authenticate(userName)) =>
+      case Authenticate(userName) =>
         db.getUserByName(userName) match {
           case Right(user) =>
             eventBus.subscribe(connection.toString, event => connection.sendEvent(event))
@@ -126,10 +124,10 @@ final class DispatchingServerAPI @Inject() (
     }
   }
 
-  private def executeRequest(connection: ConnectionHandle[Event], user: User, request: ClientRequest): Either[ResponseException, Any] = {
+  private def executeRequest(connection: ConnectionHandle[Event], user: User, request: Request): Either[ResponseException, Any] = {
     try {
       val transaction = startTransaction(connection)
-      serverDispatcher.handle(Request(user, transaction, request.req)) match {
+      serverDispatcher.handle(ServerRequest(user, transaction, request)) match {
         case Failure(ex) =>
           logger.error("Error in server logic", ex)
           Left(LogicError)

@@ -1,11 +1,11 @@
 package server
 
-import api.Event
+import api.{Event, Request}
 import javax.inject.Inject
 import protocol.server.api.ServerFactory
 
 class Bootstrapper @Inject() (
-  serverFactory: ServerFactory[Event]
+  serverFactory: ServerFactory[Request, Event]
 ) {
 
   def run(): Unit = {

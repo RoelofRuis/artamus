@@ -2,7 +2,7 @@ package server.actions.control
 
 import api.Control.Disconnect
 import javax.inject.{Inject, Singleton}
-import server.Request
+import server.ServerRequest
 import server.actions.Responses
 import server.infra.ServerDispatcher
 
@@ -12,7 +12,7 @@ private[server] class ServerControlHandler @Inject() (
 ) {
 
   dispatcher.subscribe[Disconnect] {
-    case Request(_, _, Disconnect()) => Responses.ok
+    case ServerRequest(_, _, Disconnect()) => Responses.ok
   }
 
 }

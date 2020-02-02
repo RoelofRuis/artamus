@@ -2,7 +2,6 @@ package protocol.client.impl
 
 import javax.annotation.concurrent.{GuardedBy, NotThreadSafe}
 import protocol.Exceptions.{CommunicationException, NotConnected, ResponseException, TransportException}
-import protocol.RequestMessage
 import protocol.client.api._
 import protocol.client.impl.Client.{Connected, TransportState, Unconnected}
 
@@ -14,11 +13,11 @@ private[client] final class Client[C, Q <: { type Res }, E](
 ) extends ClientInterface[C, Q] {
 
   override def sendCommand(command: C): Option[CommunicationException] = {
-    sendWithTransport[RequestMessage[C], Unit](RequestMessage(command)).left.toOption
+    sendWithTransport[C, Unit](command).left.toOption
   }
 
   override def sendQuery[A <: Q](query: A): Either[CommunicationException, A#Res] = {
-    sendWithTransport[RequestMessage[A], A#Res](RequestMessage(query))
+    sendWithTransport[A, A#Res](query)
   }
 
   private def getTransport: Either[CommunicationException, ClientTransport] = {

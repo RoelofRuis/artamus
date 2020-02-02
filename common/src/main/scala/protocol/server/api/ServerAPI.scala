@@ -2,7 +2,7 @@ package protocol.server.api
 
 import protocol.Exceptions.ResponseException
 
-trait ServerAPI[E] {
+trait ServerAPI[R, E] {
 
   def serverStarted(): Unit
 
@@ -14,6 +14,8 @@ trait ServerAPI[E] {
 
   def afterRequest(connection: ConnectionHandle[E], response: Either[ResponseException, Any]): Either[ResponseException, Any]
 
-  def handleRequest(connection: ConnectionHandle[E], obj: Object): Either[ResponseException, Any]
+  def handleRequest(connection: ConnectionHandle[E], request: R): Either[ResponseException, Any]
+
+  def handleReceiveFailure(connection: ConnectionHandle[E], cause: Throwable): ResponseException
 
 }
