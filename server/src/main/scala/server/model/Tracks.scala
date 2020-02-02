@@ -38,17 +38,19 @@ object Tracks {
     implicit val rhythmLayerFormat: JsonFormat[RhythmLayer] = jsonFormat2(RhythmLayer.apply)
 
     implicit object LayerFormat extends RootJsonFormat[Layer] {
+      final val TYPE_FIELD = "layerType"
       override def write(obj: Layer): JsValue =
-        JsObject((obj match {
-          case l: NoteLayer => l.toJson
-          case l: ChordLayer => l.toJson
-          case l: RhythmLayer => l.toJson
-        }).asJsObject.fields)
+        JsObject(obj match {
+          case l: NoteLayer => l.toJson.asJsObject.fields + (TYPE_FIELD -> JsString("notes"))
+          case l: ChordLayer => l.toJson.asJsObject.fields + (TYPE_FIELD -> JsString("chords"))
+          case l: RhythmLayer => l.toJson.asJsObject.fields + (TYPE_FIELD -> JsString("rhythm"))
+        })
 
       override def read(json: JsValue): Layer =
-        json.asJsObject.getFields("messageType") match {
-          case Seq(JsString("noteLayer")) => json.convertTo[NoteLayer]
-          case Seq(JsString("chordLayer")) => json.convertTo[ChordLayer]
+        json.asJsObject.getFields(TYPE_FIELD) match {
+          case Seq(JsString("notes")) => json.convertTo[NoteLayer]
+          case Seq(JsString("chords")) => json.convertTo[ChordLayer]
+          case Seq(JsString("rhythm")) => json.convertTo[RhythmLayer]
           case tpe => serializationError(s"Unrecognized LayerFormat [$tpe]")
         }
     }

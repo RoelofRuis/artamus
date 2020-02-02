@@ -38,7 +38,8 @@ private[server] class RecordingCommandHandler @Inject() (
     storage.getRecording(req.user.id) match {
       case None => Responses.ok
       case Some(recording) =>
-        val recordedTrack = if (recording.notes.isEmpty) Track()
+        val baseTrack = if (req.attributes.rhythmOnly) Track.emptyRhythm else Track.emptyNotes
+        val recordedTrack = if (recording.notes.isEmpty) baseTrack
         else {
           val quantized = req.attributes.customQuantizer.getOrElse(Quantizer()).quantize(recording.notes.map(_.starts))
           recording
@@ -52,7 +53,7 @@ private[server] class RecordingCommandHandler @Inject() (
                 case Some((seq, prevDur)) => Some(seq :+ note, Seq(duration, prevDur).max)
               }
             }
-            .foldLeft(Track()) { case (track, (position, (notes, duration))) =>
+            .foldLeft(baseTrack) { case (track, (position, (notes, duration))) =>
               track.writeNoteGroup(NoteGroup(Window(position, duration), notes))
             }
         }

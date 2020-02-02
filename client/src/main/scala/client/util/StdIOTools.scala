@@ -10,6 +10,10 @@ object StdIOTools {
     read[Int](message, "Not a valid int", scala.io.StdIn.readInt())
   }
 
+  def readBool(message: String): Boolean = {
+    read[Boolean](message, "Note a valid boolean", scala.io.StdIn.readBoolean())
+  }
+
   def read[A](message: String, failureMessage: String, readFunc: => A): A = {
     println(message)
     try { readFunc }

@@ -22,7 +22,7 @@ class RecordingOperations @Inject() (
     recorder.deactivate()
 
     ServerOperation(
-      Quantize(None),
+      Quantize(None, rhythmOnly = false),
       Render
     )
   })
@@ -31,9 +31,10 @@ class RecordingOperations @Inject() (
     recorder.deactivate()
 
     val wholeNoteDuration: Int = StdIOTools.readInt("whole note duration")
+    val rhythmOnly: Boolean = StdIOTools.readBool("rhythm only?")
 
     ServerOperation(
-      Quantize(Some(Quantizer(wholeNoteDuration = wholeNoteDuration))),
+      Quantize(Some(Quantizer(wholeNoteDuration = wholeNoteDuration)), rhythmOnly),
       Render
     )
   })

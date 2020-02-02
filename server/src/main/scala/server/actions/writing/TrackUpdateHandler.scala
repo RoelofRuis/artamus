@@ -29,7 +29,7 @@ private[server] class TrackUpdateHandler @Inject() (
 
     val res = for {
       _ <- delete.ifNotFound(DbResult.ok)
-      track = Track()
+      track = Track.emptyNotes
       workspace = Workspace(req.user.id, track.id)
       newWorkspace = workspace.selectTrack(track)
       _ <- req.db.saveTrack(track)

@@ -7,7 +7,7 @@ import music.model.write.Layers.{ChordLayer, Layer, NoteLayer, RhythmLayer}
 import music.model.write.Track.TrackId
 import music.primitives.{Key, NoteGroup, TimeSignature}
 
-final case class Track(
+final case class Track (
   id: TrackId = TrackId(),
   layers: List[Layer] = List()
 ) {
@@ -41,6 +41,9 @@ final case class Track(
 }
 
 object Track {
+
+  def emptyNotes: Track = Track(layers = List(NoteLayer()))
+  def emptyRhythm: Track = Track(layers = List(RhythmLayer()))
 
   final case class TrackId(id: UUID = UUID.randomUUID())
 
