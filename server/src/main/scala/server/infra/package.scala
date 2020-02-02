@@ -1,6 +1,6 @@
 package server
 
-import api.{Event, Request}
+import domain.interact.{Event, Request}
 import pubsub.{Dispatcher, EventBus}
 
 package object infra {

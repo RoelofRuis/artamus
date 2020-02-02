@@ -1,4 +1,4 @@
-package api
+package domain.interact
 
 import domain.record.{Quantizer, RawMidiNote, Recording}
 

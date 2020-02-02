@@ -1,6 +1,6 @@
 package client.module.midi.operations
 
-import api.Write.Perform
+import domain.interact.Write.Perform
 import client.Client
 import client.module.Operations.OperationRegistry
 import client.module.midi.MusicWriter

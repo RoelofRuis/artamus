@@ -3,9 +3,9 @@ package server.infra
 import java.util.concurrent.ConcurrentHashMap
 
 import _root_.server.ServerRequest
-import api.Control.Authenticate
-import api.{Event, Request}
 import com.typesafe.scalalogging.LazyLogging
+import domain.interact.Control.Authenticate
+import domain.interact.{Event, Request}
 import domain.workspace.User
 import javax.inject.{Inject, Singleton}
 import protocol.Exceptions._

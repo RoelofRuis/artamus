@@ -2,7 +2,7 @@ package server.infra
 
 import java.util.UUID
 
-import api.Write.TrackRendered
+import domain.interact.Write.TrackRendered
 import domain.workspace.User
 import domain.workspace.User.UserId
 import javax.inject.Inject

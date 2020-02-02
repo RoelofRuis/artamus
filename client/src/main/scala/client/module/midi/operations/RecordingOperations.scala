@@ -1,7 +1,7 @@
 package client.module.midi.operations
 
-import api.Record.{ClearRecording, Quantize}
-import api.Write.Render
+import domain.interact.Record.{ClearRecording, Quantize}
+import domain.interact.Write.Render
 import client.module.Operations.{OperationRegistry, ServerOperation}
 import client.module.midi.MidiRecorder
 import client.util.StdIOTools

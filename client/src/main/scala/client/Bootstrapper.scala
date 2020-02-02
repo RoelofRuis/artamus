@@ -1,11 +1,11 @@
 package client
 
-import api.Command
-import api.Control.Authenticate
 import client.events.RenderHandler
 import client.module.Operations.{LocalOperation, Operation, OperationRegistry, ServerOperation}
 import client.util.ClientInteraction
 import com.typesafe.scalalogging.LazyLogging
+import domain.interact.Command
+import domain.interact.Control.Authenticate
 import javax.inject.Inject
 
 import scala.annotation.tailrec

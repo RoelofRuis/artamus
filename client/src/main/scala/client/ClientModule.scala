@@ -1,6 +1,5 @@
 package client
 
-import api.Event
 import client.events.{ConnectionEventHandler, RenderHandler}
 import client.module.ClientOperationRegistry
 import client.module.Operations.OperationRegistry
@@ -8,6 +7,7 @@ import client.module.midi.MidiModule
 import client.module.system.SystemModule
 import client.module.terminal.TerminalModule
 import com.google.inject.Provides
+import domain.interact.Event
 import javax.inject.Singleton
 import net.codingwell.scalaguice.ScalaPrivateModule
 import protocol.client.api.{ClientConfig, ConnectionEvent}

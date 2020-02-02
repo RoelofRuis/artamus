@@ -1,4 +1,4 @@
-import api.Request
+import domain.interact.Request
 import protocol.client.api.ClientInterface
 
 package object client {

@@ -1,6 +1,6 @@
 package server.actions.control
 
-import api.Control.Disconnect
+import domain.interact.Control.Disconnect
 import javax.inject.{Inject, Singleton}
 import server.ServerRequest
 import server.actions.Responses

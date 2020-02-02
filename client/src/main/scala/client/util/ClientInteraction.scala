@@ -1,8 +1,8 @@
 package client.util
 
-import api.{Command, Query}
 import client.Client
 import com.typesafe.scalalogging.LazyLogging
+import domain.interact.{Command, Query}
 import protocol.Exceptions.CommunicationException
 
 object ClientInteraction {

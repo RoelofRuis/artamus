@@ -1,6 +1,6 @@
 package client.module.midi.operations
 
-import api.Write.{Render, WriteKey, WriteTimeSignature}
+import domain.interact.Write.{Render, WriteKey, WriteTimeSignature}
 import client.module.Operations.OperationRegistry
 import client.module.midi.MusicReader
 import domain.math.temporal.Position

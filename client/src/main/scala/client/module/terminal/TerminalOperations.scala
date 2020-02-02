@@ -1,10 +1,10 @@
 package client.module.terminal
 
-import api.Command
-import api.Write._
 import client.Client
 import client.module.Operations.{OperationRegistry, ServerOperation}
 import client.util.{ClientInteraction, StdIOTools}
+import domain.interact.Command
+import domain.interact.Write._
 import domain.math.Rational
 import domain.math.temporal.{Duration, Position, Window}
 import domain.primitives.{NoteGroup, TimeSignature}

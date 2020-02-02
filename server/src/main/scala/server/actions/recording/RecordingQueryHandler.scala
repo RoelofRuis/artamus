@@ -1,6 +1,6 @@
 package server.actions.recording
 
-import api.Record.GetCurrentRecording
+import domain.interact.Record.GetCurrentRecording
 import javax.inject.{Inject, Singleton}
 import server.infra.ServerDispatcher
 

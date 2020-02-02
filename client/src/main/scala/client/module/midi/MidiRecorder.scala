@@ -3,7 +3,7 @@ package client.module.midi
 import java.util.concurrent.atomic.AtomicBoolean
 import java.util.concurrent.{BlockingQueue, LinkedBlockingQueue}
 
-import api.Record.RecordNote
+import domain.interact.Record.RecordNote
 import client.Client
 import com.typesafe.scalalogging.LazyLogging
 import domain.primitives.{Loudness, MidiNoteNumber}

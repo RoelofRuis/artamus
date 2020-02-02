@@ -1,6 +1,6 @@
 package client.module.midi.operations
 
-import api.Record.GetCurrentRecording
+import domain.interact.Record.GetCurrentRecording
 import client.Client
 import client.module.Operations.OperationRegistry
 import client.util.ClientInteraction

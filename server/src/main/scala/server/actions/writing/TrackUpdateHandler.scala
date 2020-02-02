@@ -1,7 +1,7 @@
 package server.actions.writing
 
-import api.Command
-import api.Write._
+import domain.interact.Command
+import domain.interact.Write._
 import domain.workspace.Workspace
 import domain.write.Track
 import javax.inject.{Inject, Singleton}

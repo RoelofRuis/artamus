@@ -1,6 +1,6 @@
 package client.module
 
-import api.Command
+import domain.interact.Command
 
 import scala.util.{Success, Try}
 

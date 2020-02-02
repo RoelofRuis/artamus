@@ -1,7 +1,7 @@
 package server.actions.writing
 
-import api.Query
-import api.Write.Perform
+import domain.interact.Query
+import domain.interact.Write.Perform
 import domain.write.Track
 import javax.inject.{Inject, Singleton}
 import server.ServerRequest

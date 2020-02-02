@@ -1,6 +1,6 @@
 package server.actions.recording
 
-import api.Record.{ClearRecording, Quantize, RecordNote}
+import domain.interact.Record.{ClearRecording, Quantize, RecordNote}
 import domain.math.Rational
 import domain.math.temporal.{Duration, Position, Window}
 import domain.primitives.{Note, NoteGroup}

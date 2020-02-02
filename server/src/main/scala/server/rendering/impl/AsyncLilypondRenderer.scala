@@ -2,7 +2,7 @@ package server.rendering.impl
 
 import java.util.concurrent.{ExecutorService, Executors}
 
-import api.Write.TrackRendered
+import domain.interact.Write.TrackRendered
 import com.typesafe.scalalogging.LazyLogging
 import domain.display.Display
 import domain.display.render.Render

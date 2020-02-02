@@ -1,6 +1,6 @@
 package server.infra
 
-import api.{Event, Request}
+import domain.interact.{Event, Request}
 import net.codingwell.scalaguice.ScalaModule
 import protocol.server.api.{ServerAPI, ServerConfig, ServerFactory}
 import pubsub.EventBus

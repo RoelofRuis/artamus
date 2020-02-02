@@ -9,9 +9,9 @@ The application is separated into several packages to keep concerns separated
 
 ```
 Dependency overview:
-PACKAGE             DEPENDENCIES
-client              [common.domain, common.midi, common.patching, common.protocol, common.pubsub, server]
-server              [common.domain, common.protocol, common.pubsub, storage]
+PACKAGE      DEPENDENCIES
+client       [common.domain, common.midi, common.patching, common.protocol, common.pubsub]
+server       [common.domain,                               common.protocol, common.pubsub, storage]
 ```
 
 The server application requires `Lilypond` which can be downloaded at:

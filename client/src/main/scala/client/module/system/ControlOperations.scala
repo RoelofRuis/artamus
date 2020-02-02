@@ -1,6 +1,6 @@
 package client.module.system
 
-import api.Write.{Analyse, NewWorkspace, Render}
+import domain.interact.Write.{Analyse, NewWorkspace, Render}
 import client.module.Operations.{OperationRegistry, ServerOperation}
 import javax.inject.Inject
 
