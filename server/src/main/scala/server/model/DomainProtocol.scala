@@ -2,9 +2,9 @@ package server.model
 
 import java.util.UUID
 
+import math.Rational
 import music.analysis.TwelveToneTuning
-import music.math.Rational
-import music.math.temporal.{Duration, Position, Window}
+import math.temporal.{Duration, Position, Window}
 import music.model.record.{MillisecondPosition, RawMidiNote}
 import music.model.workspace.User.UserId
 import music.model.write.Track.TrackId

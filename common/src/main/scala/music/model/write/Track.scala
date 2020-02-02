@@ -2,7 +2,7 @@ package music.model.write
 
 import java.util.UUID
 
-import music.math.temporal.Position
+import math.temporal.Position
 import music.model.write.Layers.{ChordLayer, Layer, NoteLayer, RhythmLayer}
 import music.model.write.Track.TrackId
 import music.primitives.{Key, NoteGroup, TimeSignature}

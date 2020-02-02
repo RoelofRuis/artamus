@@ -1,8 +1,8 @@
 package server.actions.recording
 
 import javax.inject.{Inject, Singleton}
-import music.math.Rational
-import music.math.temporal.{Duration, Position, Window}
+import math.Rational
+import math.temporal.{Duration, Position, Window}
 import music.model.record.{Quantization, Quantizer}
 import music.model.write.Track
 import music.primitives.{Note, NoteGroup}

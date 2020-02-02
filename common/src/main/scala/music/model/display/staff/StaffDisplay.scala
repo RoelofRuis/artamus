@@ -1,7 +1,7 @@
 package music.model.display.staff
 
 import music.analysis.TwelveTonePitchSpelling
-import music.math.temporal.{Duration, Position, Window}
+import math.temporal.{Duration, Position, Window}
 import music.model.display.staff.Inclusion.InclusionStrategy
 import music.model.display.staff.StaffGlyph._
 import music.model.display.{Bars, NoteValues, StaffGroup}

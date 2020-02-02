@@ -1,5 +1,6 @@
 package music.math
 
+import math.Rational
 import utest._
 
 object RationalTest extends TestSuite {

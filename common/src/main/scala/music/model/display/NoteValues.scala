@@ -1,7 +1,7 @@
 package music.model.display
 
-import music.math.Rational
-import music.math.temporal.Duration
+import math.Rational
+import math.temporal.Duration
 import music.primitives.NoteValue
 
 object NoteValues {
@@ -11,7 +11,7 @@ object NoteValues {
     def asNoteValues: Seq[NoteValue] = {
       duration.v match {
         case Duration.ZERO.`v` => Seq()
-        case Rational(_, d) if ! music.math.isPowerOfTwo(d) => throw new NotImplementedError(s"No WritableDuration support for [$duration]")
+        case Rational(_, d) if ! math.isPowerOfTwo(d) => throw new NotImplementedError(s"No WritableDuration support for [$duration]")
         case r @ Rational(1, _) => Seq(NoteValue(r, 0))
         case Rational(3, d) => Seq(NoteValue(Rational.reciprocal(d / 2), 1))
         case Rational(5, d) => Seq(

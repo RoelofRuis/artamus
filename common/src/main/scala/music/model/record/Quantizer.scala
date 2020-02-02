@@ -1,6 +1,6 @@
 package music.model.record
 
-import music.math.Rational
+import math.Rational
 
 /**
  * Represents the static settings of a quantizer.

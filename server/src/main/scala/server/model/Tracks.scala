@@ -1,6 +1,6 @@
 package server.model
 
-import music.math.temporal.Window
+import math.temporal.Window
 import music.model.write.Layers.{ChordLayer, Layer, NoteLayer, RhythmLayer}
 import music.model.write.Track.TrackId
 import music.model.write._

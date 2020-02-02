@@ -1,4 +1,4 @@
-package music.math.temporal
+package math.temporal
 
 /** A time window expressed by a position with a duration. The duration might be zero, expressing an instantaneous
   * moment.

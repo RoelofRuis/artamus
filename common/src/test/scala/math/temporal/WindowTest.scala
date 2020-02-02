@@ -1,4 +1,4 @@
-package music.math.temporal
+package math.temporal
 
 import utest._
 

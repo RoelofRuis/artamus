@@ -1,6 +1,6 @@
 package music.primitives
 
-import music.math.temporal.Window
+import math.temporal.Window
 
 final case class NoteGroup(
   window: Window,

@@ -1,6 +1,6 @@
 package music.model.write
 
-import music.math.temporal.Position
+import math.temporal.Position
 import music.primitives.TimeSignature
 
 import scala.collection.immutable.SortedMap

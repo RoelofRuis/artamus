@@ -3,8 +3,8 @@ package client.module.terminal
 import client.util.{ClientLogging, StdIOTools}
 import client.module.Operations.{OperationRegistry, ServerOperation}
 import javax.inject.Inject
-import music.math.Rational
-import music.math.temporal.{Duration, Position, Window}
+import math.Rational
+import math.temporal.{Duration, Position, Window}
 import music.primitives.{NoteGroup, TimeSignature}
 import protocol.Command
 import protocol.client.api.ClientInterface

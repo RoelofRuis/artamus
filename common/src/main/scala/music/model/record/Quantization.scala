@@ -1,8 +1,8 @@
 package music.model.record
 
-import music.math.HierarchicalClustering.Centroid
-import music.math.temporal.{Duration, Position}
-import music.math.{HierarchicalClustering, Rational}
+import math.HierarchicalClustering.Centroid
+import math.{HierarchicalClustering, Rational}
+import math.temporal.{Duration, Position}
 
 import scala.annotation.tailrec
 

@@ -1,6 +1,6 @@
-package music.math.temporal
+package math.temporal
 
-import music.math.Rational
+import math.Rational
 
 /** A rational-valued non-negative duration.
   *

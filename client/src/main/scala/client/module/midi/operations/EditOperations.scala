@@ -4,7 +4,7 @@ import client.module.Operations.OperationRegistry
 import client.module.midi.MusicReader
 import javax.inject.Inject
 import midi.read.MidiInput
-import music.math.temporal.Position
+import math.temporal.Position
 import music.primitives.{TimeSignature, _}
 import server.actions.writing._
 

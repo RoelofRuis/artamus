@@ -1,6 +1,6 @@
 package music.model.write
 
-import music.math.temporal.{Position, Window}
+import math.temporal.{Position, Window}
 import music.primitives.Chord
 
 import scala.collection.BufferedIterator

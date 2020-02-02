@@ -1,6 +1,6 @@
 package server.actions
 
-import music.math.temporal.Position
+import math.temporal.Position
 import music.model.display.render.Render
 import music.model.perform.TrackPerformance
 import music.primitives._

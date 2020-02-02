@@ -1,6 +1,6 @@
-package music.math.temporal
+package math.temporal
 
-import music.math.Rational
+import math.Rational
 import utest._
 
 object DurationTest extends TestSuite {
