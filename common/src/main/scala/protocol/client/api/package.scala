@@ -4,15 +4,15 @@ import protocol.client.impl.{Client, EventThread}
 
 package object api {
 
-  def createClient[C, Q <: { type Res }, E](
+  def createClient[R <: { type Res }, E](
     config: ClientConfig,
     eventDispatcher: EventDispatcher[Either[ConnectionEvent, E]],
-  ): ClientInterface[C, Q] = {
+  ): ClientInterface[R] = {
     val serverEventScheduler = new EventThread(eventDispatcher)
     serverEventScheduler.setDaemon(true)
     serverEventScheduler.start()
 
-    new Client[C, Q, E](config, serverEventScheduler)
+    new Client[R, E](config, serverEventScheduler)
   }
 
   sealed trait ConnectionEvent { type Res = Unit }

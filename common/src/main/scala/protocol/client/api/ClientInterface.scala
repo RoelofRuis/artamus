@@ -2,10 +2,8 @@ package protocol.client.api
 
 import protocol.Exceptions.CommunicationException
 
-trait ClientInterface[C, Q <: { type Res }] {
+trait ClientInterface[R <: { type Res }] {
 
-  def sendCommand(command: C): Option[CommunicationException]
-
-  def sendQuery[A <: Q](query: A): Either[CommunicationException, A#Res]
+  def send[A <: R](request: A): Either[CommunicationException, A#Res]
 
 }

@@ -1,8 +1,8 @@
-import api.{Command, Query}
+import api.Request
 import protocol.client.api.ClientInterface
 
 package object client {
 
-  type Client = ClientInterface[Command, Query]
+  type Client = ClientInterface[Request]
 
 }

@@ -6,19 +6,13 @@ import protocol.client.api._
 import protocol.client.impl.Client.{Connected, TransportState, Unconnected}
 
 @NotThreadSafe // TODO: ensure thread safety!
-private[client] final class Client[C, Q <: { type Res }, E](
+private[client] final class Client[R <: { type Res }, E](
   config: ClientConfig,
   eventScheduler: EventScheduler[Either[ConnectionEvent, E]],
   @GuardedBy("transport") private var transport: TransportState = Unconnected(true)
-) extends ClientInterface[C, Q] {
+) extends ClientInterface[R] {
 
-  override def sendCommand(command: C): Option[CommunicationException] = {
-    sendWithTransport[C, Unit](command).left.toOption
-  }
-
-  override def sendQuery[A <: Q](query: A): Either[CommunicationException, A#Res] = {
-    sendWithTransport[A, A#Res](query)
-  }
+  override def send[A <: R](request: A): Either[CommunicationException, A#Res] = sendWithTransport[A, A#Res](request)
 
   private def getTransport: Either[CommunicationException, ClientTransport] = {
     transport match {

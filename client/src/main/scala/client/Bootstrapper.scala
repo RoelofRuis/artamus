@@ -4,7 +4,7 @@ import api.Command
 import api.Control.Authenticate
 import client.events.RenderHandler
 import client.module.Operations.{LocalOperation, Operation, OperationRegistry, ServerOperation}
-import client.util.ClientLogging
+import client.util.ClientInteraction
 import com.typesafe.scalalogging.LazyLogging
 import javax.inject.Inject
 
@@ -18,7 +18,7 @@ class Bootstrapper @Inject() (
   moduleLifetimeHooks: ModuleLifetimeHooks // Expand only as more hooks are needed
 ) extends LazyLogging {
 
-  import ClientLogging._
+  import ClientInteraction._
 
   def run(): Unit = {
     moduleLifetimeHooks.initializeAll()
@@ -47,13 +47,13 @@ class Bootstrapper @Inject() (
     renderHandler.frame.dispose()
   }
 
-  private def tryAuthenticate(): Unit = client.sendCommandLogged(Authenticate("artamus"))
+  private def tryAuthenticate(): Unit = client.sendCommand(Authenticate("artamus"))
 
   @tailrec
   private def sendCommands(commands: List[Command]): Unit = commands match {
     case Nil =>
     case command :: rest =>
-      client.sendCommandLogged(command) match {
+      client.sendCommand(command) match {
         case None => sendCommands(rest)
         case _ =>
       }

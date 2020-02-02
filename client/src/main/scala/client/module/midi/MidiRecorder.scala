@@ -34,9 +34,9 @@ class MidiRecorder @Inject() (
                 Loudness(msg.getData2),
                 MillisecondPosition.fromMicroseconds(microsecondTimestamp)
               )
-              client.sendCommand(RecordNote(note)) match {
-                case None =>
-                case Some(ex) => logger.error("Unable to send recorded note", ex)
+              client.send(RecordNote(note)) match {
+                case Right(()) =>
+                case Left(ex) => logger.error("Unable to send recorded note", ex)
               }
             case _ =>
           }

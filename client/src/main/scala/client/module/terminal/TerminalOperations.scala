@@ -4,7 +4,7 @@ import api.Command
 import api.Write._
 import client.Client
 import client.module.Operations.{OperationRegistry, ServerOperation}
-import client.util.{ClientLogging, StdIOTools}
+import client.util.{ClientInteraction, StdIOTools}
 import domain.math.Rational
 import domain.math.temporal.{Duration, Position, Window}
 import domain.primitives.{NoteGroup, TimeSignature}
@@ -17,10 +17,10 @@ class TerminalOperations @Inject() (
   client: Client,
 ) {
 
-  import ClientLogging._
+  import ClientInteraction._
 
   registry.local("print-notes", "query (terminal)", {
-    client.sendQueryLogged(Perform) match {
+    client.sendQuery(Perform) match {
       case Right(track) =>
         println("Playing:")
         track.notes.foreach { note => println(note) }
