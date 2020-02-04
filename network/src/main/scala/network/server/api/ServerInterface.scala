@@ -6,6 +6,8 @@ trait ServerInterface {
 
   def accept(): Unit
 
-  def shutdown(): Future[Unit]
+  def shutdown(): Unit
+
+  def awaitShutdown(): Future[Unit]
 
 }

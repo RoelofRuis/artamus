@@ -34,7 +34,8 @@ object NetworkingSuite extends TestSuite with FutureTesters {
     server.accept()
 
     test("server shuts down") {
-      server.shutdown().await
+      server.awaitShutdown()
+      server.shutdown()
     }
   }
 
