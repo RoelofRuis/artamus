@@ -15,6 +15,8 @@ class MidiModule extends ScalaPrivateModule {
     val FocusriteUSBMIDI_IN: DeviceHash = "658ef990"
     val FocusriteUSBMIDI_OUT: DeviceHash = "c7797746"
     val iRigUSBMIDI_IN: DeviceHash = "e98b95f2"
+    val SamsonConspiracyMIDI_IN: DeviceHash = "b2a17aab"
+    val SamsonConspiracyMIDI_OUT: DeviceHash = "a4424e74"
   }
 
   override def configure(): Unit = {
