@@ -2,7 +2,7 @@ package server
 
 import domain.interact.{Event, Request}
 import javax.inject.Inject
-import protocol.server.api.ServerFactory
+import network.server.api.ServerFactory
 
 class Bootstrapper @Inject() (
   serverFactory: ServerFactory[Request, Event]

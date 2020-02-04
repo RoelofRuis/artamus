@@ -2,7 +2,7 @@ package server.infra
 
 import domain.interact.{Event, Request}
 import net.codingwell.scalaguice.ScalaModule
-import protocol.server.api.{ServerAPI, ServerConfig, ServerFactory}
+import network.server.api.{ServerAPI, ServerConfig, ServerFactory}
 import pubsub.EventBus
 import server.ServerRequest
 

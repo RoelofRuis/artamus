@@ -3,7 +3,7 @@ package client.util
 import client.Client
 import com.typesafe.scalalogging.LazyLogging
 import domain.interact.{Command, Query}
-import protocol.Exceptions.CommunicationException
+import network.Exceptions.CommunicationException
 
 object ClientInteraction {
 

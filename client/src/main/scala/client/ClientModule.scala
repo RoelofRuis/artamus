@@ -10,7 +10,7 @@ import com.google.inject.Provides
 import domain.interact.Event
 import javax.inject.Singleton
 import net.codingwell.scalaguice.ScalaPrivateModule
-import protocol.client.api.{ClientConfig, ConnectionEvent}
+import network.client.api.{ClientConfig, ConnectionEvent, createClient}
 import pubsub.{Callback, Dispatcher}
 
 class ClientModule extends ScalaPrivateModule {
@@ -38,7 +38,7 @@ class ClientModule extends ScalaPrivateModule {
     connectionEventDispatcher: Dispatcher[Callback, ConnectionEvent],
     serverEventDispatcher: Dispatcher[Callback, Event]
   ): Client =
-    protocol.client.api.createClient(
+    createClient(
       ClientConfig("localhost", 9999),
       (e: Either[ConnectionEvent, Event]) => e match {
         case Left(c) => connectionEventDispatcher.handle(Callback(c))

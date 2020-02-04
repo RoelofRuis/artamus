@@ -2,7 +2,7 @@ package client.events
 
 import com.google.inject.Inject
 import com.typesafe.scalalogging.LazyLogging
-import protocol.client.api._
+import network.client.api._
 import pubsub.{Callback, Dispatcher}
 
 import scala.util.Success

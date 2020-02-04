@@ -8,8 +8,8 @@ import domain.interact.Control.Authenticate
 import domain.interact.{Event, Request}
 import domain.workspace.User
 import javax.inject.{Inject, Singleton}
-import protocol.Exceptions._
-import protocol.server.api.{ConnectionHandle, ServerAPI}
+import network.Exceptions._
+import network.server.api.{ConnectionHandle, ServerAPI}
 import storage.api.{Database, DbIO, NotFound, Transaction}
 
 import scala.util.{Failure, Success}
@@ -54,9 +54,8 @@ final class DispatchingServerAPI @Inject() (
     }
   }
 
-  def handleReceiveFailure(connection: ConnectionHandle[Event], cause: Throwable): ResponseException = {
+  override def receiveFailed(connection: ConnectionHandle[Event], cause: Throwable): Unit = {
     logger.warn(s"Received invalid message on connection [$connection]", cause)
-    InvalidMessage
   }
 
   def handleRequest(connection: ConnectionHandle[Event], request: Request): Either[ResponseException, Any] = {

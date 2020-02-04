@@ -40,6 +40,18 @@ lazy val storage = (project in file("storage"))
     )
   )
 
+lazy val network = (project in file("network"))
+  .settings(
+    name := "network",
+    description := "Socket communication",
+    compilerFlags,
+    libraryDependencies ++= Seq(
+      dependencies.javaxInject,
+      dependencies.findbugs,
+      dependencies.microtest % Test
+    )
+  )
+
 lazy val client = (project in file("client"))
   .settings(
     name := "artamus-client",
@@ -58,7 +70,7 @@ lazy val client = (project in file("client"))
       dependencies.slf4jSimple,
     )
   )
-  .dependsOn(common)
+  .dependsOn(network, common)
 
 lazy val server = (project in file("server"))
   .settings(
@@ -73,4 +85,4 @@ lazy val server = (project in file("server"))
       dependencies.sprayJson
     )
   )
-  .dependsOn(storage, common)
+  .dependsOn(network, storage, common)

@@ -1,5 +1,5 @@
 import domain.interact.Request
-import protocol.client.api.ClientInterface
+import network.client.api.ClientInterface
 
 package object client {
 
