@@ -6,9 +6,8 @@ import java.util.concurrent.atomic.AtomicBoolean
 import java.util.concurrent.{ArrayBlockingQueue, BlockingQueue}
 
 import javax.annotation.concurrent.NotThreadSafe
-import network.{DataResponseMessage, EventResponseMessage, ResponseMessage}
 import network.Exceptions._
-import network.client.api.ConnectionEvent
+import network.{DataResponseMessage, EventResponseMessage, ResponseMessage}
 
 import scala.util.{Failure, Success, Try}
 
@@ -17,7 +16,7 @@ private[client] final class ClientTransportThread[E](
   val socket: Socket,
   val inputStream: ObjectInputStream,
   val outputStream: ObjectOutputStream,
-  val eventScheduler: EventScheduler[Either[ConnectionEvent, E]],
+  val scheduler: EventScheduler[E],
 ) extends Thread with ClientTransport {
 
   private val readQueue: BlockingQueue[Either[CommunicationException, DataResponseMessage]] = new ArrayBlockingQueue[Either[CommunicationException, DataResponseMessage]](64)
@@ -75,7 +74,7 @@ private[client] final class ClientTransportThread[E](
           case Success(_ @ DataResponseMessage(_)) => readQueue.put(Left(UnexpectedDataResponse))
           case Success(EventResponseMessage(event)) =>
             decode[E](event) match {
-              case Success(e) => eventScheduler.schedule(Right(e))
+              case Success(e) => scheduler.schedule(e)
               case Failure(ex) =>
                 ex.printStackTrace() // TODO: determine what to do on completely unexpected failure
             }

@@ -3,12 +3,13 @@ package network.client.impl
 import javax.annotation.concurrent.{GuardedBy, NotThreadSafe}
 import network.Exceptions.{CommunicationException, NotConnected, ResponseException, TransportException}
 import network.client.api._
-import network.client.impl.Client.{Connected, TransportState, Unconnected}
+import network.client.impl.ClientImpl.{Connected, TransportState, Unconnected}
 
 @NotThreadSafe // TODO: ensure thread safety!
-private[client] final class Client[R <: { type Res }, E](
+private[client] final class ClientImpl[R <: { type Res }, E](
   config: ClientConfig,
-  eventScheduler: EventScheduler[Either[ConnectionEvent, E]],
+  api: ClientAPI[E],
+  scheduler: EventScheduler[E],
   @GuardedBy("transport") private var transport: TransportState = Unconnected(true)
 ) extends ClientInterface[R] {
 
@@ -19,16 +20,16 @@ private[client] final class Client[R <: { type Res }, E](
       case Connected(transport) => Right(transport)
       case Unconnected(false) => Left(NotConnected)
       case Unconnected(true) =>
-        eventScheduler.schedule(Left(ConnectingStarted))
-        ClientTransportFactory.create(config, eventScheduler) match {
+        api.connectingStarted()
+        ClientTransportFactory.create(config, scheduler) match {
           case r @ Right(t) =>
             transport.synchronized { transport = Connected(t) }
-            eventScheduler.schedule(Left(ConnectionMade))
+            api.connectionEstablished()
             r
 
-          case l @ Left(_) =>
+          case l @ Left(ex) =>
             transport.synchronized { transport = Unconnected(false) }
-            eventScheduler.schedule(Left(ConnectingFailed))
+            api.connectingFailed(ex)
             l
         }
     }
@@ -40,9 +41,9 @@ private[client] final class Client[R <: { type Res }, E](
       case Right(conn) => conn.send[A, B](data) match {
         case r @ Right(_) => r
         case l @ Left(_: ResponseException) => l
-        case l @ Left(_: TransportException) =>
+        case l @ Left(ex: TransportException) =>
           transport.synchronized { transport = Unconnected(true) }
-          eventScheduler.schedule(Left(ConnectionLost))
+          api.connectionLost(ex)
           l
       }
     }
@@ -50,7 +51,7 @@ private[client] final class Client[R <: { type Res }, E](
 
 }
 
-object Client {
+object ClientImpl {
 
   sealed trait TransportState
   final case class Unconnected(canRetry: Boolean) extends TransportState

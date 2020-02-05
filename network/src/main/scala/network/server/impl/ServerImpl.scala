@@ -10,7 +10,7 @@ import network.server.api.{ServerAPI, ServerInterface}
 import scala.concurrent.{Future, Promise}
 import scala.util.{Failure, Success, Try}
 
-private[server] final class Server[R, E](
+private[server] final class ServerImpl[R, E](
   serverSocket: ServerSocket,
   api: ServerAPI[R, E]
 ) extends Thread with ServerInterface {

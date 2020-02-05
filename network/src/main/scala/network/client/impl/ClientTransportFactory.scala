@@ -4,18 +4,18 @@ import java.io.{ObjectInputStream, ObjectOutputStream}
 import java.net.{InetAddress, Socket}
 
 import network.Exceptions.{ConnectionException, TransportException}
-import network.client.api.{ClientConfig, ConnectionEvent}
+import network.client.api.ClientConfig
 
 import scala.util.{Failure, Success, Try}
 
 private[client] object ClientTransportFactory {
 
-  def create[E](config: ClientConfig, eventScheduler: EventScheduler[Either[ConnectionEvent, E]]): Either[TransportException, ClientTransport] = {
+  def create[E](config: ClientConfig, scheduler: EventScheduler[E]): Either[TransportException, ClientTransport] = {
     val transport = for {
       socket <- Try { new Socket(InetAddress.getByName(config.host), config.port) }
       objOut <- Try { new ObjectOutputStream(socket.getOutputStream) }
       objIn <- Try { new ObjectInputStream(socket.getInputStream) }
-    } yield new ClientTransportThread(socket, objIn, objOut, eventScheduler)
+    } yield new ClientTransportThread(socket, objIn, objOut, scheduler)
 
     transport match {
       case Failure(ex) => Left(ConnectionException(ex))

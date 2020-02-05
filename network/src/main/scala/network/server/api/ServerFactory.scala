@@ -4,7 +4,7 @@ import java.net.ServerSocket
 
 import javax.inject.{Inject, Singleton}
 import network.Exceptions.{ConnectionException, TransportException}
-import network.server.impl.Server
+import network.server.impl.ServerImpl
 
 import scala.util.{Failure, Success, Try}
 
@@ -15,7 +15,7 @@ final class ServerFactory[R, E] @Inject() (config: ServerConfig, api: ServerAPI[
     Try { new ServerSocket(config.port) } match {
       case Failure(ex) => Left(ConnectionException(ex))
       case Success(serverSocket) =>
-        val server = new Server[R, E](serverSocket, api)
+        val server = new ServerImpl[R, E](serverSocket, api)
 
         Right(server)
     }
