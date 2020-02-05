@@ -1,10 +1,9 @@
 package client.module.midi.operations
 
-import domain.interact.Record.GetCurrentRecording
-import client.Client
+import client.infra.{Client, ClientInteraction}
 import client.module.Operations.OperationRegistry
-import client.util.ClientInteraction
 import com.google.inject.Inject
+import domain.interact.Record.GetCurrentRecording
 
 class DebugOperations @Inject() (
   registry: OperationRegistry,

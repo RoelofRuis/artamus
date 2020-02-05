@@ -1,11 +1,10 @@
 package client.module.midi.operations
 
-import domain.interact.Write.Perform
-import client.Client
+import client.infra.{Client, ClientInteraction}
 import client.module.Operations.OperationRegistry
 import client.module.midi.MusicWriter
-import client.util.ClientInteraction
 import com.typesafe.scalalogging.LazyLogging
+import domain.interact.Write.Perform
 import javax.inject.Inject
 import midi.write.MidiSequenceWriter
 

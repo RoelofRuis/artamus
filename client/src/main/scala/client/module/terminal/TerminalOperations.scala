@@ -1,8 +1,8 @@
 package client.module.terminal
 
-import client.Client
+import client.infra.{Client, ClientInteraction}
 import client.module.Operations.{OperationRegistry, ServerOperation}
-import client.util.{ClientInteraction, StdIOTools}
+import client.util.StdIOTools
 import domain.interact.Command
 import domain.interact.Write._
 import domain.math.Rational

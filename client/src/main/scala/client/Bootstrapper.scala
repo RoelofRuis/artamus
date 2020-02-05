@@ -1,8 +1,8 @@
 package client
 
 import client.events.RenderHandler
+import client.infra.{Client, ClientInteraction}
 import client.module.Operations.{LocalOperation, Operation, OperationRegistry, ServerOperation}
-import client.util.ClientInteraction
 import com.typesafe.scalalogging.LazyLogging
 import domain.interact.Command
 import domain.interact.Control.Authenticate

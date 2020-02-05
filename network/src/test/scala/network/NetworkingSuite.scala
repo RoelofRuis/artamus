@@ -17,10 +17,6 @@ object NetworkingSuite extends TestSuite with Async {
       server.shutdown()
       shutdown.await == Success(())
     }
-
-    test("client starts and shuts down correctly") {
-      val client = NetworkingStubs.newClient(9001)
-    }
   }
 
 }

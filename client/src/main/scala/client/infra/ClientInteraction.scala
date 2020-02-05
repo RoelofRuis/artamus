@@ -1,6 +1,5 @@
-package client.util
+package client.infra
 
-import client.Client
 import com.typesafe.scalalogging.LazyLogging
 import domain.interact.{Command, Query}
 import network.Exceptions.CommunicationException

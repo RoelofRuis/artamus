@@ -7,6 +7,8 @@ import pubsub.EventBus
 import server.ServerRequest
 
 class ServerInfraModule extends ScalaModule {
+  // TODO: make private and expose only what is needed
+
   override def configure(): Unit = {
     bind[ServerDispatcher].toInstance(pubsub.createDispatcher[ServerRequest, Request]())
     bind[ServerEventBus].toInstance(new EventBus[Event])

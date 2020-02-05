@@ -3,9 +3,9 @@ package client.module.midi
 import java.util.concurrent.atomic.AtomicBoolean
 import java.util.concurrent.{BlockingQueue, LinkedBlockingQueue}
 
-import domain.interact.Record.RecordNote
-import client.Client
+import client.infra.Client
 import com.typesafe.scalalogging.LazyLogging
+import domain.interact.Record.RecordNote
 import domain.primitives.{Loudness, MidiNoteNumber}
 import domain.record.{MillisecondPosition, RawMidiNote}
 import javax.inject.Inject
