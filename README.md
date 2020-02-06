@@ -5,6 +5,7 @@ The application is separated into several packages to keep concerns separated
 - **Client** Contains the client application with the input and viewing logic
 - **Server** Contains the application state and does the heavy lifting
 - **Common** Contains common packages
+- **Network** Contains socket communication (which might be split off entirely into a separate package eventually)
 - **Storage** Contains a lightweight memory/file storage (which might be split off entirely into a separate package eventually)
 
 ```
