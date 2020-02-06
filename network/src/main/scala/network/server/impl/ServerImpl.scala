@@ -52,8 +52,8 @@ private[server] final class ServerImpl[R, E](
     Right(())
   }
 
-  override def interrupt(): Unit = {
-    if (! completionPromise.isCompleted) this.synchronized {
+  override def interrupt(): Unit = this.synchronized {
+    if (! completionPromise.isCompleted) {
       try {
         serverSocket.close()
         connectionExecutor.shutdown()

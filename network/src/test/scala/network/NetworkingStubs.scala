@@ -33,6 +33,12 @@ object NetworkingStubs {
     override def connectionLost(cause: Throwable): Unit = ()
   }
 
+  def newClientServerPair(port: Int): (ServerInterface, TestServerAPI, ClientInterface[TestRequest], TestClientAPI) = {
+    val (server, serverApi) = newServer(port)
+    val (client, clientApi) = newClient(port)
+    (server, serverApi, client, clientApi)
+  }
+
   def newServer(port: Int): (ServerInterface, TestServerAPI) = {
     val api = new TestServerAPI()
     val factory = new ServerFactory(ServerConfig(port), api)

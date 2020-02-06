@@ -1,6 +1,6 @@
 package network.client.impl
 
-import java.io.{IOException, ObjectInputStream, ObjectOutputStream}
+import java.io.{EOFException, IOException, ObjectInputStream, ObjectOutputStream}
 import java.net.Socket
 import java.util.concurrent.atomic.AtomicBoolean
 import java.util.concurrent.{ArrayBlockingQueue, BlockingQueue}
@@ -75,12 +75,10 @@ private[client] final class ClientTransportThread[E](
           case Success(EventResponseMessage(event)) =>
             decode[E](event) match {
               case Success(e) => scheduler.schedule(e)
-              case Failure(ex) =>
-                ex.printStackTrace() // TODO: determine what to do on completely unexpected failure
+              case Failure(_) => throw new InterruptedException
             }
           case Failure(ex) if expectsData.get() => readQueue.put(Left(ReadException(ex)))
-          case Failure(ex) =>
-            ex.printStackTrace()// TODO: determine what to do on completely unexpected failure
+          case Failure(_) => throw new InterruptedException
         }
       }
     } catch {

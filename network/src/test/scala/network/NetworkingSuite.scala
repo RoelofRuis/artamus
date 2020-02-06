@@ -1,6 +1,6 @@
 package network
 
-import network.Exceptions.{ConnectionException, LogicError}
+import network.Exceptions.{ConnectionException, LogicError, ReadException}
 import network.NetworkingStubs.TestRequest
 import utest._
 
@@ -27,20 +27,42 @@ object NetworkingSuite extends TestSuite with TestingImplicits {
       assert(res.isTypedLeft[ConnectionException])
     }
     test("client receives left response from server") {
-      val (server, serverApi) = NetworkingStubs.newServer(9003)
-      val (client, _) = NetworkingStubs.newClient(9003)
+      val (server, serverApi, client, _) = NetworkingStubs.newClientServerPair(9003)
       server.accept()
       serverApi.nextRequestHandler(_ => Left(LogicError))
 
       assert(client.send(TestRequest(42)).isTypedLeft[LogicError.type])
     }
     test("client receives right response from server") {
-      val (server, serverApi) = NetworkingStubs.newServer(9004)
-      val (client, _) = NetworkingStubs.newClient(9004)
+      val (server, serverApi, client, _) = NetworkingStubs.newClientServerPair(9004)
       server.accept()
       serverApi.nextRequestHandler(_ => Right(84))
 
       client.send(TestRequest(42)) ==> Right(84)
+    }
+    test("server hangs up during request") {
+      val (server, serverApi, client, _) = NetworkingStubs.newClientServerPair(9005)
+      server.accept()
+      serverApi.nextRequestHandler(_ => {
+        wait(1000)
+        Right(1)
+      })
+      server.shutdown()
+      val res = client.send(TestRequest(42))
+
+      assert(res.isTypedLeft[ConnectionException])
+    }
+    test("server hangs up after request") {
+      val (server, serverApi, client, _) = NetworkingStubs.newClientServerPair(9005)
+      server.accept()
+      serverApi.nextRequestHandler(_ => {
+        wait(1000)
+        Right(1)
+      })
+      val res = client.send(TestRequest(42))
+      server.shutdown()
+
+      assert(res.isTypedLeft[ReadException])
     }
   }
 
