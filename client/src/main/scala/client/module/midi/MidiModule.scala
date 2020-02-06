@@ -38,6 +38,9 @@ class MidiModule extends ScalaPrivateModule {
     bind[DeviceHash].annotatedWithName("midi-out").toInstance(MyDevices.FocusriteUSBMIDI_OUT)
     bind[MidiSequenceWriter].to[SequencePlayer]
 
+    bind[DeviceHash].annotatedWithName("midi-control-in").toInstance(MyDevices.SamsonConspiracyMIDI_IN)
+    bind[MidiControlSignals].asEagerSingleton()
+
     expose[ModuleLifetimeHooks]
   }
 
