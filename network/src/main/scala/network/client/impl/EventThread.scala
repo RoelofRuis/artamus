@@ -2,21 +2,27 @@ package network.client.impl
 
 import java.util.concurrent.{ArrayBlockingQueue, BlockingQueue}
 
-import network.client.api.ClientAPI
+import network.EventResponseMessage
+import network.client.api.ClientEventHandler
+
+import scala.util.{Failure, Success, Try}
 
 private[client] final class EventThread[E](
-  api: ClientAPI[E]
-) extends Thread with EventScheduler[E] {
+  eventHandler: ClientEventHandler[E]
+) extends Thread with EventScheduler {
 
-  private val queue: BlockingQueue[E] = new ArrayBlockingQueue[E](64)
+  private val queue: BlockingQueue[EventResponseMessage[_]] = new ArrayBlockingQueue[EventResponseMessage[_]](64)
 
-  // TODO: improve error handling of `queue.put`
-  def schedule(event: E): Unit = queue.put(event)
+  def schedule(eventResponseMessage: EventResponseMessage[_]): Try[Unit] = Try { queue.put(eventResponseMessage) }
 
   override def run(): Unit = {
     try {
       while (! Thread.currentThread().isInterrupted) {
-        api.receivedEvent(queue.take())
+        val elem = queue.take()
+        Try(elem.asInstanceOf[E]) match {
+          case Success(e) => eventHandler.handleEvent(e)
+          case Failure(ex) => eventHandler.receivedInvalidEvent(ex)
+        }
       }
     } catch {
       case _: InterruptedException =>

@@ -10,12 +10,16 @@ import scala.util.{Failure, Success, Try}
 
 private[client] object ClientTransportFactory {
 
-  def create[E](config: ClientConfig, scheduler: EventScheduler[E]): Either[TransportException, ClientTransport] = {
+  def create(
+    config: ClientConfig,
+    scheduler: EventScheduler,
+    transportState: TransportStateX
+  ): Either[TransportException, ClientTransportThread] = {
     val transport = for {
       socket <- Try { new Socket(InetAddress.getByName(config.host), config.port) }
       objOut <- Try { new ObjectOutputStream(socket.getOutputStream) }
       objIn <- Try { new ObjectInputStream(socket.getInputStream) }
-    } yield new ClientTransportThread(socket, objIn, objOut, scheduler)
+    } yield new ClientTransportThread(socket, objIn, objOut, scheduler, transportState)
 
     transport match {
       case Failure(ex) => Left(ConnectionException(ex))

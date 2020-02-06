@@ -1,7 +1,11 @@
 package network.client.impl
 
-private[client] trait EventScheduler[E] {
+import network.EventResponseMessage
 
-  def schedule(event: E): Unit
+import scala.util.Try
+
+private[client] trait EventScheduler {
+
+  def schedule(eventResponseMessage: EventResponseMessage[_]): Try[Unit]
 
 }

@@ -1,7 +1,8 @@
 package network
 
-import network.Exceptions.{ConnectionException, LogicError, ReadException}
+import network.Exceptions.{ConnectionException, LogicError}
 import network.NetworkingStubs.TestRequest
+import network.NetworkingSuite.wait
 import utest.{test, _}
 
 import scala.concurrent.duration._
@@ -57,13 +58,13 @@ object NetworkingSuite extends TestSuite with TestingImplicits {
       val (server, serverApi, client, _) = NetworkingStubs.newClientServerPair(9005)
       server.accept()
       serverApi.nextRequestHandler(_ => {
-        wait(1000)
+        Thread.sleep(1000)
         Right(1)
       })
       val res = client.send(TestRequest(42))
       server.shutdown()
-
-      assert(res.isTypedLeft[ReadException])
+      assert(res == Right(1))
+      server.awaitShutdown().await ==> Success(())
     }
     test("client hangs up") {
       // TODO: better eager connect and server hangup

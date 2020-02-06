@@ -26,11 +26,11 @@ object NetworkingStubs {
   }
 
   class TestClientAPI() extends ClientAPI[TestEvent] {
-    override def receivedEvent(event: TestEvent): Unit = ()
-    override def connectingStarted(): Unit = ()
-    override def connectingFailed(cause: Throwable): Unit = ()
     override def connectionEstablished(): Unit = ()
     override def connectionLost(cause: Throwable): Unit = ()
+    override def handleEvent(event: TestEvent): Unit = ()
+    override def receivedUnexpectedResponse(obj: DataResponseMessage): Unit = ()
+    override def receivedInvalidEvent(cause: Throwable): Unit = ()
   }
 
   def newClientServerPair(port: Int): (ServerInterface, TestServerAPI, ClientInterface[TestRequest], TestClientAPI) = {

@@ -12,17 +12,20 @@ import network.{DataResponseMessage, EventResponseMessage, ResponseMessage}
 import scala.util.{Failure, Success, Try}
 
 @NotThreadSafe // for now `send` should only be called sequentially!"
-private[client] final class ClientTransportThread[E](
+private[client] final class ClientTransportThread(
   val socket: Socket,
   val inputStream: ObjectInputStream,
   val outputStream: ObjectOutputStream,
-  val scheduler: EventScheduler[E],
-) extends Thread with ClientTransport {
+  val scheduler: EventScheduler,
+  val transportState: TransportStateX
+) extends Thread {
 
-  private val readQueue: BlockingQueue[Either[CommunicationException, DataResponseMessage]] = new ArrayBlockingQueue[Either[CommunicationException, DataResponseMessage]](64)
+  private val readQueue: BlockingQueue[Either[CommunicationException, DataResponseMessage]] =
+    new ArrayBlockingQueue[Either[CommunicationException, DataResponseMessage]](64)
+
   private val expectsData: AtomicBoolean = new AtomicBoolean(false)
 
-  override def send[A, B](request: A): Either[CommunicationException, B] = {
+  def send[A, B](request: A): Either[CommunicationException, B] = {
     expectsData.set(true)
     Try { outputStream.writeObject(request) } match {
       case Failure(ex) =>
@@ -71,14 +74,9 @@ private[client] final class ClientTransportThread[E](
 
         response match {
           case Success(d @ DataResponseMessage(_)) if expectsData.get() => readQueue.put(Right(d))
-          case Success(_ @ DataResponseMessage(_)) => readQueue.put(Left(UnexpectedDataResponse))
-          case Success(EventResponseMessage(event)) =>
-            decode[E](event) match {
-              case Success(e) => scheduler.schedule(e)
-              case Failure(_) => throw new InterruptedException
-            }
-          case Failure(ex) if expectsData.get() => readQueue.put(Left(ReadException(ex)))
-          case Failure(_) => throw new InterruptedException
+          case Success(d @ DataResponseMessage(_)) => transportState.notifyUnexpectedResponse(d) // TODO: maybe become unconnected with an error!
+          case Success(e: EventResponseMessage[_]) => scheduler.schedule(e) // TODO: handle schedule errors
+          case Failure(ex) => transportState.becomeUnconnected(ex)
         }
       }
     } catch {
