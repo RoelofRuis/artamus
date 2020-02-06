@@ -2,7 +2,7 @@ package network
 
 import network.Exceptions.{ConnectionException, LogicError, ReadException}
 import network.NetworkingStubs.TestRequest
-import utest._
+import utest.{test, _}
 
 import scala.concurrent.duration._
 import scala.language.postfixOps
@@ -52,7 +52,8 @@ object NetworkingSuite extends TestSuite with TestingImplicits {
 
       assert(res.isTypedLeft[ConnectionException])
     }
-    test("server hangs up after request") {
+    test("server hangs up") {
+      // TODO: better eager connect and server hangup
       val (server, serverApi, client, _) = NetworkingStubs.newClientServerPair(9005)
       server.accept()
       serverApi.nextRequestHandler(_ => {
@@ -63,6 +64,9 @@ object NetworkingSuite extends TestSuite with TestingImplicits {
       server.shutdown()
 
       assert(res.isTypedLeft[ReadException])
+    }
+    test("client hangs up") {
+      // TODO: better eager connect and server hangup
     }
   }
 
