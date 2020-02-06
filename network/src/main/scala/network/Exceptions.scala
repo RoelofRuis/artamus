@@ -2,6 +2,8 @@ package network
 
 object Exceptions {
 
+  // TODO: refactor and move exceptions with application meaning to application layer
+
   sealed trait CommunicationException extends Throwable {
     val name: String
     val description: String
