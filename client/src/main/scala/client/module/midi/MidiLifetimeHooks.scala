@@ -11,8 +11,10 @@ class MidiLifetimeHooks @Inject() (
   loader: MidiResourceLoader,
   patchPanel: PatchPanel,
   recorder: MidiRecorder,
+  control: MidiControlSignals,
   @Named("midi-in") midiIn: DeviceHash,
-  @Named("midi-out") midiOut: DeviceHash
+  @Named("midi-out") midiOut: DeviceHash,
+  @Named("midi-control-in") controlIn: DeviceHash,
 ) extends ModuleLifetimeHooks with LazyLogging {
 
   import MidiConnectors.canConnectMidi
@@ -26,6 +28,7 @@ class MidiLifetimeHooks @Inject() (
 
     connectDefaultIO()
     connectMidiRecorder()
+    connectMidiControlSignals()
   }
 
   override def closeAll(): Unit = {
@@ -62,6 +65,20 @@ class MidiLifetimeHooks @Inject() (
         logger.info("Connected default MIDI In and Recording")
         recorder.start()
       case Left(ex) => logger.warn("Failed to connect MIDI In and Recording", ex)
+    }
+  }
+
+  private def connectMidiControlSignals(): Unit = {
+    val result = for {
+      transmitterDevice <- loader.loadDevice(controlIn)
+      transmitter <- MidiIO(transmitterDevice.getTransmitter)
+      receiver = control
+      _ <- MidiIO.wrap(patchPanel.connect(transmitter, receiver, "Midi Control In -> Control"))
+    } yield ()
+
+    result match {
+      case Right(_) => logger.info("Connected Midi Control IN to Control")
+      case Left(ex) => logger.warn("Failed to connect MIDI Control IN to Control", ex)
     }
   }
 
