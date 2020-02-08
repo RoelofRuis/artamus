@@ -1,9 +1,9 @@
 package client.module.system
 
-import client.util.StdIOTools
+import domain.interact.Control.{Authenticate, Disconnect}
 import client.module.Operations.{OperationRegistry, ServerOperation}
+import client.util.StdIOTools
 import javax.inject.Inject
-import server.actions.control.{Authenticate, Disconnect}
 
 class SystemOperations @Inject() (
   registry: OperationRegistry,

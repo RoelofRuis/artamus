@@ -3,8 +3,8 @@ package client.gui
 import java.awt.event.{WindowAdapter, WindowEvent}
 
 import client.{CommandExecutor, ModuleLifetimeHooks}
+import domain.interact.Event
 import javax.inject.Inject
-import protocol.Event
 import pubsub.{Callback, Dispatcher}
 
 import scala.swing.Swing

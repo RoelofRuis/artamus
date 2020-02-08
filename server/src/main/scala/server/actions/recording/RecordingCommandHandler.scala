@@ -1,23 +1,22 @@
 package server.actions.recording
 
+import domain.interact.Record.{ClearRecording, Quantize, RecordNote}
+import domain.math.Rational
+import domain.math.temporal.{Duration, Position, Window}
+import domain.primitives.{Note, NoteGroup}
+import domain.record.{Quantization, Quantizer}
+import domain.write.Track
 import javax.inject.{Inject, Singleton}
-import music.analysis.Quantization
-import music.math.Rational
-import music.math.temporal.{Duration, Position, Window}
-import music.model.write.track.Track
-import music.primitives.{Note, NoteGroup}
-import protocol.Command
-import pubsub.Dispatcher
-import server.Request
 import server.actions.Responses
+import server.infra.ServerDispatcher
 
 @Singleton
 private[server] class RecordingCommandHandler @Inject() (
-  dispatcher: Dispatcher[Request, Command],
+  dispatcher: ServerDispatcher,
   storage: RecordingStorage,
 ) {
 
-  dispatcher.subscribe[StartRecording] { req =>
+  dispatcher.subscribe[ClearRecording] { req =>
     storage.startRecording(req.user.id)
 
     Responses.ok
@@ -30,16 +29,18 @@ private[server] class RecordingCommandHandler @Inject() (
   }
 
   // TODO: extract track writing logic
-  import music.analysis.TwelveToneTuning._
+  import Quantization._
+  import domain.write.analysis.TwelveToneTuning._
   import server.model.Tracks._
   import server.model.Workspaces._
-  dispatcher.subscribe[StopRecording] { req =>
-    storage.getAndResetRecording(req.user.id) match {
+  dispatcher.subscribe[Quantize] { req =>
+    storage.getRecording(req.user.id) match {
       case None => Responses.ok
       case Some(recording) =>
-        val recordedTrack = if (recording.notes.isEmpty) Track()
+        val baseTrack = if (req.attributes.rhythmOnly) Track.emptyRhythm else Track.emptyNotes
+        val recordedTrack = if (recording.notes.isEmpty) baseTrack
         else {
-          val quantized = Quantization.millisToPosition(recording.notes.map(n => (n.starts.v / 1000).toInt))
+          val quantized = req.attributes.customQuantizer.getOrElse(Quantizer()).quantize(recording.notes.map(_.starts))
           recording
             .notes
             .zip(quantized.zip(quantized.drop(1).appended(quantized.last + Duration(Rational(1, 4)))))
@@ -51,7 +52,7 @@ private[server] class RecordingCommandHandler @Inject() (
                 case Some((seq, prevDur)) => Some(seq :+ note, Seq(duration, prevDur).max)
               }
             }
-            .foldLeft(Track()) { case (track, (position, (notes, duration))) =>
+            .foldLeft(baseTrack) { case (track, (position, (notes, duration))) =>
               track.writeNoteGroup(NoteGroup(Window(position, duration), notes))
             }
         }

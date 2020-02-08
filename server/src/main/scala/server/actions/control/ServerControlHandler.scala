@@ -1,18 +1,18 @@
 package server.actions.control
 
+import domain.interact.Control.Disconnect
 import javax.inject.{Inject, Singleton}
-import protocol.Command
-import pubsub.Dispatcher
-import server.Request
+import server.ServerRequest
 import server.actions.Responses
+import server.infra.ServerDispatcher
 
 @Singleton
 private[server] class ServerControlHandler @Inject() (
-  dispatcher: Dispatcher[Request, Command]
+  dispatcher: ServerDispatcher
 ) {
 
   dispatcher.subscribe[Disconnect] {
-    case Request(_, _, Disconnect()) => Responses.ok
+    case ServerRequest(_, _, Disconnect()) => Responses.ok
   }
 
 }

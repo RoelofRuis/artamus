@@ -11,7 +11,7 @@ private[midi] class SequenceBuilderImpl private[midi] extends SequenceBuilder {
   private case class BufferedNote(pitch: Int, start: Int, duration: Int, volume: Int)
 
   private var resolution = 1
-  private var buffer: mutable.Buffer[BufferedNote] = mutable.Buffer[BufferedNote]()
+  private val buffer: mutable.Buffer[BufferedNote] = mutable.Buffer[BufferedNote]()
 
   def setResolution(res: Int): Unit = resolution = res
 
@@ -22,7 +22,7 @@ private[midi] class SequenceBuilderImpl private[midi] extends SequenceBuilder {
   def build: Sequence = {
     val sequence = new Sequence(Sequence.PPQ, resolution, 1)
     val midiTrack = sequence.createTrack()
-    buffer.foreach { case x @ BufferedNote(pitch, start, duration, volume) =>
+    buffer.foreach { case BufferedNote(pitch, start, duration, volume) =>
       midiTrack.add(new MidiEvent(new ShortMessage(ShortMessage.NOTE_ON, 0, pitch, volume), start))
       midiTrack.add(new MidiEvent(new ShortMessage(ShortMessage.NOTE_OFF, 0, pitch, 0), start + duration))
     }

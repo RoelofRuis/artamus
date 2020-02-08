@@ -1,7 +1,7 @@
 package server.model
 
-import music.model.display.render.Render
-import music.model.write.track.Track.TrackId
+import domain.display.render.Render
+import domain.write.Track.TrackId
 import spray.json.RootJsonFormat
 import storage.api.{DbIO, DbResult, ModelReader}
 

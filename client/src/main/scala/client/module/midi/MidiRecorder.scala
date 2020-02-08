@@ -1,38 +1,45 @@
 package client.module.midi
 
+import java.util.concurrent.atomic.AtomicBoolean
 import java.util.concurrent.{BlockingQueue, LinkedBlockingQueue}
 
+import client.infra.Client
 import com.typesafe.scalalogging.LazyLogging
+import domain.interact.Record.RecordNote
+import domain.primitives.{Loudness, MidiNoteNumber}
+import domain.record.{MillisecondPosition, RawMidiNote}
 import javax.inject.Inject
 import javax.sound.midi.{MidiMessage, Receiver, ShortMessage}
 import midi.read.Midi
-import music.model.record.RawMidiNote
-import music.primitives.{Loudness, MidiNoteNumber, MillisecondPosition}
-import protocol.client.api.ClientInterface
-import server.actions.recording.RecordNote
 
 class MidiRecorder @Inject() (
-  client: ClientInterface
+  client: Client
 ) extends Thread with Receiver with LazyLogging {
 
+  private val active: AtomicBoolean = new AtomicBoolean(false)
   private val queue: BlockingQueue[(MidiMessage, Long)] = new LinkedBlockingQueue[(MidiMessage, Long)]()
+
+  def activate(): Unit = active.set(true)
+  def deactivate(): Unit = active.set(false)
 
   override def run(): Unit = {
     try {
       while ( ! isInterrupted ) {
-        val (message, timestamp) = queue.take()
-        message match {
-          case msg: ShortMessage if Midi.IsNoteOn(msg) =>
-            val note = RawMidiNote(
-              MidiNoteNumber(msg.getData1),
-              Loudness(msg.getData2),
-              MillisecondPosition(timestamp)
-            )
-            client.sendCommand(RecordNote(note)) match {
-              case None =>
-              case Some(ex) => logger.error("Unable to send recorded note", ex)
-            }
-          case _ =>
+        val (message, microsecondTimestamp) = queue.take()
+        if (active.get()) {
+          message match {
+            case msg: ShortMessage if Midi.IsNoteOn(msg) =>
+              val note = RawMidiNote(
+                MidiNoteNumber(msg.getData1),
+                Loudness(msg.getData2),
+                MillisecondPosition.fromMicroseconds(microsecondTimestamp)
+              )
+              client.send(RecordNote(note)) match {
+                case Right(()) =>
+                case Left(ex) => logger.error("Unable to send recorded note", ex)
+              }
+            case _ =>
+          }
         }
       }
     } catch {
@@ -40,8 +47,8 @@ class MidiRecorder @Inject() (
     }
   }
 
-  override def send(message: MidiMessage, timeStamp: Long): Unit = {
-    val elem = (message, timeStamp)
+  override def send(message: MidiMessage, microsecondPosition: Long): Unit = {
+    val elem = (message, microsecondPosition)
     queue.offer(elem)
   }
 

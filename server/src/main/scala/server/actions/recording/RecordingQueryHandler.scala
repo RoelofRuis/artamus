@@ -1,15 +1,14 @@
 package server.actions.recording
 
+import domain.interact.Record.GetCurrentRecording
 import javax.inject.{Inject, Singleton}
-import protocol.Query
-import pubsub.Dispatcher
-import server.Request
+import server.infra.ServerDispatcher
 
 import scala.util.{Failure, Success}
 
 @Singleton
 private[server] class RecordingQueryHandler @Inject() (
-  dispatcher: Dispatcher[Request, Query],
+  dispatcher: ServerDispatcher,
   storage: RecordingStorage,
 ) {
 

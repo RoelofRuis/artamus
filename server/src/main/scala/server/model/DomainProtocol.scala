@@ -2,14 +2,14 @@ package server.model
 
 import java.util.UUID
 
-import music.analysis.TwelveToneTuning
-import music.math.Rational
-import music.math.temporal.{Duration, Position, Window}
-import music.model.record.RawMidiNote
-import music.model.write.track.Track.TrackId
-import music.model.write.user.User.UserId
-import music.primitives.{Accidental, Chord, Function, Key, Loudness, MidiNoteNumber, MillisecondPosition, Note, NoteGroup, Octave, PitchClass, PitchSpelling, Scale, ScientificPitch, Step, TimeSignature, TimeSignatureDivision}
-import spray.json.{DefaultJsonProtocol, JsNumber, JsString, JsValue, JsonFormat, deserializationError}
+import domain.math.Rational
+import domain.write.analysis.TwelveToneTuning
+import domain.math.temporal.{Duration, Position, Window}
+import domain.record.{MillisecondPosition, RawMidiNote}
+import domain.workspace.User.UserId
+import domain.write.Track.TrackId
+import domain.primitives.{Accidental, Chord, Function, Key, Loudness, MidiNoteNumber, Note, NoteGroup, Octave, PitchClass, PitchSpelling, Scale, ScientificPitch, Step, TimeSignature, TimeSignatureDivision}
+import spray.json._
 
 import scala.collection.immutable.SortedMap
 import scala.language.reflectiveCalls
@@ -111,7 +111,7 @@ trait DomainProtocol extends DefaultJsonProtocol {
   }
 
   implicit val rationalModel = jsonFormat2(Rational.apply)
-  implicit val timeSignatureFormat = jsonFormat1(TimeSignature)
+  implicit val timeSignatureFormat = jsonFormat1(TimeSignature.apply)
   implicit val scaleFormat = jsonFormat1(Scale.apply)
   implicit val pitchSpellingFormat = jsonFormat2(PitchSpelling)
   implicit val keyFormat = jsonFormat2(Key)
@@ -121,7 +121,7 @@ trait DomainProtocol extends DefaultJsonProtocol {
   implicit val functionFormat = jsonFormat2(Function)
   implicit val chordFormat = jsonFormat2(Chord.apply)
   implicit val noteGroupFormat = jsonFormat2(NoteGroup)
-  implicit val tickPositionFormat = jsonFormat1(MillisecondPosition)
+  implicit val tickPositionFormat = jsonFormat1(MillisecondPosition.apply)
   implicit val loudnessFormat = jsonFormat1(Loudness)
   implicit val midiNoteNumberFormat = jsonFormat1(MidiNoteNumber.apply)
   implicit val rawMidiNoteFormat = jsonFormat3(RawMidiNote)

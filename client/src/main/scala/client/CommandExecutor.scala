@@ -1,16 +1,16 @@
 package client
 
+import client.infra.Client
 import client.module.Operations.{LocalOperation, OperationRegistry, ServerOperation}
 import com.typesafe.scalalogging.LazyLogging
+import domain.interact.Command
 import javax.inject.Inject
-import protocol.Command
-import protocol.client.api.ClientInterface
 
 import scala.annotation.tailrec
 import scala.util.{Failure, Success}
 
 class CommandExecutor @Inject() (
-  client: ClientInterface,
+  client: Client,
   registry: OperationRegistry,
 ) extends LazyLogging {
 
@@ -37,11 +37,11 @@ class CommandExecutor @Inject() (
   private def sendCommands(commands: List[Command]): Unit = commands match {
     case Nil =>
     case command :: rest =>
-      client.sendCommand(command) match {
-        case None =>
+      client.send(command) match {
+        case Right(_) =>
           println(s"[$command] executed")
           sendCommands(rest)
-        case Some(ex) =>
+        case Left(ex) =>
           println(s"[$command] failed")
           println(s"cause [${ex.name}: ${ex.description}]")
           ex.cause.foreach(_.printStackTrace)

@@ -2,32 +2,30 @@ package server.infra
 
 import java.util.concurrent.ConcurrentHashMap
 
-import server.Request
-import server.actions.control.Authenticate
+import _root_.server.ServerRequest
 import com.typesafe.scalalogging.LazyLogging
+import domain.interact.Control.Authenticate
+import domain.interact.{Event, Request}
+import domain.workspace.User
 import javax.inject.{Inject, Singleton}
-import music.model.write.user.User
-import protocol.{Command, CommandRequest, DataResponse, Event, Query, QueryRequest, ServerRequest}
-import protocol.Exceptions._
-import protocol.server.api.{ConnectionHandle, ServerAPI}
-import pubsub.{Dispatcher, EventBus}
+import network.Exceptions._
+import network.server.api.{ConnectionHandle, ServerAPI}
 import storage.api.{Database, DbIO, NotFound, Transaction}
 
-import scala.util.{Failure, Success, Try}
+import scala.util.{Failure, Success}
 
 @Singleton
 final class DispatchingServerAPI @Inject() (
   db: Database,
   hooks: ConnectionLifetimeHooks,
-  eventBus: EventBus[Event],
-  commandHandler: Dispatcher[Request, Command],
-  queryHandler: Dispatcher[Request, Query],
-) extends ServerAPI with LazyLogging {
+  eventBus: ServerEventBus,
+  serverDispatcher: ServerDispatcher
+) extends ServerAPI[Request, Event] with LazyLogging {
 
   import server.model.Users._
 
-  private var connections: Map[ConnectionHandle, Option[User]] = Map()
-  private val transactions: ConcurrentHashMap[ConnectionHandle, Transaction] = new ConcurrentHashMap[ConnectionHandle, Transaction]()
+  private var connections: Map[ConnectionHandle[Event], Option[User]] = Map()
+  private val transactions: ConcurrentHashMap[ConnectionHandle[Event], Transaction] = new ConcurrentHashMap[ConnectionHandle[Event], Transaction]()
 
   override def serverStarted(): Unit = {
     hooks.onServerStarted()
@@ -41,12 +39,12 @@ final class DispatchingServerAPI @Inject() (
     }
   }
 
-  override def connectionOpened(connection: ConnectionHandle): Unit = {
+  override def connectionOpened(connection: ConnectionHandle[Event]): Unit = {
     logger.info(s"Connection [$connection] opened")
     connections += (connection -> None)
   }
 
-  override def connectionClosed(connection: ConnectionHandle, cause: Option[Throwable]): Unit = {
+  override def connectionClosed(connection: ConnectionHandle[Event], cause: Option[Throwable]): Unit = {
     connections -= connection
     eventBus.unsubscribe(connection.toString)
     transactions.remove(connection)
@@ -56,29 +54,26 @@ final class DispatchingServerAPI @Inject() (
     }
   }
 
-  def handleRequest(connection: ConnectionHandle, request: Object): DataResponse = {
-    val result = connections.get(connection) match {
+  override def receiveFailed(connection: ConnectionHandle[Event], cause: Throwable): Unit = {
+    logger.warn(s"Received invalid message on connection [$connection]", cause)
+  }
+
+  def handleRequest(connection: ConnectionHandle[Event], request: Request): Either[ResponseException, Any] = {
+    connections.get(connection) match {
       case None =>
         logger.error(s"Received message on unbound connection [$connection]")
         Left(InvalidStateError)
 
       case Some(identifier) =>
-        Try { request.asInstanceOf[ServerRequest] } match {
-          case Success(request) =>
-            identifier match {
-              case None => authenticate(connection, request)
-              case Some(user) => executeRequest(connection, user, request)
-            }
-          case Failure(ex) =>
-            logger.warn(s"Unable to read message.", ex)
-            Left(InvalidMessage)
+          identifier match {
+            case None => authenticate(connection, request)
+            case Some(user) => executeRequest(connection, user, request)
+          }
         }
     }
-    DataResponse(result)
-  }
 
-  override def afterRequest(connection: ConnectionHandle, response: DataResponse): DataResponse = {
-    response.data match {
+  override def afterRequest(connection: ConnectionHandle[Event], response: Either[ResponseException, Any]): Either[ResponseException, Any] = {
+    response match {
       case Right(_) =>
         Option(transactions.get(connection)) match {
           case None => response
@@ -94,7 +89,7 @@ final class DispatchingServerAPI @Inject() (
 
             case Left(ex) => logger.error(s"Unable to commit changes", ex)
               ex.causes.zipWithIndex.foreach { case (err, idx) => logger.error(s"commit error [$idx]", err) }
-              DataResponse(Left(LogicError))
+              Left(LogicError)
           }
         }
 
@@ -104,9 +99,9 @@ final class DispatchingServerAPI @Inject() (
     }
   }
 
-  private def authenticate(connection: ConnectionHandle, request: ServerRequest): Either[ResponseException, Any] = {
+  private def authenticate(connection: ConnectionHandle[Event], request: Request): Either[ResponseException, Any] = {
     request match {
-      case CommandRequest(Authenticate(userName)) =>
+      case Authenticate(userName) =>
         db.getUserByName(userName) match {
           case Right(user) =>
             eventBus.subscribe(connection.toString, event => connection.sendEvent(event))
@@ -128,14 +123,10 @@ final class DispatchingServerAPI @Inject() (
     }
   }
 
-  private def executeRequest(connection: ConnectionHandle, user: User, request: ServerRequest): Either[ResponseException, Any] = {
+  private def executeRequest(connection: ConnectionHandle[Event], user: User, request: Request): Either[ResponseException, Any] = {
     try {
       val transaction = startTransaction(connection)
-      val response = request match {
-        case CommandRequest(command) => commandHandler.handle(Request(user, transaction, command))
-        case QueryRequest(query) => queryHandler.handle(Request(user, transaction, query))
-      }
-      response match {
+      serverDispatcher.handle(ServerRequest(user, transaction, request)) match {
         case Failure(ex) =>
           logger.error("Error in server logic", ex)
           Left(LogicError)
@@ -149,7 +140,7 @@ final class DispatchingServerAPI @Inject() (
     }
   }
 
-  private def startTransaction(connection: ConnectionHandle): DbIO with Transaction = {
+  private def startTransaction(connection: ConnectionHandle[Event]): DbIO with Transaction = {
     val transaction = db.newTransaction
     transactions.put(connection, transaction)
     transaction

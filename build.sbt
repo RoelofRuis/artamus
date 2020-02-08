@@ -40,13 +40,25 @@ lazy val storage = (project in file("storage"))
     )
   )
 
+lazy val network = (project in file("network"))
+  .settings(
+    name := "network",
+    description := "Socket communication",
+    compilerFlags,
+    libraryDependencies ++= Seq(
+      dependencies.javaxInject,
+      dependencies.findbugs,
+      dependencies.microtest % Test
+    )
+  )
+
 lazy val client = (project in file("client"))
   .settings(
     name := "artamus-client",
     description := "A Music analysis client - part of Artamus",
     compilerFlags,
 
-    // Make sure (midi) libraries can get loaded in the correct way
+    // Makes sure (midi) libraries can get loaded in the correct way
     fork in run := true,
     connectInput in run := true,
     outputStrategy in run := Some(StdoutOutput),
@@ -59,10 +71,7 @@ lazy val client = (project in file("client"))
       dependencies.scalaSwing
     )
   )
-  .dependsOn(
-    common,
-    server // TODO: Refactor to remove this dependency!
-  )
+  .dependsOn(network, common)
 
 lazy val server = (project in file("server"))
   .settings(
@@ -77,4 +86,4 @@ lazy val server = (project in file("server"))
       dependencies.sprayJson
     )
   )
-  .dependsOn(storage, common)
+  .dependsOn(network, storage, common)

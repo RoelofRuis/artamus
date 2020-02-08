@@ -1,6 +1,5 @@
 package pubsub
 
-import scala.language.reflectiveCalls
 import scala.reflect.{ClassTag, classTag}
 import scala.util.{Failure, Try}
 

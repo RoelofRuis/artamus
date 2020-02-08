@@ -1,8 +1,8 @@
 package server.actions.recording
 
 import javax.inject.Singleton
-import music.model.record.{RawMidiNote, Recording}
-import music.model.write.user.User.UserId
+import domain.record.{RawMidiNote, Recording}
+import domain.workspace.User.UserId
 
 import scala.collection.concurrent.TrieMap
 

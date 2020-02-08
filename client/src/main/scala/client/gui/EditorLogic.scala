@@ -3,10 +3,10 @@ package client.gui
 import java.io.File
 
 import client.CommandExecutor
+import domain.interact.Event
+import domain.interact.Write.TrackRendered
 import javax.imageio.ImageIO
-import protocol.Event
 import pubsub.{Callback, Dispatcher}
-import server.actions.writing.TrackRendered
 
 import scala.swing.Swing
 import scala.swing.event.{Key, KeyTyped}

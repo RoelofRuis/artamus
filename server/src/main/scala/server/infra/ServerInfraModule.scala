@@ -1,21 +1,22 @@
 package server.infra
 
+import domain.interact.{Event, Request}
 import net.codingwell.scalaguice.ScalaModule
-import protocol.server.api.{ServerAPI, ServerConfig, ServerFactory}
-import protocol.{Command, Event, Query}
-import pubsub.{Dispatcher, EventBus}
-import server.Request
+import network.server.api.{ServerAPI, ServerConfig, ServerFactory}
+import pubsub.EventBus
+import server.ServerRequest
 
 class ServerInfraModule extends ScalaModule {
+  // TODO: make private and expose only what is needed
+
   override def configure(): Unit = {
-    bind[Dispatcher[Request, Query]].toInstance(pubsub.createDispatcher[Request, Query]())
-    bind[Dispatcher[Request, Command]].toInstance(pubsub.createDispatcher[Request, Command]())
-    bind[EventBus[Event]].toInstance(new EventBus[Event])
+    bind[ServerDispatcher].toInstance(pubsub.createDispatcher[ServerRequest, Request]())
+    bind[ServerEventBus].toInstance(new EventBus[Event])
 
     bind[ConnectionLifetimeHooks].asEagerSingleton()
 
     bind[ServerConfig].toInstance(ServerConfig(9999))
-    bind[ServerAPI].to[DispatchingServerAPI]
-    bind[ServerFactory]
+    bind[ServerAPI[Request, Event]].to[DispatchingServerAPI]
+    bind[ServerFactory[Request, Event]]
   }
 }

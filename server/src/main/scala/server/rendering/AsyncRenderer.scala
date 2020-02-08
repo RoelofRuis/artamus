@@ -1,6 +1,6 @@
 package server.rendering
 
-import music.model.write.track.Track
+import domain.write.Track
 
 trait AsyncRenderer {
 

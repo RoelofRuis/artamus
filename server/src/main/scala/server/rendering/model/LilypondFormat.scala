@@ -1,11 +1,12 @@
 package server.rendering.model
 
-import music.analysis.TwelveToneTuning.TwelveToneFunctions
-import music.model.display.chord.ChordStaff
-import music.model.display.chord.ChordStaffGlyph.{ChordNameGlyph, ChordRestGlyph}
-import music.model.display.staff.{Bass, Clef, Staff, Treble}
-import music.model.display.staff.StaffGlyph.{FullBarRestGlyph, KeyGlyph, NoteGroupGlyph, RestGlyph, TimeSignatureGlyph}
-import music.primitives._
+import domain.write.analysis.TwelveToneTuning.TwelveToneFunctions
+import domain.display.StaffGroup
+import domain.display.chord.ChordStaff
+import domain.display.chord.ChordStaffGlyph.{ChordNameGlyph, ChordRestGlyph}
+import domain.display.staff.{Bass, Clef, GrandStaff, NoteStaff, RhythmicStaff, Treble}
+import domain.display.staff.StaffGlyph.{FullBarRestGlyph, KeyGlyph, NoteGroupGlyph, RestGlyph, TimeSignatureGlyph}
+import domain.primitives._
 
 import scala.annotation.tailrec
 
@@ -21,7 +22,42 @@ private[rendering] object LilypondFormat {
     def toLilypond: String = LilypondFormat[A].toLilypond(a)
   }
 
-  implicit val staffFormat: LilypondFormat[Staff] = staff => {
+  implicit val staffGroupFormat: LilypondFormat[StaffGroup] = staffGroup => {
+    staffGroup.staves.map {
+      case s: NoteStaff => s.toLilypond
+      case s: ChordStaff => s.toLilypond
+      case s: GrandStaff => s.toLilypond
+      case s: RhythmicStaff => s.toLilypond
+      case _ => ""
+    }.mkString("\n<<", "", "\n>>")
+  }
+
+  implicit val rhythmicStaffFormat: LilypondFormat[RhythmicStaff] = staff => {
+    val contents = staff.glyphs.map {
+      case g: NoteGroupGlyph => s"c${g.duration.toLilypond}"
+      case g: RestGlyph => g.toLilypond
+      case g: FullBarRestGlyph => g.toLilypond
+      case g: TimeSignatureGlyph => g.toLilypond
+      case _ => ""
+    }.mkString("\n")
+    s"""\\new RhythmicStaff {
+       |\\numericTimeSignature
+       |\\override Score.BarNumber.break-visibility = ##(#f #t #t)
+       |\\set Score.barNumberVisibility = #all-bar-numbers-visible
+       |\\bar ""
+       |${contents}
+       |}""".stripMargin
+  }
+
+  implicit val grandStaffFormat: LilypondFormat[GrandStaff] = staff => {
+    s"""\\new GrandStaff <<
+       |${staff.upper.toLilypond}
+       |${staff.lower.toLilypond}
+       |>>
+       |""".stripMargin
+  }
+
+  implicit val noteStaffFormat: LilypondFormat[NoteStaff] = staff => {
     val contents = staff.glyphs.map {
       case g: NoteGroupGlyph => g.toLilypond
       case g: RestGlyph => g.toLilypond
@@ -37,8 +73,7 @@ private[rendering] object LilypondFormat {
        |${staff.clef.toLilypond}
        |$contents
        |\\bar "|."
-       |}
-       |""".stripMargin
+       |}""".stripMargin
   }
 
   implicit val clefFormat: LilypondFormat[Clef] = {

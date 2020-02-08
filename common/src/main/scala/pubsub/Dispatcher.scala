@@ -1,7 +1,6 @@
 package pubsub
 
 import scala.reflect.ClassTag
-import scala.language.{higherKinds, reflectiveCalls}
 import scala.util.Try
 
 trait Dispatcher[R[_] <: Dispatchable[_], A <: { type Res }] {

@@ -1,7 +1,6 @@
 package server.model
 
-import music.model.write.user.User
-import music.model.write.workspace.Workspace
+import domain.workspace.{User, Workspace}
 import spray.json.RootJsonFormat
 import storage.api.{DbIO, DbResult, ModelReader}
 

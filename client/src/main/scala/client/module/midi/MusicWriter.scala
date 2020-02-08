@@ -2,7 +2,7 @@ package client.module.midi
 
 import midi.MidiIO
 import midi.write.MidiSequenceWriter
-import music.model.perform.TrackPerformance
+import domain.perform.TrackPerformance
 
 object MusicWriter {
 
