@@ -36,7 +36,7 @@ private[client] class TransportStateX(callbacks: ClientCallbacks) { // TODO: ren
   }
 
   def notifyUnexpectedResponse(obj: DataResponseMessage): Unit = {
-    callbacks.receivedUnexpectedResponse(obj)
+    callbacks.receivedUnexpectedResponse(obj.data)
   }
 
 }

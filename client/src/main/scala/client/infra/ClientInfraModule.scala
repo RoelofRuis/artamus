@@ -1,6 +1,8 @@
 package client.infra
 
+import com.google.inject.Provides
 import domain.interact.{Event, Request}
+import javax.inject.Singleton
 import net.codingwell.scalaguice.ScalaModule
 import network.client.api.{ClientAPI, ClientConfig, ClientFactory}
 import pubsub.Callback
@@ -15,6 +17,7 @@ class ClientInfraModule extends ScalaModule {
     bind[ClientFactory[Request, Event]]
   }
 
+  @Provides @Singleton
   def client(factory: ClientFactory[Request, Event]): Client = factory.create()
 
 }

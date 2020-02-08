@@ -29,8 +29,8 @@ object NetworkingStubs {
     override def connectionEstablished(): Unit = ()
     override def connectionLost(cause: Throwable): Unit = ()
     override def handleEvent(event: TestEvent): Unit = ()
-    override def receivedUnexpectedResponse(obj: DataResponseMessage): Unit = ()
     override def receivedInvalidEvent(cause: Throwable): Unit = ()
+    override def receivedUnexpectedResponse(obj: Either[ResponseException, Any]): Unit = ()
   }
 
   def newClientServerPair(port: Int): (ServerInterface, TestServerAPI, ClientInterface[TestRequest], TestClientAPI) = {

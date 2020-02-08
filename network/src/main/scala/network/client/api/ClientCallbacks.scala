@@ -1,6 +1,6 @@
 package network.client.api
 
-import network.DataResponseMessage
+import network.Exceptions.ResponseException
 
 trait ClientCallbacks {
 
@@ -8,6 +8,6 @@ trait ClientCallbacks {
 
   def connectionLost(cause: Throwable): Unit
 
-  def receivedUnexpectedResponse(obj: DataResponseMessage): Unit
+  def receivedUnexpectedResponse(obj: Either[ResponseException, Any]): Unit
 
 }
