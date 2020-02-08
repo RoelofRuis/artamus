@@ -19,7 +19,7 @@ private[client] final class EventThread[E](
     try {
       while (! Thread.currentThread().isInterrupted) {
         val elem = queue.take()
-        Try(elem.asInstanceOf[E]) match {
+        Try(elem.event.asInstanceOf[E]) match {
           case Success(e) => eventHandler.handleEvent(e)
           case Failure(ex) => eventHandler.receivedInvalidEvent(ex)
         }
