@@ -1,10 +1,10 @@
 package network
 
-import network.Exceptions.{ConnectionException, LogicError}
+import network.Exceptions.{CommunicationException, ConnectionException, LogicError}
 import network.NetworkingStubs.TestRequest
-import network.NetworkingSuite.wait
 import utest.{test, _}
 
+import scala.concurrent.Promise
 import scala.concurrent.duration._
 import scala.language.postfixOps
 import scala.util.Success
@@ -12,6 +12,8 @@ import scala.util.Success
 object NetworkingSuite extends TestSuite with TestingImplicits {
 
   implicit val timeout: FiniteDuration = 1 second
+
+  // TODO: Run client and server on separate threads!
 
   override def tests: Tests = Tests {
     test("server starts and shuts down correctly") {
@@ -55,16 +57,18 @@ object NetworkingSuite extends TestSuite with TestingImplicits {
     }
     test("server hangs up") {
       // TODO: better eager connect and server hangup
-      val (server, serverApi, client, _) = NetworkingStubs.newClientServerPair(9005)
+      val (server, _, client, _) = NetworkingStubs.newClientServerPair(9005)
       server.accept()
-      serverApi.nextRequestHandler(_ => {
-        Thread.sleep(1000)
-        Right(1)
-      })
-      val res = client.send(TestRequest(42))
+      val promise = Promise[Either[CommunicationException, TestRequest#Res]]()
+      new Thread {
+        override def run(): Unit = {
+          val res = client.send(TestRequest(42))
+          promise.complete(Success(res))
+        }
+      }.start()
       server.shutdown()
-      assert(res == Right(1))
       server.awaitShutdown().await ==> Success(())
+      assert(promise.future.await.get.isTypedLeft[ConnectionException])
     }
     test("client hangs up") {
       // TODO: better eager connect and server hangup
