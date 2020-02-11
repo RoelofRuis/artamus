@@ -20,7 +20,7 @@ class TerminalOperations @Inject() (
   import ClientInteraction._
 
   registry.local("print-notes", "query (terminal)", {
-    client.sendQuery(Perform) match {
+    client.sendQuery(PreparePerformance) match {
       case Right(track) =>
         println("Playing:")
         track.notes.foreach { note => println(note) }

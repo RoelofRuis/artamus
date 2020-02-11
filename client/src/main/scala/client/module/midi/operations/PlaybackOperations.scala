@@ -4,7 +4,7 @@ import client.infra.{Client, ClientInteraction}
 import client.module.Operations.OperationRegistry
 import client.module.midi.MusicWriter
 import com.typesafe.scalalogging.LazyLogging
-import domain.interact.Write.Perform
+import domain.interact.Write.PreparePerformance
 import javax.inject.Inject
 import midi.write.MidiSequenceWriter
 
@@ -18,7 +18,7 @@ class PlaybackOperations @Inject() (
   import MusicWriter._
 
   registry.local("play", "query (terminal)", {
-    client.sendQuery(Perform) match {
+    client.sendQuery(PreparePerformance) match {
       case Right(track) => midiOutput.play(track)  match {
         case Left(ex) => logger.warn("Error while playing MIDI sequence", ex)
         case _ =>

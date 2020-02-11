@@ -1,7 +1,7 @@
 package server.actions.writing
 
 import domain.interact.Query
-import domain.interact.Write.Perform
+import domain.interact.Write.PreparePerformance
 import domain.write.Track
 import javax.inject.{Inject, Singleton}
 import server.ServerRequest
@@ -18,7 +18,7 @@ private[server] class TrackQueryHandler @Inject() (
   import server.model.Tracks._
   import server.model.Workspaces._
 
-  dispatcher.subscribe[Perform.type]{ req =>
+  dispatcher.subscribe[PreparePerformance.type]{ req =>
     import domain.perform._
 
     readTrack(req, Interpretation.perform, TrackPerformance())

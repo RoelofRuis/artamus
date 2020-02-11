@@ -15,8 +15,7 @@ object Write {
   final case object Analyse extends Command
   final case object Render extends Command
 
-  // TODO: rename
-  final case object Perform extends Query { type Res = TrackPerformance }
+  final case object PreparePerformance extends Query { type Res = TrackPerformance }
 
   final case object RenderingStarted extends Event
   final case class TrackRendered(render: Render) extends Event
