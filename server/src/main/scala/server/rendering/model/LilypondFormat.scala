@@ -169,7 +169,7 @@ private[rendering] object LilypondFormat {
     // 3th midi octave is unaltered in lilypond notation
     octave.value - 3 match {
       case i if i == 0 => ""
-      case i if i < 0 => "," * i
+      case i if i < 0 => "," * -i
       case i if i > 0 => "'" * i
     }
   }
