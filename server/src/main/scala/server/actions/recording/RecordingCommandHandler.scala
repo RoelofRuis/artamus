@@ -43,7 +43,7 @@ private[server] class RecordingCommandHandler @Inject() (
           val quantized = req.attributes.customQuantizer.getOrElse(Quantizer()).quantize(recording.notes.map(_.starts))
           recording
             .notes
-            .zip(quantized.zip(quantized.drop(1).appended(quantized.last + Duration(Rational(1, 4)))))
+            .zip(quantized.zip(quantized.drop(1).appended(quantized.last + req.attributes.lastNoteDuration)))
             .foldLeft(Map[Position, (Seq[Note], Duration)]()) { case (acc, (rawMidiNote, (position, nextPosition))) =>
               val duration = nextPosition - position // TODO: determine proper duration
               val note = Note(rawMidiNote.noteNumber.toOct, rawMidiNote.noteNumber.toPc)

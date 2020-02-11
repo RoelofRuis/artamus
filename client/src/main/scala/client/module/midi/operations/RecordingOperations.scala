@@ -6,6 +6,8 @@ import client.module.Operations.{OperationRegistry, ServerOperation}
 import client.module.midi.MidiRecorder
 import client.util.StdIOTools
 import com.google.inject.Inject
+import domain.math.Rational
+import domain.math.temporal.Duration
 import domain.record.Quantizer
 
 class RecordingOperations @Inject() (
@@ -35,6 +37,22 @@ class RecordingOperations @Inject() (
 
     ServerOperation(
       Quantize(Some(Quantizer(wholeNoteDuration = wholeNoteDuration)), rhythmOnly),
+      Render
+    )
+  })
+
+  registry.server("grid-quantize", "midi", {
+    recorder.deactivate()
+
+    val gridSpacing = StdIOTools.readInt("Grid spacing of 1/_?")
+    val gridSize = Rational.reciprocal(gridSpacing)
+
+    ServerOperation(
+      Quantize(
+        Some(Quantizer(consideredLengths=Set(gridSize))),
+        rhythmOnly = false,
+        Duration(gridSize)
+      ),
       Render
     )
   })
