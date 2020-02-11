@@ -58,7 +58,7 @@ private[server] class RecordingCommandHandler @Inject() (
 
         val res = for {
           workspace <- req.db.getWorkspaceByOwner(req.user)
-          newWorkspace = workspace.selectTrack(recordedTrack) // TODO: remove old track!
+          newWorkspace = workspace.proposeTrack(recordedTrack) // TODO: remove old track!
           _ <- req.db.saveTrack(recordedTrack)
           _ <- req.db.saveWorkspace(newWorkspace)
         } yield ()

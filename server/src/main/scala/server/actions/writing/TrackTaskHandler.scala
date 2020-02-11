@@ -18,7 +18,7 @@ private[server] class TrackTaskHandler @Inject() (
   dispatcher.subscribe[Render.type] { req =>
     for {
       workspace <- req.db.getWorkspaceByOwner(req.user)
-      track <- req.db.getTrackById(workspace.selectedTrack)
+      track <- req.db.getTrackById(workspace.editingTrack)
       _ = renderer.render(track)
     } yield ()
 

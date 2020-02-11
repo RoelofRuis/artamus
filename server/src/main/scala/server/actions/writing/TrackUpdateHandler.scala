@@ -25,14 +25,14 @@ private[server] class TrackUpdateHandler @Inject() (
   dispatcher.subscribe[NewWorkspace.type]{ req =>
     val delete = for {
       workspace <- req.db.getWorkspaceByOwner(req.user)
-      _ <- req.db.removeTrackById(workspace.selectedTrack)
+      _ <- req.db.removeTrackById(workspace.editingTrack)
     } yield ()
 
     val res = for {
       _ <- delete.ifNotFound(DbResult.ok)
       track = Track.emptyNotes
       workspace = Workspace(req.user.id, track.id)
-      newWorkspace = workspace.selectTrack(track)
+      newWorkspace = workspace.editTrack(track)
       _ <- req.db.saveTrack(track)
       _ <- req.db.saveWorkspace(newWorkspace)
     } yield ()
@@ -59,7 +59,7 @@ private[server] class TrackUpdateHandler @Inject() (
   def updateTrack(req: ServerRequest[Command], f: Track => Track): Try[Unit] = {
     val res = for {
       workspace <- req.db.getWorkspaceByOwner(req.user)
-      track <- req.db.getTrackById(workspace.selectedTrack)
+      track <- req.db.getTrackById(workspace.editingTrack)
       _ <- req.db.saveTrack(f(track))
     } yield ()
 

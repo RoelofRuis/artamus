@@ -6,9 +6,13 @@ import domain.write.Track.TrackId
 
 final case class Workspace(
   owner: UserId,
-  selectedTrack: TrackId,
+  editingTrack: TrackId,
+  proposedTrack: Option[TrackId] = None // TODO: allow multiple proposals at the same time
 ) {
-  def selectTrack(track: Track): Workspace = copy(selectedTrack = track.id)
+
+  def proposeTrack(track: Track): Workspace = copy(proposedTrack = Some(track.id))
+
+  def editTrack(track: Track): Workspace = copy(editingTrack = track.id)
 }
 
 object Workspace {

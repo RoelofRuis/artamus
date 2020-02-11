@@ -8,7 +8,7 @@ object Workspaces {
 
   private implicit val table: JsonTableDataModel[Workspace] = new JsonTableDataModel[Workspace] {
     override val tableName: String = "workspace"
-    override implicit val format: RootJsonFormat[Workspace] = jsonFormat2(Workspace.apply)
+    override implicit val format: RootJsonFormat[Workspace] = jsonFormat3(Workspace.apply)
   }
 
   implicit class WorkspaceQueries(db: ModelReader) {
