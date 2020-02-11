@@ -24,5 +24,6 @@ final case class Quantizer(
     Rational(1, 8), Rational(1, 4), Rational(3, 8), Rational(1, 2),
     Rational(5, 8), Rational(3, 4), Rational(7, 8), Rational(1, 2)
   ),
+  unmatchedClusterPenalty: Double = 1000,
   debug: Boolean = false
 )

@@ -53,6 +53,10 @@ object Quantization {
     // Pick Smallest error (with most 'conventional' durations)
     private def determineCentroidMap(clusters: Seq[Centroid]): Map[Centroid, Rational] = {
       clusters match {
+        case head :: Nil =>
+          val mapsWithErrors = quantizer.consideredLengths.map { chosenLength => (0D, Map(head -> chosenLength)) }
+          pickTempoOptimizedCentroidMap(mapsWithErrors)
+
         case head :: tail =>
           val mapsWithErrors = quantizer.consideredLengths.map { chosenLength =>
             val scalingFactor = head / chosenLength.toDouble
@@ -79,16 +83,19 @@ object Quantization {
       centroids match {
         case Nil => (error, resultMap)
         case head :: tail =>
-          val (nextError, length, index) = otherLengths
-            .map { case (i, (scaled, rational)) => (Math.abs(scaled - head), rational, i) }
-            .minBy { case (score, _, _) => score}
+          if (otherLengths.isEmpty) (error + (centroids.size * quantizer.unmatchedClusterPenalty), resultMap)
+          else {
+            val (nextError, length, index) = otherLengths
+              .map { case (i, (scaled, rational)) => (Math.abs(scaled - head), rational, i) }
+              .minBy { case (score, _, _) => score}
 
-          calculateCentroidError(
-            tail,
-            otherLengths.removed(index),
-            resultMap.updated(head, length),
-            error + nextError,
-          )
+            calculateCentroidError(
+              tail,
+              otherLengths.removed(index),
+              resultMap.updated(head, length),
+              error + nextError,
+            )
+          }
       }
     }
 

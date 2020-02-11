@@ -23,38 +23,27 @@ class RecordingOperations @Inject() (
   registry.server("quantize", "midi", {
     recorder.deactivate()
 
-    ServerOperation(
-      Quantize(None, rhythmOnly = false),
-      Render
-    )
-  })
+    val `type`: String = StdIOTools.readString("quantize type:\n+     = advanced\ng     = grid\nother = quick")
+    val quantizer = `type` match {
+      case "g" =>
+        val gridSpacing = StdIOTools.readInt("Grid spacing of 1/_?")
+        val gridSize = Rational.reciprocal(gridSpacing)
+        Quantize(
+          Some(Quantizer(consideredLengths=Set(gridSize), interClusterDistance=2000)),
+          rhythmOnly = false,
+          Duration(gridSize)
+        )
 
-  registry.server("quantize+", "midi", {
-    recorder.deactivate()
+      case "+" =>
+        val wholeNoteDuration: Int = StdIOTools.readInt("whole note duration")
+        val rhythmOnly: Boolean = StdIOTools.readBool("rhythm only?")
+        Quantize(Some(Quantizer(wholeNoteDuration = wholeNoteDuration)), rhythmOnly)
 
-    val wholeNoteDuration: Int = StdIOTools.readInt("whole note duration")
-    val rhythmOnly: Boolean = StdIOTools.readBool("rhythm only?")
+      case _ =>
+        Quantize(None, rhythmOnly = false)
+    }
 
-    ServerOperation(
-      Quantize(Some(Quantizer(wholeNoteDuration = wholeNoteDuration)), rhythmOnly),
-      Render
-    )
-  })
-
-  registry.server("grid-quantize", "midi", {
-    recorder.deactivate()
-
-    val gridSpacing = StdIOTools.readInt("Grid spacing of 1/_?")
-    val gridSize = Rational.reciprocal(gridSpacing)
-
-    ServerOperation(
-      Quantize(
-        Some(Quantizer(consideredLengths=Set(gridSize))),
-        rhythmOnly = false,
-        Duration(gridSize)
-      ),
-      Render
-    )
+    ServerOperation(quantizer, Render)
   })
 
 }
