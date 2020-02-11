@@ -42,6 +42,7 @@ final case class Track (
 
 object Track {
 
+  def apply(layer: Layer): Track = Track(layers = List(layer))
   def emptyNotes: Track = Track(layers = List(NoteLayer()))
   def emptyRhythm: Track = Track(layers = List(RhythmLayer()))
 

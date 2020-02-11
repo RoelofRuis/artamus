@@ -4,7 +4,8 @@ import domain.interact.Record.{ClearRecording, Quantize, RecordNote}
 import domain.math.temporal.{Duration, Position, Window}
 import domain.primitives.{Note, NoteGroup}
 import domain.record.{Quantization, Quantizer}
-import domain.write.Track
+import domain.write.TrackBlending.OverlayNotes
+import domain.write.{Track, TrackBlending}
 import javax.inject.{Inject, Singleton}
 import server.actions.Responses
 import server.infra.ServerDispatcher
@@ -58,8 +59,10 @@ private[server] class RecordingCommandHandler @Inject() (
 
         val res = for {
           workspace <- req.db.getWorkspaceByOwner(req.user)
-          newWorkspace = workspace.proposeTrack(recordedTrack) // TODO: remove old track!
-          _ <- req.db.saveTrack(recordedTrack)
+          currentTrack <- req.db.getTrackById(workspace.editingTrack)
+          blendedTrack = TrackBlending.blend(currentTrack, recordedTrack, OverlayNotes).getOrElse(recordedTrack)
+          newWorkspace = workspace.editTrack(blendedTrack) // TODO: remove old track!
+          _ <- req.db.saveTrack(blendedTrack)
           _ <- req.db.saveWorkspace(newWorkspace)
         } yield ()
 
