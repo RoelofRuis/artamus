@@ -24,7 +24,7 @@ private[rendering] class LilypondCommandLineExecutor(
       val result = getLilypondCommand(sourceFile.getAbsolutePath, resourceRootPath).!!
 
       if (targetFile.exists()) Right(RenderingResult(targetFile))
-      else Left(new Exception(result))
+      else Left(new Exception(s"Target file does not exist: [$result]"))
 
     } catch {
       case ex: Exception => Left(ex)
