@@ -14,6 +14,8 @@ import domain.math.Rational
  * 8th note on 120 BPM.
  * @param wholeNoteDuration The number of milliseconds that a whole note takes. The default value is assuming 120 BPM.
  * @param consideredLengths The note lengths that will be considered by the algorithm.
+ * @param unmatchedClusterPenalty This value will be added to the total error for each cluster that cannot be matched to
+ * a length.
  * @param debug Whether printing of debug information is allowed. // TODO: implement!
  */
 final case class Quantizer(
