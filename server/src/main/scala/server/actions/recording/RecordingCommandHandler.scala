@@ -61,7 +61,8 @@ private[server] class RecordingCommandHandler @Inject() (
           workspace <- req.db.getWorkspaceByOwner(req.user)
           currentTrack <- req.db.getTrackById(workspace.editingTrack)
           blendedTrack = TrackBlending.blend(currentTrack, recordedTrack, OverlayNotes).getOrElse(recordedTrack)
-          newWorkspace = workspace.editTrack(blendedTrack) // TODO: remove old track!
+          newWorkspace = workspace.editTrack(blendedTrack)
+          _ <- req.db.removeTrackById(currentTrack.id)
           _ <- req.db.saveTrack(blendedTrack)
           _ <- req.db.saveWorkspace(newWorkspace)
         } yield ()

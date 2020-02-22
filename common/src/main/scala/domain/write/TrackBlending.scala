@@ -1,9 +1,6 @@
 package domain.write
 
-import domain.primitives.NoteGroup
-import domain.write.layers.NoteLayer
-
-import scala.annotation.tailrec
+import domain.write.layers.{NoteBlending, NoteLayer}
 
 /** Methods to blend two tracks A and B in a variety of ways. */
 object TrackBlending {
@@ -27,12 +24,7 @@ object TrackBlending {
         val res = for {
           trackANotes <- trackA.layerData.collectFirst { case l: NoteLayer => l }
           trackBNotes <- trackB.layerData.collectFirst { case l: NoteLayer => l }
-        } yield {
-          val combinedNotes = blendNotes(trackANotes.notes.readGroupsList(), trackBNotes.notes.readGroupsList(), List())
-            .foldLeft(Notes()) { case (acc, group) => acc.writeNoteGroup(group) }
-
-          Track(NoteLayer(trackANotes.timeSignatures, trackANotes.keys, combinedNotes))
-        }
+        } yield Track(NoteBlending.blendNoteLayers(trackANotes, trackBNotes))
 
         res match {
           case None => Left(TrackBlendException(OverlayNotes, "Tracks should both have note layers"))
@@ -40,17 +32,4 @@ object TrackBlending {
         }
     }
   }
-
-  @tailrec
-  private def blendNotes(groupA: List[NoteGroup], groupB: List[NoteGroup], acc: List[NoteGroup]): List[NoteGroup] = {
-    (groupA, groupB) match {
-      case (Nil, Nil) => acc
-      case (Nil, b) =>  acc ++ b
-      case (a, Nil) => acc ++ a
-      case (headA :: tailA, headB :: tailB) =>
-        if (headA.window == headB.window) blendNotes(tailA, tailB, acc :+ NoteGroup(headA.window, headA.notes ++ headB.notes))
-        else blendNotes(tailA, tailB, acc :+ headA) // TODO: blend to multiple voices (now we lose information here)
-    }
-  }
-
 }
