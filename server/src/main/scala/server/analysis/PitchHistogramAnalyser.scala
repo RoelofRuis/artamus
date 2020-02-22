@@ -1,6 +1,6 @@
 package server.analysis
 
-import domain.write.Layers.NoteLayer
+import domain.write.layers.NoteLayer
 import domain.write.Track
 import server.analysis.blackboard.KnowledgeSource
 
@@ -25,7 +25,7 @@ class PitchHistogramAnalyser extends KnowledgeSource[Track] {
     )
 
     val histogram = track
-      .layers
+      .layerData
       .collectFirst { case noteLayer: NoteLayer =>
         noteLayer
           .notes

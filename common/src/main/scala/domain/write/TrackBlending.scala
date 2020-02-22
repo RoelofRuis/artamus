@@ -1,7 +1,7 @@
 package domain.write
 
 import domain.primitives.NoteGroup
-import domain.write.Layers.NoteLayer
+import domain.write.layers.NoteLayer
 
 import scala.annotation.tailrec
 
@@ -25,8 +25,8 @@ object TrackBlending {
       case Replace => Right(trackB)
       case OverlayNotes =>
         val res = for {
-          trackANotes <- trackA.layers.collectFirst { case l: NoteLayer => l }
-          trackBNotes <- trackB.layers.collectFirst { case l: NoteLayer => l }
+          trackANotes <- trackA.layerData.collectFirst { case l: NoteLayer => l }
+          trackBNotes <- trackB.layerData.collectFirst { case l: NoteLayer => l }
         } yield {
           val combinedNotes = blendNotes(trackANotes.notes.readGroupsList(), trackBNotes.notes.readGroupsList(), List())
             .foldLeft(Notes()) { case (acc, group) => acc.writeNoteGroup(group) }

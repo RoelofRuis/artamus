@@ -1,14 +1,14 @@
 package server.analysis
 
 import domain.write.analysis.TwelveToneChordAnalysis
-import domain.write.Layers.{ChordLayer, NoteLayer}
+import domain.write.layers.{ChordLayer, NoteLayer}
 import domain.write.{Chords, Track}
 import server.analysis.blackboard.KnowledgeSource
 
 class ChordAnalyser extends KnowledgeSource[Track] {
 
   override def execute(track: Track): Track = {
-    val chordLayer = track.layers.collectFirst { case noteLayer: NoteLayer =>
+    val chordLayer = track.layerData.collectFirst { case noteLayer: NoteLayer =>
       val chords = noteLayer
         .notes
         .readGroups()
@@ -25,7 +25,7 @@ class ChordAnalyser extends KnowledgeSource[Track] {
     }
 
     chordLayer match {
-      case Some(layer) => track.addLayer(layer)
+      case Some(layer) => track.addLayerData(layer)
       case None => track
     }
   }

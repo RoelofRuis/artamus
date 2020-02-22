@@ -1,10 +1,10 @@
 package server.model
 
 import domain.math.temporal.Window
-import domain.write.Layers.{ChordLayer, Layer, NoteLayer, RhythmLayer}
 import domain.write.Track.TrackId
 import domain.write._
 import domain.primitives.{Chord, Key, NoteGroup, TimeSignature}
+import domain.write.layers.{ChordLayer, Layer, LayerData, NoteLayer, RhythmLayer}
 import spray.json._
 import storage.api.{DbIO, DbResult, ModelReader}
 
@@ -37,23 +37,26 @@ object Tracks {
     implicit val chordLayerFormat: JsonFormat[ChordLayer] = jsonFormat3(ChordLayer.apply)
     implicit val rhythmLayerFormat: JsonFormat[RhythmLayer] = jsonFormat2(RhythmLayer.apply)
 
-    implicit object LayerFormat extends RootJsonFormat[Layer] {
+    implicit object LayerDataFormat extends RootJsonFormat[LayerData] {
       final val TYPE_FIELD = "layerType"
-      override def write(obj: Layer): JsValue =
+      override def write(obj: LayerData): JsValue =
         JsObject(obj match {
           case l: NoteLayer => l.toJson.asJsObject.fields + (TYPE_FIELD -> JsString("notes"))
           case l: ChordLayer => l.toJson.asJsObject.fields + (TYPE_FIELD -> JsString("chords"))
           case l: RhythmLayer => l.toJson.asJsObject.fields + (TYPE_FIELD -> JsString("rhythm"))
+          case _ => serializationError("Unsupported layer type")
         })
 
-      override def read(json: JsValue): Layer =
+      override def read(json: JsValue): LayerData =
         json.asJsObject.getFields(TYPE_FIELD) match {
           case Seq(JsString("notes")) => json.convertTo[NoteLayer]
           case Seq(JsString("chords")) => json.convertTo[ChordLayer]
           case Seq(JsString("rhythm")) => json.convertTo[RhythmLayer]
-          case tpe => serializationError(s"Unrecognized LayerFormat [$tpe]")
+          case tpe => deserializationError(s"Unrecognized LayerFormat [$tpe]")
         }
     }
+
+    implicit val layerFormat: JsonFormat[Layer] = jsonFormat2(Layer.apply)
 
     override implicit val format: RootJsonFormat[Track] = jsonFormat2(Track.apply)
   }

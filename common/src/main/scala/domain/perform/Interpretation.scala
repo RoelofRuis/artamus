@@ -1,6 +1,6 @@
 package domain.perform
 
-import domain.write.Layers.NoteLayer
+import domain.write.layers.NoteLayer
 import domain.write.Track
 import domain.primitives.{Loudness, MidiNoteNumber}
 
@@ -11,7 +11,7 @@ object Interpretation {
   val VOLUME = 64
 
   def perform(track: Track): TrackPerformance = {
-    track.layers.collectFirst { case x: NoteLayer => x } match {
+    track.layerData.collectFirst { case x: NoteLayer => x } match {
       case Some(layer) =>
         TrackPerformance(
           layer

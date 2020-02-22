@@ -4,7 +4,7 @@ import domain.write.analysis.TwelveTonePitchSpelling
 import domain.math.temporal.{Position, Window}
 import domain.display.{Bars, NoteValues, StaffGroup}
 import domain.display.chord.ChordStaffGlyph.{ChordNameGlyph, ChordRestGlyph}
-import domain.write.Layers.ChordLayer
+import domain.write.layers.ChordLayer
 
 object ChordDisplay {
 
