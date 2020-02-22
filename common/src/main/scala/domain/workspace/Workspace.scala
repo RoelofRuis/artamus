@@ -10,7 +10,6 @@ final case class Workspace(
 ) {
 
   def editTrack(track: Track): Workspace = {
-    println(track)
     copy(editingTrack = track.id)
   }
 }
