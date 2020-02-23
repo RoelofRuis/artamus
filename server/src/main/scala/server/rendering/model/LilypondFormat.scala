@@ -23,13 +23,16 @@ private[rendering] object LilypondFormat {
   }
 
   implicit val staffGroupFormat: LilypondFormat[StaffGroup] = staffGroup => {
-    staffGroup.staves.map {
-      case s: NoteStaff => s.toLilypond
-      case s: ChordStaff => s.toLilypond
-      case s: GrandStaff => s.toLilypond
-      case s: RhythmicStaff => s.toLilypond
-      case _ => ""
-    }.mkString("\n<<", "", "\n>>")
+    if (staffGroup.staves.isEmpty) "s"
+    else {
+      staffGroup.staves.map {
+        case s: NoteStaff => s.toLilypond
+        case s: ChordStaff => s.toLilypond
+        case s: GrandStaff => s.toLilypond
+        case s: RhythmicStaff => s.toLilypond
+        case _ => ""
+      }.mkString("<<", "", "\n>>")
+    }
   }
 
   implicit val rhythmicStaffFormat: LilypondFormat[RhythmicStaff] = staff => {

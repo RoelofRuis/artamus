@@ -6,7 +6,6 @@ import domain.write.Track
 import javax.inject.{Inject, Singleton}
 import server.actions.Responses
 import server.infra.ServerDispatcher
-import storage.api.DbResult
 
 @Singleton
 private[server] class WorkspaceCommandHandler @Inject() (
@@ -17,14 +16,14 @@ private[server] class WorkspaceCommandHandler @Inject() (
   import server.model.Workspaces._
 
   dispatcher.subscribe[NewWorkspace.type] { req =>
-    val delete = for {
+    val oldDeleted = for {
       workspace <- req.db.getWorkspaceByOwner(req.user)
       _ <- req.db.removeTrackById(workspace.editingTrack)
     } yield ()
 
     val res = for {
-      _ <- delete.ifNotFound(DbResult.ok)
-      track = Track.emptyNotes
+      _ <- oldDeleted.okIfNotFound
+      track = Track.empty
       workspace = Workspace(req.user.id, track.id)
       newWorkspace = workspace.editTrack(track)
       _ <- req.db.saveTrack(track)

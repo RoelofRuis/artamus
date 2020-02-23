@@ -19,6 +19,10 @@ package object api {
     }
   }
 
+  implicit class DbUnitResultOps(res: DbResult[Unit]) {
+    def okIfNotFound: DbResult[Unit] = res.ifNotFound(DbResult.ok)
+  }
+
   object DbResult {
     def ioError[A](ex: Throwable): DbResult[A] = Left(IOError(ex))
     def notFound[A]: DbResult[A] = Left(NotFound())

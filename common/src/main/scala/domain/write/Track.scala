@@ -41,8 +41,8 @@ final case class Track (
 object Track {
 
   def apply(layer: LayerData): Track = Track(layers = List(Layer(layer)))
-  def emptyNotes: Track = apply(NoteLayer())
-  def emptyRhythm: Track = apply(RhythmLayer())
+
+  def empty: Track = apply()
 
   final case class TrackId(id: UUID = UUID.randomUUID())
 
