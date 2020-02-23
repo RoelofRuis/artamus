@@ -1,6 +1,5 @@
 package domain.interact
 
-import domain.display.render.Render
 import domain.math.temporal.Position
 import domain.primitives.{Key, NoteGroup, TimeSignature}
 
@@ -12,7 +11,5 @@ object Write {
   final case class WriteTimeSignature(position: Position, ts: TimeSignature) extends Command
 
   final case object AnalyseChords extends Command
-
-
 
 }

@@ -31,11 +31,11 @@ final case class Track (
 
   def addLayerData(layer: LayerData): Track = copy(layers = layers :+ Layer(layer))
 
-  def mapLayerData(f: LayerData => LayerData): Track = copy (
+  def layerData: List[LayerData] = layers.map(_.data)
+
+  private def mapLayerData(f: LayerData => LayerData): Track = copy (
     layers = layers.map(layer => layer.copy(data = f(layer.data)))
   )
-
-  def layerData: List[LayerData] = layers.map(_.data)
 }
 
 object Track {
