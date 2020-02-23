@@ -2,7 +2,7 @@ package client.module.terminal
 
 import client.infra.{Client, ClientInteraction}
 import client.module.Operations.{OperationRegistry, ServerOperation}
-import client.util.StdIOTools
+import client.module.StdIOTools
 import domain.interact.Command
 import domain.interact.Write._
 import domain.math.Rational

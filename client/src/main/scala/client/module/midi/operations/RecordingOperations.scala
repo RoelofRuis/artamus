@@ -3,8 +3,8 @@ package client.module.midi.operations
 import domain.interact.Record.{ClearRecording, Quantize}
 import domain.interact.Write.Render
 import client.module.Operations.{OperationRegistry, ServerOperation}
+import client.module.StdIOTools
 import client.module.midi.MidiRecorder
-import client.util.StdIOTools
 import com.google.inject.Inject
 import domain.math.Rational
 import domain.math.temporal.Duration

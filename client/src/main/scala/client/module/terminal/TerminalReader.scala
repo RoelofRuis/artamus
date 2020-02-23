@@ -1,6 +1,6 @@
 package client.module.terminal
 
-import client.util.StdIOTools
+import client.module.StdIOTools
 import domain.primitives._
 
 import scala.annotation.tailrec

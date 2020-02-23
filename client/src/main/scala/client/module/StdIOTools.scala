@@ -1,4 +1,4 @@
-package client.util
+package client.module
 
 object StdIOTools {
 
