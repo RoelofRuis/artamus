@@ -21,6 +21,8 @@ final case class Track (
 
   def writeKey(pos: Position, key: Key): Track = mapLayerData {
     case x: NoteLayer => x.writeKey(pos, key)
+    case x: ChordLayer => x.writeKey(pos, key)
+    case x => x
   }
 
   def writeNoteGroup(noteGroup: NoteGroup): Track = mapLayerData {
