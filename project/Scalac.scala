@@ -17,6 +17,7 @@ object Scalac {
       "-Ywarn-unused:patvars",
       "-Ywarn-unused:privates",
       "-Ywarn-dead-code",
+      "-Ywarn-numeric-widen",
     )
   )
 }
