@@ -1,6 +1,6 @@
 package client.module.system
 
-import domain.interact.Write.{Analyse, NewWorkspace, Render}
+import domain.interact.Write.{AnalyseChords, NewWorkspace, Render}
 import client.module.Operations.{OperationRegistry, ServerOperation}
 import javax.inject.Inject
 
@@ -9,7 +9,7 @@ class ControlOperations @Inject() (
 ) {
 
   registry.server("analyse", "track", {
-    ServerOperation(Analyse, Render)
+    ServerOperation(AnalyseChords, Render)
   })
 
   registry.server("new", "workspace", {

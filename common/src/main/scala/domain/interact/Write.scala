@@ -12,7 +12,7 @@ object Write {
   final case class WriteKey(position: Position, symbol: Key) extends Command
   final case class WriteTimeSignature(position: Position, ts: TimeSignature) extends Command
 
-  final case object Analyse extends Command
+  final case object AnalyseChords extends Command
   final case object Render extends Command
 
   final case object PreparePerformance extends Query { type Res = TrackPerformance }
