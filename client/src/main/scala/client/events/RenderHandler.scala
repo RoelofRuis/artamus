@@ -4,6 +4,7 @@ import java.awt.image.BufferedImage
 import java.awt.{BorderLayout, Color}
 import java.io.File
 
+import client.infra.Callback
 import domain.interact.Write.{RenderingStarted, TrackRendered}
 import com.google.inject.Inject
 import com.typesafe.scalalogging.LazyLogging
@@ -11,7 +12,7 @@ import domain.interact.Event
 import javax.annotation.concurrent.NotThreadSafe
 import javax.imageio.ImageIO
 import javax.swing.{ImageIcon, JFrame, JLabel, WindowConstants}
-import pubsub.{Callback, Dispatcher}
+import pubsub.Dispatcher
 
 import scala.util.{Failure, Success, Try}
 

@@ -5,7 +5,7 @@ import domain.interact.Event
 import javax.inject.Inject
 import network.Exceptions.ResponseException
 import network.client.api.ClientAPI
-import pubsub.{Callback, Dispatcher}
+import pubsub.Dispatcher
 
 class DispatchingClientAPI @Inject() (
   dispatcher: Dispatcher[Callback, Event]

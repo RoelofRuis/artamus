@@ -5,7 +5,6 @@ import domain.interact.{Event, Request}
 import javax.inject.Singleton
 import net.codingwell.scalaguice.ScalaModule
 import network.client.api.{ClientAPI, ClientConfig, ClientFactory}
-import pubsub.Callback
 
 class ClientInfraModule extends ScalaModule {
   // TODO: make private and expose only what is needed
