@@ -1,15 +1,13 @@
-package server.actions.writing
+package server.actions.write
 
 import domain.interact.Command
 import domain.interact.Write._
-import domain.workspace.Workspace
 import domain.write.Track
 import domain.write.layers.{ChordAnalyser, NoteLayer}
 import javax.inject.{Inject, Singleton}
 import server.ServerRequest
 import server.actions.Responses
 import server.infra.ServerDispatcher
-import storage.api.DbResult
 
 import scala.util.Try
 
@@ -20,24 +18,6 @@ private[server] class TrackUpdateHandler @Inject() (
 
   import server.model.Tracks._
   import server.model.Workspaces._
-
-  dispatcher.subscribe[NewWorkspace.type]{ req =>
-    val delete = for {
-      workspace <- req.db.getWorkspaceByOwner(req.user)
-      _ <- req.db.removeTrackById(workspace.editingTrack)
-    } yield ()
-
-    val res = for {
-      _ <- delete.ifNotFound(DbResult.ok)
-      track = Track.emptyNotes
-      workspace = Workspace(req.user.id, track.id)
-      newWorkspace = workspace.editTrack(track)
-      _ <- req.db.saveTrack(track)
-      _ <- req.db.saveWorkspace(newWorkspace)
-    } yield ()
-
-    Responses.executed(res)
-  }
 
   dispatcher.subscribe[AnalyseChords.type] { req =>
     updateTrack(req, { track =>

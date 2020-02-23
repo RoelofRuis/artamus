@@ -1,4 +1,4 @@
-package server.actions.writing
+package server.actions.write
 
 import domain.interact.Display.Render
 import javax.inject.{Inject, Singleton}

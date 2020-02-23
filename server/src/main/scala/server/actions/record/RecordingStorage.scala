@@ -1,4 +1,4 @@
-package server.actions.recording
+package server.actions.record
 
 import javax.inject.Singleton
 import domain.record.{RawMidiNote, Recording}

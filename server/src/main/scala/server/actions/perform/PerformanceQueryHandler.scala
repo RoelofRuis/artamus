@@ -1,4 +1,4 @@
-package server.actions.writing
+package server.actions.perform
 
 import domain.interact.Perform.PreparePerformance
 import domain.interact.Query
@@ -11,7 +11,7 @@ import server.infra.ServerDispatcher
 import scala.util.Try
 
 @Singleton
-private[server] class TrackQueryHandler @Inject() (
+private[server] class PerformanceQueryHandler @Inject() (
   dispatcher: ServerDispatcher
 ) {
 

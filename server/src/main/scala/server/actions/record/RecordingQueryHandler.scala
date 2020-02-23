@@ -1,4 +1,4 @@
-package server.actions.recording
+package server.actions.record
 
 import domain.interact.Record.GetCurrentRecording
 import javax.inject.{Inject, Singleton}

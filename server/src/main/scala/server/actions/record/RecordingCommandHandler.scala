@@ -1,4 +1,4 @@
-package server.actions.recording
+package server.actions.record
 
 import domain.interact.Record.{ClearRecording, Quantize, RecordNote}
 import domain.math.temporal.{Duration, Position, Window}
