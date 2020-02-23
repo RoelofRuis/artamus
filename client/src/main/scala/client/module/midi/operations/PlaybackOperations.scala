@@ -4,7 +4,7 @@ import client.infra.{Client, ClientInteraction}
 import client.module.Operations.OperationRegistry
 import client.module.midi.MusicWriter
 import com.typesafe.scalalogging.LazyLogging
-import domain.interact.Write.PreparePerformance
+import domain.interact.Perform.PreparePerformance
 import javax.inject.Inject
 import midi.write.MidiSequenceWriter
 

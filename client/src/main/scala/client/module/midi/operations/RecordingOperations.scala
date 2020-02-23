@@ -1,11 +1,11 @@
 package client.module.midi.operations
 
-import domain.interact.Record.{ClearRecording, Quantize}
-import domain.interact.Write.Render
 import client.module.Operations.{OperationRegistry, ServerOperation}
 import client.module.StdIOTools
 import client.module.midi.MidiRecorder
 import com.google.inject.Inject
+import domain.interact.Display.Render
+import domain.interact.Record.{ClearRecording, Quantize}
 import domain.math.Rational
 import domain.math.temporal.Duration
 import domain.record.Quantizer

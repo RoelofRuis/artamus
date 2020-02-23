@@ -1,6 +1,6 @@
 package server.actions.writing
 
-import domain.interact.Write.Render
+import domain.interact.Display.Render
 import javax.inject.{Inject, Singleton}
 import server.actions.Responses
 import server.infra.ServerDispatcher

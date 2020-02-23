@@ -2,10 +2,10 @@ package server.rendering.impl
 
 import java.util.concurrent.{ExecutorService, Executors}
 
-import domain.interact.Write.TrackRendered
 import com.typesafe.scalalogging.LazyLogging
 import domain.display.Display
 import domain.display.render.Render
+import domain.interact.Display.TrackRendered
 import domain.write.Track
 import javax.inject.Inject
 import server.infra.ServerEventBus

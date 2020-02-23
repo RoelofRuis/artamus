@@ -1,7 +1,8 @@
 package client.module.system
 
-import domain.interact.Write.{AnalyseChords, NewWorkspace, Render}
 import client.module.Operations.{OperationRegistry, ServerOperation}
+import domain.interact.Display.Render
+import domain.interact.Write.{AnalyseChords, NewWorkspace}
 import javax.inject.Inject
 
 class ControlOperations @Inject() (

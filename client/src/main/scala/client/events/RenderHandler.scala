@@ -1,13 +1,13 @@
 package client.events
 
+import java.awt.BorderLayout
 import java.awt.image.BufferedImage
-import java.awt.{BorderLayout, Color}
 import java.io.File
 
 import client.infra.Callback
-import domain.interact.Write.{RenderingStarted, TrackRendered}
 import com.google.inject.Inject
 import com.typesafe.scalalogging.LazyLogging
+import domain.interact.Display.TrackRendered
 import domain.interact.Event
 import javax.annotation.concurrent.NotThreadSafe
 import javax.imageio.ImageIO
@@ -29,20 +29,6 @@ class RenderHandler @Inject() (
   label.setIcon(image)
   frame.getContentPane.add(label, BorderLayout.CENTER)
   frame.setVisible(true)
-
-  dispatcher.subscribe[RenderingStarted.type]{ _ =>
-    lastImage match {
-      case Some(img) =>
-        val graphics = img.createGraphics()
-        graphics.setColor(new Color(20, 20, 20, 128))
-        graphics.fillRect(0, 0, img.getWidth, img.getHeight)
-        graphics.dispose()
-        image.setImage(img)
-        frame.repaint()
-      case None =>
-    }
-    Success(())
-  }
 
   dispatcher.subscribe[TrackRendered]{ event =>
     Try { ImageIO.read(new File(event.attributes.render.path)) } match {

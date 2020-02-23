@@ -1,7 +1,7 @@
 package server.actions.writing
 
+import domain.interact.Perform.PreparePerformance
 import domain.interact.Query
-import domain.interact.Write.PreparePerformance
 import domain.write.Track
 import javax.inject.{Inject, Singleton}
 import server.ServerRequest

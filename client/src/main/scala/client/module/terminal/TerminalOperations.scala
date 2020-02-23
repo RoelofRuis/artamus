@@ -4,6 +4,8 @@ import client.infra.{Client, ClientInteraction}
 import client.module.Operations.{OperationRegistry, ServerOperation}
 import client.module.StdIOTools
 import domain.interact.Command
+import domain.interact.Display.Render
+import domain.interact.Perform.PreparePerformance
 import domain.interact.Write._
 import domain.math.Rational
 import domain.math.temporal.{Duration, Position, Window}

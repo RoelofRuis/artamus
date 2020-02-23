@@ -1,8 +1,9 @@
 package client.module.midi.operations
 
-import domain.interact.Write.{Render, WriteKey, WriteTimeSignature}
 import client.module.Operations.OperationRegistry
 import client.module.midi.MusicReader
+import domain.interact.Display.Render
+import domain.interact.Write.{WriteKey, WriteTimeSignature}
 import domain.math.temporal.Position
 import domain.primitives.{TimeSignature, _}
 import javax.inject.Inject
