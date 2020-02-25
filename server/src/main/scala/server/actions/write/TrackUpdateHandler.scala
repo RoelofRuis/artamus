@@ -19,11 +19,14 @@ private[server] class TrackUpdateHandler @Inject() (
   import server.model.Tracks._
   import server.model.Workspaces._
 
+  dispatcher.subscribe[SetLayerVisibility] { req =>
+    updateTrack(req, _.updateLayer(req.attributes.layer, _.copy(visible = req.attributes.isVisible)))
+  }
+
   dispatcher.subscribe[AnalyseChords.type] { req =>
     updateTrack(req, { track =>
-      track
-        .readLayers
-        .collectFirst { case n: NoteLayer => n } // TODO: move to track blending or something
+      track // TODO: eventually move to layer blending
+        .readFirstLayer[NoteLayer]
         .map(ChordAnalyser.chordLayerForNoteLayer)
         .map(track.appendLayerData)
         .getOrElse(track)

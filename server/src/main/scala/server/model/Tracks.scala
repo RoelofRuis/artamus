@@ -3,13 +3,15 @@ package server.model
 import java.util.UUID
 
 import domain.math.temporal.Window
+import domain.primitives.{Chord, Key, NoteGroup, TimeSignature}
 import domain.write.Track.TrackId
 import domain.write._
-import domain.primitives.{Chord, Key, NoteGroup, TimeSignature}
 import domain.write.layers.Layer.LayerId
-import domain.write.layers.{ChordLayer, Layer, LayerData, NoteLayer, RhythmLayer}
+import domain.write.layers._
 import spray.json._
 import storage.api.{DbIO, DbResult, ModelReader}
+
+import scala.collection.immutable.ListMap
 
 object Tracks {
 
@@ -64,6 +66,11 @@ object Tracks {
     }
 
     implicit val layerFormat: JsonFormat[Layer] = jsonFormat2(Layer.apply)
+
+    implicit object LayersFormat extends JsonFormat[ListMap[LayerId, Layer]] {
+      override def read(json: JsValue): ListMap[LayerId, Layer] = ListMap.from(json.convertTo[List[(LayerId, Layer)]])
+      override def write(obj: ListMap[LayerId, Layer]): JsValue = obj.toList.toJson
+    }
 
     override implicit val format: RootJsonFormat[Track] = jsonFormat2(Track.apply)
   }

@@ -5,7 +5,7 @@ import server.actions.control.ServerControlHandler
 import server.actions.perform.PerformanceQueryHandler
 import server.actions.record.{RecordingCommandHandler, RecordingQueryHandler, RecordingStorage}
 import server.actions.workspace.WorkspaceCommandHandler
-import server.actions.write.{TrackTaskHandler, TrackUpdateHandler}
+import server.actions.write.{TrackQueryHandler, TrackTaskHandler, TrackUpdateHandler}
 
 class ActionsModule extends ScalaModule {
 
@@ -14,6 +14,7 @@ class ActionsModule extends ScalaModule {
     bind[PerformanceQueryHandler].asEagerSingleton()
     bind[TrackUpdateHandler].asEagerSingleton()
     bind[TrackTaskHandler].asEagerSingleton()
+    bind[TrackQueryHandler].asEagerSingleton()
 
     bind[WorkspaceCommandHandler].asEagerSingleton()
 
