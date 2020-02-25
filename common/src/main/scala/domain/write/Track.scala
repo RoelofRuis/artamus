@@ -17,9 +17,12 @@ final case class Track (
   def appendLayerData(layer: LayerData): Track = copy(layers = layers.updated(LayerId(), Layer(layer)))
 
   // TODO: review if this function should ever be necessary (better to let caller provide layer ID)
-  def readFirstLayer[A <: LayerData : ClassTag]: Option[A] = readLayers.collectFirst { case a: A => a }
-
-  def readLayers: List[LayerData] = layers.map { case (_, layer) => layer.data }.toList
+  def readFirstLayer[A <: LayerData : ClassTag]: Option[A] = {
+    layers
+      .map { case (_, layer) => layer.data }
+      .toList
+      .collectFirst { case a: A => a }
+  }
 
   def updateLayer(id: LayerId, f: Layer => Layer): Track = copy (
     layers = layers.get(id) match {

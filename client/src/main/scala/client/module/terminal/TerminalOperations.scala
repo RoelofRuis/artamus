@@ -67,6 +67,22 @@ class TerminalOperations @Inject() (
       )
   })
 
+  registry.server("show", "edit", {
+    client.sendQuery(GetLayers)
+      .flatMap { layers =>
+        layers.foreach(index => println(s"$index"))
+        val layer = StdIOTools.readInt("Pick a layer")
+        layers.get(layer) match {
+          case Some((layerId, _)) => Right(layerId)
+          case None => Left(())
+        }
+      }
+      .fold(
+        _ => ServerOperation(),
+        id => ServerOperation(SetLayerVisibility(id, isVisible = true), Render)
+      )
+  })
+
   registry.server("write", "edit (terminal)", {
     val gridSpacing = StdIOTools.readInt("Grid spacing of 1/_?")
     val elementLayout = StdIOTools.read("Element layout?\n. : onset\n- : continuation\nr : rest", "Invalid input", {

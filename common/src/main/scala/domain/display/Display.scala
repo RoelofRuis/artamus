@@ -9,11 +9,17 @@ object Display {
   import domain.display.staff.StaffDisplay._
 
   def displayTrack(track: Track): TrackDisplay = {
-    val staffGroups = track.readLayers.map {
-      case l: ChordLayer => l.getChords
-      case l: NoteLayer => StaffDisplayable(l.timeSignatures, l.keys, l.notes).getNotes
-      case l: RhythmLayer => StaffDisplayable(l.timeSignatures, Keys.apply(), l.notes).getRhythm
-    }.foldRight(StaffGroup.empty)(_ + _)
+    val staffGroups = track
+      .layers
+      .map { case (_, layer) => layer }
+      .filter(_.visible)
+      .map(_.data)
+      .map {
+        case l: ChordLayer => l.getChords
+        case l: NoteLayer => StaffDisplayable(l.timeSignatures, l.keys, l.notes).getNotes
+        case l: RhythmLayer => StaffDisplayable(l.timeSignatures, Keys.apply(), l.notes).getRhythm
+      }
+      .foldRight(StaffGroup.empty)(_ + _)
 
     TrackDisplay(staffGroups)
   }
