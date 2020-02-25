@@ -60,7 +60,7 @@ private[server] class RecordingCommandHandler @Inject() (
           val res = for {
             workspace <- req.db.getWorkspaceByOwner(req.user)
             currentTrack <- req.db.getTrackById(workspace.editingTrack)
-            newTrack = currentTrack.addLayerData(newLayer)
+            newTrack = currentTrack.appendLayerData(newLayer)
             _ <- req.db.saveTrack(newTrack)
           } yield ()
 

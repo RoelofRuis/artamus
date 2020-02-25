@@ -1,9 +1,12 @@
 package server.model
 
+import java.util.UUID
+
 import domain.math.temporal.Window
 import domain.write.Track.TrackId
 import domain.write._
 import domain.primitives.{Chord, Key, NoteGroup, TimeSignature}
+import domain.write.layers.Layer.LayerId
 import domain.write.layers.{ChordLayer, Layer, LayerData, NoteLayer, RhythmLayer}
 import spray.json._
 import storage.api.{DbIO, DbResult, ModelReader}
@@ -54,6 +57,10 @@ object Tracks {
           case Seq(JsString("rhythm")) => json.convertTo[RhythmLayer]
           case tpe => deserializationError(s"Unrecognized LayerFormat [$tpe]")
         }
+    }
+
+    implicit object LayerReferenceFormat extends IdFormat[LayerId] {
+      def create(id: UUID): LayerId = LayerId(id)
     }
 
     implicit val layerFormat: JsonFormat[Layer] = jsonFormat2(Layer.apply)

@@ -2,49 +2,32 @@ package domain.write
 
 import java.util.UUID
 
-import domain.math.temporal.Position
-import domain.write.layers.{ChordLayer, Layer, LayerData, NoteLayer, RhythmLayer}
 import domain.write.Track.TrackId
-import domain.primitives.{Key, NoteGroup, TimeSignature}
+import domain.write.layers.Layer.LayerId
+import domain.write.layers._
 
 final case class Track (
   id: TrackId = TrackId(),
-  layers: List[Layer] = List()
+  layers: Map[LayerId, Layer] = Map()
 ) {
 
-  def writeTimeSignature(pos: Position, timeSignature: TimeSignature): Track = mapLayerData {
-    case x: ChordLayer => x.writeTimeSignature(pos, timeSignature)
-    case x: NoteLayer => x.writeTimeSignature(pos, timeSignature)
-    case x: RhythmLayer => x.writeTimeSignature(pos, timeSignature)
-    case x => x
-  }
+  def appendLayerData(layer: LayerData): Track = copy(layers = layers.updated(LayerId(), Layer(layer)))
 
-  def writeKey(pos: Position, key: Key): Track = mapLayerData {
-    case x: NoteLayer => x.writeKey(pos, key)
-    case x: ChordLayer => x.writeKey(pos, key)
-    case x => x
-  }
+  def readLayers: List[LayerData] = layers.map { case (_, layer) => layer.data }.toList
 
-  def writeNoteGroup(noteGroup: NoteGroup): Track = mapLayerData {
-    case x: NoteLayer => x.writeNoteGroup(noteGroup)
-    case x: RhythmLayer => x.writeNoteGroup(noteGroup)
-    case x => x
-  }
-
-  def addLayerData(layer: LayerData): Track = copy(layers = layers :+ Layer(layer))
-
-  def layerData: List[LayerData] = layers.map(_.data)
-
-  private def mapLayerData(f: LayerData => LayerData): Track = copy (
-    layers = layers.map(layer => layer.copy(data = f(layer.data)))
+  def mapLayerData(f: PartialFunction[LayerData, LayerData]): Track = copy (
+    layers = layers.map { case (ref, layer) =>
+      if (f.isDefinedAt(layer.data)) (ref, layer.copy(data = f(layer.data)))
+      else (ref, layer)
+    }
   )
 }
 
 object Track {
 
-  def apply(layer: LayerData): Track = Track(layers = List(Layer(layer)))
+  def apply(layer: LayerData): Track = Track(layers = Map(LayerId() -> Layer(layer)))
 
-  def empty: Track = apply()
+  def empty: Track = Track(layers = Map())
 
   final case class TrackId(id: UUID = UUID.randomUUID())
 

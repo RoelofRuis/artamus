@@ -11,7 +11,7 @@ object Interpretation {
   val VOLUME = 64
 
   def perform(track: Track): TrackPerformance = {
-    track.layerData.collectFirst { case x: NoteLayer => x } match {
+    track.readLayers.collectFirst { case x: NoteLayer => x } match {
       case Some(layer) =>
         TrackPerformance(
           layer
