@@ -11,6 +11,7 @@ object Write {
   final case class WriteKey(position: Position, key: Key) extends Command
   final case class WriteTimeSignature(position: Position, ts: TimeSignature) extends Command
 
+  @deprecated("This should be replaced by completely async handling")
   final case object GetLayers extends Query { type Res = Map[Int, (LayerId, Boolean)] }
   final case class SetLayerVisibility(layer: LayerId, isVisible: Boolean) extends Command
 
