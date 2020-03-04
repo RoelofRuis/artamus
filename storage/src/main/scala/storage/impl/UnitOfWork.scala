@@ -23,7 +23,9 @@ private[impl] final class UnitOfWork private (
     Option(dirtyData.get(model.key)) orElse Option(cleanData.get(model.key)) match {
       case Some(data) =>
         model.deserialize(data) match {
-          case Success(obj) => DbResult.found(obj)
+          case Success(obj) =>
+            cleanData.put(model.key, data)
+            DbResult.found(obj)
           case Failure(ex) => DbResult.ioError(ex)
         }
       case None => db.readModel match {
