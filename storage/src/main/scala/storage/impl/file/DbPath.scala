@@ -8,7 +8,7 @@ final case class DbPath(root: String) {
 
   def toTable(table: String): Path = Paths.get(root, table)
   def toRow(table: String, row: String, deletedVersion: Option[Int] = None): Path = {
-    val rowName = if (deletedVersion.isDefined) s"${row}_${deletedVersion.get.toString}" else table
+    val rowName = if (deletedVersion.isDefined) s"${row}_${deletedVersion.get.toString}" else row
     Paths.get(root, table, rowName)
   }
   def toObject(table: String, row: String, version: Int, dataType: DataType): Path = {

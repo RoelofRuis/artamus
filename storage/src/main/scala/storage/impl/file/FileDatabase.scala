@@ -31,7 +31,7 @@ private[storage] class FileDatabase(config: FileDatabaseConfig) extends Transact
     val (deletes, updates) = uow.getChangeSet
 
     deletes.foreach { obj =>
-      // TODO: has to be within writeLock!
+      // TODO: refactor this so changeset is separated!
       FileIO.move(rootPath.toRow(obj.table, obj.id), rootPath.toRow(obj.table, obj.id, Some(version)))
     }
 
