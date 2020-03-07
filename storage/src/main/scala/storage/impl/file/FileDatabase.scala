@@ -4,9 +4,9 @@ import java.nio.file.{Path, Paths}
 
 import javax.annotation.concurrent.{GuardedBy, ThreadSafe}
 import storage.FileDatabaseConfig
-import storage.api.DataTypes.{JSON, Raw}
+import storage.api.DataType.Raw
 import storage.api.Transaction.CommitResult
-import storage.api.{DbException, DbResult, NotFound, DataModel, Transaction}
+import storage.api.{DataModel, DbException, DbResult, NotFound, Transaction}
 import storage.impl.{TransactionalDatabase, UnitOfWork}
 
 import scala.annotation.tailrec
@@ -17,7 +17,7 @@ import scala.util.{Failure, Success, Try}
 private[storage] class FileDatabase(config: FileDatabaseConfig) extends TransactionalDatabase {
 
   private val rootPath = DbPath(config.rootPath)
-  private val VersionPath = rootPath.toObject("_version", "0", 0, Raw)
+  private val VersionPath = rootPath.toObject("_version", "0", Raw.extension,  0)
 
   val initialVersion: Int = FileIO.read(VersionPath) match {
     case Left(_) => 0
@@ -39,7 +39,7 @@ private[storage] class FileDatabase(config: FileDatabaseConfig) extends Transact
     else {
       val res = writeLock.synchronized {
         val errors = updates.foldRight(List[DbException]()) { case (obj, acc) =>
-          FileIO.write(rootPath.toObject(obj.id.table, obj.id.id, version, obj.id.dataType), obj.data) match {
+          FileIO.write(rootPath.toObject(obj.id.table, obj.id.id, obj.id.dataType.extension, version), obj.data) match {
             case Right(_) => acc
             case Left(ex) => acc :+ ex
           }
@@ -64,7 +64,7 @@ private[storage] class FileDatabase(config: FileDatabaseConfig) extends Transact
   override def readRow[A, I](id: I)(implicit t: DataModel[A, I]): DbResult[A] = {
     @tailrec
     def readVersioned(version: Int): DbResult[String] = {
-      FileIO.read(rootPath.toObject(t.name, t.serializeId(id), version, t.dataType)) match {
+      FileIO.read(rootPath.toObject(t.name, t.serializeId(id), t.dataType.extension, version)) match {
         case Left(NotFound()) if version > 0 => readVersioned(version - 1)
         case l @ Left(NotFound()) => l
         case x => x
@@ -85,7 +85,7 @@ private[storage] class FileDatabase(config: FileDatabaseConfig) extends Transact
     val rows = FileIO.list(rootPath.toTable(t.name), onlyDirs=true)
     @tailrec
     def readVersioned(rowPath: Path, version: Int): DbResult[String] = {
-      FileIO.read(DbPath.toObjectFromRowPath(rowPath, version, t.dataType)) match {
+      FileIO.read(DbPath.toObjectFromRowPath(rowPath, version, t.dataType.extension)) match {
         case Left(NotFound()) if version > 0 => readVersioned(rowPath, version - 1)
         case l @ Left(NotFound()) => l
         case x => x
@@ -159,14 +159,9 @@ private[storage] class FileDatabase(config: FileDatabaseConfig) extends Transact
           .sortBy { case (v, _) => v }
           .reverse
           .map { case (v, ext) =>
-            val dataType = ext match {
-              case "json" => JSON // TODO: move extensions and detection into extension data type
-              case "dat" => Raw
-              case _ => Raw
-            }
             val id = rowPath.getFileName.toString
             val table = rowPath.getParent.getFileName.toString
-            rootPath.toObject(table, id, v, dataType)
+            rootPath.toObject(table, id, ext, v)
           }
         if (validFiles.isEmpty) Seq()
         else Seq((validFiles.head, validFiles.tail))

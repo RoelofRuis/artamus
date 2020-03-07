@@ -1,7 +1,7 @@
 package storage
 
-import storage.api.DataTypes.Raw
-import storage.api.{DataTypes, DbResult, DataModel}
+import storage.api.DataType.Raw
+import storage.api.{DataModel, DataType, DbResult}
 import utest._
 
 import scala.util.{Success, Try}
@@ -10,7 +10,7 @@ object InMemoryDatabaseTest extends TestSuite {
 
   implicit val testModel: DataModel[String, Int] = new DataModel[String, Int] {
     override val name: String = "test "
-    override val dataType: DataTypes.DataType = Raw
+    override val dataType: DataType = Raw
     override def deserialize(data: String): Try[String] = Success(data)
     override def serialize(obj: String): Try[String] = Success(obj)
     override def objectId(obj: String): Int = 42

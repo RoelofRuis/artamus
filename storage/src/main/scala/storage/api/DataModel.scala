@@ -1,7 +1,5 @@
 package storage.api
 
-import storage.api.DataTypes.DataType
-
 import scala.util.Try
 
 trait DataModel[A, I] {

@@ -1,14 +1,15 @@
 package server.model
 
-import storage.api.DataTypes.JSON
-import storage.api.{DataTypes, DataModel}
+import storage.api.{DataModel, DataType}
 
 import scala.util.Try
 
 trait JsonDataModel[A, I] extends DataModel[A, I] with DomainProtocol {
   import spray.json._
 
-  override val dataType: DataTypes.DataType = JSON
+  override val dataType: DataType = new DataType {
+    override val extension: String = "json"
+  }
 
   implicit val format: JsonFormat[A]
 
@@ -18,4 +19,5 @@ trait JsonDataModel[A, I] extends DataModel[A, I] with DomainProtocol {
   override def serialize(obj: A): Try[String] = Try {
     obj.toJson.prettyPrint
   }
+
 }

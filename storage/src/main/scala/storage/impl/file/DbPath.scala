@@ -2,8 +2,6 @@ package storage.impl.file
 
 import java.nio.file.{Path, Paths}
 
-import storage.api.DataTypes.{DataType, JSON, Raw}
-
 final case class DbPath(root: String) {
 
   def toTable(table: String): Path = Paths.get(root, table)
@@ -11,21 +9,17 @@ final case class DbPath(root: String) {
     val rowName = if (deletedVersion.isDefined) s"${row}_${deletedVersion.get.toString}" else row
     Paths.get(root, table, rowName)
   }
-  def toObject(table: String, row: String, version: Int, dataType: DataType): Path = {
-    Paths.get(root, table, row, DbPath.objectFileName(version, dataType))
+  def toObject(table: String, row: String, extension: String, version: Int): Path = {
+    Paths.get(root, table, row, DbPath.objectFileName(version, extension))
   }
 
 }
 
 object DbPath {
-  def toObjectFromRowPath(rowPath: Path, version: Int, dataType: DataType): Path = {
-    Paths.get(rowPath.toString, DbPath.objectFileName(version, dataType))
+  def toObjectFromRowPath(rowPath: Path, version: Int, extension: String): Path = {
+    Paths.get(rowPath.toString, DbPath.objectFileName(version, extension))
   }
-  def objectFileName(version: Int, dataType: DataType): String = {
-    val extension = dataType match {
-      case JSON => "json"
-      case Raw => "dat"
-    }
-    s"${version.toString}.$extension"
+  def objectFileName(version: Int, extension: String): String = {
+    s"${version.toString}.${extension}"
   }
 }
