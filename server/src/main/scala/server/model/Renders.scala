@@ -2,8 +2,7 @@ package server.model
 
 import domain.display.render.Render
 import domain.write.Track.TrackId
-import storage.api.DataTypes.JSON
-import storage.api.{DataTypes, DbResult, DbIO, DbReader}
+import storage.api.{DbIO, DbReader, DbResult}
 
 object Renders {
 
@@ -13,7 +12,6 @@ object Renders {
     implicit val format: RootJsonFormat[Render] = jsonFormat2(Render)
 
     override val name: String = "render"
-    override val dataType: DataTypes.DataType = JSON
 
     override def objectId(obj: Render): TrackId = obj.trackId
     override def serializeId(id: TrackId): String = id.id.toString

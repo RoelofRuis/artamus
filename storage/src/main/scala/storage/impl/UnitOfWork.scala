@@ -3,9 +3,9 @@ package storage.impl
 import java.util.concurrent.ConcurrentHashMap
 
 import javax.annotation.concurrent.ThreadSafe
-import storage.api.TableModel.{ObjectId, StorableObject}
+import storage.api.DataModel.{ObjectId, StorableObject}
 import storage.api.Transaction.CommitResult
-import storage.api.{DbResult, DbIO, TableModel, Transaction}
+import storage.api.{DbResult, DbIO, DataModel, Transaction}
 
 import scala.jdk.CollectionConverters._
 import scala.util.{Failure, Success}
@@ -18,7 +18,7 @@ private[impl] final class UnitOfWork private (
   private val dirtyObjects = new ConcurrentHashMap[ObjectId, StorableObject]()
   private val deletedObjects = new ConcurrentHashMap[ObjectId, Unit]()
 
-  override def readRow[A, I](id: I)(implicit t: TableModel[A, I]): DbResult[A] = {
+  override def readRow[A, I](id: I)(implicit t: DataModel[A, I]): DbResult[A] = {
     val objectId = ObjectId(t.name, t.serializeId(id), t.dataType)
     if (deletedObjects.contains(objectId)) DbResult.notFound
     else {
@@ -36,7 +36,7 @@ private[impl] final class UnitOfWork private (
     }
   }
 
-  override def readTable[A, I](implicit t: TableModel[A, I]): DbResult[List[A]] = {
+  override def readTable[A, I](implicit t: DataModel[A, I]): DbResult[List[A]] = {
     db.readTable match {
       case Right(rows) =>
         rows.foldRight(DbResult.found(List[A]())) { case (row, result) =>
@@ -57,7 +57,7 @@ private[impl] final class UnitOfWork private (
     }
   }
 
-  override def writeRow[A, I](obj: A)(implicit t: TableModel[A, I]): DbResult[Unit] = {
+  override def writeRow[A, I](obj: A)(implicit t: DataModel[A, I]): DbResult[Unit] = {
     val res = for {
       objectData <- t.serialize(obj)
     } yield StorableObject(ObjectId(t.name, t.serializeId(t.objectId(obj)), t.dataType), objectData)
@@ -70,7 +70,7 @@ private[impl] final class UnitOfWork private (
     }
   }
 
-  override def deleteRow[A, I](id: I)(implicit t: TableModel[A, I]): DbResult[Unit] = {
+  override def deleteRow[A, I](id: I)(implicit t: DataModel[A, I]): DbResult[Unit] = {
     deletedObjects.put(ObjectId(t.name, t.serializeId(id), t.dataType), ())
     DbResult.ok
   }

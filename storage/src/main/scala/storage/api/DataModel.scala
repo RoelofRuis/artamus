@@ -4,7 +4,7 @@ import storage.api.DataTypes.DataType
 
 import scala.util.Try
 
-trait TableModel[A, I] {
+trait DataModel[A, I] {
   val name: String
   val dataType: DataType
   def objectId(obj: A): I // TODO: See if objectId and serializeId always occur together!
@@ -13,7 +13,7 @@ trait TableModel[A, I] {
   def serializeId(id: I): String
 }
 
-object TableModel {
+object DataModel {
 
   final case class ObjectId(table: String, id: String, dataType: DataType) // TODO: Does the data type have to be in here?
   final case class StorableObject(id: ObjectId, data: String)

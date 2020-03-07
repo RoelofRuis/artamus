@@ -9,8 +9,7 @@ import domain.write._
 import domain.write.layers.Layer.LayerId
 import domain.write.layers._
 import spray.json._
-import storage.api.DataTypes.JSON
-import storage.api.{DataTypes, DbResult, DbIO, DbReader}
+import storage.api.{DbIO, DbReader, DbResult}
 
 import scala.collection.immutable.ListMap
 
@@ -18,7 +17,6 @@ object Tracks {
 
   private implicit val table: JsonDataModel[Track, TrackId] = new JsonDataModel[Track, TrackId] {
     override val name: String = "track"
-    override val dataType: DataTypes.DataType = JSON
     override def objectId(obj: Track): TrackId = obj.id
     override def serializeId(id: TrackId): String = id.id.toString
 

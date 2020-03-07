@@ -1,14 +1,14 @@
 package storage
 
 import storage.api.DataTypes.Raw
-import storage.api.{DataTypes, DbResult, TableModel}
+import storage.api.{DataTypes, DbResult, DataModel}
 import utest._
 
 import scala.util.{Success, Try}
 
 object InMemoryDatabaseTest extends TestSuite {
 
-  implicit val testModel: TableModel[String, Int] = new TableModel[String, Int] {
+  implicit val testModel: DataModel[String, Int] = new DataModel[String, Int] {
     override val name: String = "test "
     override val dataType: DataTypes.DataType = Raw
     override def deserialize(data: String): Try[String] = Success(data)

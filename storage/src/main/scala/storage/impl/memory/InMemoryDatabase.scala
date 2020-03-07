@@ -4,7 +4,7 @@ import java.util.concurrent.ConcurrentHashMap
 
 import javax.annotation.concurrent.ThreadSafe
 import storage.api.Transaction.CommitResult
-import storage.api.{DbResult, TableModel, Transaction}
+import storage.api.{DbResult, DataModel, Transaction}
 import storage.impl.{TransactionalDatabase, UnitOfWork}
 
 import scala.util.{Failure, Success}
@@ -26,7 +26,7 @@ private[storage] class InMemoryDatabase() extends TransactionalDatabase {
     CommitResult.success(updates.size + deletes.size)
   }
 
-  override def readRow[A, I](id: I)(implicit t: TableModel[A, I]): DbResult[A] = {
+  override def readRow[A, I](id: I)(implicit t: DataModel[A, I]): DbResult[A] = {
     Option(tableState.get(t.name)) match {
       case Some(tableData) =>
         tableData.get(t.serializeId(id)) match {
@@ -41,7 +41,7 @@ private[storage] class InMemoryDatabase() extends TransactionalDatabase {
     }
   }
 
-  override def readTable[A, I](implicit t: TableModel[A, I]): DbResult[List[A]] = {
+  override def readTable[A, I](implicit t: DataModel[A, I]): DbResult[List[A]] = {
     Option(tableState.get(t.name)) match {
       case Some(tableData) =>
         tableData

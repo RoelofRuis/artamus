@@ -6,7 +6,7 @@ import javax.annotation.concurrent.{GuardedBy, ThreadSafe}
 import storage.FileDatabaseConfig
 import storage.api.DataTypes.{JSON, Raw}
 import storage.api.Transaction.CommitResult
-import storage.api.{DbException, DbResult, NotFound, TableModel, Transaction}
+import storage.api.{DbException, DbResult, NotFound, DataModel, Transaction}
 import storage.impl.{TransactionalDatabase, UnitOfWork}
 
 import scala.annotation.tailrec
@@ -61,7 +61,7 @@ private[storage] class FileDatabase(config: FileDatabaseConfig) extends Transact
     }
   }
 
-  override def readRow[A, I](id: I)(implicit t: TableModel[A, I]): DbResult[A] = {
+  override def readRow[A, I](id: I)(implicit t: DataModel[A, I]): DbResult[A] = {
     @tailrec
     def readVersioned(version: Int): DbResult[String] = {
       FileIO.read(rootPath.toObject(t.name, t.serializeId(id), version, t.dataType)) match {
@@ -81,7 +81,7 @@ private[storage] class FileDatabase(config: FileDatabaseConfig) extends Transact
     }
   }
 
-  override def readTable[A, I](implicit t: TableModel[A, I]): DbResult[List[A]] = {
+  override def readTable[A, I](implicit t: DataModel[A, I]): DbResult[List[A]] = {
     val rows = FileIO.list(rootPath.toTable(t.name), onlyDirs=true)
     @tailrec
     def readVersioned(rowPath: Path, version: Int): DbResult[String] = {
