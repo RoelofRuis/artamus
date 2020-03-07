@@ -25,7 +25,7 @@ object Renders {
 
   implicit class RenderCommands(db: DbIO) {
     def saveRender(render: Render): DbResult[Unit] = {
-      db.writeTableRow(render)
+      db.writeRow(render)
     }
   }
 

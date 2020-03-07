@@ -21,7 +21,7 @@ object Workspaces {
   }
 
   implicit class WorkspaceCommands(db: DbIO) {
-    def saveWorkspace(workspace: Workspace): DbResult[Unit] = db.writeTableRow(workspace)
+    def saveWorkspace(workspace: Workspace): DbResult[Unit] = db.writeRow(workspace)
   }
 
 }

@@ -18,18 +18,17 @@ object Users {
 
   implicit class UserQueries(db: DbReader) {
     def getUserByName(name: String): DbResult[User] = {
-      ??? // Read whole table!
-//      db.readModel[table.Shape].ifNotFound(table.empty).flatMap {
-//        _.find { case (_, user) => (user.name == name) } match {
-//          case None => DbResult.notFound
-//          case Some((_, user)) => DbResult.found(user)
-//        }
-//      }
+      db.readTable.flatMap {
+        _.find(_.name == name) match {
+          case None => DbResult.notFound
+          case Some(user) => DbResult.found(user)
+        }
+      }
     }
   }
 
   implicit class UserCommands(db: DbIO) {
-    def saveUser(user: User): DbResult[Unit] = db.writeTableRow(user)
+    def saveUser(user: User): DbResult[Unit] = db.writeRow(user)
   }
 
 }

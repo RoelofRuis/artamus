@@ -84,10 +84,8 @@ object Tracks {
   }
 
   implicit class TrackCommands(db: DbIO) {
-    def saveTrack(track: Track): DbResult[Unit] = db.writeTableRow(track)
+    def saveTrack(track: Track): DbResult[Unit] = db.writeRow(track)
 
-    def removeTrackById(trackId: TrackId): DbResult[Unit] = {
-      ??? // TODO: delete!
-    }
+    def removeTrackById(trackId: TrackId): DbResult[Unit] = db.deleteRow(trackId)
   }
 }

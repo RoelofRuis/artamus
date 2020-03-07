@@ -40,7 +40,7 @@ object InMemoryDatabaseTest extends TestSuite {
     test("write to transaction allows transaction to read") {
       val database = storage.inMemoryDatabase()
       val t = database.newTransaction
-      t.writeTableRow("Some data")
+      t.writeRow("Some data")
       assert(
         t.readRow(42) == DbResult.found("Some data"),
         database.readRow(42) == DbResult.notFound
@@ -49,7 +49,7 @@ object InMemoryDatabaseTest extends TestSuite {
     test("committing transaction allows database to read") {
       val database = storage.inMemoryDatabase()
       val t = database.newTransaction
-      t.writeTableRow("Some data")
+      t.writeRow("Some data")
       t.commit()
       assert(
         t.readRow(42) == DbResult.found("Some data"),

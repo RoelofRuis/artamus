@@ -5,7 +5,6 @@ import java.nio.file.{Path, Paths}
 import javax.annotation.concurrent.{GuardedBy, ThreadSafe}
 import storage.FileDatabaseConfig
 import storage.api.DataTypes.{JSON, Raw}
-import storage.api.TableModel.ObjectId
 import storage.api.Transaction.CommitResult
 import storage.api.{DbException, DbResult, NotFound, TableModel, Transaction}
 import storage.impl.{TransactionalDatabase, UnitOfWork}
@@ -17,7 +16,8 @@ import scala.util.{Failure, Success, Try}
 @ThreadSafe
 private[storage] class FileDatabase(config: FileDatabaseConfig) extends TransactionalDatabase {
 
-  private val VersionPath = objectIdToObjectPath(ObjectId("_version", "0", Raw), 0)
+  private val rootPath = DbPath(config.rootPath)
+  private val VersionPath = rootPath.toObject("_version", "0", 0, Raw)
 
   val initialVersion: Int = FileIO.read(VersionPath) match {
     case Left(_) => 0
@@ -32,14 +32,14 @@ private[storage] class FileDatabase(config: FileDatabaseConfig) extends Transact
 
     deletes.foreach { obj =>
       // TODO: has to be within writeLock!
-      FileIO.move(objectIdToTablePath(obj), objectIdToTablePath(obj, Some(version)))
+      FileIO.move(rootPath.toRow(obj.table, obj.id), rootPath.toRow(obj.table, obj.id, Some(version)))
     }
 
     if (updates.isEmpty) CommitResult.nothingToCommit
     else {
       val res = writeLock.synchronized {
         val errors = updates.foldRight(List[DbException]()) { case (obj, acc) =>
-          FileIO.write(objectIdToObjectPath(obj.id, version), obj.data) match {
+          FileIO.write(rootPath.toObject(obj.id.table, obj.id.id, version, obj.id.dataType), obj.data) match {
             case Right(_) => acc
             case Left(ex) => acc :+ ex
           }
@@ -64,7 +64,7 @@ private[storage] class FileDatabase(config: FileDatabaseConfig) extends Transact
   override def readRow[A, I](id: I)(implicit t: TableModel[A, I]): DbResult[A] = {
     @tailrec
     def readVersioned(version: Int): DbResult[String] = {
-      FileIO.read(objectIdToObjectPath(ObjectId(t.name, t.serializeId(id), t.dataType), version)) match {
+      FileIO.read(rootPath.toObject(t.name, t.serializeId(id), version, t.dataType)) match {
         case Left(NotFound()) if version > 0 => readVersioned(version - 1)
         case l @ Left(NotFound()) => l
         case x => x
@@ -81,7 +81,32 @@ private[storage] class FileDatabase(config: FileDatabaseConfig) extends Transact
     }
   }
 
-  private val FILE: Regex = """(\d+)\.([a-z]+)""".r
+  override def readTable[A, I](implicit t: TableModel[A, I]): DbResult[List[A]] = {
+    val rows = FileIO.list(rootPath.toTable(t.name), onlyDirs=true)
+    @tailrec
+    def readVersioned(rowPath: Path, version: Int): DbResult[String] = {
+      FileIO.read(DbPath.toObjectFromRowPath(rowPath, version, t.dataType)) match {
+        case Left(NotFound()) if version > 0 => readVersioned(rowPath, version - 1)
+        case l @ Left(NotFound()) => l
+        case x => x
+      }
+    }
+    rows.foldRight(DbResult.found(List[A]())) { case (rowPath, res) =>
+      if (! res.isOk) res
+      else {
+        readVersioned(rowPath, version) match {
+          case Right(data) =>
+            t.deserialize(data) match {
+              case Success(obj) => res.map(_ :+ obj)
+              case Failure(ex) => DbResult.ioError(ex)
+            }
+          case Left(ex) => DbResult.ioError(ex)
+        }
+      }
+    }
+  }
+
+  private val OBJECT: Regex = """(\d+)\.([a-z]+)""".r
 
   private def checkCleanup(): Unit = {
     val filesState = getActiveFiles
@@ -100,7 +125,7 @@ private[storage] class FileDatabase(config: FileDatabaseConfig) extends Transact
       if (deleteErrors.nonEmpty) acc ++ deleteErrors
       else {
         val newPath = latest.getFileName.toString match {
-          case FILE(_, ext) => Paths.get(latest.getParent.toString, "0." + ext)
+          case OBJECT(_, ext) => Paths.get(latest.getParent.toString, "0." + ext)
         }
         FileIO.move(latest, newPath) match {
           case Right(_) => List()
@@ -129,7 +154,7 @@ private[storage] class FileDatabase(config: FileDatabaseConfig) extends Transact
       .flatMap { rowPath =>
         val validFiles = FileIO.list(rowPath, onlyDirs = false)
           .map(_.getFileName.toString)
-          .map { case FILE(v, ext) => (v.toInt, ext) }
+          .map { case OBJECT(v, ext) => (v.toInt, ext) }
           .filter { case (v, _) => v <= version }
           .sortBy { case (v, _) => v }
           .reverse
@@ -141,26 +166,11 @@ private[storage] class FileDatabase(config: FileDatabaseConfig) extends Transact
             }
             val id = rowPath.getFileName.toString
             val table = rowPath.getParent.getFileName.toString
-            objectIdToObjectPath(ObjectId(table, id, dataType), v)
+            rootPath.toObject(table, id, v, dataType)
           }
         if (validFiles.isEmpty) Seq()
         else Seq((validFiles.head, validFiles.tail))
       }
-  }
-
-  private def objectIdToTablePath(id: ObjectId, deletedVersion: Option[Int] = None): Path = {
-    val tableName = if (deletedVersion.isDefined) s"${id.table}_${deletedVersion.get.toString}" else id.table
-    Paths.get(config.rootPath, tableName)
-  }
-
-  private def objectIdToObjectPath(id: ObjectId, version: Int): Path = {
-    val versionString = version.toString
-    val extension = id.dataType match {
-      case JSON => "json"
-      case Raw => "dat"
-    }
-    val dataFile = s"$versionString.$extension"
-    Paths.get(config.rootPath, id.table, id.id, dataFile)
   }
 
 }

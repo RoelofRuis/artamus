@@ -41,4 +41,22 @@ private[storage] class InMemoryDatabase() extends TransactionalDatabase {
     }
   }
 
+  override def readTable[A, I](implicit t: TableModel[A, I]): DbResult[List[A]] = {
+    Option(tableState.get(t.name)) match {
+      case Some(tableData) =>
+        tableData
+          .values
+          .foldLeft(DbResult.found(List[A]())) { case (res, data) =>
+            if (! res.isOk) res
+            else {
+              t.deserialize(data) match {
+                case Success(obj) => res.map(_ :+ obj)
+                case Failure(ex) => DbResult.ioError(ex)
+              }
+            }
+          }
+      case None => DbResult.found(List())
+    }
+  }
+
 }
