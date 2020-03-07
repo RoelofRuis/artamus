@@ -46,6 +46,13 @@ private[impl] object FileIO {
     }
   }
 
+  def deleteDir(path: Path): DbResult[Unit] = {
+    list(path, onlyDirs=false).appended(path).foldRight(DbResult.ok) { case (p, res) =>
+      if (res.isOk) delete(p)
+      else res
+    }
+  }
+
   def move(source: Path, target: Path): DbResult[Unit] = {
     Try {
       Files.move(

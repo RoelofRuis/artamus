@@ -17,6 +17,7 @@ package object api {
         case x => x
       }
     }
+    def isOk: Boolean = res.isRight
   }
 
   implicit class DbUnitResultOps(res: DbResult[Unit]) {

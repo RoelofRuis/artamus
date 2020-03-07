@@ -17,7 +17,7 @@ import scala.util.{Failure, Success, Try}
 @ThreadSafe
 private[storage] class FileDatabase(config: FileDatabaseConfig) extends TransactionalDatabase {
 
-  private val VersionPath = objectIdToPath(ObjectId("_version", "0", Raw), 0)
+  private val VersionPath = objectIdToObjectPath(ObjectId("_version", "0", Raw), 0)
 
   val initialVersion: Int = FileIO.read(VersionPath) match {
     case Left(_) => 0
@@ -28,13 +28,18 @@ private[storage] class FileDatabase(config: FileDatabaseConfig) extends Transact
   @GuardedBy("writeLock") private var version: Int = initialVersion
 
   def commitUnitOfWork(uow: UnitOfWork): Transaction.CommitResult = {
-    val (_, updates) = uow.getChangeSet
+    val (deletes, updates) = uow.getChangeSet
+
+    deletes.foreach { obj =>
+      // TODO: has to be within writeLock!
+      FileIO.move(objectIdToTablePath(obj), objectIdToTablePath(obj, Some(version)))
+    }
 
     if (updates.isEmpty) CommitResult.nothingToCommit
     else {
       val res = writeLock.synchronized {
         val errors = updates.foldRight(List[DbException]()) { case (obj, acc) =>
-          FileIO.write(objectIdToPath(obj.id, version), obj.data) match {
+          FileIO.write(objectIdToObjectPath(obj.id, version), obj.data) match {
             case Right(_) => acc
             case Left(ex) => acc :+ ex
           }
@@ -59,7 +64,7 @@ private[storage] class FileDatabase(config: FileDatabaseConfig) extends Transact
   override def readRow[A, I](id: I)(implicit t: TableModel[A, I]): DbResult[A] = {
     @tailrec
     def readVersioned(version: Int): DbResult[String] = {
-      FileIO.read(objectIdToPath(ObjectId(t.name, t.serializeId(id), t.dataType), version)) match {
+      FileIO.read(objectIdToObjectPath(ObjectId(t.name, t.serializeId(id), t.dataType), version)) match {
         case Left(NotFound()) if version > 0 => readVersioned(version - 1)
         case l @ Left(NotFound()) => l
         case x => x
@@ -79,13 +84,13 @@ private[storage] class FileDatabase(config: FileDatabaseConfig) extends Transact
   private val FILE: Regex = """(\d+)\.([a-z]+)""".r
 
   private def checkCleanup(): Unit = {
-    val filesState = getActiveFilesPerKey
+    val filesState = getActiveFiles
     val oldFiles = filesState.foldRight(0) { case ((_, old), acc) => acc + old.size }
     if (oldFiles > config.cleanupThreshold) performCleanup()
   }
 
   private def performCleanup(): Unit = writeLock.synchronized {
-    val res = getActiveFilesPerKey.foldRight(List[DbException]()) { case ((latest, old), acc) =>
+    val res = getActiveFiles.foldRight(List[DbException]()) { case ((latest, old), acc) =>
       val deleteErrors = old.foldRight(List[DbException]()) { case (file, acc) =>
         FileIO.delete(file) match {
           case Right(_) => acc
@@ -112,11 +117,17 @@ private[storage] class FileDatabase(config: FileDatabaseConfig) extends Transact
     }
   }
 
-  private def getActiveFilesPerKey: Seq[(Path, List[Path])] = {
+  private def getActiveFiles: Seq[(Path, List[Path])] = {
     FileIO
       .list(Paths.get(config.rootPath), onlyDirs=true)
-      .flatMap { root =>
-        val validFiles = FileIO.list(root, onlyDirs = false)
+      .flatMap { table => getActiveFilesPerTable(table) }
+  }
+
+  private def getActiveFilesPerTable(tablePath: Path): Seq[(Path, List[Path])] = {
+    FileIO
+      .list(tablePath, onlyDirs=true)
+      .flatMap { rowPath =>
+        val validFiles = FileIO.list(rowPath, onlyDirs = false)
           .map(_.getFileName.toString)
           .map { case FILE(v, ext) => (v.toInt, ext) }
           .filter { case (v, _) => v <= version }
@@ -128,16 +139,21 @@ private[storage] class FileDatabase(config: FileDatabaseConfig) extends Transact
               case "dat" => Raw
               case _ => Raw
             }
-            val id = root.getFileName.toString
-            val table = root.getParent.getFileName.toString
-            objectIdToPath(ObjectId(table, id, dataType), v)
+            val id = rowPath.getFileName.toString
+            val table = rowPath.getParent.getFileName.toString
+            objectIdToObjectPath(ObjectId(table, id, dataType), v)
           }
         if (validFiles.isEmpty) Seq()
         else Seq((validFiles.head, validFiles.tail))
       }
   }
 
-  private def objectIdToPath(id: ObjectId, version: Int): Path = {
+  private def objectIdToTablePath(id: ObjectId, deletedVersion: Option[Int] = None): Path = {
+    val tableName = if (deletedVersion.isDefined) s"${id.table}_${deletedVersion.get.toString}" else id.table
+    Paths.get(config.rootPath, tableName)
+  }
+
+  private def objectIdToObjectPath(id: ObjectId, version: Int): Path = {
     val versionString = version.toString
     val extension = id.dataType match {
       case JSON => "json"
