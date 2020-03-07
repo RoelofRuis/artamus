@@ -9,14 +9,18 @@ import domain.write._
 import domain.write.layers.Layer.LayerId
 import domain.write.layers._
 import spray.json._
-import storage.api.{DbIO, DbResult, ModelReader}
+import storage.api.DataTypes.JSON
+import storage.api.{DataTypes, DbResult, DbIO, DbReader}
 
 import scala.collection.immutable.ListMap
 
 object Tracks {
 
-  private implicit val table: JsonTableDataModel[Track] = new JsonTableDataModel[Track] {
-    override val tableName: String = "track"
+  private implicit val table: JsonDataModel[Track, TrackId] = new JsonDataModel[Track, TrackId] {
+    override val name: String = "track"
+    override val dataType: DataTypes.DataType = JSON
+    override def objectId(obj: Track): TrackId = obj.id
+    override def serializeId(id: TrackId): String = id.id.toString
 
     implicit object TimeSignaturesFormat extends JsonFormat[TimeSignatures] {
       override def read(json: JsValue): TimeSignatures = TimeSignatures(loadPositions(json.convertTo[Map[String, TimeSignature]]))
@@ -75,30 +79,15 @@ object Tracks {
     override implicit val format: RootJsonFormat[Track] = jsonFormat2(Track.apply)
   }
 
-  implicit class TrackQueries(db: ModelReader) {
-    def getTrackById(id: TrackId): DbResult[Track] = {
-      db.readModel[table.Shape].ifNotFound(table.empty).flatMap {
-        _.get(id.id.toString) match {
-          case None => DbResult.notFound
-          case Some(track) => DbResult.found(track)
-        }
-      }
-    }
+  implicit class TrackQueries(db: DbReader) {
+    def getTrackById(id: TrackId): DbResult[Track] = db.readRow(id)
   }
 
   implicit class TrackCommands(db: DbIO) {
-    def saveTrack(track: Track): DbResult[Unit] = {
-      db.updateModel[table.Shape](
-        table.empty,
-        _.updated(track.id.id.toString, track)
-      )
-    }
+    def saveTrack(track: Track): DbResult[Unit] = db.writeTableRow(track)
 
     def removeTrackById(trackId: TrackId): DbResult[Unit] = {
-      db.updateModel[table.Shape](
-        table.empty,
-        _.removed(trackId.id.toString)
-      )
+      ??? // TODO: delete!
     }
   }
 }

@@ -4,9 +4,10 @@ import java.nio.file.{Path, Paths}
 
 import javax.annotation.concurrent.{GuardedBy, ThreadSafe}
 import storage.FileDatabaseConfig
-import storage.api.DataModel.{DataKey, JSON, Raw}
+import storage.api.DataTypes.{JSON, Raw}
+import storage.api.TableModel.ObjectId
 import storage.api.Transaction.CommitResult
-import storage.api.{DataModel, DbException, DbResult, NotFound, Transaction}
+import storage.api.{DbException, DbResult, NotFound, TableModel, Transaction}
 import storage.impl.{TransactionalDatabase, UnitOfWork}
 
 import scala.annotation.tailrec
@@ -16,7 +17,7 @@ import scala.util.{Failure, Success, Try}
 @ThreadSafe
 private[storage] class FileDatabase(config: FileDatabaseConfig) extends TransactionalDatabase {
 
-  private val VersionPath = keyToPath(DataKey("_version", Raw), 0)
+  private val VersionPath = objectIdToPath(ObjectId("_version", "0", Raw), 0)
 
   val initialVersion: Int = FileIO.read(VersionPath) match {
     case Left(_) => 0
@@ -27,12 +28,13 @@ private[storage] class FileDatabase(config: FileDatabaseConfig) extends Transact
   @GuardedBy("writeLock") private var version: Int = initialVersion
 
   def commitUnitOfWork(uow: UnitOfWork): Transaction.CommitResult = {
-    val changeSet = uow.getChangeSet
-    if (changeSet.isEmpty) CommitResult.nothingToCommit
+    val (_, updates) = uow.getChangeSet
+
+    if (updates.isEmpty) CommitResult.nothingToCommit
     else {
       val res = writeLock.synchronized {
-        val errors = changeSet.foldRight(List[DbException]()) { case ((key, data), acc) =>
-          FileIO.write(keyToPath(key, version), data) match {
+        val errors = updates.foldRight(List[DbException]()) { case (obj, acc) =>
+          FileIO.write(objectIdToPath(obj.id, version), obj.data) match {
             case Right(_) => acc
             case Left(ex) => acc :+ ex
           }
@@ -43,7 +45,7 @@ private[storage] class FileDatabase(config: FileDatabaseConfig) extends Transact
             FileIO.write(VersionPath, version.toString) match {
               case Right(_) =>
                 version += 1
-                CommitResult.success(changeSet.size)
+                CommitResult.success(updates.size)
               case Left(ex) => CommitResult.failure(ex)
             }
           case l => CommitResult.failure(l: _*)
@@ -54,11 +56,10 @@ private[storage] class FileDatabase(config: FileDatabaseConfig) extends Transact
     }
   }
 
-  override def readModel[A : DataModel]: DbResult[A] = {
-    val model = implicitly[DataModel[A]]
+  override def readRow[A, I](id: I)(implicit t: TableModel[A, I]): DbResult[A] = {
     @tailrec
     def readVersioned(version: Int): DbResult[String] = {
-      FileIO.read(keyToPath(model.key, version)) match {
+      FileIO.read(objectIdToPath(ObjectId(t.name, t.serializeId(id), t.dataType), version)) match {
         case Left(NotFound()) if version > 0 => readVersioned(version - 1)
         case l @ Left(NotFound()) => l
         case x => x
@@ -67,7 +68,7 @@ private[storage] class FileDatabase(config: FileDatabaseConfig) extends Transact
     val dbResult = readVersioned(version)
 
     dbResult match {
-      case Right(data) => model.deserialize(data) match {
+      case Right(data) => t.deserialize(data) match {
         case Success(obj) => DbResult.found(obj)
         case Failure(ex) => DbResult.ioError(ex)
       }
@@ -123,25 +124,27 @@ private[storage] class FileDatabase(config: FileDatabaseConfig) extends Transact
           .reverse
           .map { case (v, ext) =>
             val dataType = ext match {
-              case "json" => JSON
+              case "json" => JSON // TODO: move extensions and detection into extension data type
               case "dat" => Raw
               case _ => Raw
             }
-            keyToPath(DataKey(root.getFileName.toString, dataType), v)
+            val id = root.getFileName.toString
+            val table = root.getParent.getFileName.toString
+            objectIdToPath(ObjectId(table, id, dataType), v)
           }
         if (validFiles.isEmpty) Seq()
         else Seq((validFiles.head, validFiles.tail))
       }
   }
 
-  private def keyToPath(key: DataKey, version: Int): Path = {
+  private def objectIdToPath(id: ObjectId, version: Int): Path = {
     val versionString = version.toString
-    val extension = key.dataType match {
+    val extension = id.dataType match {
       case JSON => "json"
       case Raw => "dat"
     }
     val dataFile = s"$versionString.$extension"
-    Paths.get(config.rootPath, key.name, dataFile)
+    Paths.get(config.rootPath, id.table, id.id, dataFile)
   }
 
 }
