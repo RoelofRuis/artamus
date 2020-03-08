@@ -1,6 +1,6 @@
 package network.server.impl
 
-import java.io.{ObjectInputStream, ObjectOutputStream}
+import java.io.ObjectInputStream
 import java.net.Socket
 
 import network.DataResponseMessage
@@ -13,7 +13,7 @@ private[server] final class Connection[R, E](
   api: ServerAPI[R, E],
   socket: Socket,
   inputStream: ObjectInputStream,
-  outputStream: ObjectOutputStream
+  outputStream: SynchronizedOutputStream
 ) extends Runnable {
 
   final private val CONNECTION = ConnectionHandleImpl[E](outputStream)

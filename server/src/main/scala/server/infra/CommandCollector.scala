@@ -5,8 +5,9 @@ import java.util.concurrent.ConcurrentHashMap
 import domain.interact.Control.Commit
 import domain.interact.{Command, Request}
 import domain.workspace.User
-import javax.inject.Inject
+import javax.inject.{Inject, Singleton}
 
+@Singleton
 class CommandCollector @Inject() (
   taskScheduler: TaskScheduler
 ) {

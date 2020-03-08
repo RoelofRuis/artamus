@@ -1,6 +1,5 @@
 package network.server.impl
 
-import java.io.ObjectOutputStream
 import java.util.UUID
 
 import network.EventResponseMessage
@@ -10,7 +9,7 @@ import network.server.api.ConnectionHandle
 import scala.util.{Failure, Success, Try}
 
 private[server] final case class ConnectionHandleImpl[A] (
-  private val eventOut: ObjectOutputStream,
+  private val eventOut: SynchronizedOutputStream,
   id: UUID = UUID.randomUUID()
 ) extends ConnectionHandle[A] {
 

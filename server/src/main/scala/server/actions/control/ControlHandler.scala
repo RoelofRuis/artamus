@@ -2,7 +2,7 @@ package server.actions.control
 
 import domain.interact.Control.Disconnect
 import javax.inject.{Inject, Singleton}
-import server.infra.{CommandHandlerRegistration, CommandRequest}
+import server.api.{CommandHandlerRegistration, CommandRequest}
 
 @Singleton
 private[server] class ControlHandler @Inject() (
@@ -12,5 +12,3 @@ private[server] class ControlHandler @Inject() (
   registry.register[Disconnect] { _ => CommandRequest.ok }
 
 }
-
-

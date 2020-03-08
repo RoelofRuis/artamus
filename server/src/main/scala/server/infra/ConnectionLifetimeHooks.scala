@@ -6,6 +6,7 @@ import domain.interact.Display.TrackRendered
 import domain.workspace.User
 import domain.workspace.User.UserId
 import javax.inject.Inject
+import server.api.ServerEventBus
 import storage.api.Database
 
 final class ConnectionLifetimeHooks @Inject() (

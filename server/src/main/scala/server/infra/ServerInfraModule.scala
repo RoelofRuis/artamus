@@ -4,6 +4,7 @@ import domain.interact.{Event, Query, Request}
 import net.codingwell.scalaguice.ScalaModule
 import network.server.api.{ServerAPI, ServerConfig, ServerFactory}
 import pubsub.EventBus
+import server.api.{CommandHandlerRegistration, QueryDispatcher, QueryRequest, ServerEventBus}
 
 class ServerInfraModule extends ScalaModule {
   // TODO: make private and expose only what is needed
@@ -11,6 +12,10 @@ class ServerInfraModule extends ScalaModule {
   override def configure(): Unit = {
     bind[QueryDispatcher].toInstance(pubsub.createDispatcher[QueryRequest, Query]())
     bind[ServerEventBus].toInstance(new EventBus[Event])
+
+    bind[CommandCollector]
+    bind[TaskScheduler]
+    bind[CommandHandlerRegistration].to[CommandHandlerRegistry]
 
     bind[ConnectionLifetimeHooks].asEagerSingleton()
 

@@ -2,7 +2,7 @@ package server.actions.write
 
 import domain.interact.Write.GetLayers
 import javax.inject.{Inject, Singleton}
-import server.infra.{QueryDispatcher, QueryRequest}
+import server.api.{QueryDispatcher, QueryRequest}
 
 @Singleton
 private[server] class TrackQueryHandler @Inject() (

@@ -2,7 +2,7 @@ package server.actions.write
 
 import domain.interact.Display.Render
 import javax.inject.{Inject, Singleton}
-import server.infra.{CommandHandlerRegistration, CommandRequest}
+import server.api.{CommandHandlerRegistration, CommandRequest}
 import server.rendering.Renderer
 
 @Singleton
@@ -20,7 +20,7 @@ private[server] class TrackTaskHandler @Inject() (
       track <- req.db.getTrackById(workspace.editingTrack)
     } yield renderer.render(track, req.db)
 
-    CommandRequest.handled(res)
+    CommandRequest.dbResultWithEvents(res)
   }
 
 }

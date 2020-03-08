@@ -1,4 +1,4 @@
-package server.infra
+package server.api
 
 import domain.workspace.User
 import pubsub.Dispatchable
@@ -7,7 +7,7 @@ import storage.api.{DbResult, ModelReader}
 import scala.reflect.ClassTag
 import scala.util.Try
 
-final case class QueryRequest[+A: ClassTag](
+private[server] final case class QueryRequest[+A: ClassTag](
   user: User,
   db: ModelReader,
   attributes: A

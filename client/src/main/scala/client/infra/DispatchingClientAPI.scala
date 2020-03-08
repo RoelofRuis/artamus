@@ -26,7 +26,7 @@ class DispatchingClientAPI @Inject() (
   }
 
   override def connectionLost(cause: Throwable): Unit = {
-    logger.warn("Connection lost: {}", cause)
+    logger.warn("Connection lost", cause)
   }
 
 

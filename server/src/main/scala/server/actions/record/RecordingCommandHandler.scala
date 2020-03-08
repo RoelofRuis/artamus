@@ -6,7 +6,7 @@ import domain.primitives.{Note, NoteGroup}
 import domain.record.Quantizer
 import domain.write.layers.{NoteLayer, RhythmLayer}
 import javax.inject.{Inject, Singleton}
-import server.infra.{CommandHandlerRegistration, CommandRequest}
+import server.api.{CommandHandlerRegistration, CommandRequest}
 
 @Singleton
 private[server] class RecordingCommandHandler @Inject() (
@@ -63,7 +63,7 @@ private[server] class RecordingCommandHandler @Inject() (
             _ <- req.db.saveTrack(newTrack)
           } yield ()
 
-          CommandRequest.handled(res)
+          CommandRequest.dbResult(res)
         }
         else CommandRequest.ok
     }

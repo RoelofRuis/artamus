@@ -2,7 +2,7 @@ package server.actions.record
 
 import domain.interact.Record.GetCurrentRecording
 import javax.inject.{Inject, Singleton}
-import server.infra.QueryDispatcher
+import server.api.QueryDispatcher
 
 import scala.util.{Failure, Success}
 

@@ -4,11 +4,13 @@ import java.util.concurrent.ConcurrentHashMap
 
 import domain.interact.Command
 import javax.annotation.concurrent.ThreadSafe
-import server.infra.CommandRequest.CommandHandler
+import javax.inject.Singleton
+import server.api.CommandHandlerRegistration
+import server.api.CommandRequest.CommandHandler
 
 import scala.reflect.{ClassTag, classTag}
 
-@ThreadSafe
+@Singleton @ThreadSafe
 class CommandHandlerRegistry extends CommandHandlerRegistration {
 
   private val request = new ConcurrentHashMap[String, Any]

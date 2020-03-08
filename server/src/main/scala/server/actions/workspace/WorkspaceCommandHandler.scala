@@ -4,7 +4,7 @@ import domain.interact.Write.NewWorkspace
 import domain.workspace.Workspace
 import domain.write.Track
 import javax.inject.{Inject, Singleton}
-import server.infra.{CommandHandlerRegistration, CommandRequest}
+import server.api.{CommandHandlerRegistration, CommandRequest}
 
 @Singleton
 private[server] class WorkspaceCommandHandler @Inject() (
@@ -29,7 +29,7 @@ private[server] class WorkspaceCommandHandler @Inject() (
       _ <- req.db.saveWorkspace(newWorkspace)
     } yield ()
 
-    CommandRequest.handled(res)
+    CommandRequest.dbResult(res)
   }
 
 }

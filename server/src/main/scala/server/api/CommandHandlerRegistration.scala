@@ -1,7 +1,7 @@
-package server.infra
+package server.api
 
 import domain.interact.Command
-import server.infra.CommandRequest.CommandHandler
+import server.api.CommandRequest.CommandHandler
 
 import scala.reflect.ClassTag
 

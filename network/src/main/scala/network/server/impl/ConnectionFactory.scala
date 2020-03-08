@@ -15,7 +15,7 @@ private[server] object ConnectionFactory {
       socket <- Try { serverSocket.accept() }
       objOut <- Try { new ObjectOutputStream(socket.getOutputStream) }
       objIn <- Try { new ObjectInputStream(socket.getInputStream) }
-    } yield new Connection(api, socket, objIn, objOut)
+    } yield new Connection(api, socket, objIn, new SynchronizedOutputStream(objOut))
 
     transport match {
       case Failure(ex) => Left(ConnectionException(ex))
