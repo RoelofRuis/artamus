@@ -14,7 +14,7 @@ class ServerInfraModule extends ScalaModule {
     bind[ServerEventBus].toInstance(new EventBus[Event])
 
     bind[CommandCollector]
-    bind[TaskScheduler]
+    bind[TaskExecutor]
     bind[CommandHandlerRegistration].to[CommandHandlerRegistry]
 
     bind[ConnectionLifetimeHooks].asEagerSingleton()

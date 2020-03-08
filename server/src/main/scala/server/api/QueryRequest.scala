@@ -2,14 +2,14 @@ package server.api
 
 import domain.workspace.User
 import pubsub.Dispatchable
-import storage.api.{DbResult, ModelReader}
+import storage.api.{DbReader, DbResult}
 
 import scala.reflect.ClassTag
 import scala.util.Try
 
 private[server] final case class QueryRequest[+A: ClassTag](
   user: User,
-  db: ModelReader,
+  db: DbReader,
   attributes: A
 ) extends Dispatchable[A]
 

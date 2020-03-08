@@ -9,7 +9,7 @@ import javax.inject.{Inject, Singleton}
 
 @Singleton
 class CommandCollector @Inject() (
-  taskScheduler: TaskScheduler
+  taskScheduler: TaskExecutor
 ) {
 
   private val userCommands: ConcurrentHashMap[User, List[Command]] = new ConcurrentHashMap[User, List[Command]]()

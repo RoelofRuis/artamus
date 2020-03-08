@@ -17,7 +17,7 @@ private[client] final class ClientTransportThread(
   val inputStream: ObjectInputStream,
   val outputStream: ObjectOutputStream,
   val scheduler: EventScheduler,
-  val transportState: TransportStateX
+  val transportState: TransportState
 ) extends Thread {
 
   private val readQueue: BlockingQueue[Either[CommunicationException, DataResponseMessage]] =

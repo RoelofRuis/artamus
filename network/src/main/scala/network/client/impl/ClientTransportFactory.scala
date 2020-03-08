@@ -13,7 +13,7 @@ private[client] object ClientTransportFactory {
   def create(
     config: ClientConfig,
     scheduler: EventScheduler,
-    transportState: TransportStateX
+    transportState: TransportState
   ): Either[TransportException, ClientTransportThread] = {
     val transport = for {
       socket <- Try { new Socket(InetAddress.getByName(config.host), config.port) }

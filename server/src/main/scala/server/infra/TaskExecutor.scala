@@ -8,14 +8,14 @@ import domain.interact.{Command, Event}
 import domain.workspace.User
 import javax.inject.{Inject, Singleton}
 import server.api.{CommandRequest, ServerEventBus}
-import server.infra.TaskScheduler.TaskResult
+import server.infra.TaskExecutor.TaskResult
 import storage.api.Database
 
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.{Failure, Success}
 
 @Singleton
-class TaskScheduler @Inject() (
+class TaskExecutor @Inject() (
   db: Database,
   registry: CommandHandlerRegistry,
   eventBus: ServerEventBus,
@@ -94,7 +94,7 @@ class TaskScheduler @Inject() (
 
 }
 
-object TaskScheduler {
+object TaskExecutor {
 
   final case class TaskResult(
     done: List[Command] = List(),

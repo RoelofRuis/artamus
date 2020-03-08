@@ -7,7 +7,7 @@ import network.client.api._
 @NotThreadSafe // TODO: ensure thread safety!
 private[client] final class ClientImpl[R <: { type Res }](
   config: ClientConfig,
-  transportState: TransportStateX,
+  transportState: TransportState,
   scheduler: EventScheduler
 ) extends ClientInterface[R] {
 

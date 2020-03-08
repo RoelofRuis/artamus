@@ -5,10 +5,10 @@ import java.util.concurrent.atomic.AtomicReference
 import javax.annotation.concurrent.ThreadSafe
 import network.DataResponseMessage
 import network.client.api.ClientCallbacks
-import network.client.impl.TransportStateX.{Connected, State, Unconnected}
+import network.client.impl.TransportState.{Connected, State, Unconnected}
 
 @ThreadSafe
-private[client] class TransportStateX(callbacks: ClientCallbacks) { // TODO: rename!
+private[client] class TransportState(callbacks: ClientCallbacks) {
 
   private val transportState: AtomicReference[State] = new AtomicReference[State](Unconnected())
 
@@ -41,7 +41,7 @@ private[client] class TransportStateX(callbacks: ClientCallbacks) { // TODO: ren
 
 }
 
-object TransportStateX {
+object TransportState {
 
   sealed trait State
   final case class Unconnected() extends State
