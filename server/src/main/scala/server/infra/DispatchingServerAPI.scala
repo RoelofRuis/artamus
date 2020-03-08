@@ -1,16 +1,14 @@
 package server.infra
 
-import java.util.concurrent.ConcurrentHashMap
-
-import _root_.server.ServerRequest
 import com.typesafe.scalalogging.LazyLogging
 import domain.interact.Control.Authenticate
-import domain.interact.{Event, Request}
+import domain.interact.{Command, Event, Query, Request}
 import domain.workspace.User
 import javax.inject.{Inject, Singleton}
 import network.Exceptions._
 import network.server.api.{ConnectionHandle, ServerAPI}
-import storage.api.{Database, DbIO, NotFound, Transaction}
+import server.async.{CommandCollector, QueryRequest}
+import storage.api.{Database, NotFound}
 
 import scala.util.{Failure, Success}
 
@@ -19,13 +17,13 @@ final class DispatchingServerAPI @Inject() (
   db: Database,
   hooks: ConnectionLifetimeHooks,
   eventBus: ServerEventBus,
-  serverDispatcher: ServerDispatcher
+  queryDispatcher: QueryDispatcher,
+  commandCollector: CommandCollector
 ) extends ServerAPI[Request, Event] with LazyLogging {
 
   import server.model.Users._
 
   private var connections: Map[ConnectionHandle[Event], Option[User]] = Map()
-  private val transactions: ConcurrentHashMap[ConnectionHandle[Event], Transaction] = new ConcurrentHashMap[ConnectionHandle[Event], Transaction]()
 
   override def serverStarted(): Unit = {
     hooks.onServerStarted()
@@ -47,7 +45,6 @@ final class DispatchingServerAPI @Inject() (
   override def connectionClosed(connection: ConnectionHandle[Event], cause: Option[Throwable]): Unit = {
     connections -= connection
     eventBus.unsubscribe(connection.toString)
-    transactions.remove(connection)
     cause match {
       case None => logger.info(s"Connection [$connection] closed")
       case Some(ex) => logger.warn(s"Connection [$connection] closed with error", ex)
@@ -67,37 +64,10 @@ final class DispatchingServerAPI @Inject() (
       case Some(identifier) =>
           identifier match {
             case None => authenticate(connection, request)
-            case Some(user) => executeRequest(connection, user, request)
+            case Some(user) => executeRequest(user, request)
           }
         }
     }
-
-  override def afterRequest(connection: ConnectionHandle[Event], response: Either[ResponseException, Any]): Either[ResponseException, Any] = {
-    response match {
-      case Right(_) =>
-        Option(transactions.get(connection)) match {
-          case None => response
-
-          case Some(transaction) => transaction.commit() match {
-            case Right(numChanges) if numChanges > 0 =>
-              logger.debug(s"Committed [$numChanges] changes")
-              response
-
-            case Right(numChanges) if numChanges == 0 =>
-              logger.debug(s"No changes to commit")
-              response
-
-            case Left(ex) => logger.error(s"Unable to commit changes", ex)
-              ex.causes.zipWithIndex.foreach { case (err, idx) => logger.error(s"commit error [$idx]", err) }
-              Left(LogicError)
-          }
-        }
-
-      case Left(_) =>
-        transactions.remove(connection)
-        response
-    }
-  }
 
   private def authenticate(connection: ConnectionHandle[Event], request: Request): Either[ResponseException, Any] = {
     request match {
@@ -123,26 +93,24 @@ final class DispatchingServerAPI @Inject() (
     }
   }
 
-  private def executeRequest(connection: ConnectionHandle[Event], user: User, request: Request): Either[ResponseException, Any] = {
+  private def executeRequest(user: User, request: Request): Either[ResponseException, Any] = {
     try {
-      val transaction = startTransaction(connection)
-      serverDispatcher.handle(ServerRequest(user, transaction, request)) match {
-        case Failure(ex) =>
-          logger.error("Error in server logic", ex)
-          Left(LogicError)
+      request match {
+        case q: Query => queryDispatcher.handle(QueryRequest(user, db, q)) match {
+          case Failure(ex) =>
+            logger.error("Error in server logic", ex)
+            Left(LogicError)
 
-        case Success(response) => Right(response)
+          case Success(response) => Right(response)
+        }
+        case _: Command =>
+          commandCollector.handle(user, request)
+          Right(())
       }
     } catch {
       case ex: Exception =>
         logger.error("Unexpected server error", ex)
         Left(LogicError)
     }
-  }
-
-  private def startTransaction(connection: ConnectionHandle[Event]): DbIO with Transaction = {
-    val transaction = db.newTransaction
-    transactions.put(connection, transaction)
-    transaction
   }
 }

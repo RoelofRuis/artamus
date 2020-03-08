@@ -3,44 +3,43 @@ package server.actions.record
 import domain.interact.Record.{ClearRecording, Quantize, RecordNote}
 import domain.math.temporal.{Duration, Position, Window}
 import domain.primitives.{Note, NoteGroup}
-import domain.record.{Quantization, Quantizer}
+import domain.record.Quantizer
 import domain.write.layers.{NoteLayer, RhythmLayer}
 import javax.inject.{Inject, Singleton}
-import server.actions.Responses
-import server.infra.ServerDispatcher
+import server.async.{ActionRegistration, ActionRequest}
 
 @Singleton
 private[server] class RecordingCommandHandler @Inject() (
-  dispatcher: ServerDispatcher,
+  registry: ActionRegistration,
   storage: RecordingStorage,
 ) {
 
-  dispatcher.subscribe[ClearRecording] { req =>
-    storage.startRecording(req.user.id)
+  registry.register[ClearRecording] { task =>
+    storage.startRecording(task.user.id)
 
-    Responses.ok
+    ActionRequest.ok
   }
 
-  dispatcher.subscribe[RecordNote] { req =>
-    storage.recordNote(req.user.id, req.attributes.note)
+  registry.register[RecordNote] { task =>
+    storage.recordNote(task.user.id, task.attributes.note)
 
-    Responses.ok
+    ActionRequest.ok
   }
 
   // TODO: extract track writing logic
-  import Quantization._
+  import domain.record.Quantization._
   import domain.write.analysis.TwelveToneTuning._
   import server.model.Tracks._
   import server.model.Workspaces._
-  dispatcher.subscribe[Quantize] { req =>
-    storage.getRecording(req.user.id) match {
-      case None => Responses.ok
+  registry.register[Quantize] { task =>
+    storage.getRecording(task.user.id) match {
+      case None => ActionRequest.ok
       case Some(recording) =>
         if (recording.notes.nonEmpty) {
-          val quantized = req.attributes.customQuantizer.getOrElse(Quantizer()).quantize(recording.notes.map(_.starts))
+          val quantized = task.attributes.customQuantizer.getOrElse(Quantizer()).quantize(recording.notes.map(_.starts))
           val notePositions: Map[Position, (Seq[Note], Duration)] = recording
             .notes
-            .zip(quantized.zip(quantized.drop(1).appended(quantized.last + req.attributes.lastNoteDuration)))
+            .zip(quantized.zip(quantized.drop(1).appended(quantized.last + task.attributes.lastNoteDuration)))
             .foldLeft(Map[Position, (Seq[Note], Duration)]()) { case (acc, (rawMidiNote, (position, nextPosition))) =>
               val duration = nextPosition - position // TODO: determine proper duration
               val note = Note(rawMidiNote.noteNumber.toOct, rawMidiNote.noteNumber.toPc)
@@ -50,7 +49,7 @@ private[server] class RecordingCommandHandler @Inject() (
               }
             }
 
-          val newLayer = if (req.attributes.rhythmOnly) notePositions.foldLeft(RhythmLayer()) {
+          val newLayer = if (task.attributes.rhythmOnly) notePositions.foldLeft(RhythmLayer()) {
             case (l, (pos, (notes, duration))) => l.writeNoteGroup(NoteGroup(Window(pos, duration), notes))
           }
           else notePositions.foldLeft(NoteLayer()) {
@@ -58,15 +57,15 @@ private[server] class RecordingCommandHandler @Inject() (
           }
 
           val res = for {
-            workspace <- req.db.getWorkspaceByOwner(req.user)
-            currentTrack <- req.db.getTrackById(workspace.editingTrack)
+            workspace <- task.db.getWorkspaceByOwner(task.user)
+            currentTrack <- task.db.getTrackById(workspace.editingTrack)
             newTrack = currentTrack.appendLayerData(newLayer)
-            _ <- req.db.saveTrack(newTrack)
+            _ <- task.db.saveTrack(newTrack)
           } yield ()
 
-          Responses.executed(res)
+          ActionRequest.handled(res)
         }
-        else Responses.ok
+        else ActionRequest.ok
     }
   }
 

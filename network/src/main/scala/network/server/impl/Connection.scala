@@ -30,9 +30,7 @@ private[server] final class Connection[R, E](
             api.receiveFailed(CONNECTION, ex)
             Left(InvalidMessage)
 
-          case Success(req) =>
-            val mainResponse = api.handleRequest(CONNECTION, req)
-            api.afterRequest(CONNECTION, mainResponse)
+          case Success(req) => api.handleRequest(CONNECTION, req)
         }
 
         outputStream.writeObject(DataResponseMessage(response))

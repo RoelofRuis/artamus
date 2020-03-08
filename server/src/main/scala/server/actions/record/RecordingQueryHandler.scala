@@ -2,13 +2,13 @@ package server.actions.record
 
 import domain.interact.Record.GetCurrentRecording
 import javax.inject.{Inject, Singleton}
-import server.infra.ServerDispatcher
+import server.infra.QueryDispatcher
 
 import scala.util.{Failure, Success}
 
 @Singleton
 private[server] class RecordingQueryHandler @Inject() (
-  dispatcher: ServerDispatcher,
+  dispatcher: QueryDispatcher,
   storage: RecordingStorage,
 ) {
 

@@ -21,7 +21,6 @@ object NetworkingStubs {
     override def connectionOpened(connection: ConnectionHandle[TestEvent]): Unit = ()
     override def connectionClosed(connection: ConnectionHandle[TestEvent], error: Option[Throwable]): Unit = ()
     override def receiveFailed(connection: ConnectionHandle[TestEvent], cause: Throwable): Unit = ()
-    override def afterRequest(connection: ConnectionHandle[TestEvent], response: Either[ResponseException, Any]): Either[ResponseException, Any] = response
     override def handleRequest(connection: ConnectionHandle[TestEvent], request: TestRequest): Either[ResponseException, Any] = requestQueue.take()(request)
   }
 

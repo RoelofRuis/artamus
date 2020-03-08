@@ -2,12 +2,12 @@ package server.actions.write
 
 import domain.interact.Write.GetLayers
 import javax.inject.{Inject, Singleton}
-import server.actions.Responses
-import server.infra.ServerDispatcher
+import server.async.QueryRequest
+import server.infra.QueryDispatcher
 
 @Singleton
 private[server] class TrackQueryHandler @Inject() (
-  dispatcher: ServerDispatcher
+  dispatcher: QueryDispatcher
 ) {
 
   import server.model.Tracks._
@@ -23,7 +23,7 @@ private[server] class TrackQueryHandler @Inject() (
       }.toMap
     }
 
-    Responses.returning(res)
+    QueryRequest.returning(res)
   }
 
 }

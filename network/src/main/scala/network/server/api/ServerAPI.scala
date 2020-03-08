@@ -14,8 +14,6 @@ trait ServerAPI[R, E] {
 
   def receiveFailed(connection: ConnectionHandle[E], cause: Throwable): Unit
 
-  def afterRequest(connection: ConnectionHandle[E], response: Either[ResponseException, Any]): Either[ResponseException, Any]
-
   def handleRequest(connection: ConnectionHandle[E], request: R): Either[ResponseException, Any]
 
 }

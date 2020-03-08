@@ -6,6 +6,7 @@ import domain.interact.Control.{TaskFailed, TaskId, TaskSuccessful}
 import domain.interact.{Command, Event}
 import domain.workspace.User
 import javax.inject.Inject
+import server.async.ActionRegistry.Action
 import server.async.TaskScheduler.TaskResult
 import server.infra.ServerEventBus
 import storage.api.Database
@@ -15,7 +16,7 @@ import scala.util.{Failure, Success}
 
 class TaskScheduler @Inject() (
   db: Database,
-  registry: HandlerRegistry,
+  registry: ActionRegistry,
   eventBus: ServerEventBus,
 ) {
 
@@ -36,7 +37,7 @@ class TaskScheduler @Inject() (
           registry.lookupHandler(command) match {
             case None => result.copy(error = Some((command, new Throwable("Missing Handler"))))
             case Some(handler) =>
-              handler(user, transaction, command) match {
+              handler(Action(user, transaction, command)) match {
                 case Failure(exception) =>
                   result.copy(error = Some((command, exception)))
                 case Success(taskEvents) =>
