@@ -4,9 +4,23 @@ import com.typesafe.scalalogging.LazyLogging
 import domain.interact.{Command, Query}
 import network.Exceptions.CommunicationException
 
+import scala.annotation.tailrec
+
 object ClientInteraction {
 
   implicit class CommandQueryClient(client: Client) extends LazyLogging {
+    @tailrec
+    final def sendCommandList(commandList: List[Command]): Option[(CommunicationException, List[Command])] = commandList match {
+      case Nil => None
+      case command :: rest =>
+        sendCommand(command) match {
+          case Some(ex) =>
+            logger.error(s"Skipping [${rest.length}] more")
+            Some((ex, rest))
+          case None => sendCommandList(rest)
+        }
+    }
+
     def sendCommand[A <: Command](command: A): Option[CommunicationException] = {
       client.send(command) match {
         case Right(_) =>

@@ -5,6 +5,7 @@ import java.util.concurrent.{BlockingQueue, LinkedBlockingQueue}
 
 import client.infra.Client
 import com.typesafe.scalalogging.LazyLogging
+import domain.interact.Control.Commit
 import domain.interact.Record.RecordNote
 import domain.primitives.{Loudness, MidiNoteNumber}
 import domain.record.{MillisecondPosition, RawMidiNote}
@@ -15,6 +16,8 @@ import midi.read.Midi
 class MidiRecorder @Inject() (
   client: Client
 ) extends Thread with Receiver with LazyLogging {
+
+  import _root_.client.infra.ClientInteraction._
 
   private val active: AtomicBoolean = new AtomicBoolean(false)
   private val queue: BlockingQueue[(MidiMessage, Long)] = new LinkedBlockingQueue[(MidiMessage, Long)]()
@@ -34,9 +37,9 @@ class MidiRecorder @Inject() (
                 Loudness(msg.getData2),
                 MillisecondPosition.fromMicroseconds(microsecondTimestamp)
               )
-              client.send(RecordNote(note)) match {
-                case Right(()) =>
-                case Left(ex) => logger.error("Unable to send recorded note", ex)
+              client.sendCommandList(List(RecordNote(note), Commit())) match {
+                case None =>
+                case Some((ex, _)) => logger.error("Unable to send recorded note", ex)
               }
             case _ =>
           }
