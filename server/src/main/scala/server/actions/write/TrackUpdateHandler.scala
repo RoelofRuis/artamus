@@ -5,25 +5,24 @@ import domain.interact.Write._
 import domain.write.Track
 import domain.write.layers.{ChordAnalyser, ChordLayer, NoteLayer, RhythmLayer}
 import javax.inject.{Inject, Singleton}
-import server.async.ActionRegistry.Action
-import server.async.{ActionRegistration, ActionRequest}
+import server.async.{CommandHandlerRegistration, CommandRequest}
 
 import scala.util.Try
 
 @Singleton
 private[server] class TrackUpdateHandler @Inject() (
-  registry: ActionRegistration
+  registry: CommandHandlerRegistration
 ) {
 
   import server.model.Tracks._
   import server.model.Workspaces._
 
-  registry.register[SetLayerVisibility] { task =>
-    updateTrack(task, _.updateLayer(task.attributes.layer, _.copy(visible = task.attributes.isVisible)))
+  registry.register[SetLayerVisibility] { req =>
+    updateTrack(req, _.updateLayer(req.attributes.layer, _.copy(visible = req.attributes.isVisible)))
   }
 
-  registry.register[AnalyseChords.type] { task =>
-    updateTrack(task, { track =>
+  registry.register[AnalyseChords.type] { req =>
+    updateTrack(req, { track =>
       track // TODO: eventually move to layer blending
         .readFirstLayer[NoteLayer]
         .map(ChordAnalyser.chordLayerForNoteLayer)
@@ -32,36 +31,36 @@ private[server] class TrackUpdateHandler @Inject() (
     })
   }
 
-  registry.register[WriteNoteGroup]{ task =>
-    updateTrack(task, _.mapLayerData {
-      case x: NoteLayer => x.writeNoteGroup(task.attributes.group)
-      case x: RhythmLayer => x.writeNoteGroup(task.attributes.group)
+  registry.register[WriteNoteGroup]{ req =>
+    updateTrack(req, _.mapLayerData {
+      case x: NoteLayer => x.writeNoteGroup(req.attributes.group)
+      case x: RhythmLayer => x.writeNoteGroup(req.attributes.group)
     })
   }
 
-  registry.register[WriteTimeSignature]{ task =>
-    updateTrack(task, _.mapLayerData {
-      case x: ChordLayer => x.writeTimeSignature(task.attributes.position, task.attributes.ts)
-      case x: NoteLayer => x.writeTimeSignature(task.attributes.position, task.attributes.ts)
-      case x: RhythmLayer => x.writeTimeSignature(task.attributes.position, task.attributes.ts)
+  registry.register[WriteTimeSignature]{ req =>
+    updateTrack(req, _.mapLayerData {
+      case x: ChordLayer => x.writeTimeSignature(req.attributes.position, req.attributes.ts)
+      case x: NoteLayer => x.writeTimeSignature(req.attributes.position, req.attributes.ts)
+      case x: RhythmLayer => x.writeTimeSignature(req.attributes.position, req.attributes.ts)
     })
   }
 
-  registry.register[WriteKey]{ task =>
-    updateTrack(task, _.mapLayerData {
-      case x: NoteLayer => x.writeKey(task.attributes.position, task.attributes.key)
-      case x: ChordLayer => x.writeKey(task.attributes.position, task.attributes.key)
+  registry.register[WriteKey]{ req =>
+    updateTrack(req, _.mapLayerData {
+      case x: NoteLayer => x.writeKey(req.attributes.position, req.attributes.key)
+      case x: ChordLayer => x.writeKey(req.attributes.position, req.attributes.key)
     })
   }
 
-  def updateTrack(task: Action[_], f: Track => Track): Try[List[Event]] = {
+  def updateTrack(req: CommandRequest[_], f: Track => Track): Try[List[Event]] = {
     val res = for {
-      workspace <- task.db.getWorkspaceByOwner(task.user)
-      track <- task.db.getTrackById(workspace.editingTrack)
-      _ <- task.db.saveTrack(f(track))
+      workspace <- req.db.getWorkspaceByOwner(req.user)
+      track <- req.db.getTrackById(workspace.editingTrack)
+      _ <- req.db.saveTrack(f(track))
     } yield ()
 
-    ActionRequest.handled(res)
+    CommandRequest.handled(res)
   }
 
 }

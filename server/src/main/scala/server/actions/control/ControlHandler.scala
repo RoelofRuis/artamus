@@ -2,14 +2,14 @@ package server.actions.control
 
 import domain.interact.Control.Disconnect
 import javax.inject.{Inject, Singleton}
-import server.async.{ActionRegistration, ActionRequest}
+import server.async.{CommandHandlerRegistration, CommandRequest}
 
 @Singleton
 private[server] class ControlHandler @Inject() (
-  registry: ActionRegistration
+  registry: CommandHandlerRegistration
 ) {
 
-  registry.register[Disconnect] { _ => ActionRequest.ok }
+  registry.register[Disconnect] { _ => CommandRequest.ok }
 
 }
 

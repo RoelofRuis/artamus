@@ -4,32 +4,32 @@ import domain.interact.Write.NewWorkspace
 import domain.workspace.Workspace
 import domain.write.Track
 import javax.inject.{Inject, Singleton}
-import server.async.{ActionRegistration, ActionRequest}
+import server.async.{CommandHandlerRegistration, CommandRequest}
 
 @Singleton
 private[server] class WorkspaceCommandHandler @Inject() (
-  registry: ActionRegistration
+  registry: CommandHandlerRegistration
 ) {
 
   import server.model.Tracks._
   import server.model.Workspaces._
 
-  registry.register[NewWorkspace.type] { task =>
+  registry.register[NewWorkspace.type] { req =>
     val oldDeleted = for {
-      workspace <- task.db.getWorkspaceByOwner(task.user)
-      _ <- task.db.removeTrackById(workspace.editingTrack)
+      workspace <- req.db.getWorkspaceByOwner(req.user)
+      _ <- req.db.removeTrackById(workspace.editingTrack)
     } yield ()
 
     val res = for {
       _ <- oldDeleted.okIfNotFound
       track = Track.empty
-      workspace = Workspace(task.user.id, track.id)
+      workspace = Workspace(req.user.id, track.id)
       newWorkspace = workspace.editTrack(track)
-      _ <- task.db.saveTrack(track)
-      _ <- task.db.saveWorkspace(newWorkspace)
+      _ <- req.db.saveTrack(track)
+      _ <- req.db.saveWorkspace(newWorkspace)
     } yield ()
 
-    ActionRequest.handled(res)
+    CommandRequest.handled(res)
   }
 
 }
