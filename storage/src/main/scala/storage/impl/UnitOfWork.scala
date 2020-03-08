@@ -3,9 +3,9 @@ package storage.impl
 import java.util.concurrent.ConcurrentHashMap
 
 import javax.annotation.concurrent.ThreadSafe
-import storage.api.DataModel.DataKey
+import storage.api.DataModel.{ObjectId, StorableObject}
 import storage.api.Transaction.CommitResult
-import storage.api.{DataModel, DbIO, DbResult, Transaction}
+import storage.api.{DbResult, DbIO, DataModel, Transaction}
 
 import scala.jdk.CollectionConverters._
 import scala.util.{Failure, Success}
@@ -15,53 +15,72 @@ private[impl] final class UnitOfWork private (
   private val db: TransactionalDatabase
 ) extends Transaction with DbIO {
 
-  private val cleanData = new ConcurrentHashMap[DataKey, String]()
-  private val dirtyData = new ConcurrentHashMap[DataKey, String]()
+  private val dirtyObjects = new ConcurrentHashMap[ObjectId, StorableObject]()
+  private val deletedObjects = new ConcurrentHashMap[ObjectId, Unit]()
 
-  override def readModel[A : DataModel]: DbResult[A] = {
-    val model = implicitly[DataModel[A]]
-    Option(dirtyData.get(model.key)) orElse Option(cleanData.get(model.key)) match {
-      case Some(data) =>
-        model.deserialize(data) match {
-          case Success(obj) => DbResult.found(obj)
-          case Failure(ex) => DbResult.ioError(ex)
+  override def readRow[A, I](id: I)(implicit t: DataModel[A, I]): DbResult[A] = {
+    val objectId = ObjectId(t.name, t.serializeId(id), t.dataType)
+    if (deletedObjects.contains(objectId)) DbResult.notFound
+    else {
+      Option(dirtyObjects.get(objectId)) match {
+        case Some(storable) =>
+          t.deserialize(storable.data) match {
+            case Success(obj) => DbResult.found(obj)
+            case Failure(ex) => DbResult.ioError(ex)
+          }
+        case None => db.readRow(id) match {
+          case Right(obj) => DbResult.found(obj)
+          case l @ Left(_) => l
         }
-      case None => db.readModel match {
-        case Right(obj) => DbResult.found(obj)
-        case l @ Left(_) => l
       }
     }
   }
 
-  override def writeModel[A : DataModel](obj: A): DbResult[Unit] = {
-    val model = implicitly[DataModel[A]]
-    model.serialize(obj) match {
+  override def readTable[A, I](implicit t: DataModel[A, I]): DbResult[List[A]] = {
+    db.readTable match {
+      case Right(rows) =>
+        rows.foldRight(DbResult.found(List[A]())) { case (row, result) =>
+          if (! result.isOk) result
+          else {
+            val id = ObjectId(t.name, t.serializeId(t.objectId(row)), t.dataType)
+            Option(dirtyObjects.get(id)) match {
+              case None => result.map(_ :+ row)
+              case Some(dirtyObj) =>
+                t.deserialize(dirtyObj.data) match {
+                  case Failure(ex) => DbResult.ioError(ex)
+                  case Success(dirty) => result.map(_ :+ dirty)
+                }
+            }
+          }
+        }
+      case l @ Left(_) => l
+    }
+  }
+
+  override def writeRow[A, I](obj: A)(implicit t: DataModel[A, I]): DbResult[Unit] = {
+    val res = for {
+      objectData <- t.serialize(obj)
+    } yield StorableObject(ObjectId(t.name, t.serializeId(t.objectId(obj)), t.dataType), objectData)
+
+    res match {
       case Failure(ex) => DbResult.ioError(ex)
-      case Success(data) =>
-        dirtyData.put(model.key, data)
+      case Success(obj) =>
+        dirtyObjects.put(obj.id, obj)
         DbResult.ok
     }
   }
 
-  override def updateModel[A : DataModel](default: A, f: A => A): DbResult[Unit] = {
-    for {
-      data <- readModel.ifNotFound(default)
-      _ <- writeModel(f(data))
-    } yield ()
+  override def deleteRow[A, I](id: I)(implicit t: DataModel[A, I]): DbResult[Unit] = {
+    deletedObjects.put(ObjectId(t.name, t.serializeId(id), t.dataType), ())
+    DbResult.ok
   }
 
   override def commit(): CommitResult = db.commitUnitOfWork(this)
 
-  def getChangeSet: Map[DataKey, String] = {
-    dirtyData
-      .asScala
-      .iterator
-      .filterNot { case (key, data) => Option(cleanData.get(key)).map(dataHash).contains(dataHash(data)) }
-      .toMap
-  }
-
-  private val HASHREGEX = """[\n\r\s]+""".r
-  private def dataHash(data: String): Int = HASHREGEX.replaceAllIn(data, "").hashCode
+  def getChangeSet: (List[ObjectId], List[StorableObject]) = (
+    deletedObjects.asScala.keys.toList,
+    dirtyObjects.asScala.values.toList
+  )
 
 }
 

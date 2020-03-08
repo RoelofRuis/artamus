@@ -2,7 +2,7 @@ package storage
 
 package object api {
 
-  trait DbIO extends ModelReader with ModelWriter
+  trait DbIO extends DbReader with DbWriter
 
   sealed trait DbException extends Exception
   final case class NotFound() extends DbException
@@ -17,6 +17,7 @@ package object api {
         case x => x
       }
     }
+    def isOk: Boolean = res.isRight
   }
 
   implicit class DbUnitResultOps(res: DbResult[Unit]) {

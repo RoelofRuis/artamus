@@ -2,33 +2,28 @@ package server.model
 
 import domain.display.render.Render
 import domain.write.Track.TrackId
-import spray.json.RootJsonFormat
-import storage.api.{DbIO, DbResult, ModelReader}
+import storage.api.{DbIO, DbReader, DbResult}
 
 object Renders {
 
-  private implicit val table: JsonTableDataModel[Render] = new JsonTableDataModel[Render] {
-    override val tableName: String = "render"
+  private implicit val table: JsonDataModel[Render, TrackId] = new JsonDataModel[Render, TrackId] {
+    import spray.json._
+
     implicit val format: RootJsonFormat[Render] = jsonFormat2(Render)
+
+    override val name: String = "render"
+
+    override def objectId(obj: Render): TrackId = obj.trackId
+    override def serializeId(id: TrackId): String = id.id.toString
   }
 
-  implicit class RenderQueries(db: ModelReader) {
-    def getRenderByTrackId(trackId: TrackId): DbResult[Render] = {
-      db.readModel[table.Shape].ifNotFound(table.empty).flatMap {
-        _.get(trackId.id.toString) match {
-          case None => DbResult.notFound
-          case Some(u) => DbResult.found(u)
-        }
-      }
-    }
+  implicit class RenderQueries(db: DbReader) {
+    def getRenderByTrackId(trackId: TrackId): DbResult[Render] = db.readRow(trackId)
   }
 
   implicit class RenderCommands(db: DbIO) {
     def saveRender(render: Render): DbResult[Unit] = {
-      db.updateModel[table.Shape](
-        table.empty,
-        _.updated(render.trackId.id.toString, render)
-      )
+      db.writeRow(render)
     }
   }
 

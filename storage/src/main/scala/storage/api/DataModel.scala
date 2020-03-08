@@ -1,21 +1,19 @@
 package storage.api
 
-import storage.api.DataModel.DataKey
-
 import scala.util.Try
 
-trait DataModel[A] {
-  val key: DataKey
+trait DataModel[A, I] {
+  val name: String
+  val dataType: DataType
+  def objectId(obj: A): I // TODO: See if objectId and serializeId always occur together!
   def deserialize(data: String): Try[A]
   def serialize(obj: A): Try[String]
+  def serializeId(id: I): String
 }
 
 object DataModel {
 
-  final case class DataKey(name: String, dataType: DataType)
-
-  sealed trait DataType
-  case object Raw extends DataType
-  case object JSON extends DataType
+  final case class ObjectId(table: String, id: String, dataType: DataType) // TODO: Does the data type have to be in here?
+  final case class StorableObject(id: ObjectId, data: String)
 
 }
