@@ -2,7 +2,6 @@ package server.api
 
 import domain.interact.Event
 import domain.workspace.User
-import network.Exceptions.LogicError
 import storage.api.{DbIO, DbResult, IOError, NotFound}
 
 import scala.util.{Failure, Success, Try}
@@ -20,14 +19,14 @@ object CommandRequest {
     res match {
       case Right(_) => Success(List())
       case Left(IOError(cause)) => Failure(cause)
-      case Left(NotFound()) => Failure(LogicError) // TODO: this should be a better error!
+      case Left(NotFound()) => Failure(new Throwable("Unable to find model"))
     }
   }
   def dbResultWithEvents(res: DbResult[List[Event]]): Try[List[Event]] = {
     res match {
       case Right(list) => Success(list)
       case Left(IOError(cause)) => Failure(cause)
-      case Left(NotFound()) => Failure(LogicError) // TODO: this should be a better error!
+      case Left(NotFound()) => Failure(new Throwable("Unable to find model"))
     }
   }
 

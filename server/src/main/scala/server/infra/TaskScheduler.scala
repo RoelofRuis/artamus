@@ -30,19 +30,22 @@ class TaskScheduler @Inject() (
   private implicit val executionContext: ExecutionContext = ExecutionContext.fromExecutor(executor)
 
   def scheduleCommands(taskId: TaskId, user: User, commands: List[Command]): Unit = {
-    logger.info(s"Scheduling commands for task [$taskId]")
+    logger.debug(s"Scheduling commands for task [$taskId]")
     Future {
       val transaction = db.newTransaction
-      val result = commands.foldRight(TaskResult()) { case (command, result) =>
+      val result = commands.foldLeft(TaskResult()) { case (result, command) =>
         if (result.error.isDefined) result.copy(skipped = result.skipped :+ command)
         else {
           registry.lookupHandler(command) match {
             case None => result.copy(error = Some((command, new Throwable("Missing Handler"))))
             case Some(handler) =>
+              logger.debug(s"Handling command [$command]")
               handler(CommandRequest(user, transaction, command)) match {
                 case Failure(exception) =>
+                  logger.debug(s"Handling failed")
                   result.copy(error = Some((command, exception)))
                 case Success(taskEvents) =>
+                  logger.debug(s"Handling success")
                   result.copy(done = result.done :+ command, events = result.events ++ taskEvents)
               }
           }
@@ -69,22 +72,21 @@ class TaskScheduler @Inject() (
 
   private def logDebugReport(taskId: TaskId, result: TaskResult): Unit = {
     if (result.error.isEmpty) {
-      logger.info(
+      logger.debug(
         s"""Report for task [$taskId]
-           |# Commands [${result.done.length}]
-           |# Skipped  [${result.skipped.length}]
-           |# Events   [${result.events.length}]
+           |# Done    [${result.done.length}]
+           |# Events  [${result.events.length}]
            |""".stripMargin
       )
     } else {
       logger.warn(
         s"""Report for <FAILED> task [$taskId]
-           |# Commands [${result.done.length}]
-           |# Skipped  [${result.skipped.length}]
+           |# Done    [${result.done.length}]
+           |# Skipped [${result.skipped.length}]
            |
            |Error:
-           |Command    [${result.error.get._1}]
-           |Cause      [${result.error.get._2}]
+           |Command   [${result.error.get._1}]
+           |Cause     [${result.error.get._2}]
            |""".stripMargin, result.error.get._2
       )
     }
