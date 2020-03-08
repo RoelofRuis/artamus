@@ -1,4 +1,4 @@
-package server.async
+package server.infra
 
 import domain.interact.Event
 import domain.workspace.User

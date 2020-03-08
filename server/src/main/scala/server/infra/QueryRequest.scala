@@ -1,4 +1,4 @@
-package server.async
+package server.infra
 
 import domain.workspace.User
 import pubsub.Dispatchable

@@ -1,7 +1,7 @@
 package server.rendering
 
 import net.codingwell.scalaguice.ScalaPrivateModule
-import server.rendering.impl.{AsyncLilypondRenderer, LilypondCommandLineExecutor, LilypondInterpreter}
+import server.rendering.impl.{LilypondRenderer, LilypondCommandLineExecutor, LilypondInterpreter}
 
 class RenderingModule extends ScalaPrivateModule {
   this: RenderingConfig =>
@@ -20,9 +20,9 @@ class RenderingModule extends ScalaPrivateModule {
         cleanupLySources,
         pngResolution,
       ))
-    bind[AsyncRenderer].to[AsyncLilypondRenderer].asEagerSingleton()
+    bind[Renderer].to[LilypondRenderer].asEagerSingleton()
 
-    expose[AsyncRenderer]
+    expose[Renderer]
   }
 
 }

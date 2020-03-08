@@ -4,7 +4,7 @@ import domain.interact.Write.NewWorkspace
 import domain.workspace.Workspace
 import domain.write.Track
 import javax.inject.{Inject, Singleton}
-import server.async.{CommandHandlerRegistration, CommandRequest}
+import server.infra.{CommandHandlerRegistration, CommandRequest}
 
 @Singleton
 private[server] class WorkspaceCommandHandler @Inject() (

@@ -1,7 +1,7 @@
-package server.async
+package server.infra
 
 import domain.interact.Command
-import server.async.CommandRequest.CommandHandler
+import server.infra.CommandRequest.CommandHandler
 
 import scala.reflect.ClassTag
 

@@ -1,10 +1,10 @@
-package server.async
+package server.infra
 
 import java.util.concurrent.ConcurrentHashMap
 
 import domain.interact.Command
 import javax.annotation.concurrent.ThreadSafe
-import server.async.CommandRequest.CommandHandler
+import server.infra.CommandRequest.CommandHandler
 
 import scala.reflect.{ClassTag, classTag}
 

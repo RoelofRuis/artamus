@@ -6,7 +6,7 @@ import domain.primitives.{Note, NoteGroup}
 import domain.record.Quantizer
 import domain.write.layers.{NoteLayer, RhythmLayer}
 import javax.inject.{Inject, Singleton}
-import server.async.{CommandHandlerRegistration, CommandRequest}
+import server.infra.{CommandHandlerRegistration, CommandRequest}
 
 @Singleton
 private[server] class RecordingCommandHandler @Inject() (

@@ -4,8 +4,7 @@ import domain.interact.Perform.PreparePerformance
 import domain.interact.Query
 import domain.write.Track
 import javax.inject.{Inject, Singleton}
-import server.async.QueryRequest
-import server.infra.QueryDispatcher
+import server.infra.{QueryDispatcher, QueryRequest}
 
 import scala.util.Try
 

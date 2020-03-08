@@ -5,7 +5,7 @@ import domain.interact.Write._
 import domain.write.Track
 import domain.write.layers.{ChordAnalyser, ChordLayer, NoteLayer, RhythmLayer}
 import javax.inject.{Inject, Singleton}
-import server.async.{CommandHandlerRegistration, CommandRequest}
+import server.infra.{CommandHandlerRegistration, CommandRequest}
 
 import scala.util.Try
 

@@ -4,7 +4,6 @@ import domain.interact.{Event, Query, Request}
 import net.codingwell.scalaguice.ScalaModule
 import network.server.api.{ServerAPI, ServerConfig, ServerFactory}
 import pubsub.EventBus
-import server.async.QueryRequest
 
 class ServerInfraModule extends ScalaModule {
   // TODO: make private and expose only what is needed

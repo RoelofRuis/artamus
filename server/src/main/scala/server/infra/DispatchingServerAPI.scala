@@ -7,7 +7,6 @@ import domain.workspace.User
 import javax.inject.{Inject, Singleton}
 import network.Exceptions._
 import network.server.api.{ConnectionHandle, ServerAPI}
-import server.async.{CommandCollector, QueryRequest}
 import storage.api.{Database, NotFound}
 
 import scala.util.{Failure, Success}

@@ -1,4 +1,4 @@
-package server.async
+package server.infra
 
 import java.util.concurrent.{ExecutorService, Executors}
 
@@ -6,8 +6,7 @@ import domain.interact.Control.{TaskFailed, TaskId, TaskSuccessful}
 import domain.interact.{Command, Event}
 import domain.workspace.User
 import javax.inject.Inject
-import server.async.TaskScheduler.TaskResult
-import server.infra.ServerEventBus
+import server.infra.TaskScheduler.TaskResult
 import storage.api.Database
 
 import scala.concurrent.{ExecutionContext, Future}
