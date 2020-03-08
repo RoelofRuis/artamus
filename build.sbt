@@ -68,6 +68,7 @@ lazy val client = (project in file("client"))
       dependencies.scalaGuice,
       dependencies.scalaLogging,
       dependencies.slf4jSimple,
+      dependencies.scalaSwing
     )
   )
   .dependsOn(network, common)

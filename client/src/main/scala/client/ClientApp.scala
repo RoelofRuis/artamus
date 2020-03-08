@@ -1,5 +1,6 @@
 package client
 
+import client.gui.Editor
 import com.google.inject.Guice
 
 object ClientApp extends App {
@@ -9,8 +10,9 @@ object ClientApp extends App {
   )
 
   import net.codingwell.scalaguice.InjectorExtensions._
-  val app = injector.instance[Bootstrapper]
 
-  app.run()
+  val editorThread = injector.instance[Editor]
+  editorThread.start()
+  editorThread.join()
 
 }

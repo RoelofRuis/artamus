@@ -7,6 +7,7 @@ object Dependencies {
     val slf4jSimpleVersion = "1.7.28"
     val sprayJsonVersion = "1.3.5"
     val microtestVersion = "0.7.1"
+    val scalaSwingVersion = "2.1.1"
 
     val javaxInject     = "javax.inject" % "javax.inject" % "1"
     val findbugs        = "com.google.code.findbugs" % "jsr305" % "3.0.2" // For javax.annotations.concurrency
@@ -16,5 +17,6 @@ object Dependencies {
     val slf4jSimple     = "org.slf4j" % "slf4j-simple" % slf4jSimpleVersion
     val sprayJson       = "io.spray" %%  "spray-json" % sprayJsonVersion
     val microtest       = "com.lihaoyi" %% "utest" % microtestVersion
+    val scalaSwing      = "org.scala-lang.modules" %% "scala-swing" % scalaSwingVersion,
   }
 }

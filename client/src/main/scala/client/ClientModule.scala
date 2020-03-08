@@ -1,6 +1,6 @@
 package client
 
-import client.events.RenderHandler
+import client.gui.Editor
 import client.infra.ClientInfraModule
 import client.module.ClientOperationRegistry
 import client.module.Operations.OperationRegistry
@@ -19,10 +19,10 @@ class ClientModule extends ScalaPrivateModule {
 
     bind[OperationRegistry].toInstance(new ClientOperationRegistry())
 
-    bind[RenderHandler].asEagerSingleton()
+    bind[CommandExecutor].asEagerSingleton()
 
-    bind[Bootstrapper].asEagerSingleton()
-    expose[Bootstrapper]
+    bind[Editor].asEagerSingleton()
+    expose[Editor]
   }
 
 }
