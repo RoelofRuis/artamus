@@ -46,31 +46,21 @@ object StaffDisplay {
     )
 
     private def read(include: InclusionStrategy): Iterator[StaffGlyph] = {
+      val groupsList = disp.notes.readGroupsList()
       def loop(cursor: Position, groups: List[NoteGroup]): Iterator[StaffGlyph] = {
         groups match {
-          case Nil => Iterator(FullBarRestGlyph(1))
-
-          case group :: Nil =>
-            include(group) match {
-              case Nil =>
-                val nextBarLinePos = disp.timeSignatures.nextBarLine(group.window.end)
-                fillWithRests(cursor, nextBarLinePos)
-
-              case notes =>
-                val glyphs = calculateGlyphs(cursor, group.window, notes)
-                val nextBarLine = disp.timeSignatures.nextBarLine(group.window.end)
-                val finalRests = fillWithRests(group.window.end, nextBarLine)
-                glyphs ++ finalRests
-            }
-
           case group :: tail =>
             include(group) match {
               case Nil => loop(cursor, tail)
               case notes => calculateGlyphs(cursor, group.window, notes) ++ loop(group.window.end, tail)
             }
+
+          case Nil =>
+            val finalBarlinePos = disp.timeSignatures.nextBarLine(groupsList.lastOption.map(_.window.end).getOrElse(cursor))
+            fillWithRests(cursor, finalBarlinePos)
         }
       }
-      loop(Position.ZERO, disp.notes.readGroupsList())
+      loop(Position.ZERO, groupsList)
     }
 
     private def calculateGlyphs(cursor: Position, noteWindow: Window, notes: Seq[Note]): Iterator[StaffGlyph] = {
