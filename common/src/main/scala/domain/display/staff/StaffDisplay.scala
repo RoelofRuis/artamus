@@ -27,20 +27,35 @@ object StaffDisplay {
 
     def getRhythm: StaffGroup = {
       StaffGroup(
-        RhythmicStaff(initialElements() ++ read(Inclusion.all))
+        RhythmicStaff(initialGlyphs() ++ read(Inclusion.all))
       )
     }
 
     def getNotes: StaffGroup = {
-      StaffGroup(
-        GrandStaff(
-          NoteStaff(Treble, initialElements() ++ read(Inclusion.higherNoteNumbers(59))),
-          NoteStaff(Bass, initialElements() ++ read(Inclusion.lowerEqualNoteNumbers(59)))
-        )
-      )
+      val trebleGlyphs = read(Inclusion.higherNoteNumbers(59)).buffered
+      val bassGlyphs = read(Inclusion.lowerEqualNoteNumbers(59)).buffered
+
+      val hasTreble = trebleGlyphs.headOption.isEmpty
+      val hasBass = bassGlyphs.headOption.isEmpty
+
+      val staffGroup = (hasTreble, hasBass) match {
+        case (true, true) =>
+          GrandStaff(
+            NoteStaff(Treble, initialGlyphs() ++ trebleGlyphs),
+            NoteStaff(Bass, initialGlyphs() ++ bassGlyphs)
+          )
+        case (true, false) =>
+          NoteStaff(Treble, initialGlyphs() ++ trebleGlyphs)
+        case (false, true) =>
+          NoteStaff(Bass, initialGlyphs() ++ bassGlyphs)
+        case (false, false) =>
+          NoteStaff(Treble, initialGlyphs())
+      }
+
+      StaffGroup(staffGroup)
     }
 
-    private def initialElements(): Iterator[StaffGlyph] = Iterator(
+    private def initialGlyphs(): Iterator[StaffGlyph] = Iterator(
       TimeSignatureGlyph(disp.timeSignatures.initialTimeSignature.division),
       KeyGlyph(initialKey.root, initialKey.scale)
     )
