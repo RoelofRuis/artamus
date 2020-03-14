@@ -20,10 +20,6 @@ object StaffGlyph {
     silent: Boolean
   ) extends StaffGlyph
 
-  final case class FullBarRestGlyph(
-    numberOfBars: Int
-  ) extends StaffGlyph
-
   final case class KeyGlyph(
     root: PitchSpelling,
     scale: Scale

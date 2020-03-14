@@ -1,12 +1,12 @@
 package server.rendering.model
 
-import domain.write.analysis.TwelveToneTuning.TwelveToneFunctions
 import domain.display.StaffGroup
 import domain.display.chord.ChordStaff
 import domain.display.chord.ChordStaffGlyph.{ChordNameGlyph, ChordRestGlyph}
-import domain.display.staff.{Bass, Clef, GrandStaff, NoteStaff, RhythmicStaff, Treble}
-import domain.display.staff.StaffGlyph.{FullBarRestGlyph, KeyGlyph, NoteGroupGlyph, RestGlyph, TimeSignatureGlyph}
+import domain.display.staff.StaffGlyph._
+import domain.display.staff._
 import domain.primitives._
+import domain.write.analysis.TwelveToneTuning.TwelveToneFunctions
 
 import scala.annotation.tailrec
 
@@ -39,7 +39,6 @@ private[rendering] object LilypondFormat {
     val contents = staff.glyphs.map {
       case g: NoteGroupGlyph => s"c${g.duration.toLilypond}"
       case g: RestGlyph => g.toLilypond
-      case g: FullBarRestGlyph => g.toLilypond
       case g: TimeSignatureGlyph => g.toLilypond
       case _ => ""
     }.mkString("\n")
@@ -64,7 +63,6 @@ private[rendering] object LilypondFormat {
     val contents = staff.glyphs.map {
       case g: NoteGroupGlyph => g.toLilypond
       case g: RestGlyph => g.toLilypond
-      case g: FullBarRestGlyph => g.toLilypond
       case g: KeyGlyph => g.toLilypond
       case g: TimeSignatureGlyph => g.toLilypond
     }.mkString("\n")
@@ -99,8 +97,6 @@ private[rendering] object LilypondFormat {
        |}
        |}""".stripMargin
   }
-
-  implicit val fullBarRestGlyphToLilypond: LilypondFormat[FullBarRestGlyph] = rest => s"R" + rest.numberOfBars
 
   implicit val restToLilypond: LilypondFormat[RestGlyph] = rest => {
     val durationString = rest.duration.toLilypond
