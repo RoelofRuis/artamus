@@ -1,6 +1,7 @@
 package domain.primitives
 
-import domain.math.Rational
-
-// TODO: rational might not be the correct base type here (think about triplets)
-final case class NoteValue(base: Rational, dots: Int)
+/**
+ * @param n The base duration, expressed as `1 / pow(2, n)`
+ * @param dots The number of dots, each dots adds half of the previous note value to the duration.
+ */
+final case class NoteValue(n: Int, dots: Int)
