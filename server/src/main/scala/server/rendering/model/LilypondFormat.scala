@@ -5,6 +5,7 @@ import domain.display.chord.ChordStaff
 import domain.display.chord.ChordStaffGlyph.{ChordNameGlyph, ChordRestGlyph}
 import domain.display.staff.StaffGlyph._
 import domain.display.staff._
+import domain.math.IntegerMath
 import domain.primitives._
 import domain.write.analysis.TwelveToneTuning.TwelveToneFunctions
 
@@ -174,7 +175,7 @@ private[rendering] object LilypondFormat {
   }
 
   implicit val writableDurationToLilypond: LilypondFormat[NoteValue] = dur => {
-    s"${dur.base.d}" + ("." * dur.dots)
+    s"${2**dur.n}" + ("." * dur.dots)
   }
 
   implicit val timeSignatureToLilypond: LilypondFormat[TimeSignatureGlyph] = timeSignature => {
