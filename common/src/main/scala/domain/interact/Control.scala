@@ -9,7 +9,7 @@ object Control {
 
   // Tasks
   final case class TaskId private (id: UUID)
-  object TaskId { def apply(): TaskId = TaskId(UUID.randomUUID()) }
+  final object TaskId { def apply(): TaskId = TaskId(UUID.randomUUID()) }
 
   final case class Commit(taskId: TaskId = TaskId()) extends Command // TODO: refactor so starting task is also sent to client
   final case class TaskSuccessful(taskId: TaskId) extends Event
