@@ -19,6 +19,15 @@ object PackageMathTest extends TestSuite {
       assert( ! 15.isPowerOfTwo)
       assert( ! 1234567.isPowerOfTwo)
     }
+    test("squaring numbers") {
+      assert(1**1 == 1)
+      assert(2**1 == 2)
+      assert(2**2 == 4)
+      assert(3**2 == 9)
+      assert(3**3 == 27)
+      assert(-2**2 == 4)
+      assert(-2**3 == -8)
+    }
   }
 
 }
