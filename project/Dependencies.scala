@@ -17,6 +17,6 @@ object Dependencies {
     val slf4jSimple     = "org.slf4j" % "slf4j-simple" % slf4jSimpleVersion
     val sprayJson       = "io.spray" %%  "spray-json" % sprayJsonVersion
     val microtest       = "com.lihaoyi" %% "utest" % microtestVersion
-    val scalaSwing      = "org.scala-lang.modules" %% "scala-swing" % scalaSwingVersion,
+    val scalaSwing      = "org.scala-lang.modules" %% "scala-swing" % scalaSwingVersion
   }
 }
