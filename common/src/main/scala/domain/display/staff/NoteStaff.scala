@@ -4,5 +4,5 @@ import domain.display.Staff
 
 final case class NoteStaff(
   clef: Clef,
-  glyphs: Iterator[StaffGlyph]
+  glyphs: Seq[StaffGlyph]
 ) extends Staff

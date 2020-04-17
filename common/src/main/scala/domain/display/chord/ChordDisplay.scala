@@ -22,33 +22,31 @@ object ChordDisplay {
       StaffGroup(ChordStaff(read(window)))
     }
 
-    private def read(window: Window): Iterator[ChordStaffGlyph] = {
+    private def read(window: Window): Seq[ChordStaffGlyph] = {
       chords.nextOption match {
-        case None => Iterator.empty
+        case None => Seq.empty
 
         case Some((nextWindow, nextChord)) =>
           val writeableChords = {
             // TODO: Use the 'active' key instead of initial key.
             val spelling = TwelveTonePitchSpelling.spellChord(nextChord, initialKey)
-            val written = nextWindow.duration.asNoteValues match {
+            nextWindow.duration.asNoteValues match {
               case Nil => Seq()
               case head :: Nil =>
                 ChordNameGlyph(head, spelling, nextChord.functions) :: Nil
               case head :: tail =>
                 ChordNameGlyph(head, spelling, nextChord.functions) :: tail.map(ChordRestGlyph)
             }
-            written.iterator
           }
 
           val rests = window.until(nextWindow) match {
-            case None => Iterator.empty
+            case None => Seq.empty
             case Some(diff) =>
               layer
                 .timeSignatures
                 .fit(diff)
                 .flatMap(_.duration.asNoteValues)
                 .map(ChordRestGlyph)
-                .iterator
           }
 
           rests ++ writeableChords ++ read(nextWindow)

@@ -4,6 +4,8 @@ import utest._
 
 object PackageMathTest extends TestSuite {
 
+  println(2.largestPowerOfTwo)
+
   val tests: Tests = Tests {
     test("accepts powers of 2") {
       assert(1.isPowerOfTwo)
@@ -27,6 +29,16 @@ object PackageMathTest extends TestSuite {
       assert(3**3 == 27)
       assert(-2**2 == 4)
       assert(-2**3 == -8)
+    }
+    test("finding most significant bit") {
+      assert(1.largestPowerOfTwo == 0)
+      assert(2.largestPowerOfTwo == 1)
+      assert(3.largestPowerOfTwo == 1)
+      assert(4.largestPowerOfTwo == 2)
+      assert(8.largestPowerOfTwo == 3)
+      assert(9.largestPowerOfTwo == 3)
+      assert(15.largestPowerOfTwo == 3)
+      assert(16.largestPowerOfTwo == 4)
     }
   }
 

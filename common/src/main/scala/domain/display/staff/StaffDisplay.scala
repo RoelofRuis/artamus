@@ -32,11 +32,11 @@ object StaffDisplay {
     }
 
     def getNotes: StaffGroup = {
-      val trebleGlyphs = read(Inclusion.higherNoteNumbers(59)).buffered
-      val bassGlyphs = read(Inclusion.lowerEqualNoteNumbers(59)).buffered
+      val trebleGlyphs = read(Inclusion.higherNoteNumbers(59))
+      val bassGlyphs = read(Inclusion.lowerEqualNoteNumbers(59))
 
-      val hasTreble = trebleGlyphs.headOption.isEmpty
-      val hasBass = bassGlyphs.headOption.isEmpty
+      val hasTreble = trebleGlyphs.collectFirst { case g: NoteGroupGlyph => g }.nonEmpty
+      val hasBass = bassGlyphs.collectFirst { case g: NoteGroupGlyph => g }.nonEmpty
 
       val staffGroup = (hasTreble, hasBass) match {
         case (true, true) =>
@@ -55,14 +55,14 @@ object StaffDisplay {
       StaffGroup(staffGroup)
     }
 
-    private def initialGlyphs(): Iterator[StaffGlyph] = Iterator(
+    private def initialGlyphs(): Seq[StaffGlyph] = Seq(
       TimeSignatureGlyph(disp.timeSignatures.initialTimeSignature.division),
       KeyGlyph(initialKey.root, initialKey.scale)
     )
 
-    private def read(include: InclusionStrategy): Iterator[StaffGlyph] = {
+    private def read(include: InclusionStrategy): Seq[StaffGlyph] = {
       val groupsList = disp.notes.readGroupsList()
-      def loop(cursor: Position, groups: List[NoteGroup]): Iterator[StaffGlyph] = {
+      def loop(cursor: Position, groups: List[NoteGroup]): Seq[StaffGlyph] = {
         groups match {
           case group :: tail =>
             include(group) match {
@@ -78,7 +78,7 @@ object StaffDisplay {
       loop(Position.ZERO, groupsList)
     }
 
-    private def calculateGlyphs(cursor: Position, noteWindow: Window, notes: Seq[Note]): Iterator[StaffGlyph] = {
+    private def calculateGlyphs(cursor: Position, noteWindow: Window, notes: Seq[Note]): Seq[StaffGlyph] = {
       val restGlyphs = fillWithRests(cursor, noteWindow.start)
 
       val noteDurations = disp
@@ -91,19 +91,17 @@ object StaffDisplay {
       val noteGlyphs = noteDurations
         .zipWithIndex
         .map { case (dur, i) => NoteGroupGlyph(dur, pitches, i != (noteDurations.size - 1)) }
-        .iterator
 
       restGlyphs ++ noteGlyphs
     }
 
-    private def fillWithRests(from: Position, to: Position): Iterator[StaffGlyph] = to - from match {
-      case Duration.ZERO => Iterator.empty
+    private def fillWithRests(from: Position, to: Position): Seq[StaffGlyph] = to - from match {
+      case Duration.ZERO => Seq.empty
       case d => disp
         .timeSignatures
         .fit(Window(from, d))
         .flatMap(_.duration.asNoteValues)
         .map(RestGlyph(_, silent=false))
-        .iterator
     }
 
   }
