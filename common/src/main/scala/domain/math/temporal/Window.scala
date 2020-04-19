@@ -3,6 +3,8 @@ package domain.math.temporal
 /** A time window expressed by a position with a duration. The duration might be zero, expressing an instantaneous
   * moment.
   *
+  * In mathematics this is also often called an **interval** but this clashes with the musical meaning of Interval.
+  *
   * @param start The window start position.
   * @param duration The duration.
   */
@@ -65,6 +67,9 @@ final case class Window(start: Position, duration: Duration) {
 
   /** @return Boolean Whether this window has zero duration. */
   def isInstant: Boolean = duration == Duration.ZERO
+
+  /** @return Whether this window ends later than `that` window */
+  def endsLaterThan(that: Window): Boolean = end > that.end
 
 }
 

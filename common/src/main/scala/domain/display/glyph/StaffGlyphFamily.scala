@@ -1,24 +1,19 @@
-package domain.display.staff
+package domain.display.glyph
 
-import domain.primitives.{NoteValue, PitchSpelling, Scale, ScientificPitch, TimeSignatureDivision}
+import domain.primitives._
 
-sealed trait StaffGlyph
+object StaffGlyphFamily {
 
-object StaffGlyph {
+  sealed trait StaffGlyph
 
   final case class NoteGroupGlyph(
-    duration: NoteValue,
     notes: Seq[ScientificPitch],
-    tieToNext: Boolean
   ) extends StaffGlyph {
     def isEmpty: Boolean = notes.isEmpty
     def isChord: Boolean = notes.size > 1
   }
 
-  final case class RestGlyph(
-    duration: NoteValue,
-    silent: Boolean
-  ) extends StaffGlyph
+  final case class RestGlyph() extends StaffGlyph
 
   final case class KeyGlyph(
     root: PitchSpelling,

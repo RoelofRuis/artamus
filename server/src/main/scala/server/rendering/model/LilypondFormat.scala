@@ -1,10 +1,10 @@
 package server.rendering.model
 
-import domain.display.StaffGroup
-import domain.display.chord.ChordStaff
-import domain.display.chord.ChordStaffGlyph.{ChordNameGlyph, ChordRestGlyph}
-import domain.display.staff.StaffGlyph._
+import domain.display.glyph.ChordStaffGlyphFamily.{ChordNameGlyph, ChordRestGlyph}
+import domain.display.staff.NoteStaff.{Bass, Clef, Treble}
+import domain.display.glyph.StaffGlyphFamily.{KeyGlyph, NoteGroupGlyph, RestGlyph, TimeSignatureGlyph}
 import domain.display.staff._
+import domain.display.glyph.Glyphs.{GlyphDuration, SingleGlyph}
 import domain.math.IntegerMath
 import domain.primitives._
 import domain.write.analysis.TwelveToneTuning.TwelveToneFunctions
@@ -38,10 +38,15 @@ private[rendering] object LilypondFormat {
 
   implicit val rhythmicStaffFormat: LilypondFormat[RhythmicStaff] = staff => {
     val contents = staff.glyphs.map {
-      case g: NoteGroupGlyph => s"c${g.duration.toLilypond}"
-      case g: RestGlyph => g.toLilypond
-      case g: TimeSignatureGlyph => g.toLilypond
-      case _ => ""
+      case SingleGlyph(NoteGroupGlyph(_), duration) =>
+        if (duration.tieToNext) s"c${writeDuration(duration)}~" else s"c${writeDuration(duration)}"
+
+      case SingleGlyph(RestGlyph(), duration) =>
+        s"r${writeDuration(duration)}"
+
+      case SingleGlyph(t: TimeSignatureGlyph, _) => t.toLilypond
+
+      case _ => "" // Tuplets!
     }.mkString("\n")
     s"""\\new RhythmicStaff {
        |\\numericTimeSignature
@@ -62,10 +67,32 @@ private[rendering] object LilypondFormat {
 
   implicit val noteStaffFormat: LilypondFormat[NoteStaff] = staff => {
     val contents = staff.glyphs.map {
-      case g: NoteGroupGlyph => g.toLilypond
-      case g: RestGlyph => g.toLilypond
-      case g: KeyGlyph => g.toLilypond
-      case g: TimeSignatureGlyph => g.toLilypond
+      case SingleGlyph(noteGroup @ NoteGroupGlyph(notes), duration) =>
+        if (notes.isEmpty) ""
+        else {
+          val tie = if (duration.tieToNext) "~" else ""
+          if (noteGroup.isChord) {
+            val lilyNotes = noteGroup.notes
+              .map { pitch => pitch.spelling.toLilypond + pitch.octave.toLilypond + tie }
+              .mkString("<", " ", ">")
+
+            lilyNotes + writeDuration(duration)
+          } else {
+            val pitchSpelling = noteGroup.notes.head.spelling.toLilypond
+            val octaveSpelling = noteGroup.notes.head.octave.toLilypond
+            val durationSpelling = writeDuration(duration)
+            pitchSpelling + octaveSpelling + durationSpelling + tie
+          }
+        }
+
+      case SingleGlyph(RestGlyph(), duration) =>
+        s"r${writeDuration(duration)}"
+
+      case SingleGlyph(k: KeyGlyph, _) => k.toLilypond
+
+      case SingleGlyph(t: TimeSignatureGlyph, _) => t.toLilypond
+
+      case _ => "" // Tuplets!
     }.mkString("\n")
     s"""\\new Staff {
        |\\numericTimeSignature
@@ -85,8 +112,15 @@ private[rendering] object LilypondFormat {
 
   implicit val chordStaffFormat: LilypondFormat[ChordStaff] = staff => {
     val contents = staff.glyphs.map {
-      case g: ChordNameGlyph => g.toLilypond
-      case g: ChordRestGlyph => g.toLilypond
+      case SingleGlyph(glyph: ChordNameGlyph, duration) =>
+        val spelledRoot = glyph.root.toLilypond
+        val spelledDur = writeDuration(duration)
+        spelledRoot + spelledDur + glyph.functions.toLilypond
+
+      case SingleGlyph(_: ChordRestGlyph, duration) =>
+        s"s${writeDuration(duration)}"
+
+      case _ => // TODO: write tuplets
     }.mkString("\n")
 
     // TODO: implement better font (http://lilypond-frogs.2124236.n2.nabble.com/Changing-Chord-Name-Font-Size-td4008276.html)
@@ -99,44 +133,10 @@ private[rendering] object LilypondFormat {
        |}""".stripMargin
   }
 
-  implicit val restToLilypond: LilypondFormat[RestGlyph] = rest => {
-    val durationString = rest.duration.toLilypond
-    if (rest.silent) "s" + durationString else "r" + durationString
-  }
-
-  implicit val chordRestToLilypond: LilypondFormat[ChordRestGlyph] = rest => {
-    s"s${rest.duration.toLilypond}"
-  }
-
-  implicit val spelledChordToLilypond: LilypondFormat[ChordNameGlyph] = chord => {
-    val spelledRoot = chord.root.toLilypond
-    val spelledDur = chord.duration.toLilypond
-    spelledRoot + spelledDur + chord.functions.toLilypond
-  }
-
   implicit val chordFunctionsToLilypond: LilypondFormat[Set[Function]] = { functions =>
     if (functions.contains(TwelveToneFunctions.FLAT_THREE)) ":m"
     else ""
   }
-
-  implicit val simultaneousPitchesToLilypond: LilypondFormat[NoteGroupGlyph] = noteGroup => {
-      if (noteGroup.isEmpty) ""
-      else {
-        val tie = (if (noteGroup.tieToNext) "~" else "")
-        if (noteGroup.isChord) {
-          val lilyNotes = noteGroup.notes
-            .map { pitch => pitch.spelling.toLilypond + pitch.octave.toLilypond + tie }
-            .mkString("<", " ", ">")
-
-          lilyNotes + noteGroup.duration.toLilypond
-        } else {
-          val pitchSpelling = noteGroup.notes.head.spelling.toLilypond
-          val octaveSpelling = noteGroup.notes.head.octave.toLilypond
-          val durationSpelling = noteGroup.duration.toLilypond
-          pitchSpelling + octaveSpelling + durationSpelling + tie
-        }
-      }
-    }
 
   implicit val spelledPitchToLilypond: LilypondFormat[PitchSpelling] = spelling => {
     @tailrec
@@ -174,8 +174,8 @@ private[rendering] object LilypondFormat {
     }
   }
 
-  implicit val writableDurationToLilypond: LilypondFormat[NoteValue] = dur => {
-    s"${2**dur.n}" + ("." * dur.dots)
+  def writeDuration(glyphDuration: GlyphDuration): String = {
+    s"${2**glyphDuration.n}" + ("." * glyphDuration.dots)
   }
 
   implicit val timeSignatureToLilypond: LilypondFormat[TimeSignatureGlyph] = timeSignature => {

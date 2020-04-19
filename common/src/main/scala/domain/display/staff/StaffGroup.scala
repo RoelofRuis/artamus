@@ -1,4 +1,4 @@
-package domain.display
+package domain.display.staff
 
 final case class StaffGroup(staves: Seq[Staff]) {
   def +(that: StaffGroup): StaffGroup = StaffGroup(staves ++ that.staves)

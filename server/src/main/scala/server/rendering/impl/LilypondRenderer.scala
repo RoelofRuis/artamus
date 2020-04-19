@@ -1,8 +1,8 @@
 package server.rendering.impl
 
 import com.typesafe.scalalogging.LazyLogging
-import domain.display.Display
 import domain.display.render.Render
+import domain.display.layout.Display
 import domain.interact.Display.TrackRendered
 import domain.interact.Event
 import domain.write.Track
