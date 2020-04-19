@@ -1,6 +1,6 @@
 package domain.display.layout
 
-import domain.display.glyph.Glyphs.{Glyph, GlyphDuration, SingleGlyph}
+import domain.display.glyph.Glyphs.GlyphDuration
 import domain.math.Rational
 import domain.math.temporal.Window
 
@@ -14,8 +14,8 @@ final case class Bar(barWindow: Window) {
 
   import domain.math.IntegerMath
 
-  def getBarSpans[A](windowed: Windowed[A]): Vector[Glyph[A]] = {
-    val durations: Vector[GlyphDuration] = barWindow.intersectNonInstant(windowed.window) match {
+  def fitGlyphDurations(window: Window): Vector[GlyphDuration] = {
+    val durations: Vector[GlyphDuration] = barWindow.intersectNonInstant(window) match {
       case None => Vector.empty
       case Some(windowWithinBar) =>
         windowWithinBar.duration.v match {
@@ -44,11 +44,9 @@ final case class Bar(barWindow: Window) {
         }
     }
 
-    val tiedDurations = (windowed.window.endsLaterThan(barWindow), durations.lastOption) match {
+    (window.endsLaterThan(barWindow), durations.lastOption) match {
       case (true, Some(lastDuration)) => durations.updated(durations.length-1, lastDuration.copy(tieToNext=true))
       case _ => durations
     }
-
-    tiedDurations.map(SingleGlyph(windowed.glyph, _))
   }
 }

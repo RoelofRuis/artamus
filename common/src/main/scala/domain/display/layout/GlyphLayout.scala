@@ -1,6 +1,6 @@
 package domain.display.layout
 
-import domain.display.glyph.Glyphs.Glyph
+import domain.display.glyph.Glyphs.{Glyph, SingleGlyph}
 import domain.math.temporal.{Position, Window}
 
 object GlyphLayout {
@@ -22,8 +22,13 @@ object GlyphLayout {
         }
       }
       .foldLeft(List[Glyph[A]]()) { case (acc, windowed) =>
-        acc ++ grid.getBars(windowed.window)
-          .flatMap { _.getBarSpans(windowed) }
+        acc ++ grid
+          .getBars(windowed.window)
+          .flatMap { bar =>
+            bar
+              .fitGlyphDurations(windowed.window)
+              .map(duration => SingleGlyph(windowed.glyph, duration))
+          }
       }
   }
 
