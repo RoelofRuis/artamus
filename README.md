@@ -1,4 +1,12 @@
-Artamus is a music analysis client/server application
+**Artamus** is a music analysis client/server application.
+
+#### Background
+For quite some years I've been thinking about what Photoshop for symbolic music (that is, sheet music) would look like.
+
+Furthermore I wanted to further develop my scala skills, so I wanted to use as few libraries as possible, write the program from scratch and just see how far I would get.
+
+Thus **Artamus** was born. This repository represents the current state of the project. 
+
 
 ##### Packages
 The application is separated into several packages to keep concerns separated
