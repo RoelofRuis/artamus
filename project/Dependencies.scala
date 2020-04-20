@@ -15,7 +15,7 @@ object Dependencies {
     val scalaGuice      = "net.codingwell" %% "scala-guice" % scalaGuiceVersion
     val scalaLogging    = "com.typesafe.scala-logging" %% "scala-logging" % scalaLoggingVersion
     val slf4jSimple     = "org.slf4j" % "slf4j-simple" % slf4jSimpleVersion
-    val sprayJson       = "io.spray" %%  "spray-json" % sprayJsonVersion
+    val sprayJson       = "io.spray" %% "spray-json" % sprayJsonVersion
     val microtest       = "com.lihaoyi" %% "utest" % microtestVersion
     val scalaSwing      = "org.scala-lang.modules" %% "scala-swing" % scalaSwingVersion
   }

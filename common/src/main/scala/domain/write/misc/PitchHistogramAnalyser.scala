@@ -6,7 +6,7 @@ object PitchHistogramAnalyser {
 
   def analyse(layer: NoteLayer): PitchHistogram = {
     layer
-      .notes
+      .defaultVoice
       .read()
       .map(_.pitchClass.value)
       .foldRight(PitchHistogram()) { case (pc, acc) =>

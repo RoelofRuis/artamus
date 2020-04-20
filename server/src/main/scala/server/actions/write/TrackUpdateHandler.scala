@@ -33,7 +33,7 @@ private[server] class TrackUpdateHandler @Inject() (
 
   registry.register[WriteNoteGroup]{ req =>
     updateTrack(req, _.mapLayerData {
-      case x: NoteLayer => x.writeNoteGroup(req.attributes.group)
+      case x: NoteLayer => x.writeNoteGroupToDefaultVoice(req.attributes.group)
       case x: RhythmLayer => x.writeNoteGroup(req.attributes.group)
     })
   }

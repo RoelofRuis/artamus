@@ -7,7 +7,7 @@ import domain.write.analysis.{Interpretation, TwelveToneTuning}
 object ChordAnalyser {
 
   def chordLayerForNoteLayer(l: NoteLayer): ChordLayer = {
-    val chords = l.notes
+    val chords = l.defaultVoice
       .readGroups()
       .flatMap { noteGroup =>
         val pitches = noteGroup.notes.map(_.pitchClass)

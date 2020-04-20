@@ -2,12 +2,15 @@ package domain.write.layers
 
 import domain.math.temporal.Position
 import domain.primitives.{Key, NoteGroup, TimeSignature}
-import domain.write.{Keys, Notes, TimeSignatures}
+import domain.write.Voice.VoiceId
+import domain.write.{Keys, TimeSignatures, Voice}
+
+import scala.collection.immutable.ListMap
 
 final case class NoteLayer(
   timeSignatures: TimeSignatures = TimeSignatures(),
   keys: Keys = Keys(),
-  notes: Notes = Notes(),
+  voices: ListMap[VoiceId, Voice] = ListMap(),
 ) extends LayerData {
 
   def writeTimeSignature(pos: Position, timeSignature: TimeSignature): NoteLayer = copy(
@@ -18,8 +21,14 @@ final case class NoteLayer(
     keys = keys.writeKey(pos, key)
   )
 
-  def writeNoteGroup(noteGroup: NoteGroup): NoteLayer = copy(
-    notes = notes.writeNoteGroup(noteGroup)
+  def writeNoteGroupToDefaultVoice(noteGroup: NoteGroup): NoteLayer = writeNoteGroupToVoice(noteGroup, DEFAULT_VOICE)
+
+  def writeNoteGroupToVoice(noteGroup: NoteGroup, voice: VoiceId): NoteLayer = copy(
+    voices = voices.updated(voice, voices.getOrElse(voice, Voice()).writeNoteGroup(noteGroup))
   )
+
+  def defaultVoice: Voice = voices.getOrElse(DEFAULT_VOICE, Voice())
+
+  private def DEFAULT_VOICE: VoiceId = VoiceId(0) // Cannot be val because of json serialization...
 
 }

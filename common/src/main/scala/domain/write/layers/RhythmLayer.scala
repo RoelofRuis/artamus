@@ -2,11 +2,11 @@ package domain.write.layers
 
 import domain.math.temporal.Position
 import domain.primitives.{NoteGroup, TimeSignature}
-import domain.write.{Notes, TimeSignatures}
+import domain.write.{TimeSignatures, Voice}
 
 final case class RhythmLayer(
   timeSignatures: TimeSignatures = TimeSignatures(),
-  notes: Notes = Notes(),
+  voice: Voice = Voice(),
 ) extends LayerData {
 
   def writeTimeSignature(pos: Position, timeSignature: TimeSignature): RhythmLayer = copy(
@@ -14,7 +14,7 @@ final case class RhythmLayer(
   )
 
   def writeNoteGroup(noteGroup: NoteGroup): RhythmLayer = copy(
-    notes = notes.writeNoteGroup(noteGroup)
+    voice = voice.writeNoteGroup(noteGroup)
   )
 
 }

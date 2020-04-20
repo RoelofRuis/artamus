@@ -29,7 +29,7 @@ object DisplayableLayers {
   }
 
   implicit class DisplayableRhythmLayer(layer: RhythmLayer) {
-    lazy val elementIterator: Seq[Windowed[StaffGlyph]] = layer.notes.readGroupsList().map { noteGroup =>
+    lazy val elementIterator: Seq[Windowed[StaffGlyph]] = layer.voice.readGroupsList().map { noteGroup =>
       Windowed[StaffGlyph](noteGroup.window, NoteGroupGlyph(Seq()))
     }
 
@@ -57,7 +57,7 @@ object DisplayableLayers {
 
     def elementIterator(inclusion: InclusionStrategy): Seq[Windowed[StaffGlyph]] =
       layer
-        .notes
+        .defaultVoice
         .readGroupsList()
         .flatMap { noteGroup =>
           inclusion(noteGroup) match {

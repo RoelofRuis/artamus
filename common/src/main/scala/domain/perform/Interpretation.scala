@@ -15,7 +15,7 @@ object Interpretation {
       case Some(layer) =>
         TrackPerformance(
           layer
-            .notes
+            .defaultVoice
             .readGroups()
             .flatMap { noteGroup =>
               noteGroup.notes.map { note =>

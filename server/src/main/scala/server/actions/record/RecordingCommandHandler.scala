@@ -53,7 +53,7 @@ private[server] class RecordingCommandHandler @Inject() (
             case (l, (pos, (notes, duration))) => l.writeNoteGroup(NoteGroup(Window(pos, duration), notes))
           }
           else notePositions.foldLeft(NoteLayer()) {
-            case (l, (pos, (notes, duration))) => l.writeNoteGroup(NoteGroup(Window(pos, duration), notes))
+            case (l, (pos, (notes, duration))) => l.writeNoteGroupToDefaultVoice(NoteGroup(Window(pos, duration), notes))
           }
 
           val res = for {

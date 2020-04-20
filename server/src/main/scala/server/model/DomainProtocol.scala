@@ -81,7 +81,7 @@ trait DomainProtocol extends DefaultJsonProtocol {
 
     override def read(json: JsValue): A = json match {
       case JsString(i) => create(UUID.fromString(i))
-      case err => deserializationError(s"Invalid RecordingId [$err]")
+      case err => deserializationError(s"Invalid Id [$err]")
     }
     override def write(obj: A): JsValue = JsString(obj.id.toString)
   }

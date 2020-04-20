@@ -5,7 +5,7 @@ import domain.primitives.{Note, NoteGroup}
 
 import scala.collection.immutable.SortedMap
 
-final case class Notes private ( // TODO: see if still required
+final case class Voice private (
   notes: SortedMap[Position, NoteGroup]
 ) {
 
@@ -13,14 +13,15 @@ final case class Notes private ( // TODO: see if still required
   def readGroups(): Iterator[NoteGroup] = notes.valuesIterator
   def read(): Iterator[Note] = notes.valuesIterator.flatMap(_.notes)
 
-  def writeNoteGroup(noteGroup: NoteGroup): Notes = copy(
-      notes = notes.updated(noteGroup.window.start, noteGroup)
-    )
+  def writeNoteGroup(noteGroup: NoteGroup): Voice = copy(
+    notes = notes.updated(noteGroup.window.start, noteGroup)
+  )
 
 }
 
-object Notes {
+object Voice {
 
-  def apply(): Notes = new Notes(SortedMap())
+  def apply(): Voice = new Voice(SortedMap())
 
+  final case class VoiceId(id: Int) extends AnyVal
 }

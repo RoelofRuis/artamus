@@ -5,6 +5,7 @@ import java.util.UUID
 import domain.math.temporal.Window
 import domain.primitives.{Chord, Key, NoteGroup, TimeSignature}
 import domain.write.Track.TrackId
+import domain.write.Voice.VoiceId
 import domain.write._
 import domain.write.layers.Layer.LayerId
 import domain.write.layers._
@@ -35,9 +36,16 @@ object Tracks {
       override def write(obj: Chords): JsValue = savePositions(obj.chords).toJson
     }
 
-    implicit object NotesFormat extends JsonFormat[Notes] {
-      override def read(json: JsValue): Notes = Notes(loadPositions(json.convertTo[Map[String, NoteGroup]]))
-      override def write(obj: Notes): JsValue = savePositions(obj.notes).toJson
+    implicit val voiceIdFormat: JsonFormat[VoiceId] = jsonFormat1(VoiceId.apply)
+
+    implicit object VoiceFormat extends JsonFormat[Voice] {
+      override def read(json: JsValue): Voice = Voice(loadPositions(json.convertTo[Map[String, NoteGroup]]))
+      override def write(obj: Voice): JsValue = savePositions(obj.notes).toJson
+    }
+
+    implicit object VoicesFormat extends JsonFormat[ListMap[VoiceId, Voice]] {
+      override def read(json: JsValue): ListMap[VoiceId, Voice] = ListMap.from(json.convertTo[List[(VoiceId, Voice)]])
+      override def write(obj: ListMap[VoiceId, Voice]): JsValue = obj.toList.toJson
     }
 
     implicit val noteLayerFormat: JsonFormat[NoteLayer] = jsonFormat3(NoteLayer.apply)
