@@ -32,7 +32,7 @@ lazy val common = (project in file("common"))
 lazy val storage = (project in file("storage"))
   .settings(
     name := "storage",
-    description := "Ligthweight in-memory/file storage",
+    description := "Lightweight in-memory/file storage",
     compilerFlags,
     libraryDependencies ++= Seq(
       dependencies.findbugs,
