@@ -16,12 +16,12 @@ class CommandCollector @Inject() (
 
   def handle(user: User, request: Request): Unit = {
     request match {
-      case Commit(taskId) =>
+      case Commit() =>
         val commands = Option(userCommands.remove(user)) match {
           case Some(commands) => commands
           case None => List()
         }
-        taskScheduler.scheduleCommands(taskId, user, commands)
+        taskScheduler.scheduleCommands(user, commands)
 
       case c: Command =>
         userCommands.put(user, userCommands.getOrDefault(user, List()) :+ c)

@@ -3,7 +3,7 @@ package server.infra
 import java.util.concurrent.{ExecutorService, Executors}
 
 import com.typesafe.scalalogging.LazyLogging
-import domain.interact.Control.{TaskFailed, TaskId, TaskSuccessful}
+import domain.interact.Control.{TaskFailed, TaskId, TaskStarted, TaskSuccessful}
 import domain.interact.{Command, Event}
 import domain.workspace.User
 import javax.inject.{Inject, Singleton}
@@ -29,8 +29,12 @@ class TaskExecutor @Inject() (
 
   private implicit val executionContext: ExecutionContext = ExecutionContext.fromExecutor(executor)
 
-  def scheduleCommands(taskId: TaskId, user: User, commands: List[Command]): Unit = {
+  def scheduleCommands(user: User, commands: List[Command]): Unit = {
+    val taskId = TaskId()
+    eventBus.publish(TaskStarted(taskId))
+
     logger.debug(s"Scheduling commands for task [$taskId]")
+
     Future {
       val transaction = db.newTransaction
       val result = commands.foldLeft(TaskResult()) { case (result, command) =>

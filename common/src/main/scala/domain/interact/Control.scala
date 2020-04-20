@@ -8,10 +8,10 @@ object Control {
   final case class Authenticate(userName: String) extends Command
 
   // Tasks
-  final case class TaskId private (id: UUID)
-  final object TaskId { def apply(): TaskId = TaskId(UUID.randomUUID()) }
+  final case class TaskId(id: UUID = UUID.randomUUID())
 
-  final case class Commit(taskId: TaskId = TaskId()) extends Command // TODO: refactor so starting task is also sent to client
+  final case class Commit() extends Command
+  final case class TaskStarted(taskId: TaskId) extends Event
   final case class TaskSuccessful(taskId: TaskId) extends Event
   final case class TaskFailed(taskId: TaskId, error: Throwable) extends Event
 

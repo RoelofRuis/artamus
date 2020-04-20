@@ -4,7 +4,7 @@ import client.infra.{Client, ClientInteraction}
 import client.module.Operations.{OperationRegistry, ServerOperation}
 import client.module.StdIOTools
 import domain.interact.Command
-import domain.interact.Control.{Commit, TaskId}
+import domain.interact.Control.Commit
 import domain.interact.Display.Render
 import domain.interact.Perform.PreparePerformance
 import domain.interact.Write._
@@ -23,7 +23,7 @@ class TerminalOperations @Inject() (
   import ClientInteraction._
 
   registry.server("commit", "control", {
-    ServerOperation(Commit(TaskId()))
+    ServerOperation(Commit())
   })
 
   registry.local("print-notes", "query (terminal)", {
