@@ -21,6 +21,10 @@ private[server] class TrackUpdateHandler @Inject() (
     updateTrack(req, _.updateLayer(req.attributes.layer, _.copy(visible = req.attributes.isVisible)))
   }
 
+  registry.register[DeleteLayer] { req =>
+    updateTrack(req, _.deleteLayer(req.attributes.layer))
+  }
+
   registry.register[AnalyseChords.type] { req =>
     updateTrack(req, { track =>
       track // TODO: eventually move to layer blending

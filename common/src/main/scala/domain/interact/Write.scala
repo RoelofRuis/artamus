@@ -14,6 +14,7 @@ object Write {
   @deprecated("This should be replaced by completely async handling")
   final case object GetLayers extends Query { type Res = Map[Int, (LayerId, Boolean)] }
   final case class SetLayerVisibility(layer: LayerId, isVisible: Boolean) extends Command
+  final case class DeleteLayer(layer: LayerId) extends Command
 
   final case object AnalyseChords extends Command
 

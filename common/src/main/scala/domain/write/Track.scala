@@ -24,6 +24,10 @@ final case class Track (
       .collectFirst { case a: A => a }
   }
 
+  def deleteLayer(id: LayerId): Track = copy (
+    layers = layers.removed(id)
+  )
+
   def updateLayer(id: LayerId, f: Layer => Layer): Track = copy (
     layers = layers.get(id) match {
       case None => layers
