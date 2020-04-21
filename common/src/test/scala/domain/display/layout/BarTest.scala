@@ -1,7 +1,6 @@
-package domain.display.windowing
+package domain.display.layout
 
 import domain.display.glyph.Glyphs.GlyphDuration
-import domain.display.layout.Bar
 import domain.math.Rational
 import domain.math.temporal.{Duration, Position, Window}
 import utest._
