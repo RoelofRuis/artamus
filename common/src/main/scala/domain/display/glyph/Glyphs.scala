@@ -13,6 +13,6 @@ object Glyphs {
 
   final case class SingleGlyph[A](glyph: A, properties: GlyphDuration) extends Glyph[A]
 
-  final case class TupletGlyph[A](contents: List[Glyph[A]], factor: Int) extends Glyph[A]
+  final case class TupletGlyph[A](contents: Seq[Glyph[A]], factor: Int) extends Glyph[A]
 
 }

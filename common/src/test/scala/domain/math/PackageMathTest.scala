@@ -4,8 +4,6 @@ import utest._
 
 object PackageMathTest extends TestSuite {
 
-  println(2.largestPowerOfTwo)
-
   val tests: Tests = Tests {
     test("accepts powers of 2") {
       assert(1.isPowerOfTwo)

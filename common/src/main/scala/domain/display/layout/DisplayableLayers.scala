@@ -22,7 +22,7 @@ object DisplayableLayers {
     def display: StaffGroup = {
       StaffGroup(
         ChordStaff(
-          GlyphLayout.layoutGlyphs(elementIterator, ChordRestGlyph(), new Grid())
+          LayerLayout.layoutGlyphs(elementIterator, ChordRestGlyph(), Bars())
         )
       )
     }
@@ -36,7 +36,7 @@ object DisplayableLayers {
     def display: StaffGroup = {
       StaffGroup(
         RhythmicStaff(
-          GlyphLayout.layoutGlyphs(elementIterator, RestGlyph(), new Grid())
+          LayerLayout.layoutGlyphs(elementIterator, RestGlyph(), Bars())
         )
       )
     }
@@ -80,15 +80,15 @@ object DisplayableLayers {
       val staffGroup = (hasTreble, hasBass) match {
         case (true, true) =>
           GrandStaff(
-            NoteStaff(Treble, GlyphLayout.layoutGlyphs(trebleGlyphs, RestGlyph(), new Grid())),
-            NoteStaff(Bass, GlyphLayout.layoutGlyphs(bassGlyphs, RestGlyph(), new Grid()))
+            NoteStaff(Treble, LayerLayout.layoutGlyphs(trebleGlyphs, RestGlyph(), Bars())),
+            NoteStaff(Bass, LayerLayout.layoutGlyphs(bassGlyphs, RestGlyph(), Bars()))
           )
         case (true, false) =>
-          NoteStaff(Treble, GlyphLayout.layoutGlyphs(trebleGlyphs, RestGlyph(), new Grid()))
+          NoteStaff(Treble, LayerLayout.layoutGlyphs(trebleGlyphs, RestGlyph(), Bars()))
         case (false, true) =>
-          NoteStaff(Bass, GlyphLayout.layoutGlyphs(bassGlyphs, RestGlyph(), new Grid()))
+          NoteStaff(Bass, LayerLayout.layoutGlyphs(bassGlyphs, RestGlyph(), Bars()))
         case (false, false) =>
-          NoteStaff(Bass, GlyphLayout.layoutGlyphs(Seq[Windowed[StaffGlyph]](), RestGlyph(), new Grid()))
+          NoteStaff(Bass, LayerLayout.layoutGlyphs(Seq[Windowed[StaffGlyph]](), RestGlyph(), Bars()))
       }
 
       StaffGroup(staffGroup)

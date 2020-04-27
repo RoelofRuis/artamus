@@ -9,8 +9,6 @@ object WindowTest extends TestSuite {
   final val window1 = Window(Position.ZERO, Duration(Rational(1, 8)))
   final val window2 = Window(Position(Rational(1, 2)), Duration(Rational(1, 4)))
 
-  println(window1.until(window2))
-
   val tests: Tests = Tests {
     test("window ends correctly") {
       assert(window0.end == Position(Rational(1, 8)))
