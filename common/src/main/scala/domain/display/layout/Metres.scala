@@ -1,6 +1,5 @@
 package domain.display.layout
 
-import domain.display.layout.LayerLayout.Metre
 import domain.math.temporal.{Position, Window}
 import domain.primitives.TimeSignature
 

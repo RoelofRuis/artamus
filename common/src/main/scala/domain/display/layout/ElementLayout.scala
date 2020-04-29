@@ -6,17 +6,13 @@ import domain.math.temporal.{Position, Window}
 
 import scala.annotation.tailrec
 
-object LayerLayout {
+object ElementLayout {
+
+  final case class Element[A](window: Window, glyph: A)
 
   import domain.math.IntegerMath
 
-  final case class Metre(
-    window: Window,
-  ) {
-    def subdivisions: Seq[Metre] = ???
-  }
-
-  def layoutGlyphs[A](
+  def layoutElements[A](
     elements: Seq[Element[A]],
     restGlyph: A,
     metres: Metres
@@ -24,7 +20,7 @@ object LayerLayout {
     def restElement(window: Window): Element[A] = Element(window, restGlyph)
 
     @tailrec
-    def layoutElements(
+    def loop(
       acc: List[Glyph[A]],
       position: Position,
       elements: Seq[Element[A]],
@@ -42,7 +38,7 @@ object LayerLayout {
 
           if (elementWindow.start >= metre.window.end) { // insert rest as long as bar, move to next bar
             val newGlyphs = fitGlyphs(metre, restElement(metre.window))
-            layoutElements(
+            loop(
               acc ++ newGlyphs,
               metre.window.end,
               elements,
@@ -52,7 +48,7 @@ object LayerLayout {
           else if (elementWindow.end <= metre.window.end) {
             if (elementWindow.start > position) { // insert rest and continue with this bar
               val newGlyphs = fitGlyphs(metre, restElement(Window(position, elementWindow.start - position)))
-              layoutElements(
+              loop(
                 acc ++ newGlyphs,
                 elementWindow.start,
                 elements,
@@ -61,7 +57,7 @@ object LayerLayout {
             }
             else { // insert element and if last element move to next bar
               val newGlyphs = fitGlyphs(metre, element)
-              layoutElements(
+              loop(
                 acc ++ newGlyphs,
                 elementWindow.end,
                 elements.tail,
@@ -71,7 +67,7 @@ object LayerLayout {
           }
           else { // insert element as long as bar, move to next bar
             val newGlyphs = fitGlyphs(metre, element, tie=true)
-            layoutElements(
+            loop(
               acc ++ newGlyphs,
               metre.window.end,
               elements,
@@ -87,7 +83,9 @@ object LayerLayout {
         case None => Seq.empty
         case Some(window) =>
           window.duration.v match {
-            case r @ Rational(_, d) if ! d.isPowerOfTwo => throw new NotImplementedError(s"Cannot fit tuplet [$r]!")
+            case r @ Rational(_, d) if ! d.isPowerOfTwo =>
+              throw new NotImplementedError(s"Cannot fit tuplet [$r]!")
+
             case Rational(1, d) =>
               Seq(SingleGlyph(element.glyph, GlyphDuration(d.largestPowerOfTwo, 0, tie)))
 
@@ -109,7 +107,7 @@ object LayerLayout {
     }
 
 
-    layoutElements(List(), Position.ZERO, elements, metres.iterateMetres)
+    loop(List(), Position.ZERO, elements, metres.iterateMetres)
   }
 
 

@@ -2,6 +2,7 @@ package domain.display.layout
 
 import domain.display.glyph.ChordStaffGlyphFamily.{ChordNameGlyph, ChordRestGlyph, ChordStaffGlyph}
 import domain.display.glyph.StaffGlyphFamily.{NoteGroupGlyph, RestGlyph, StaffGlyph}
+import domain.display.layout.ElementLayout.Element
 import domain.display.staff.NoteStaff.{Bass, Treble}
 import domain.display.staff._
 import domain.primitives.{MidiNoteNumber, Note, NoteGroup}
@@ -22,7 +23,7 @@ object DisplayableLayers {
     def display: StaffGroup = {
       StaffGroup(
         ChordStaff(
-          LayerLayout.layoutGlyphs(elementIterator, ChordRestGlyph(), Metres())
+          ElementLayout.layoutElements(elementIterator, ChordRestGlyph(), Metres())
         )
       )
     }
@@ -36,7 +37,7 @@ object DisplayableLayers {
     def display: StaffGroup = {
       StaffGroup(
         RhythmicStaff(
-          LayerLayout.layoutGlyphs(elementIterator, RestGlyph(), Metres())
+          ElementLayout.layoutElements(elementIterator, RestGlyph(), Metres())
         )
       )
     }
@@ -80,15 +81,15 @@ object DisplayableLayers {
       val staffGroup = (hasTreble, hasBass) match {
         case (true, true) =>
           GrandStaff(
-            NoteStaff(Treble, LayerLayout.layoutGlyphs(trebleGlyphs, RestGlyph(), Metres())),
-            NoteStaff(Bass, LayerLayout.layoutGlyphs(bassGlyphs, RestGlyph(), Metres()))
+            NoteStaff(Treble, ElementLayout.layoutElements(trebleGlyphs, RestGlyph(), Metres())),
+            NoteStaff(Bass, ElementLayout.layoutElements(bassGlyphs, RestGlyph(), Metres()))
           )
         case (true, false) =>
-          NoteStaff(Treble, LayerLayout.layoutGlyphs(trebleGlyphs, RestGlyph(), Metres()))
+          NoteStaff(Treble, ElementLayout.layoutElements(trebleGlyphs, RestGlyph(), Metres()))
         case (false, true) =>
-          NoteStaff(Bass, LayerLayout.layoutGlyphs(bassGlyphs, RestGlyph(), Metres()))
+          NoteStaff(Bass, ElementLayout.layoutElements(bassGlyphs, RestGlyph(), Metres()))
         case (false, false) =>
-          NoteStaff(Bass, LayerLayout.layoutGlyphs(Seq[Element[StaffGlyph]](), RestGlyph(), Metres()))
+          NoteStaff(Bass, ElementLayout.layoutElements(Seq[Element[StaffGlyph]](), RestGlyph(), Metres()))
       }
 
       StaffGroup(staffGroup)
