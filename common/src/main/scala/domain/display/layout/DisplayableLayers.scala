@@ -13,30 +13,30 @@ object DisplayableLayers {
   implicit class DisplayableChordLayer(layer: ChordLayer) {
     private val initialKey = layer.keys.initialKey
 
-    lazy val elementIterator: Seq[Windowed[ChordStaffGlyph]] = layer.chords.chords.map {
+    lazy val elementIterator: Seq[Element[ChordStaffGlyph]] = layer.chords.chords.map {
       case (_, (window, chord)) =>
         val spelling = TwelveTonePitchSpelling.spellChord(chord, initialKey)
-        Windowed[ChordStaffGlyph](window, ChordNameGlyph(spelling, chord.functions))
+        Element[ChordStaffGlyph](window, ChordNameGlyph(spelling, chord.functions))
     }.toSeq
 
     def display: StaffGroup = {
       StaffGroup(
         ChordStaff(
-          LayerLayout.layoutGlyphs(elementIterator, ChordRestGlyph(), Bars())
+          LayerLayout.layoutGlyphs(elementIterator, ChordRestGlyph(), Metres())
         )
       )
     }
   }
 
   implicit class DisplayableRhythmLayer(layer: RhythmLayer) {
-    lazy val elementIterator: Seq[Windowed[StaffGlyph]] = layer.voice.readGroupsList().map { noteGroup =>
-      Windowed[StaffGlyph](noteGroup.window, NoteGroupGlyph(Seq()))
+    lazy val elementIterator: Seq[Element[StaffGlyph]] = layer.voice.readGroupsList().map { noteGroup =>
+      Element[StaffGlyph](noteGroup.window, NoteGroupGlyph(Seq()))
     }
 
     def display: StaffGroup = {
       StaffGroup(
         RhythmicStaff(
-          LayerLayout.layoutGlyphs(elementIterator, RestGlyph(), Bars())
+          LayerLayout.layoutGlyphs(elementIterator, RestGlyph(), Metres())
         )
       )
     }
@@ -55,7 +55,7 @@ object DisplayableLayers {
     private def lowerEqualNoteNumbers(bound: Int): InclusionStrategy = noteGroup =>
       noteGroup.notes.filter(note => MidiNoteNumber(note.octave, note.pitchClass).value <= bound)
 
-    def elementIterator(inclusion: InclusionStrategy): Seq[Windowed[StaffGlyph]] =
+    def elementIterator(inclusion: InclusionStrategy): Seq[Element[StaffGlyph]] =
       layer
         .defaultVoice
         .readGroupsList()
@@ -67,7 +67,7 @@ object DisplayableLayers {
         }
         .map { noteGroup =>
           val noteSpellings = noteGroup.notes.map(note => TwelveTonePitchSpelling.spellNote(note, initialKey))
-          Windowed[StaffGlyph](noteGroup.window, NoteGroupGlyph(noteSpellings))
+          Element[StaffGlyph](noteGroup.window, NoteGroupGlyph(noteSpellings))
         }
 
     def display: StaffGroup = {
@@ -80,15 +80,15 @@ object DisplayableLayers {
       val staffGroup = (hasTreble, hasBass) match {
         case (true, true) =>
           GrandStaff(
-            NoteStaff(Treble, LayerLayout.layoutGlyphs(trebleGlyphs, RestGlyph(), Bars())),
-            NoteStaff(Bass, LayerLayout.layoutGlyphs(bassGlyphs, RestGlyph(), Bars()))
+            NoteStaff(Treble, LayerLayout.layoutGlyphs(trebleGlyphs, RestGlyph(), Metres())),
+            NoteStaff(Bass, LayerLayout.layoutGlyphs(bassGlyphs, RestGlyph(), Metres()))
           )
         case (true, false) =>
-          NoteStaff(Treble, LayerLayout.layoutGlyphs(trebleGlyphs, RestGlyph(), Bars()))
+          NoteStaff(Treble, LayerLayout.layoutGlyphs(trebleGlyphs, RestGlyph(), Metres()))
         case (false, true) =>
-          NoteStaff(Bass, LayerLayout.layoutGlyphs(bassGlyphs, RestGlyph(), Bars()))
+          NoteStaff(Bass, LayerLayout.layoutGlyphs(bassGlyphs, RestGlyph(), Metres()))
         case (false, false) =>
-          NoteStaff(Bass, LayerLayout.layoutGlyphs(Seq[Windowed[StaffGlyph]](), RestGlyph(), Bars()))
+          NoteStaff(Bass, LayerLayout.layoutGlyphs(Seq[Element[StaffGlyph]](), RestGlyph(), Metres()))
       }
 
       StaffGroup(staffGroup)
