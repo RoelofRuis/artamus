@@ -19,6 +19,7 @@ object ElementLayout {
   ): Seq[Glyph[A]] = {
     def restElement(window: Window): Element[A] = Element(window, restGlyph)
 
+  // TODO: condense de loop met mooi datastructuurtje, dan verder ontwikkelen!
     @tailrec
     def loop(
       acc: List[Glyph[A]],
