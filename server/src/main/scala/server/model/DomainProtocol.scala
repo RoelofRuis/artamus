@@ -3,12 +3,12 @@ package server.model
 import java.util.UUID
 
 import domain.math.Rational
-import domain.write.analysis.TwelveToneTuning
 import domain.math.temporal.{Duration, Position, Window}
+import domain.primitives.{Accidental, Chord, Function, Key, Loudness, Metre, MidiNoteNumber, Note, NoteGroup, Octave, PitchClass, PitchSpelling, PulseGroup, Scale, ScientificPitch, Step}
 import domain.record.{MillisecondPosition, RawMidiNote}
 import domain.workspace.User.UserId
 import domain.write.Track.TrackId
-import domain.primitives.{Accidental, Chord, Function, Key, Loudness, MidiNoteNumber, Note, NoteGroup, Octave, PitchClass, PitchSpelling, Scale, ScientificPitch, Step, TimeSignature, TimeSignatureDivision}
+import domain.write.analysis.TwelveToneTuning
 import spray.json._
 
 import scala.collection.immutable.SortedMap
@@ -31,17 +31,6 @@ trait DomainProtocol extends DefaultJsonProtocol {
       case RATIONAL(num, denom) => (Position(Rational(num.toInt, denom.toInt)), a)
     }
     SortedMap.from(m.map { case (s, a) => positionFromString(s, a) })
-  }
-
-  implicit object TimeSignatureDivisionFormat extends JsonFormat[TimeSignatureDivision] {
-    override def read(json: JsValue): TimeSignatureDivision = json match {
-      case JsString(RATIONAL(num, denom)) => TimeSignatureDivision(num.toInt, denom.toInt) match {
-        case Some(div) => div
-        case None => deserializationError("Invalid Time Signature Division")
-      }
-      case _ => deserializationError("String expected")
-    }
-    override def write(obj: TimeSignatureDivision): JsValue = JsString(writeRational(obj.num, obj.denom))
   }
 
   implicit object DurationFormat extends JsonFormat[Duration] {
@@ -110,8 +99,9 @@ trait DomainProtocol extends DefaultJsonProtocol {
     override def write(obj: Octave): JsValue = JsNumber(obj.value)
   }
 
+  implicit val pulseGroup = jsonFormat2(PulseGroup.apply)
+  implicit val metreFromat = jsonFormat1(Metre.apply)
   implicit val rationalModel = jsonFormat2(Rational.apply)
-  implicit val timeSignatureFormat = jsonFormat1(TimeSignature.apply)
   implicit val scaleFormat = jsonFormat1(Scale.apply)
   implicit val pitchSpellingFormat = jsonFormat2(PitchSpelling)
   implicit val keyFormat = jsonFormat2(Key)

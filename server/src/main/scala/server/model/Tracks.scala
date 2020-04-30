@@ -3,7 +3,7 @@ package server.model
 import java.util.UUID
 
 import domain.math.temporal.Window
-import domain.primitives.{Chord, Key, NoteGroup, TimeSignature}
+import domain.primitives.{Chord, Key, Metre, NoteGroup}
 import domain.write.Track.TrackId
 import domain.write.Voice.VoiceId
 import domain.write._
@@ -21,9 +21,9 @@ object Tracks {
     override def objectId(obj: Track): TrackId = obj.id
     override def serializeId(id: TrackId): String = id.id.toString
 
-    implicit object TimeSignaturesFormat extends JsonFormat[TimeSignatures] {
-      override def read(json: JsValue): TimeSignatures = TimeSignatures(loadPositions(json.convertTo[Map[String, TimeSignature]]))
-      override def write(obj: TimeSignatures): JsValue = savePositions(obj.timeSignatures).toJson
+    implicit object MetresFormat extends JsonFormat[Metres] {
+      override def read(json: JsValue): Metres = Metres(loadPositions(json.convertTo[Map[String, Metre]]))
+      override def write(obj: Metres): JsValue = savePositions(obj.metres).toJson
     }
 
     implicit object KeysFormat extends JsonFormat[Keys] {

@@ -1,17 +1,17 @@
 package domain.write.layers
 
 import domain.math.temporal.Position
-import domain.primitives.{Key, TimeSignature}
-import domain.write.{Chords, Keys, TimeSignatures}
+import domain.primitives.{Key, Metre}
+import domain.write.{Chords, Keys, Metres}
 
 final case class ChordLayer(
-  timeSignatures: TimeSignatures = TimeSignatures(),
+  timeSignatures: Metres = Metres(),
   keys: Keys = Keys(),
   chords: Chords = Chords(),
 ) extends LayerData {
 
-  def writeTimeSignature(pos: Position, timeSignature: TimeSignature): ChordLayer = copy(
-    timeSignatures = timeSignatures.writeTimeSignature(pos, timeSignature)
+  def writeMetre(pos: Position, metre: Metre): ChordLayer = copy(
+    timeSignatures = timeSignatures.writeMetre(pos, metre)
   )
 
   def writeKey(pos: Position, key: Key): ChordLayer = copy(

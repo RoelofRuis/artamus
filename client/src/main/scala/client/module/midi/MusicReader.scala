@@ -28,19 +28,6 @@ object MusicReader {
       }
     }
 
-    def readTimeSignatureDivision: MidiIO[TimeSignatureDivision] = {
-      val res = for {
-        num <- readMidiNoteNumbers(Simultaneous)
-        denom <- readMidiNoteNumbers(NoteOn(1))
-      } yield TimeSignatureDivision(numberFromBits(num), numberFromBits(denom))
-
-      res match {
-        case Left(ex) => Left(ex)
-        case Right(None) => readTimeSignatureDivision
-        case Right(Some(x)) => Right(x)
-      }
-    }
-
     def readPitchClasses(method: ReadMethod): MidiIO[List[PitchClass]] = {
       for {
         notes <- readMidiNoteNumbers(method)
@@ -53,12 +40,6 @@ object MusicReader {
         case Simultaneous => midiInput.simultaneousPressedOn
       }
       notes.map(list => list.map(note => MidiNoteNumber(note.asInstanceOf[ShortMessage].getData1)))
-    }
-
-    private def numberFromBits(notes: List[MidiNoteNumber]): Int = {
-      notes.foldRight(0){ case (noteNumber, acc) =>
-        acc + (1 << noteNumber.toPc.value)
-      }
     }
   }
 

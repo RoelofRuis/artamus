@@ -42,11 +42,11 @@ private[server] class TrackUpdateHandler @Inject() (
     })
   }
 
-  registry.register[WriteTimeSignature]{ req =>
+  registry.register[WriteMetre]{ req =>
     updateTrack(req, _.mapLayerData {
-      case x: ChordLayer => x.writeTimeSignature(req.attributes.position, req.attributes.ts)
-      case x: NoteLayer => x.writeTimeSignature(req.attributes.position, req.attributes.ts)
-      case x: RhythmLayer => x.writeTimeSignature(req.attributes.position, req.attributes.ts)
+      case x: ChordLayer => x.writeMetre(req.attributes.position, req.attributes.metre)
+      case x: NoteLayer => x.writeMetre(req.attributes.position, req.attributes.metre)
+      case x: RhythmLayer => x.writeMetre(req.attributes.position, req.attributes.metre)
     })
   }
 

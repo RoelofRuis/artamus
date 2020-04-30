@@ -1,29 +1,19 @@
 package domain.display.layout
 
-import domain.math.temporal.{Position, Window}
-import domain.primitives.TimeSignature
+import domain.math.temporal.Position
+import domain.primitives.{Metre, PulseGroup}
 
-// TODO: make work with actual time signatures instead of fixed value
+// TODO: this should integrate with current [[domain.write.TimeSignatures]]
 final case class Metres() {
 
-  def iterateMetres: LazyList[Metre] = {
-    val activeTimeSignature = TimeSignature.`4/4`
+  def iterateMetres: LazyList[WindowedMetre] = {
+    val activeMetre = Metre(Seq(PulseGroup(2, 2), PulseGroup(2, 2)))
 
-    def loop(searchPos: Position): LazyList[Metre] = {
-      val metreWindow = Window(searchPos, activeTimeSignature.division.barDuration)
-      Metre(metreWindow) #:: loop(searchPos + metreWindow.duration)
+    def loop(searchPos: Position): LazyList[WindowedMetre] = {
+      WindowedMetre(searchPos, activeMetre) #:: loop(searchPos + activeMetre.duration)
     }
 
     loop(Position.ZERO)
   }
-
-}
-
-object Metres {
-
-  @deprecated
-  final case class Bar(
-    barWindow: Window,
-  )
 
 }

@@ -24,7 +24,7 @@ object ElementLayout {
       acc: List[Glyph[A]],
       position: Position,
       elements: Seq[Element[A]],
-      metres: LazyList[Metre]
+      metres: LazyList[WindowedMetre]
     ): List[Glyph[A]] = {
       val metre = metres.head
 
@@ -78,7 +78,7 @@ object ElementLayout {
     }
 
     // TODO: this can now be improved based on info given in metre!
-    def fitGlyphs(metre: Metre, element: Element[A], tie: Boolean = false): Seq[Glyph[A]] = {
+    def fitGlyphs(metre: WindowedMetre, element: Element[A], tie: Boolean = false): Seq[Glyph[A]] = {
       metre.window.intersectNonInstant(element.window) match {
         case None => Seq.empty
         case Some(window) =>

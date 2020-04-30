@@ -10,7 +10,7 @@ import domain.interact.Perform.PreparePerformance
 import domain.interact.Write._
 import domain.math.Rational
 import domain.math.temporal.{Duration, Position, Window}
-import domain.primitives.{NoteGroup, TimeSignature}
+import domain.primitives.NoteGroup
 import javax.inject.Inject
 
 import scala.annotation.tailrec
@@ -37,7 +37,7 @@ class TerminalOperations @Inject() (
 
   registry.server("time-signature", "edit (terminal)", {
     println(s"Reading time signature...")
-    ServerOperation(WriteTimeSignature(Position.ZERO, TimeSignature(TerminalReader.readTimeSignatureDivision)), Render)
+    ServerOperation(WriteMetre(Position.ZERO, TerminalReader.readMetre), Render)
   })
 
   registry.server("key", "edit (terminal)", {

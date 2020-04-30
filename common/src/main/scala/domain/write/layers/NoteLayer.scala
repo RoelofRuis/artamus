@@ -1,20 +1,20 @@
 package domain.write.layers
 
 import domain.math.temporal.Position
-import domain.primitives.{Key, NoteGroup, TimeSignature}
+import domain.primitives.{Key, Metre, NoteGroup}
 import domain.write.Voice.VoiceId
-import domain.write.{Keys, TimeSignatures, Voice}
+import domain.write.{Keys, Metres, Voice}
 
 import scala.collection.immutable.ListMap
 
 final case class NoteLayer(
-  timeSignatures: TimeSignatures = TimeSignatures(),
+  timeSignatures: Metres = Metres(),
   keys: Keys = Keys(),
   voices: ListMap[VoiceId, Voice] = ListMap(),
 ) extends LayerData {
 
-  def writeTimeSignature(pos: Position, timeSignature: TimeSignature): NoteLayer = copy(
-    timeSignatures = timeSignatures.writeTimeSignature(pos, timeSignature)
+  def writeMetre(pos: Position, metre: Metre): NoteLayer = copy(
+    timeSignatures = timeSignatures.writeMetre(pos, metre)
   )
 
   def writeKey(pos: Position, key: Key): NoteLayer = copy(

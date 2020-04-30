@@ -4,6 +4,9 @@ import scala.math.pow
 
 package object math {
 
+  /** Expresses `n` in `1 / pow(2, n)` */
+  type FractionalPowerOfTwo = Int
+
   implicit class IntegerMath(i: Int) {
     /** Calculate integer powers */
     def**(b: Int): Int = pow(i.toDouble, b.toDouble).intValue

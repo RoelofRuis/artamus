@@ -1,5 +1,6 @@
 package domain.display.glyph
 
+import domain.math.FractionalPowerOfTwo
 import domain.primitives._
 
 object StaffGlyphFamily {
@@ -21,7 +22,8 @@ object StaffGlyphFamily {
   ) extends StaffGlyph
 
   final case class TimeSignatureGlyph(
-    division: TimeSignatureDivision
+    num: Int,
+    denom: FractionalPowerOfTwo
   ) extends StaffGlyph
 
 }

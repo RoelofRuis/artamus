@@ -3,9 +3,9 @@ package client.module.midi.operations
 import client.module.Operations.OperationRegistry
 import client.module.midi.MusicReader
 import domain.interact.Display.Render
-import domain.interact.Write.{WriteKey, WriteTimeSignature}
+import domain.interact.Write.WriteKey
 import domain.math.temporal.Position
-import domain.primitives.{TimeSignature, _}
+import domain.primitives._
 import javax.inject.Inject
 import midi.read.MidiInput
 
@@ -15,15 +15,6 @@ class EditOperations @Inject() (
 ) {
 
   import MusicReader._
-
-  registry.server("play-time-signature", "edit (midi)", {
-    println(s"Reading time signature...")
-    val res = for {
-      division <- midiInput.readTimeSignatureDivision
-    } yield List(WriteTimeSignature(Position.ZERO, TimeSignature(division)), Render)
-
-    res.toTry
-  })
 
   registry.server("play-key", "edit (midi)", {
     println(s"Reading key...")

@@ -179,8 +179,7 @@ private[rendering] object LilypondFormat {
   }
 
   implicit val timeSignatureToLilypond: LilypondFormat[TimeSignatureGlyph] = timeSignature => {
-    val division = timeSignature.division
-    s"\\time ${division.num}/${division.denom}"
+    s"\\time ${timeSignature.num}/${timeSignature.denom}"
   }
 
   implicit val keyToLilypond: LilypondFormat[KeyGlyph] = key => {
