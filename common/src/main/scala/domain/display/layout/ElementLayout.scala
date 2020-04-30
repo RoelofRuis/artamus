@@ -13,6 +13,35 @@ object ElementLayout {
 
   import domain.math.IntegerMath
 
+  private case class LayoutState[A](
+    position: Position,
+    elements: Seq[Element[A]],
+    metres: LazyList[PositionedMetre],
+    glyphs: List[Glyph[A]] = List()
+  ) {
+
+    val activeMetre: PositionedMetre = metres.head
+
+    val activeElement: Option[(Element[A], Window)] = elements.headOption.map(e => (e, e.window))
+
+    def windowOfActiveMeter: Window = activeMetre.window
+
+    def endOfActiveMeter: Position = windowOfActiveMeter.end
+
+    def windowUntilEndOfBar: Window = Window(position, activeMetre.window.end - position)
+
+    def withGlyphs(newGlyphs: Seq[Glyph[A]]): LayoutState[A] = copy(glyphs = glyphs ++ newGlyphs)
+
+    def to(position: Position): LayoutState[A] = {
+      copy(
+        position = position,
+        metres = if (position >= endOfActiveMeter) metres.tail else metres
+      )
+    }
+
+    def toNextElement: LayoutState[A] = copy(elements = elements.tail)
+  }
+
   def layoutElements[A](
     elements: Seq[Element[A]],
     metres: LazyList[PositionedMetre],
@@ -20,60 +49,44 @@ object ElementLayout {
   ): Seq[Glyph[A]] = {
     def restElement(window: Window): Element[A] = Element(window, restGlyph)
 
-  // TODO: condense de loop met mooi datastructuurtje, dan verder ontwikkelen!
     @tailrec
-    def loop(
-      acc: List[Glyph[A]],
-      position: Position,
-      elements: Seq[Element[A]],
-      metres: LazyList[PositionedMetre]
-    ): List[Glyph[A]] = {
-      val metre = metres.head
-
-      elements.headOption match {
+    def loop(state: LayoutState[A]): List[Glyph[A]] = {
+      state.activeElement match {
         case None => // insert final rest
-          val newGlyphs = fitGlyphs(metre, restElement(Window(position, metre.window.end - position)))
-          acc ++ newGlyphs
+          state
+            .withGlyphs(fitGlyphs(state.activeMetre, restElement(state.windowUntilEndOfBar)))
+            .glyphs
 
-        case Some(element) =>
-          val elementWindow = element.window
-
-          if (elementWindow.start >= metre.window.end) { // insert rest as long as bar, move to next bar
-            val newGlyphs = fitGlyphs(metre, restElement(metre.window))
+        case Some((element, elementWindow)) =>
+          if (elementWindow.start >= state.endOfActiveMeter) { // insert rest as long as bar, move to next bar
             loop(
-              acc ++ newGlyphs,
-              metre.window.end,
-              elements,
-              metres.tail
+              state
+                .withGlyphs(fitGlyphs(state.activeMetre, restElement(state.windowOfActiveMeter)))
+                .to(state.endOfActiveMeter)
             )
           }
-          else if (elementWindow.end <= metre.window.end) {
-            if (elementWindow.start > position) { // insert rest and continue with this bar
-              val newGlyphs = fitGlyphs(metre, restElement(Window(position, elementWindow.start - position)))
+          else if (elementWindow.end <= state.endOfActiveMeter) {
+            if (elementWindow.start > state.position) { // insert rest and continue with this bar
               loop(
-                acc ++ newGlyphs,
-                elementWindow.start,
-                elements,
-                metres
+                state
+                  .withGlyphs(fitGlyphs(state.activeMetre, restElement(Window(state.position, elementWindow.start - state.position))))
+                  .to(elementWindow.start)
               )
             }
             else { // insert element and if last element move to next bar
-              val newGlyphs = fitGlyphs(metre, element)
               loop(
-                acc ++ newGlyphs,
-                elementWindow.end,
-                elements.tail,
-                if (elementWindow.end == metre.window.end) metres.tail else metres
+                state
+                  .withGlyphs(fitGlyphs(state.activeMetre, element))
+                  .to(elementWindow.end)
+                  .toNextElement
               )
             }
           }
           else { // insert element as long as bar, move to next bar
-            val newGlyphs = fitGlyphs(metre, element, tie=true)
             loop(
-              acc ++ newGlyphs,
-              metre.window.end,
-              elements,
-              metres.tail
+              state
+                .withGlyphs(fitGlyphs(state.activeMetre, element, tie=true))
+                .to(state.endOfActiveMeter)
             )
           }
       }
@@ -109,7 +122,7 @@ object ElementLayout {
     }
 
 
-    loop(List(), Position.ZERO, elements, metres)
+    loop(LayoutState(Position.ZERO, elements, metres))
   }
 
 
