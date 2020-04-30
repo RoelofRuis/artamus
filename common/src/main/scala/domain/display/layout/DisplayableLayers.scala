@@ -11,6 +11,8 @@ import domain.write.layers.{ChordLayer, NoteLayer, RhythmLayer}
 
 object DisplayableLayers {
 
+  import MetrePositioning._
+
   implicit class DisplayableChordLayer(layer: ChordLayer) {
     private val initialKey = layer.keys.initialKey
 
@@ -23,7 +25,7 @@ object DisplayableLayers {
     def display: StaffGroup = {
       StaffGroup(
         ChordStaff(
-          ElementLayout.layoutElements(elementIterator, ChordRestGlyph(), Metres())
+          ElementLayout.layoutElements(elementIterator, layer.metres.iteratePositioned, ChordRestGlyph())
         )
       )
     }
@@ -37,7 +39,7 @@ object DisplayableLayers {
     def display: StaffGroup = {
       StaffGroup(
         RhythmicStaff(
-          ElementLayout.layoutElements(elementIterator, RestGlyph(), Metres())
+          ElementLayout.layoutElements(elementIterator, layer.metres.iteratePositioned, RestGlyph())
         )
       )
     }
@@ -81,15 +83,15 @@ object DisplayableLayers {
       val staffGroup = (hasTreble, hasBass) match {
         case (true, true) =>
           GrandStaff(
-            NoteStaff(Treble, ElementLayout.layoutElements(trebleGlyphs, RestGlyph(), Metres())),
-            NoteStaff(Bass, ElementLayout.layoutElements(bassGlyphs, RestGlyph(), Metres()))
+            NoteStaff(Treble, ElementLayout.layoutElements(trebleGlyphs, layer.metres.iteratePositioned, RestGlyph())),
+            NoteStaff(Bass, ElementLayout.layoutElements(bassGlyphs, layer.metres.iteratePositioned, RestGlyph()))
           )
         case (true, false) =>
-          NoteStaff(Treble, ElementLayout.layoutElements(trebleGlyphs, RestGlyph(), Metres()))
+          NoteStaff(Treble, ElementLayout.layoutElements(trebleGlyphs, layer.metres.iteratePositioned, RestGlyph()))
         case (false, true) =>
-          NoteStaff(Bass, ElementLayout.layoutElements(bassGlyphs, RestGlyph(), Metres()))
+          NoteStaff(Bass, ElementLayout.layoutElements(bassGlyphs, layer.metres.iteratePositioned, RestGlyph()))
         case (false, false) =>
-          NoteStaff(Bass, ElementLayout.layoutElements(Seq[Element[StaffGlyph]](), RestGlyph(), Metres()))
+          NoteStaff(Bass, ElementLayout.layoutElements(Seq[Element[StaffGlyph]](), layer.metres.iteratePositioned, RestGlyph()))
       }
 
       StaffGroup(staffGroup)

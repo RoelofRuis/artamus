@@ -8,13 +8,13 @@ import domain.write.{Keys, Metres, Voice}
 import scala.collection.immutable.ListMap
 
 final case class NoteLayer(
-  timeSignatures: Metres = Metres(),
+  metres: Metres = Metres(),
   keys: Keys = Keys(),
   voices: ListMap[VoiceId, Voice] = ListMap(),
 ) extends LayerData {
 
   def writeMetre(pos: Position, metre: Metre): NoteLayer = copy(
-    timeSignatures = timeSignatures.writeMetre(pos, metre)
+    metres = metres.writeMetre(pos, metre)
   )
 
   def writeKey(pos: Position, key: Key): NoteLayer = copy(

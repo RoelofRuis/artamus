@@ -19,7 +19,7 @@ object ChordAnalyser {
       }
       .foldRight(Chords()) { case ((window, chord), acc) => acc.writeChord(window, chord)}
 
-    ChordLayer(l.timeSignatures, l.keys, chords)
+    ChordLayer(l.metres, l.keys, chords)
   }
 
   import TwelveToneTuning._ // TODO: set of chords has to be passed in
