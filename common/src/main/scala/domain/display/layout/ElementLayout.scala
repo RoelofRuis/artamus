@@ -13,55 +13,24 @@ object ElementLayout {
 
   import domain.math.IntegerMath
 
-  private case class LayoutState[A](
-    position: Position,
-    elements: Seq[Element[A]],
-    metres: LazyList[PositionedMetre],
-    glyphs: List[Glyph[A]] = List()
-  ) {
-
-    val activeMetre: PositionedMetre = metres.head
-
-    val activeElement: Option[(Element[A], Window)] = elements.headOption.map(e => (e, e.window))
-
-    def windowOfActiveMeter: Window = activeMetre.window
-
-    def endOfActiveMeter: Position = windowOfActiveMeter.end
-
-    def windowUntilEndOfBar: Window = Window(position, activeMetre.window.end - position)
-
-    def withGlyphs(newGlyphs: Seq[Glyph[A]]): LayoutState[A] = copy(glyphs = glyphs ++ newGlyphs)
-
-    def to(position: Position): LayoutState[A] = {
-      copy(
-        position = position,
-        metres = if (position >= endOfActiveMeter) metres.tail else metres
-      )
-    }
-
-    def toNextElement: LayoutState[A] = copy(elements = elements.tail)
-  }
-
   def layoutElements[A](
     elements: Seq[Element[A]],
     metres: LazyList[PositionedMetre],
     restGlyph: A,
   ): Seq[Glyph[A]] = {
-    def restElement(window: Window): Element[A] = Element(window, restGlyph)
-
     @tailrec
     def loop(state: LayoutState[A]): List[Glyph[A]] = {
       state.activeElement match {
         case None => // insert final rest
           state
-            .withGlyphs(fitGlyphs(state.activeMetre, restElement(state.windowUntilEndOfBar)))
+            .withGlyphs(fitGlyphs(state.activeMetre, state.restUntilEndOfBar))
             .glyphs
 
         case Some((element, elementWindow)) =>
           if (elementWindow.start >= state.endOfActiveMeter) { // insert rest as long as bar, move to next bar
             loop(
               state
-                .withGlyphs(fitGlyphs(state.activeMetre, restElement(state.windowOfActiveMeter)))
+                .withGlyphs(fitGlyphs(state.activeMetre, state.restUntilEndOfBar))
                 .to(state.endOfActiveMeter)
             )
           }
@@ -69,7 +38,7 @@ object ElementLayout {
             if (elementWindow.start > state.position) { // insert rest and continue with this bar
               loop(
                 state
-                  .withGlyphs(fitGlyphs(state.activeMetre, restElement(Window(state.position, elementWindow.start - state.position))))
+                  .withGlyphs(fitGlyphs(state.activeMetre, state.restUntil(elementWindow.start)))
                   .to(elementWindow.start)
               )
             }
@@ -121,10 +90,39 @@ object ElementLayout {
       }
     }
 
-
-    loop(LayoutState(Position.ZERO, elements, metres))
+    loop(LayoutState(Position.ZERO, elements, metres, restGlyph, List()))
   }
 
+  private case class LayoutState[A](
+    position: Position,
+    private val elements: Seq[Element[A]],
+    private val metres: LazyList[PositionedMetre],
+    private val restGlyph: A,
+    glyphs: List[Glyph[A]]
+  ) {
+
+    // Derived properties
+    val activeMetre: PositionedMetre = metres.head
+    val activeElement: Option[(Element[A], Window)] = elements.headOption.map(e => (e, e.window))
+
+    // Helpers
+    def endOfActiveMeter: Position = activeMetre.window.end
+
+    def restUntilEndOfBar: Element[A] = Element(Window(position, activeMetre.window.end - position), restGlyph)
+
+    def restUntil(until: Position): Element[A] = Element(Window(position, until - position), restGlyph)
+
+    // State updates
+    def withGlyphs(newGlyphs: Seq[Glyph[A]]): LayoutState[A] = copy(glyphs = glyphs ++ newGlyphs)
+
+    def to(position: Position): LayoutState[A] = copy(
+      position = position,
+      metres = if (position >= endOfActiveMeter) metres.tail else metres
+    )
+
+    def toNextElement: LayoutState[A] = copy(elements = elements.tail)
+
+  }
 
 }
 
