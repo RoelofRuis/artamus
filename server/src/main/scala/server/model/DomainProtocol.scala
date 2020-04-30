@@ -99,8 +99,14 @@ trait DomainProtocol extends DefaultJsonProtocol {
     override def write(obj: Octave): JsValue = JsNumber(obj.value)
   }
 
+
   implicit val pulseGroup = jsonFormat2(PulseGroup.apply)
-  implicit val metreFromat = jsonFormat1(Metre.apply)
+
+  implicit object MetreFormat extends JsonFormat[Metre] {
+    override def read(json: JsValue): Metre = Metre(Seq.from(json.convertTo[List[PulseGroup]]))
+    override def write(obj: Metre): JsValue = obj.pulseGroups.toJson
+  }
+
   implicit val rationalModel = jsonFormat2(Rational.apply)
   implicit val scaleFormat = jsonFormat1(Scale.apply)
   implicit val pitchSpellingFormat = jsonFormat2(PitchSpelling)

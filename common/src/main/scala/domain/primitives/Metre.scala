@@ -14,10 +14,3 @@ final case class Metre(
 
   // TODO: we can calculate the time signature fraction from this!
 }
-
-object Metre {
-
-  lazy val `4/4`: Metre = Metre(Seq(PulseGroup(2, 2), PulseGroup(2, 2)))
-
-}
-

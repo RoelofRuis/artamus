@@ -2,9 +2,12 @@ package client.gui
 
 import java.awt.event.{WindowAdapter, WindowEvent}
 
-import client.infra.Callback
+import client.infra.{Callback, Client}
 import client.{CommandExecutor, ModuleLifetimeHooks}
+import domain.interact.Control.{Authenticate, Commit}
+import domain.interact.Display.Render
 import domain.interact.Event
+import domain.interact.Write.NewWorkspace
 import javax.inject.Inject
 import pubsub.Dispatcher
 

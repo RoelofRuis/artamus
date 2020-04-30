@@ -1,7 +1,7 @@
 package domain.write
 
 import domain.math.temporal.Position
-import domain.primitives.Metre
+import domain.primitives.{Metre, PulseGroup}
 
 import scala.collection.immutable.SortedMap
 
@@ -16,7 +16,7 @@ final case class Metres private (
 object Metres {
 
   def apply(): Metres = {
-    new Metres(SortedMap(Position.ZERO -> Metre.`4/4`))
+    new Metres(SortedMap(Position.ZERO -> Metre(Seq(PulseGroup(2, 2), PulseGroup(2, 2)))))
   }
 
 }
