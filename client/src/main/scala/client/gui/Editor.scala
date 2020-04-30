@@ -16,11 +16,26 @@ import scala.swing.Swing
 class Editor @Inject() (
   moduleLifetimeHooks: ModuleLifetimeHooks, // Expand only as more hooks are needed
   executor: CommandExecutor,
-  dispatcher: Dispatcher[Callback, Event]
+  dispatcher: Dispatcher[Callback, Event],
+  client: Client
 ) extends Thread {
+
+  private def _autoLoginDev(): Unit = {
+    import _root_.client.infra.ClientInteraction._
+
+    client.sendCommandList(List(
+      Authenticate("artamus"),
+      NewWorkspace,
+      Render,
+      Commit()
+    ))
+  }
 
   override def run(): Unit = {
     moduleLifetimeHooks.initializeAll()
+
+    _autoLoginDev()
+
     val frameLock = new Object
     Swing.onEDT {
       val frame = new EditorLogic(executor, dispatcher)
