@@ -23,6 +23,8 @@ class Editor @Inject() (
   private def _autoLoginDev(): Unit = {
     import _root_.client.infra.ClientInteraction._
 
+    Thread.sleep(1000)
+
     client.sendCommandList(List(
       Authenticate("artamus"),
       NewWorkspace,
@@ -33,8 +35,6 @@ class Editor @Inject() (
 
   override def run(): Unit = {
     moduleLifetimeHooks.initializeAll()
-
-    _autoLoginDev()
 
     val frameLock = new Object
     Swing.onEDT {
@@ -50,6 +50,9 @@ class Editor @Inject() (
         }
       })
     }
+
+    _autoLoginDev()
+
     frameLock.synchronized {
       try {
         frameLock.wait()
