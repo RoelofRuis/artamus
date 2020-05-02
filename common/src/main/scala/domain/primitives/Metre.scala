@@ -12,5 +12,10 @@ final case class Metre(
       }
     )
 
-  // TODO: we can calculate the time signature fraction from this!
+  // TODO: improve to deal with groups with different fractions
+  def getTimeSignatureFraction: (Int, FractionalPowerOfTwo) = {
+    val pulses = pulseGroups.map(_.numberOfBeats).sum
+    val fraction = pulseGroups.map(_.baseDuration).head
+    (pulses, fraction)
+  }
 }

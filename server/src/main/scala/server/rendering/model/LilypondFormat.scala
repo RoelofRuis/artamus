@@ -4,7 +4,7 @@ import domain.display.glyph.ChordStaffGlyphFamily.{ChordNameGlyph, ChordRestGlyp
 import domain.display.staff.NoteStaff.{Bass, Clef, Treble}
 import domain.display.glyph.StaffGlyphFamily.{KeyGlyph, NoteGroupGlyph, RestGlyph, TimeSignatureGlyph}
 import domain.display.staff._
-import domain.display.glyph.Glyphs.{GlyphDuration, SingleGlyph}
+import domain.display.glyph.Glyphs.{GlyphDuration, InstantGlyph, SingleGlyph}
 import domain.math.IntegerMath
 import domain.primitives._
 import domain.write.analysis.TwelveToneTuning.TwelveToneFunctions
@@ -44,7 +44,7 @@ private[rendering] object LilypondFormat {
       case SingleGlyph(RestGlyph(), duration) =>
         s"r${writeDuration(duration)}"
 
-      case SingleGlyph(t: TimeSignatureGlyph, _) => t.toLilypond
+      case InstantGlyph(t: TimeSignatureGlyph) => t.toLilypond
 
       case _ => "" // Tuplets!
     }.mkString("\n")
@@ -88,9 +88,9 @@ private[rendering] object LilypondFormat {
       case SingleGlyph(RestGlyph(), duration) =>
         s"r${writeDuration(duration)}"
 
-      case SingleGlyph(k: KeyGlyph, _) => k.toLilypond
+      case InstantGlyph(k: KeyGlyph) => k.toLilypond
 
-      case SingleGlyph(t: TimeSignatureGlyph, _) => t.toLilypond
+      case InstantGlyph(t: TimeSignatureGlyph) => t.toLilypond
 
       case _ => "" // Tuplets!
     }.mkString("\n")

@@ -15,8 +15,7 @@ object ElementLayout {
 
   def layoutElements[A](
     elements: Seq[Element[A]],
-    metres: LazyList[PositionedMetre],
-    restGlyph: A,
+    layout: LayoutDescription[A]
   ): Seq[Glyph[A]] = {
     @tailrec
     def loop(state: LayoutState[A]): List[Glyph[A]] = {
@@ -27,9 +26,12 @@ object ElementLayout {
             .glyphs
 
         case Some((element, elementWindow)) =>
+          val instantGlyphs = layout.instantGlyphs(state.position)
+
           if (elementWindow.start >= state.endOfActiveMeter) { // insert rest as long as bar, move to next bar
             loop(
               state
+                .withGlyphs(instantGlyphs)
                 .withGlyphs(fitGlyphs(state.activeMetre, state.restUntilEndOfBar))
                 .to(state.endOfActiveMeter)
             )
@@ -38,6 +40,7 @@ object ElementLayout {
             if (elementWindow.start > state.position) { // insert rest and continue with this bar
               loop(
                 state
+                  .withGlyphs(instantGlyphs)
                   .withGlyphs(fitGlyphs(state.activeMetre, state.restUntil(elementWindow.start)))
                   .to(elementWindow.start)
               )
@@ -45,6 +48,7 @@ object ElementLayout {
             else { // insert element and if last element move to next bar
               loop(
                 state
+                  .withGlyphs(instantGlyphs)
                   .withGlyphs(fitGlyphs(state.activeMetre, element))
                   .to(elementWindow.end)
                   .toNextElement
@@ -54,6 +58,7 @@ object ElementLayout {
           else { // insert element as long as bar, move to next bar
             loop(
               state
+                .withGlyphs(instantGlyphs)
                 .withGlyphs(fitGlyphs(state.activeMetre, element, tie=true))
                 .to(state.endOfActiveMeter)
             )
@@ -90,7 +95,7 @@ object ElementLayout {
       }
     }
 
-    loop(LayoutState(Position.ZERO, elements, metres, restGlyph, List()))
+    loop(LayoutState(Position.ZERO, elements, layout.metres, layout.restGlyph, List()))
   }
 
   private case class LayoutState[A](

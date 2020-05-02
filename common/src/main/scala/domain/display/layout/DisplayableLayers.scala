@@ -1,6 +1,7 @@
 package domain.display.layout
 
 import domain.display.glyph.ChordStaffGlyphFamily.{ChordNameGlyph, ChordRestGlyph, ChordStaffGlyph}
+import domain.display.glyph.StaffGlyphFamily
 import domain.display.glyph.StaffGlyphFamily.{NoteGroupGlyph, RestGlyph, StaffGlyph}
 import domain.display.layout.ElementLayout.Element
 import domain.display.staff.NoteStaff.{Bass, Treble}
@@ -22,10 +23,12 @@ object DisplayableLayers {
         Element[ChordStaffGlyph](window, ChordNameGlyph(spelling, chord.functions))
     }.toSeq
 
+    lazy val layout: LayoutDescription[ChordStaffGlyph] = LayoutDescription(layer.metres.iteratePositioned,ChordRestGlyph())
+
     def display: StaffGroup = {
       StaffGroup(
         ChordStaff(
-          ElementLayout.layoutElements(elementIterator, layer.metres.iteratePositioned, ChordRestGlyph())
+          ElementLayout.layoutElements(elementIterator, layout)
         )
       )
     }
@@ -36,10 +39,16 @@ object DisplayableLayers {
       Element[StaffGlyph](noteGroup.window, NoteGroupGlyph(Seq()))
     }
 
+    lazy val layout: LayoutDescription[StaffGlyph] = LayoutDescription[StaffGlyph](
+      layer.metres.iteratePositioned,
+      RestGlyph(),
+      Seq(StaffGlyphFamily.timeSignatureBuilder(layer.metres.metres))
+    )
+
     def display: StaffGroup = {
       StaffGroup(
         RhythmicStaff(
-          ElementLayout.layoutElements(elementIterator, layer.metres.iteratePositioned, RestGlyph())
+          ElementLayout.layoutElements(elementIterator, layout)
         )
       )
     }
@@ -73,6 +82,15 @@ object DisplayableLayers {
           Element[StaffGlyph](noteGroup.window, NoteGroupGlyph(noteSpellings))
         }
 
+    lazy val layout: LayoutDescription[StaffGlyph] = LayoutDescription[StaffGlyph](
+      layer.metres.iteratePositioned,
+      RestGlyph(),
+      Seq(
+        StaffGlyphFamily.timeSignatureBuilder(layer.metres.metres),
+        StaffGlyphFamily.keyBuilder(layer.keys.keys)
+      )
+    )
+
     def display: StaffGroup = {
       val trebleGlyphs = elementIterator(higherNoteNumbers(59))
       val bassGlyphs = elementIterator(lowerEqualNoteNumbers(59))
@@ -83,15 +101,15 @@ object DisplayableLayers {
       val staffGroup = (hasTreble, hasBass) match {
         case (true, true) =>
           GrandStaff(
-            NoteStaff(Treble, ElementLayout.layoutElements(trebleGlyphs, layer.metres.iteratePositioned, RestGlyph())),
-            NoteStaff(Bass, ElementLayout.layoutElements(bassGlyphs, layer.metres.iteratePositioned, RestGlyph()))
+            NoteStaff(Treble, ElementLayout.layoutElements(trebleGlyphs, layout)),
+            NoteStaff(Bass, ElementLayout.layoutElements(bassGlyphs, layout))
           )
         case (true, false) =>
-          NoteStaff(Treble, ElementLayout.layoutElements(trebleGlyphs, layer.metres.iteratePositioned, RestGlyph()))
+          NoteStaff(Treble, ElementLayout.layoutElements(trebleGlyphs, layout))
         case (false, true) =>
-          NoteStaff(Bass, ElementLayout.layoutElements(bassGlyphs, layer.metres.iteratePositioned, RestGlyph()))
+          NoteStaff(Bass, ElementLayout.layoutElements(bassGlyphs, layout))
         case (false, false) =>
-          NoteStaff(Bass, ElementLayout.layoutElements(Seq[Element[StaffGlyph]](), layer.metres.iteratePositioned, RestGlyph()))
+          NoteStaff(Bass, ElementLayout.layoutElements(Seq[Element[StaffGlyph]](), layout))
       }
 
       StaffGroup(staffGroup)
