@@ -11,7 +11,7 @@ object Workspaces {
     override val name: String = "workspace"
     override def objectId(obj: Workspace): UserId = obj.owner
     override def serializeId(id: UserId): String = id.id.toString
-    override implicit val format: RootJsonFormat[Workspace] = jsonFormat2(Workspace.apply)
+    override implicit val format: RootJsonFormat[Workspace] = jsonFormat3(Workspace.apply)
   }
 
   implicit class WorkspaceQueries(db: DbReader) {

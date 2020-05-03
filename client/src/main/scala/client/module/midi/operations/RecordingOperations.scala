@@ -5,10 +5,10 @@ import client.module.StdIOTools
 import client.module.midi.MidiRecorder
 import com.google.inject.Inject
 import domain.interact.Display.Render
-import domain.interact.Record.{ClearRecording, Quantize}
+import domain.interact.Record.{ClearRecording, Quantize, SetRecordTransfer}
 import domain.math.Rational
 import domain.math.temporal.Duration
-import domain.record.quantization.Quantizer
+import domain.record.transfer.{Quantizer, RecordTransfer}
 
 class RecordingOperations @Inject() (
   registry: OperationRegistry,
@@ -21,15 +21,19 @@ class RecordingOperations @Inject() (
   })
 
   registry.server("quantize", "midi", {
+    ServerOperation(Quantize(), Render)
+  })
+
+  registry.server("set-quantization", "midi", {
     recorder.deactivate()
 
     val `type`: String = StdIOTools.readString("quantize type:\n+     = advanced\ng     = grid\nother = quick")
-    val quantizer = `type` match {
+    val recordTransfer = `type` match {
       case "g" =>
         val gridSpacing = StdIOTools.readInt("Grid spacing of 1/_?")
         val gridSize = Rational.reciprocal(gridSpacing)
-        Quantize(
-          Some(Quantizer(consideredLengths=Set(gridSize), interClusterDistance=2000)),
+        RecordTransfer(
+          Quantizer(consideredLengths=Set(gridSize), interClusterDistance=2000),
           rhythmOnly = false,
           Duration(gridSize)
         )
@@ -37,13 +41,14 @@ class RecordingOperations @Inject() (
       case "+" =>
         val wholeNoteDuration: Int = StdIOTools.readInt("whole note duration")
         val rhythmOnly: Boolean = StdIOTools.readBool("rhythm only?")
-        Quantize(Some(Quantizer(wholeNoteDuration = wholeNoteDuration)), rhythmOnly)
+        RecordTransfer(Quantizer(wholeNoteDuration = wholeNoteDuration), rhythmOnly, Duration(Rational(1, 4)))
+
 
       case _ =>
-        Quantize(None, rhythmOnly = false)
+        RecordTransfer(Quantizer(), rhythmOnly = false, Duration(Rational(1, 4)))
     }
 
-    ServerOperation(quantizer, Render)
+    ServerOperation(SetRecordTransfer(recordTransfer), Render)
   })
 
 }

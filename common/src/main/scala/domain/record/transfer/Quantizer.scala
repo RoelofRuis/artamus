@@ -1,4 +1,4 @@
-package domain.record.quantization
+package domain.record.transfer
 
 import domain.math.Rational
 
