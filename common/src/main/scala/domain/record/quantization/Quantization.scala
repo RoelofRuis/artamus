@@ -1,24 +1,35 @@
-package domain.record
+package domain.record.quantization
 
 import domain.math.HierarchicalClustering.Centroid
-import domain.math.{HierarchicalClustering, Rational}
 import domain.math.temporal.{Duration, Position}
+import domain.math.{HierarchicalClustering, Rational}
+import domain.record.Recording
 
 import scala.annotation.tailrec
 
 object Quantization {
 
+  implicit class RecordingOps(recording: Recording) {
+
+    def onsetDifferenceList: Seq[Double] = {
+      val positions = recording.notes.map(_.starts)
+
+      (positions drop 1)
+        .lazyZip(positions)
+        .map((`n+1`, n) => (`n+1`.v - n.v).toDouble)
+    }
+
+  }
+
   implicit class QuantizationOps(quantizer: Quantizer) {
     private implicit val doubleOrdering: Ordering[Double] = Ordering.Double.IeeeOrdering
 
-    def quantize(input: Seq[MillisecondPosition]): List[Position] = {
-      val differenceList = (input drop 1)
-        .lazyZip(input)
-        .map((`n+1`, n) => (`n+1`.v - n.v).toDouble)
+    def quantize(recording: Recording): List[Position] = {
+      val differenceList = recording.onsetDifferenceList
 
       val nonInstantDifferences = differenceList.filter(_ > quantizer.instantaneousThreshold)
 
-      if (nonInstantDifferences.isEmpty) List.fill(input.size)(Position.ZERO)
+      if (nonInstantDifferences.isEmpty) List.fill(recording.notes.size)(Position.ZERO)
       else {
         val clusterSettings = HierarchicalClustering.Settings(distanceThreshold = 100)
         val clusters = HierarchicalClustering.cluster(nonInstantDifferences, clusterSettings)

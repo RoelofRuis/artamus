@@ -2,7 +2,8 @@ package domain.interact
 
 import domain.math.Rational
 import domain.math.temporal.Duration
-import domain.record.{Quantizer, RawMidiNote, Recording}
+import domain.record.quantization.Quantizer
+import domain.record.{RawMidiNote, Recording}
 
 object Record {
 
@@ -13,6 +14,10 @@ object Record {
     rhythmOnly: Boolean,
     lastNoteDuration: Duration = Duration(Rational(1, 4))
   ) extends Command
+
+  final case class QuantizationState(
+    onsetDifferenceList: Seq[Double]
+  ) extends Event
 
   final case object GetCurrentRecording extends Query { type Res = Recording }
 

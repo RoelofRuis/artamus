@@ -15,6 +15,7 @@ private[server] final case class CommandRequest[A](
 object CommandRequest {
 
   def ok: Try[List[Event]] = Success(List())
+  def okWithEvents(events: List[Event]): Try[List[Event]] = Success(events)
   def dbResult(res: DbResult[_]): Try[List[Event]] = {
     res match {
       case Right(_) => Success(List())

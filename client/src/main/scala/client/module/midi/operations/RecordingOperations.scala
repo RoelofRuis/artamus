@@ -8,7 +8,7 @@ import domain.interact.Display.Render
 import domain.interact.Record.{ClearRecording, Quantize}
 import domain.math.Rational
 import domain.math.temporal.Duration
-import domain.record.Quantizer
+import domain.record.quantization.Quantizer
 
 class RecordingOperations @Inject() (
   registry: OperationRegistry,

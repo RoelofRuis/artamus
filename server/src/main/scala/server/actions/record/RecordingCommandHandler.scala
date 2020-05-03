@@ -3,7 +3,7 @@ package server.actions.record
 import domain.interact.Record.{ClearRecording, Quantize, RecordNote}
 import domain.math.temporal.{Duration, Position, Window}
 import domain.primitives.{Note, NoteGroup}
-import domain.record.Quantizer
+import domain.record.quantization.Quantizer
 import domain.write.layers.{NoteLayer, RhythmLayer}
 import javax.inject.{Inject, Singleton}
 import server.api.{CommandHandlerRegistration, CommandRequest}
@@ -27,7 +27,7 @@ private[server] class RecordingCommandHandler @Inject() (
   }
 
   // TODO: extract track writing logic
-  import domain.record.Quantization._
+  import domain.record.quantization.Quantization._
   import domain.write.analysis.TwelveToneTuning._
   import server.model.Tracks._
   import server.model.Workspaces._
@@ -36,7 +36,7 @@ private[server] class RecordingCommandHandler @Inject() (
       case None => CommandRequest.ok
       case Some(recording) =>
         if (recording.notes.nonEmpty) {
-          val quantized = req.attributes.customQuantizer.getOrElse(Quantizer()).quantize(recording.notes.map(_.starts))
+          val quantized = req.attributes.customQuantizer.getOrElse(Quantizer()).quantize(recording)
           val notePositions: Map[Position, (Seq[Note], Duration)] = recording
             .notes
             .zip(quantized.zip(quantized.drop(1).appended(quantized.last + req.attributes.lastNoteDuration)))
