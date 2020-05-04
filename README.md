@@ -7,12 +7,16 @@ Furthermore I wanted to further develop my scala skills, so I wanted to use as f
 
 Thus **Artamus** was born. This repository represents the current state of the project. 
 
+#### Core
+
+Artamus core contains the main data structures and operations. It's design is outlined in the diagram.
+![core-design](core-design.png)
 
 ##### Packages
 The application is separated into several packages to keep concerns separated
 - **Client** Contains the client application with the input and viewing logic
 - **Server** Contains the application state and does the heavy lifting
-- **Common** Contains common packages
+- **Common** Contains the core and some shared packages
 - **Network** Contains socket communication (which might be split off entirely into a separate package eventually)
 - **Storage** Contains a lightweight memory/file storage (which might be split off entirely into a separate package eventually)
 
