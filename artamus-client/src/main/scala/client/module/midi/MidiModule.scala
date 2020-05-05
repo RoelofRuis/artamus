@@ -33,13 +33,13 @@ class MidiModule extends ScalaPrivateModule {
     bind[MidiResourceLoader].asEagerSingleton()
     bind[MidiRecorder].asEagerSingleton()
 
-    bind[DeviceHash].annotatedWithName("nl.roelofruis.midi-in").toInstance(MyDevices.iRigUSBMIDI_IN)
+    bind[DeviceHash].annotatedWithName("midi-in").toInstance(MyDevices.iRigUSBMIDI_IN)
     bind[MidiInput].to[ReadableMidiInput]
 
-    bind[DeviceHash].annotatedWithName("nl.roelofruis.midi-out").toInstance(MyDevices.FocusriteUSBMIDI_OUT)
+    bind[DeviceHash].annotatedWithName("midi-out").toInstance(MyDevices.FocusriteUSBMIDI_OUT)
     bind[MidiSequenceWriter].to[SequencePlayer]
 
-    bind[DeviceHash].annotatedWithName("nl.roelofruis.midi-control-in").toInstance(MyDevices.SamsonConspiracyMIDI_IN)
+    bind[DeviceHash].annotatedWithName("midi-control-in").toInstance(MyDevices.SamsonConspiracyMIDI_IN)
     bind[MidiControlSignals].asEagerSingleton()
 
     expose[ModuleLifetimeHooks]

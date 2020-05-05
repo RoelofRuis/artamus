@@ -13,9 +13,9 @@ class MidiLifetimeHooks @Inject() (
   patchPanel: PatchPanel,
   recorder: MidiRecorder,
   control: MidiControlSignals,
-  @Named("nl.roelofruis.midi-in") midiIn: DeviceHash,
-  @Named("nl.roelofruis.midi-out") midiOut: DeviceHash,
-  @Named("nl.roelofruis.midi-control-in") controlIn: DeviceHash,
+  @Named("midi-in") midiIn: DeviceHash,
+  @Named("midi-out") midiOut: DeviceHash,
+  @Named("midi-control-in") controlIn: DeviceHash,
 ) extends ModuleLifetimeHooks with LazyLogging {
 
   import MidiConnectors.canConnectMidi

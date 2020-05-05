@@ -16,7 +16,7 @@ class EditOperations @Inject() (
 
   import MusicReader._
 
-  registry.server("play-key", "edit (nl.roelofruis.midi)", {
+  registry.server("play-key", "edit (midi)", {
     println(s"Reading key...")
     val res = for {
       root <- midiInput.readPitchSpelling

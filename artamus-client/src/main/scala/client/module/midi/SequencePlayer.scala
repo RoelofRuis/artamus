@@ -9,7 +9,7 @@ import midi.{DeviceHash, MidiIO}
 import patching.PatchCableId
 
 class SequencePlayer @Inject() (
-  @Named("nl.roelofruis.midi-out") deviceHash: DeviceHash,
+  @Named("midi-out") deviceHash: DeviceHash,
   loader: MidiResourceLoader,
   patchPanel: PatchPanel
 ) extends MidiSequenceWriter {

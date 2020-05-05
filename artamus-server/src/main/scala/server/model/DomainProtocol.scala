@@ -5,7 +5,7 @@ import java.util.UUID
 import artamus.core.math.Rational
 import artamus.core.math.temporal.{Duration, Position, Window}
 import artamus.core.model.primitives.{Accidental, Chord, Function, Key, Loudness, Metre, MidiNoteNumber, Note, NoteGroup, Octave, PitchClass, PitchSpelling, PulseGroup, Scale, ScientificPitch, Step}
-import artamus.core.ops.formalise.{Quantizer, RecordTransfer}
+import artamus.core.ops.formalise.{Quantizer, FormalisationProfile}
 import artamus.core.model.recording.{MillisecondPosition, RawMidiNote}
 import artamus.core.model.workspace.User.UserId
 import artamus.core.model.track.Track.TrackId
@@ -123,6 +123,6 @@ trait DomainProtocol extends DefaultJsonProtocol {
   implicit val midiNoteNumberFormat = jsonFormat1(MidiNoteNumber.apply)
   implicit val rawMidiNoteFormat = jsonFormat3(RawMidiNote)
   implicit val quantizerFormat = jsonFormat6(Quantizer.apply)
-  implicit val recordTransfer = jsonFormat3(RecordTransfer.apply)
+  implicit val recordTransfer = jsonFormat3(FormalisationProfile.apply)
 
 }

@@ -9,7 +9,7 @@ import midi.{DeviceHash, MidiIO}
 import nl.roelofruis.patching.PatchPanel
 
 class ReadableMidiInput @Inject() (
-  @Named("nl.roelofruis.midi-in") deviceHash: DeviceHash,
+  @Named("midi-in") deviceHash: DeviceHash,
   loader: MidiResourceLoader,
   patchPanel: PatchPanel
 ) extends MidiInput {

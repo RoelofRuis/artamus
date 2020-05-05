@@ -166,7 +166,7 @@ private[rendering] object LilypondFormat {
   }
 
   implicit val octaveToLilypond: LilypondFormat[Octave] = octave => {
-    // 3th nl.roelofruis.midi octave is unaltered in lilypond notation
+    // 3th midi octave is unaltered in lilypond notation
     octave.value - 3 match {
       case i if i == 0 => ""
       case i if i < 0 => "," * -i

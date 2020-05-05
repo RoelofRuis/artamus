@@ -12,7 +12,7 @@ class DeviceOperations @Inject() (
   registry: OperationRegistry,
 ) {
 
-  registry.local("devices", "nl/roelofruis/midi", {
+  registry.local("devices", "midi", {
     loader.viewAvailableDevices.foreach { case (hash, info: Info) =>
       println(s" > [$hash]")
       println(s"[${info.getName}]")
@@ -23,7 +23,7 @@ class DeviceOperations @Inject() (
     }
   })
 
-  registry.local("patchboard", "nl/roelofruis/midi", {
+  registry.local("patchboard", "midi", {
     patchPanel.viewConnections.foreach { case (description, id) =>
       println(s"Patch [${id.id}]\n[$description]")
       println()

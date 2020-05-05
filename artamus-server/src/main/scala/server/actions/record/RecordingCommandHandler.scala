@@ -1,10 +1,10 @@
 package server.actions.record
 
-import artamus.core.api.Record.{ClearRecording, Quantize, RecordNote, SetRecordTransfer}
+import artamus.core.api.Record.{ClearRecording, Quantize, RecordNote, SetFormalisationProfile}
 import artamus.core.math.temporal.{Duration, Position, Window}
 import artamus.core.model.primitives.{Note, NoteGroup}
 import artamus.core.model.recording.Recording
-import artamus.core.ops.formalise.RecordTransfer
+import artamus.core.ops.formalise.FormalisationProfile
 import artamus.core.model.track.layers.{LayerData, NoteLayer, RhythmLayer}
 import javax.inject.{Inject, Singleton}
 import server.api.{CommandHandlerRegistration, CommandRequest}
@@ -24,10 +24,10 @@ private[server] class RecordingCommandHandler @Inject() (
     CommandRequest.ok
   }
 
-  registry.register[SetRecordTransfer] { req =>
+  registry.register[SetFormalisationProfile] { req =>
     val res = for {
       workspace <- req.db.getWorkspaceByOwner(req.user)
-      newWorkspace = workspace.copy(recordTransfer=req.attributes.recordTransfer)
+      newWorkspace = workspace.copy(profile=req.attributes.profile)
       _ <- req.db.saveWorkspace(newWorkspace)
     } yield ()
 
@@ -51,7 +51,7 @@ private[server] class RecordingCommandHandler @Inject() (
           val res = for {
             workspace <- req.db.getWorkspaceByOwner(req.user)
             currentTrack <- req.db.getTrackById(workspace.editingTrack)
-            newLayer = transferRecording(workspace.recordTransfer, recording)
+            newLayer = transferRecording(workspace.profile, recording)
             newTrack = currentTrack.appendLayerData(newLayer)
             _ <- req.db.saveTrack(newTrack)
           } yield ()
@@ -62,7 +62,7 @@ private[server] class RecordingCommandHandler @Inject() (
 
   // TODO: extract track writing logic
   private def transferRecording(
-    recordTransfer: RecordTransfer,
+    recordTransfer: FormalisationProfile,
     recording: Recording,
   ): LayerData = {
     val quantized = recordTransfer.quantizer.quantize(recording)
