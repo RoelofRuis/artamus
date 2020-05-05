@@ -15,16 +15,16 @@ class RecordingOperations @Inject() (
   recorder: MidiRecorder,
 ) {
 
-  registry.server("rec", "midi", {
+  registry.server("rec", "client/midi", {
     recorder.activate()
     ServerOperation(ClearRecording())
   })
 
-  registry.server("quantize", "midi", {
+  registry.server("quantize", "client/midi", {
     ServerOperation(Quantize(), Render)
   })
 
-  registry.server("set-quantization", "midi", {
+  registry.server("set-quantization", "client/midi", {
     recorder.deactivate()
 
     val `type`: String = StdIOTools.readString("quantize type:\n+     = advanced\ng     = grid\nother = quick")

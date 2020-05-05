@@ -11,7 +11,7 @@ import domain.primitives.{Loudness, MidiNoteNumber}
 import domain.record.{MillisecondPosition, RawMidiNote}
 import javax.inject.Inject
 import javax.sound.midi.{MidiMessage, Receiver, ShortMessage}
-import midi.read.Midi
+import client.midi.read.Midi
 
 class MidiRecorder @Inject() (
   client: Client

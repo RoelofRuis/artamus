@@ -1,14 +1,15 @@
 package client.module.midi
 
+import client.midi.MidiResourceLoader
+import client.midi.read.MidiInput.ReadAction
+import client.midi.read.{AsyncReadableReceiver, MidiInput}
 import javax.inject.{Inject, Named}
 import javax.sound.midi.MidiMessage
-import midi.read.MidiInput.ReadAction
-import midi.read.{AsyncReadableReceiver, MidiInput}
-import midi.{DeviceHash, MidiIO, MidiResourceLoader}
+import midi.{DeviceHash, MidiIO}
 import patching.PatchPanel
 
 class ReadableMidiInput @Inject() (
-  @Named("midi-in") deviceHash: DeviceHash,
+  @Named("client.midi-in") deviceHash: DeviceHash,
   loader: MidiResourceLoader,
   patchPanel: PatchPanel
 ) extends MidiInput {

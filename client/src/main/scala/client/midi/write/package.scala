@@ -1,4 +1,4 @@
-package midi
+package client.midi
 
 package object write {
 

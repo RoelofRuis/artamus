@@ -1,13 +1,14 @@
 package client.module.midi
 
+import client.midi.MidiResourceLoader
+import client.midi.write.MidiSequenceWriter
 import javax.inject.{Inject, Named}
 import javax.sound.midi.{MetaMessage, Sequence, Sequencer}
-import midi.write.MidiSequenceWriter
-import midi.{DeviceHash, MidiIO, MidiResourceLoader}
+import midi.{DeviceHash, MidiIO}
 import patching.{PatchCableId, PatchPanel}
 
 class SequencePlayer @Inject() (
-  @Named("midi-out") deviceHash: DeviceHash,
+  @Named("client.midi-out") deviceHash: DeviceHash,
   loader: MidiResourceLoader,
   patchPanel: PatchPanel
 ) extends MidiSequenceWriter {

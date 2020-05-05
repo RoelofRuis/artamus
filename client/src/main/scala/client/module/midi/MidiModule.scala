@@ -2,9 +2,10 @@ package client.module.midi
 
 import client.ModuleLifetimeHooks
 import client.module.midi.operations.{DebugOperations, DeviceOperations, EditOperations, PlaybackOperations, RecordingOperations}
-import midi.read.MidiInput
-import midi.write.MidiSequenceWriter
-import midi.{DeviceHash, MidiResourceLoader}
+import client.midi.read.MidiInput
+import client.midi.write.MidiSequenceWriter
+import client.midi.MidiResourceLoader
+import midi.DeviceHash
 import net.codingwell.scalaguice.ScalaPrivateModule
 import patching.PatchPanel
 
@@ -32,13 +33,13 @@ class MidiModule extends ScalaPrivateModule {
     bind[MidiResourceLoader].asEagerSingleton()
     bind[MidiRecorder].asEagerSingleton()
 
-    bind[DeviceHash].annotatedWithName("midi-in").toInstance(MyDevices.iRigUSBMIDI_IN)
+    bind[DeviceHash].annotatedWithName("client.midi-in").toInstance(MyDevices.iRigUSBMIDI_IN)
     bind[MidiInput].to[ReadableMidiInput]
 
-    bind[DeviceHash].annotatedWithName("midi-out").toInstance(MyDevices.FocusriteUSBMIDI_OUT)
+    bind[DeviceHash].annotatedWithName("client.midi-out").toInstance(MyDevices.FocusriteUSBMIDI_OUT)
     bind[MidiSequenceWriter].to[SequencePlayer]
 
-    bind[DeviceHash].annotatedWithName("midi-control-in").toInstance(MyDevices.SamsonConspiracyMIDI_IN)
+    bind[DeviceHash].annotatedWithName("client.midi-control-in").toInstance(MyDevices.SamsonConspiracyMIDI_IN)
     bind[MidiControlSignals].asEagerSingleton()
 
     expose[ModuleLifetimeHooks]

@@ -1,9 +1,9 @@
-package midi.read
+package client.midi.read
 
 import java.util.concurrent.{BlockingQueue, LinkedBlockingQueue}
 
 import javax.sound.midi.{MidiMessage, Receiver}
-import midi.read.MidiInput.ReadAction
+import client.midi.read.MidiInput.ReadAction
 
 import scala.annotation.tailrec
 

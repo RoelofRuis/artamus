@@ -1,9 +1,10 @@
 package client.module.midi
 
 import client.ModuleLifetimeHooks
+import client.midi.MidiResourceLoader
 import com.typesafe.scalalogging.LazyLogging
 import javax.inject.{Inject, Named, Singleton}
-import midi.{DeviceHash, MidiIO, MidiResourceLoader}
+import midi.{DeviceHash, MidiIO}
 import patching.PatchPanel
 
 @Singleton
@@ -12,9 +13,9 @@ class MidiLifetimeHooks @Inject() (
   patchPanel: PatchPanel,
   recorder: MidiRecorder,
   control: MidiControlSignals,
-  @Named("midi-in") midiIn: DeviceHash,
-  @Named("midi-out") midiOut: DeviceHash,
-  @Named("midi-control-in") controlIn: DeviceHash,
+  @Named("client.midi-in") midiIn: DeviceHash,
+  @Named("client.midi-out") midiOut: DeviceHash,
+  @Named("client.midi-control-in") controlIn: DeviceHash,
 ) extends ModuleLifetimeHooks with LazyLogging {
 
   import MidiConnectors.canConnectMidi

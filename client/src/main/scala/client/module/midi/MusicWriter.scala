@@ -1,8 +1,8 @@
 package client.module.midi
 
-import midi.MidiIO
-import midi.write.MidiSequenceWriter
+import client.midi.write.{MidiSequenceWriter, sequenceBuilder}
 import domain.perform.TrackPerformance
+import midi.MidiIO
 
 object MusicWriter {
 
@@ -10,7 +10,7 @@ object MusicWriter {
 
   implicit class SequencedMusicWriter(midiOutput: MidiSequenceWriter) {
     def play(track: TrackPerformance): MidiIO[Unit] = {
-      val builder = midi.write.sequenceBuilder
+      val builder = sequenceBuilder
       builder.setResolution(TICKS_PER_WHOLE / 4)
       track.notes.toSeq.foreach { midiNote =>
         builder.addNote(

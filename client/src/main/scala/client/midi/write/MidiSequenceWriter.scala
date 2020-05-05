@@ -1,4 +1,4 @@
-package midi.write
+package client.midi.write
 
 import javax.sound.midi.Sequence
 import midi.MidiIO

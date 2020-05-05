@@ -1,8 +1,8 @@
-package midi.read
+package client.midi.read
 
+import client.midi.read.MidiInput.ReadAction
 import javax.sound.midi.MidiMessage
 import midi.MidiIO
-import midi.read.MidiInput.ReadAction
 
 trait MidiInput {
 

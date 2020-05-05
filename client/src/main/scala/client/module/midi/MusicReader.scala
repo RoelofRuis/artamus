@@ -1,13 +1,13 @@
 package client.module.midi
 
+import client.midi.read.MidiInput
+import domain.primitives._
 import javax.sound.midi.ShortMessage
 import midi.MidiIO
-import midi.read.MidiInput
-import domain.primitives._
 
 object MusicReader {
 
-  import midi.read.Midi._
+  import client.midi.read.Midi._
   import domain.write.analysis.TwelveToneTuning._
 
   sealed trait ReadMethod

@@ -55,7 +55,7 @@ object TerminalReader {
   }
 
   def readNotes: List[Note] = {
-    StdIOTools.read[Array[Int]]("Input midi note numbers separated by spaces", "Invalid input", {
+    StdIOTools.read[Array[Int]]("Input client.midi note numbers separated by spaces", "Invalid input", {
       scala.io.StdIn.readLine.split(" ").map(_.toInt)
     }).map { i =>
       val noteNumber = MidiNoteNumber(i)

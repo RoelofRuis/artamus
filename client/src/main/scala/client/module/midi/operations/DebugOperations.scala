@@ -12,7 +12,7 @@ class DebugOperations @Inject() (
 
   import ClientInteraction._
 
-  registry.local("showrec", "midi-debug", {
+  registry.local("showrec", "client.midi-debug", {
     client.sendQuery(GetCurrentRecording) match {
       case Right(rec) =>
         rec.notes.foreach { note =>

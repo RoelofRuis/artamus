@@ -7,7 +7,7 @@ import domain.interact.Write.WriteKey
 import domain.math.temporal.Position
 import domain.primitives._
 import javax.inject.Inject
-import midi.read.MidiInput
+import client.midi.read.MidiInput
 
 class EditOperations @Inject() (
   registry: OperationRegistry,
@@ -16,7 +16,7 @@ class EditOperations @Inject() (
 
   import MusicReader._
 
-  registry.server("play-key", "edit (midi)", {
+  registry.server("play-key", "edit (client.midi)", {
     println(s"Reading key...")
     val res = for {
       root <- midiInput.readPitchSpelling

@@ -6,7 +6,7 @@ import client.module.midi.MusicWriter
 import com.typesafe.scalalogging.LazyLogging
 import domain.interact.Perform.PreparePerformance
 import javax.inject.Inject
-import midi.write.MidiSequenceWriter
+import client.midi.write.MidiSequenceWriter
 
 class PlaybackOperations @Inject() (
   registry: OperationRegistry,

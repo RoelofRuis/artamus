@@ -1,8 +1,9 @@
-package midi
+package client.midi
 
 import javax.annotation.concurrent.NotThreadSafe
 import javax.inject.Singleton
 import javax.sound.midi.{MidiDevice, MidiSystem, Sequencer}
+import midi.{DeviceHash, MidiIO, MidiIOException}
 
 import scala.collection.mutable.ListBuffer
 import scala.util.{Failure, Success, Try}
