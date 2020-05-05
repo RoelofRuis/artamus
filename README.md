@@ -9,17 +9,20 @@ Thus **Artamus** was born.
 
 ### Structure
 
-The application is separated into several subprojects and packages. These subprojects are outlined below.
-- **Client** Contains the client application with the input and viewing logic
-- **Server** Contains the application state and does the heavy lifting
-- **Common** Contains the core and some shared packages
-- **Network** Contains socket communication (which might be split off entirely into a separate package eventually)
-- **Storage** Contains a lightweight memory/file storage (which might be split off entirely into a separate package eventually)
+The application is separated into several subprojects and packages:
+- **artamus-client** Contains a client application with input and viewing logic
+- **artamus-core** Contains the music domain: the data structures and operations that transform them.
+- **artamus-server** Contains a server application that does the calculations.
+- **common** Contains some smaller common packages
+- **network** Contains socket communication (which might be replaced/split off)
+- **storage** Contains a lightweight memory/file storage (which might be replaced/split off)
 
-#### Core
+#### artamus-core
 
-Artamus core contains the main data structures and operations. It's design is outlined in the diagram.
+Artamus core contains the main data structures and operations. It's design is outlined in the diagram below.
 ![core-design](doc/img/core-design.png)
+
+The blocks represent the separate data models, the arrows represent the transformations on and between them and correspond to the package structure in core.
 
 #### Requirements
 
