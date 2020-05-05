@@ -1,6 +1,6 @@
 package server.rendering.impl
 
-import domain.display.TrackDisplay
+import nl.roelofruis.artamus.core.model.display.TrackDisplay
 import server.rendering.model.LilypondFormat
 
 private[rendering] class LilypondInterpreter(

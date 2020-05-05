@@ -5,11 +5,11 @@ import java.util.UUID
 import domain.math.Rational
 import domain.math.temporal.{Duration, Position, Window}
 import domain.primitives.{Accidental, Chord, Function, Key, Loudness, Metre, MidiNoteNumber, Note, NoteGroup, Octave, PitchClass, PitchSpelling, PulseGroup, Scale, ScientificPitch, Step}
-import domain.record.transfer.{Quantizer, RecordTransfer}
-import domain.record.{MillisecondPosition, RawMidiNote}
+import nl.roelofruis.artamus.core.ops.formalise.{Quantizer, RecordTransfer}
+import nl.roelofruis.artamus.core.model.record.{MillisecondPosition, RawMidiNote}
 import domain.workspace.User.UserId
-import domain.write.Track.TrackId
-import domain.write.analysis.TwelveToneTuning
+import nl.roelofruis.artamus.core.model.write.Track.TrackId
+import nl.roelofruis.artamus.core.model.write.analysis.TwelveToneTuning
 import spray.json._
 
 import scala.collection.immutable.SortedMap

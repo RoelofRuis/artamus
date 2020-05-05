@@ -3,9 +3,9 @@ package server.actions.record
 import domain.interact.Record.{ClearRecording, Quantize, RecordNote, SetRecordTransfer}
 import domain.math.temporal.{Duration, Position, Window}
 import domain.primitives.{Note, NoteGroup}
-import domain.record.Recording
-import domain.record.transfer.RecordTransfer
-import domain.write.layers.{LayerData, NoteLayer, RhythmLayer}
+import nl.roelofruis.artamus.core.model.record.Recording
+import nl.roelofruis.artamus.core.ops.formalise.RecordTransfer
+import nl.roelofruis.artamus.core.model.write.layers.{LayerData, NoteLayer, RhythmLayer}
 import javax.inject.{Inject, Singleton}
 import server.api.{CommandHandlerRegistration, CommandRequest}
 
@@ -40,8 +40,8 @@ private[server] class RecordingCommandHandler @Inject() (
     CommandRequest.ok
   }
 
-  import domain.record.transfer.Quantization._
-  import domain.write.analysis.TwelveToneTuning._
+  import nl.roelofruis.artamus.core.ops.formalise.Quantization._
+  import nl.roelofruis.artamus.core.model.write.analysis.TwelveToneTuning._
   registry.register[Quantize] { req =>
     storage.getRecording(req.user.id) match {
       case None => CommandRequest.ok

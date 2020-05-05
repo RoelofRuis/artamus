@@ -1,6 +1,6 @@
 package domain.interact
 
-import domain.perform.TrackPerformance
+import nl.roelofruis.artamus.core.model.perform.TrackPerformance
 
 object Perform {
 

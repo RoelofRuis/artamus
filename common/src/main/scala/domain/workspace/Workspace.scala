@@ -2,10 +2,10 @@ package domain.workspace
 
 import domain.math.Rational
 import domain.math.temporal.Duration
-import domain.record.transfer.{Quantizer, RecordTransfer}
+import nl.roelofruis.artamus.core.ops.formalise.{Quantizer, RecordTransfer}
 import domain.workspace.User.UserId
-import domain.write.Track
-import domain.write.Track.TrackId
+import nl.roelofruis.artamus.core.model.write.Track
+import nl.roelofruis.artamus.core.model.write.Track.TrackId
 
 final case class Workspace(
   owner: UserId,

@@ -1,7 +1,7 @@
 package domain.interact
 
-import domain.record.transfer.RecordTransfer
-import domain.record.{RawMidiNote, Recording}
+import nl.roelofruis.artamus.core.ops.formalise.RecordTransfer
+import nl.roelofruis.artamus.core.model.record.{RawMidiNote, Recording}
 
 object Record {
 

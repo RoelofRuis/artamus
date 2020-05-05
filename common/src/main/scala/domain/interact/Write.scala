@@ -2,7 +2,7 @@ package domain.interact
 
 import domain.math.temporal.Position
 import domain.primitives.{Key, Metre, NoteGroup}
-import domain.write.layers.Layer.LayerId
+import nl.roelofruis.artamus.core.model.write.layers.Layer.LayerId
 
 object Write {
 

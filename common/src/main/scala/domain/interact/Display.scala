@@ -1,6 +1,6 @@
 package domain.interact
 
-import domain.display.render.Render
+import nl.roelofruis.artamus.core.model.display.render.Render
 
 object Display {
 

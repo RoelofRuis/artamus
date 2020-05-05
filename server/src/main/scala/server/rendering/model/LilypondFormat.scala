@@ -1,13 +1,13 @@
 package server.rendering.model
 
-import domain.display.glyph.ChordStaffGlyphFamily.{ChordNameGlyph, ChordRestGlyph}
-import domain.display.staff.NoteStaff.{Bass, Clef, Treble}
-import domain.display.glyph.StaffGlyphFamily.{KeyGlyph, NoteGroupGlyph, RestGlyph, TimeSignatureGlyph}
-import domain.display.staff._
-import domain.display.glyph.Glyphs.{GlyphDuration, InstantGlyph, SingleGlyph}
+import nl.roelofruis.artamus.core.model.display.glyph.ChordStaffGlyphFamily.{ChordNameGlyph, ChordRestGlyph}
+import nl.roelofruis.artamus.core.model.display.staff.NoteStaff.{Bass, Clef, Treble}
+import nl.roelofruis.artamus.core.model.display.glyph.StaffGlyphFamily.{KeyGlyph, NoteGroupGlyph, RestGlyph, TimeSignatureGlyph}
+import nl.roelofruis.artamus.core.model.display.staff._
+import nl.roelofruis.artamus.core.model.display.glyph.Glyphs.{GlyphDuration, InstantGlyph, SingleGlyph}
 import domain.math.IntegerMath
 import domain.primitives._
-import domain.write.analysis.TwelveToneTuning.TwelveToneFunctions
+import nl.roelofruis.artamus.core.model.write.analysis.TwelveToneTuning.TwelveToneFunctions
 
 import scala.annotation.tailrec
 

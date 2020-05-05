@@ -1,7 +1,7 @@
 package server.rendering
 
 import domain.interact.Event
-import domain.write.Track
+import nl.roelofruis.artamus.core.model.write.Track
 import storage.api.DbIO
 
 trait Renderer {

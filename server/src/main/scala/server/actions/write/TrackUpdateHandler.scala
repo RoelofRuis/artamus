@@ -2,8 +2,8 @@ package server.actions.write
 
 import domain.interact.Event
 import domain.interact.Write._
-import domain.write.Track
-import domain.write.layers.{ChordAnalyser, ChordLayer, NoteLayer, RhythmLayer}
+import nl.roelofruis.artamus.core.model.write.Track
+import nl.roelofruis.artamus.core.model.write.layers.{ChordAnalyser, ChordLayer, NoteLayer, RhythmLayer}
 import javax.inject.{Inject, Singleton}
 import server.api.{CommandHandlerRegistration, CommandRequest}
 

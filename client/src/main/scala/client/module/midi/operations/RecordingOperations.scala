@@ -8,7 +8,7 @@ import domain.interact.Display.Render
 import domain.interact.Record.{ClearRecording, Quantize, SetRecordTransfer}
 import domain.math.Rational
 import domain.math.temporal.Duration
-import domain.record.transfer.{Quantizer, RecordTransfer}
+import nl.roelofruis.artamus.core.ops.formalise.{Quantizer, RecordTransfer}
 
 class RecordingOperations @Inject() (
   registry: OperationRegistry,

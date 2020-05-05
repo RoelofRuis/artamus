@@ -1,6 +1,6 @@
 package domain.primitives
 
-import domain.write.analysis.TuningSystem
+import nl.roelofruis.artamus.core.model.write.analysis.TuningSystem
 
 final case class MidiNoteNumber(value: Int) {
 

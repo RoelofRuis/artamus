@@ -1,6 +1,6 @@
 package domain.primitives
 
-import domain.write.analysis.TuningSystem
+import nl.roelofruis.artamus.core.model.write.analysis.TuningSystem
 
 trait PitchClass {
   val value: Int

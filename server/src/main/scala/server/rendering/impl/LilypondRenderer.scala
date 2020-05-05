@@ -1,11 +1,11 @@
 package server.rendering.impl
 
 import com.typesafe.scalalogging.LazyLogging
-import domain.display.render.Render
-import domain.display.layout.Display
+import nl.roelofruis.artamus.core.model.display.render.Render
+import nl.roelofruis.artamus.core.ops.layout.Display
 import domain.interact.Display.TrackRendered
 import domain.interact.Event
-import domain.write.Track
+import nl.roelofruis.artamus.core.model.write.Track
 import javax.inject.Inject
 import server.rendering.Renderer
 import storage.api.DbIO
