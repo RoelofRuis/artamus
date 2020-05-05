@@ -1,6 +1,6 @@
 package artamus.core.model.primitives
 
-import nl.roelofruis.math.temporal.Window
+import artamus.core.math.temporal.Window
 
 final case class NoteGroup(
   window: Window,

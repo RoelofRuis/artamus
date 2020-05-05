@@ -1,7 +1,7 @@
 package artamus.core.model.primitives
 
-import nl.roelofruis.math._
-import nl.roelofruis.math.temporal.Duration
+import artamus.core.math._
+import artamus.core.math.temporal.Duration
 
 final case class Metre(
   pulseGroups: Seq[PulseGroup]

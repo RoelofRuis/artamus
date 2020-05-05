@@ -1,6 +1,6 @@
 package artamus.core.model.track
 
-import nl.roelofruis.math.temporal.{Position, Window}
+import artamus.core.math.temporal.{Position, Window}
 import artamus.core.model.primitives.Chord
 
 import scala.collection.BufferedIterator

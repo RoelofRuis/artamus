@@ -1,6 +1,6 @@
 package artamus.core.model.primitives
 
-import nl.roelofruis.math.FractionalPowerOfTwo
+import artamus.core.math.FractionalPowerOfTwo
 
 final case class PulseGroup(
   baseDuration: FractionalPowerOfTwo,

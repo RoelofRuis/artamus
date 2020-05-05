@@ -1,6 +1,6 @@
 package artamus.core.model.track.layers
 
-import nl.roelofruis.math.temporal.Position
+import artamus.core.math.temporal.Position
 import artamus.core.model.primitives.{Metre, NoteGroup}
 import artamus.core.model.track.{Metres, Voice}
 

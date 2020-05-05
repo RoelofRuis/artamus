@@ -1,6 +1,6 @@
 package artamus.core.model.display.glyph
 
-import nl.roelofruis.math.FractionalPowerOfTwo
+import artamus.core.math.FractionalPowerOfTwo
 
 object Glyphs {
 

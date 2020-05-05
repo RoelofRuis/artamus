@@ -66,7 +66,7 @@ lazy val core = (project in file ("artamus-core"))
   )
   .dependsOn(common)
 
-lazy val client = (project in file("client"))
+lazy val client = (project in file("artamus-client"))
   .settings(
     name := "artamus-client",
     description := "A Music analysis client - part of Artamus",
@@ -87,7 +87,7 @@ lazy val client = (project in file("client"))
   )
   .dependsOn(core, network, common)
 
-lazy val server = (project in file("server"))
+lazy val server = (project in file("artamus-server"))
   .settings(
     name := "artamus-server",
     description := "A Music analysis server - part of Artamus",

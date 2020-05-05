@@ -1,6 +1,6 @@
 package artamus.core.model.track
 
-import nl.roelofruis.math.temporal.Position
+import artamus.core.math.temporal.Position
 import artamus.core.model.primitives._
 
 import scala.collection.immutable.SortedMap

@@ -1,6 +1,6 @@
 package artamus.core.api
 
-import nl.roelofruis.math.temporal.Position
+import artamus.core.math.temporal.Position
 import artamus.core.model.primitives.{Key, Metre, NoteGroup}
 import artamus.core.model.track.layers.Layer.LayerId
 

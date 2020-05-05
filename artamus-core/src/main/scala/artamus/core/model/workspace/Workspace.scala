@@ -1,7 +1,7 @@
 package artamus.core.model.workspace
 
-import nl.roelofruis.math.Rational
-import nl.roelofruis.math.temporal.Duration
+import artamus.core.math.Rational
+import artamus.core.math.temporal.Duration
 import artamus.core.ops.formalise.{Quantizer, RecordTransfer}
 import artamus.core.model.workspace.User.UserId
 import artamus.core.model.track.Track

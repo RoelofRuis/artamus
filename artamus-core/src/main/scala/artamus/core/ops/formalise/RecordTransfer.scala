@@ -1,7 +1,7 @@
 package artamus.core.ops.formalise
 
-import nl.roelofruis.math.Rational
-import nl.roelofruis.math.temporal.Duration
+import artamus.core.math.Rational
+import artamus.core.math.temporal.Duration
 
 final case class RecordTransfer(
   quantizer: Quantizer,

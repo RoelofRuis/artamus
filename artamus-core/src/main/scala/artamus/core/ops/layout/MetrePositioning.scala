@@ -1,6 +1,6 @@
 package artamus.core.ops.layout
 
-import nl.roelofruis.math.temporal.{Position, Window}
+import artamus.core.math.temporal.{Position, Window}
 import artamus.core.model.primitives.Metre
 import artamus.core.model.track.Metres
 
