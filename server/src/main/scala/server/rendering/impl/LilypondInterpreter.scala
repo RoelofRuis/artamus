@@ -1,6 +1,6 @@
 package server.rendering.impl
 
-import nl.roelofruis.artamus.core.model.display.TrackDisplay
+import nl.roelofruis.artamus.core.model.display.Display
 import server.rendering.model.LilypondFormat
 
 private[rendering] class LilypondInterpreter(
@@ -10,7 +10,7 @@ private[rendering] class LilypondInterpreter(
 
   import LilypondFormat._
 
-  def interpret(track: TrackDisplay): LyFile = {
+  def interpret(track: Display): LyFile = {
     val contents = s"""|\\version "$lyVersion"
         |
         |\\paper {

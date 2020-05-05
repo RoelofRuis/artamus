@@ -3,7 +3,7 @@ package nl.roelofruis.artamus.core.ops.formalise
 import nl.roelofruis.math.HierarchicalClustering.Centroid
 import nl.roelofruis.math.temporal.{Duration, Position}
 import nl.roelofruis.math.{HierarchicalClustering, Rational}
-import nl.roelofruis.artamus.core.model.record.Recording
+import nl.roelofruis.artamus.core.model.recording.Recording
 
 import scala.annotation.tailrec
 

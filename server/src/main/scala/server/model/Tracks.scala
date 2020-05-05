@@ -4,11 +4,11 @@ import java.util.UUID
 
 import nl.roelofruis.math.temporal.Window
 import nl.roelofruis.artamus.core.model.primitives.{Chord, Key, Metre, NoteGroup}
-import nl.roelofruis.artamus.core.model.write.Track.TrackId
-import nl.roelofruis.artamus.core.model.write.Voice.VoiceId
-import nl.roelofruis.artamus.core.model.write._
-import nl.roelofruis.artamus.core.model.write.layers.Layer.LayerId
-import nl.roelofruis.artamus.core.model.write.layers._
+import nl.roelofruis.artamus.core.model.track.Track.TrackId
+import nl.roelofruis.artamus.core.model.track.Voice.VoiceId
+import nl.roelofruis.artamus.core.model.track._
+import nl.roelofruis.artamus.core.model.track.layers.Layer.LayerId
+import nl.roelofruis.artamus.core.model.track.layers._
 import spray.json._
 import storage.api.{DbIO, DbReader, DbResult}
 

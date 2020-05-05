@@ -7,7 +7,7 @@ import nl.roelofruis.artamus.core.model.display.staff._
 import nl.roelofruis.artamus.core.model.display.glyph.Glyphs.{GlyphDuration, InstantGlyph, SingleGlyph}
 import nl.roelofruis.math.IntegerMath
 import nl.roelofruis.artamus.core.model.primitives._
-import nl.roelofruis.artamus.core.model.write.analysis.TwelveToneTuning.TwelveToneFunctions
+import nl.roelofruis.artamus.core.ops.transform.analysis.TwelveToneTuning.TwelveToneFunctions
 
 import scala.annotation.tailrec
 

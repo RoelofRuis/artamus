@@ -2,7 +2,7 @@ package nl.roelofruis.artamus.core.ops.layout
 
 import nl.roelofruis.math.temporal.{Position, Window}
 import nl.roelofruis.artamus.core.model.primitives.Metre
-import nl.roelofruis.artamus.core.model.write.Metres
+import nl.roelofruis.artamus.core.model.track.Metres
 
 object MetrePositioning {
 

@@ -1,7 +1,7 @@
 package nl.roelofruis.artamus.core.api
 
 import nl.roelofruis.artamus.core.ops.formalise.RecordTransfer
-import nl.roelofruis.artamus.core.model.record.{RawMidiNote, Recording}
+import nl.roelofruis.artamus.core.model.recording.{RawMidiNote, Recording}
 
 object Record {
 

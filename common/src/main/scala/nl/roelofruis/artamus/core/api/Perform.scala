@@ -1,9 +1,9 @@
 package nl.roelofruis.artamus.core.api
 
-import nl.roelofruis.artamus.core.model.perform.TrackPerformance
+import nl.roelofruis.artamus.core.model.performance.Performance
 
 object Perform {
 
-  final case object PreparePerformance extends Query { type Res = TrackPerformance }
+  final case object PreparePerformance extends Query { type Res = Performance }
 
 }

@@ -8,7 +8,7 @@ import midi.MidiIO
 object MusicReader {
 
   import client.midi.read.Midi._
-  import nl.roelofruis.artamus.core.model.write.analysis.TwelveToneTuning._
+  import nl.roelofruis.artamus.core.ops.transform.analysis.TwelveToneTuning._
 
   sealed trait ReadMethod
   case class NoteOn(n: Int) extends ReadMethod

@@ -1,20 +1,20 @@
 package nl.roelofruis.artamus.core.ops.interpret
 
 import nl.roelofruis.artamus.core.model.primitives.{Loudness, MidiNoteNumber}
-import nl.roelofruis.artamus.core.model.perform.{MidiNote, TrackPerformance}
-import nl.roelofruis.artamus.core.model.write.Track
-import nl.roelofruis.artamus.core.model.write.layers.NoteLayer
+import nl.roelofruis.artamus.core.model.performance.{MidiNote, Performance}
+import nl.roelofruis.artamus.core.model.track.Track
+import nl.roelofruis.artamus.core.model.track.layers.NoteLayer
 
 object Interpretation {
 
-  import nl.roelofruis.artamus.core.model.write.analysis.TwelveToneTuning._
+  import nl.roelofruis.artamus.core.ops.transform.analysis.TwelveToneTuning._
 
   val VOLUME = 64
 
-  def perform(track: Track): TrackPerformance = {
+  def perform(track: Track): Performance = {
     track.readFirstLayer[NoteLayer] match {
       case Some(layer) =>
-        TrackPerformance(
+        Performance(
           layer
             .defaultVoice
             .readGroups()
@@ -25,7 +25,7 @@ object Interpretation {
               }
             }.toSeq
         )
-      case None => TrackPerformance()
+      case None => Performance()
     }
 
   }

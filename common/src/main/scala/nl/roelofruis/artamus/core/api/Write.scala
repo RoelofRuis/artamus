@@ -2,7 +2,7 @@ package nl.roelofruis.artamus.core.api
 
 import nl.roelofruis.math.temporal.Position
 import nl.roelofruis.artamus.core.model.primitives.{Key, Metre, NoteGroup}
-import nl.roelofruis.artamus.core.model.write.layers.Layer.LayerId
+import nl.roelofruis.artamus.core.model.track.layers.Layer.LayerId
 
 object Write {
 

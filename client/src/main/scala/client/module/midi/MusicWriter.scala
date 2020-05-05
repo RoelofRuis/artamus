@@ -1,7 +1,7 @@
 package client.module.midi
 
 import client.midi.write.{MidiSequenceWriter, sequenceBuilder}
-import nl.roelofruis.artamus.core.model.perform.TrackPerformance
+import nl.roelofruis.artamus.core.model.performance.Performance
 import midi.MidiIO
 
 object MusicWriter {
@@ -9,7 +9,7 @@ object MusicWriter {
   val TICKS_PER_WHOLE = 96
 
   implicit class SequencedMusicWriter(midiOutput: MidiSequenceWriter) {
-    def play(track: TrackPerformance): MidiIO[Unit] = {
+    def play(track: Performance): MidiIO[Unit] = {
       val builder = sequenceBuilder
       builder.setResolution(TICKS_PER_WHOLE / 4)
       track.notes.toSeq.foreach { midiNote =>

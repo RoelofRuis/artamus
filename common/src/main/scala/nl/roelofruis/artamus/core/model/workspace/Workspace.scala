@@ -4,8 +4,8 @@ import nl.roelofruis.math.Rational
 import nl.roelofruis.math.temporal.Duration
 import nl.roelofruis.artamus.core.ops.formalise.{Quantizer, RecordTransfer}
 import nl.roelofruis.artamus.core.model.workspace.User.UserId
-import nl.roelofruis.artamus.core.model.write.Track
-import nl.roelofruis.artamus.core.model.write.Track.TrackId
+import nl.roelofruis.artamus.core.model.track.Track
+import nl.roelofruis.artamus.core.model.track.Track.TrackId
 
 final case class Workspace(
   owner: UserId,

@@ -1,12 +1,12 @@
 package server.rendering.impl
 
 import com.typesafe.scalalogging.LazyLogging
-import nl.roelofruis.artamus.core.model.display.render.Render
-import nl.roelofruis.artamus.core.ops.layout.Display
+import javax.inject.Inject
 import nl.roelofruis.artamus.core.api.Display.TrackRendered
 import nl.roelofruis.artamus.core.api.Event
-import nl.roelofruis.artamus.core.model.write.Track
-import javax.inject.Inject
+import nl.roelofruis.artamus.core.model.display.render.Render
+import nl.roelofruis.artamus.core.model.track.Track
+import nl.roelofruis.artamus.core.ops.layout.Layout
 import server.rendering.Renderer
 import storage.api.DbIO
 
@@ -20,7 +20,7 @@ private[rendering] class LilypondRenderer @Inject() (
   override def render(track: Track, db: DbIO): List[Event] = {
     logger.debug(s"Rendering track [${track.id}]")
 
-    val displayTrack = Display.displayTrack(track)
+    val displayTrack = Layout.calculateDisplay(track)
     val lyFile = interpreter.interpret(displayTrack)
 
     renderingService.render(lyFile) match {

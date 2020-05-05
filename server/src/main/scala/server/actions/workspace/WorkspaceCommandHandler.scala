@@ -2,7 +2,7 @@ package server.actions.workspace
 
 import nl.roelofruis.artamus.core.api.Write.NewWorkspace
 import nl.roelofruis.artamus.core.model.workspace.Workspace
-import nl.roelofruis.artamus.core.model.write.Track
+import nl.roelofruis.artamus.core.model.track.Track
 import javax.inject.{Inject, Singleton}
 import server.api.{CommandHandlerRegistration, CommandRequest}
 

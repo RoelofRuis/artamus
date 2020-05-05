@@ -2,7 +2,7 @@ package server.actions.perform
 
 import nl.roelofruis.artamus.core.api.Perform.PreparePerformance
 import nl.roelofruis.artamus.core.api.Query
-import nl.roelofruis.artamus.core.model.write.Track
+import nl.roelofruis.artamus.core.model.track.Track
 import javax.inject.{Inject, Singleton}
 import nl.roelofruis.artamus.core.ops.interpret.Interpretation
 import server.api.{QueryDispatcher, QueryRequest}
@@ -18,9 +18,9 @@ private[server] class PerformanceQueryHandler @Inject() (
   import server.model.Workspaces._
 
   dispatcher.subscribe[PreparePerformance.type]{ req =>
-    import nl.roelofruis.artamus.core.model.perform._
+    import nl.roelofruis.artamus.core.model.performance._
 
-    readTrack(req, Interpretation.perform, TrackPerformance())
+    readTrack(req, Interpretation.perform, Performance())
   }
 
   def readTrack[A](req: QueryRequest[Query], f: Track => A, onNotFound: => A): Try[A] = {

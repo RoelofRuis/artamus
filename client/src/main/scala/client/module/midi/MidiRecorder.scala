@@ -8,7 +8,7 @@ import com.typesafe.scalalogging.LazyLogging
 import nl.roelofruis.artamus.core.api.Control.Commit
 import nl.roelofruis.artamus.core.api.Record.RecordNote
 import nl.roelofruis.artamus.core.model.primitives.{Loudness, MidiNoteNumber}
-import nl.roelofruis.artamus.core.model.record.{MillisecondPosition, RawMidiNote}
+import nl.roelofruis.artamus.core.model.recording.{MillisecondPosition, RawMidiNote}
 import javax.inject.Inject
 import javax.sound.midi.{MidiMessage, Receiver, ShortMessage}
 import client.midi.read.Midi
