@@ -19,8 +19,8 @@ lazy val global = (project in file("."))
 
 lazy val common = (project in file("common"))
   .settings(
-    name := "artamus-common",
-    description := "Common packages for Artamus",
+    name := "common",
+    description := "Common packages",
     compilerFlags,
     libraryDependencies ++= Seq(
       dependencies.javaxInject,

@@ -2,7 +2,7 @@ package nl.roelofruis.artamus.core.ops.layout
 
 import nl.roelofruis.artamus.core.model.display.glyph.Glyphs.Glyph
 import nl.roelofruis.artamus.core.ops.layout.MetrePositioning.PositionedMetre
-import domain.math.temporal.Position
+import nl.roelofruis.math.temporal.Position
 
 final case class LayoutDescription[A](
   metres: LazyList[PositionedMetre],

@@ -1,7 +1,7 @@
 package server.actions.perform
 
-import domain.interact.Perform.PreparePerformance
-import domain.interact.Query
+import nl.roelofruis.artamus.core.api.Perform.PreparePerformance
+import nl.roelofruis.artamus.core.api.Query
 import nl.roelofruis.artamus.core.model.write.Track
 import javax.inject.{Inject, Singleton}
 import nl.roelofruis.artamus.core.ops.interpret.Interpretation

@@ -1,7 +1,7 @@
 package nl.roelofruis.artamus.core.model.write.layers
 
-import domain.math.temporal.Position
-import domain.primitives.{Key, Metre, NoteGroup}
+import nl.roelofruis.math.temporal.Position
+import nl.roelofruis.artamus.core.model.primitives.{Key, Metre, NoteGroup}
 import nl.roelofruis.artamus.core.model.write.Voice.VoiceId
 import nl.roelofruis.artamus.core.model.write.{Keys, Metres, Voice}
 

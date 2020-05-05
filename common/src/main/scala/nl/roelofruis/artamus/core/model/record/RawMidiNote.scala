@@ -1,6 +1,6 @@
 package nl.roelofruis.artamus.core.model.record
 
-import domain.primitives.{Loudness, MidiNoteNumber}
+import nl.roelofruis.artamus.core.model.primitives.{Loudness, MidiNoteNumber}
 
 final case class RawMidiNote(
   noteNumber: MidiNoteNumber,

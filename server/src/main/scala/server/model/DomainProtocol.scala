@@ -2,12 +2,12 @@ package server.model
 
 import java.util.UUID
 
-import domain.math.Rational
-import domain.math.temporal.{Duration, Position, Window}
-import domain.primitives.{Accidental, Chord, Function, Key, Loudness, Metre, MidiNoteNumber, Note, NoteGroup, Octave, PitchClass, PitchSpelling, PulseGroup, Scale, ScientificPitch, Step}
+import nl.roelofruis.math.Rational
+import nl.roelofruis.math.temporal.{Duration, Position, Window}
+import nl.roelofruis.artamus.core.model.primitives.{Accidental, Chord, Function, Key, Loudness, Metre, MidiNoteNumber, Note, NoteGroup, Octave, PitchClass, PitchSpelling, PulseGroup, Scale, ScientificPitch, Step}
 import nl.roelofruis.artamus.core.ops.formalise.{Quantizer, RecordTransfer}
 import nl.roelofruis.artamus.core.model.record.{MillisecondPosition, RawMidiNote}
-import domain.workspace.User.UserId
+import nl.roelofruis.artamus.core.model.workspace.User.UserId
 import nl.roelofruis.artamus.core.model.write.Track.TrackId
 import nl.roelofruis.artamus.core.model.write.analysis.TwelveToneTuning
 import spray.json._

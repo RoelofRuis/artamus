@@ -1,6 +1,6 @@
 package client.module
 
-import domain.interact.Command
+import nl.roelofruis.artamus.core.api.Command
 
 import scala.util.{Success, Try}
 

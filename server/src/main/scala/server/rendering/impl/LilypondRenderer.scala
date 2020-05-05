@@ -3,8 +3,8 @@ package server.rendering.impl
 import com.typesafe.scalalogging.LazyLogging
 import nl.roelofruis.artamus.core.model.display.render.Render
 import nl.roelofruis.artamus.core.ops.layout.Display
-import domain.interact.Display.TrackRendered
-import domain.interact.Event
+import nl.roelofruis.artamus.core.api.Display.TrackRendered
+import nl.roelofruis.artamus.core.api.Event
 import nl.roelofruis.artamus.core.model.write.Track
 import javax.inject.Inject
 import server.rendering.Renderer

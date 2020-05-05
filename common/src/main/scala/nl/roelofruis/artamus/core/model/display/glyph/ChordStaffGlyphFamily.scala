@@ -1,6 +1,6 @@
 package nl.roelofruis.artamus.core.model.display.glyph
 
-import domain.primitives.{Function, PitchSpelling}
+import nl.roelofruis.artamus.core.model.primitives.{Function, PitchSpelling}
 
 object ChordStaffGlyphFamily {
 

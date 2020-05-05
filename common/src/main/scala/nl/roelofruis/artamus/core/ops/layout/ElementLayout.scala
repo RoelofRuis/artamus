@@ -2,8 +2,8 @@ package nl.roelofruis.artamus.core.ops.layout
 
 import nl.roelofruis.artamus.core.model.display.glyph.Glyphs.{Glyph, GlyphDuration, SingleGlyph}
 import nl.roelofruis.artamus.core.ops.layout.MetrePositioning.PositionedMetre
-import domain.math.Rational
-import domain.math.temporal.{Position, Window}
+import nl.roelofruis.math.Rational
+import nl.roelofruis.math.temporal.{Position, Window}
 
 import scala.annotation.tailrec
 
@@ -11,7 +11,7 @@ object ElementLayout {
 
   final case class Element[A](window: Window, glyph: A)
 
-  import domain.math.IntegerMath
+  import nl.roelofruis.math.IntegerMath
 
   def layoutElements[A](
     elements: Seq[Element[A]],

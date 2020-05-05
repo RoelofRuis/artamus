@@ -4,10 +4,10 @@ import java.io.File
 
 import client.CommandExecutor
 import client.infra.Callback
-import domain.interact.Display.TrackRendered
-import domain.interact.Event
+import nl.roelofruis.artamus.core.api.Display.TrackRendered
+import nl.roelofruis.artamus.core.api.Event
 import javax.imageio.ImageIO
-import pubsub.Dispatcher
+import nl.roelofruis.pubsub.Dispatcher
 
 import scala.swing.Swing
 import scala.swing.event.{Key, KeyTyped}

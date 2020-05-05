@@ -1,6 +1,6 @@
 package nl.roelofruis.artamus.core.model.write.layers
 
-import domain.primitives.{Chord, PitchClass}
+import nl.roelofruis.artamus.core.model.primitives.{Chord, PitchClass}
 import nl.roelofruis.artamus.core.model.write.Chords
 import nl.roelofruis.artamus.core.model.write.analysis.{Interpretation, TwelveToneTuning}
 

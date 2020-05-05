@@ -1,6 +1,6 @@
 package server.api
 
-import domain.interact.Command
+import nl.roelofruis.artamus.core.api.Command
 import server.api.CommandRequest.CommandHandler
 
 import scala.reflect.ClassTag

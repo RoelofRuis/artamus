@@ -1,6 +1,6 @@
 package nl.roelofruis.artamus.core.model.write.analysis
 
-import domain.primitives.{Note, _}
+import nl.roelofruis.artamus.core.model.primitives.{Note, _}
 
 object TwelveTonePitchSpelling {
 

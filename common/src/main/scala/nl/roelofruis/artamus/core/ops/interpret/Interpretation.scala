@@ -1,6 +1,6 @@
 package nl.roelofruis.artamus.core.ops.interpret
 
-import domain.primitives.{Loudness, MidiNoteNumber}
+import nl.roelofruis.artamus.core.model.primitives.{Loudness, MidiNoteNumber}
 import nl.roelofruis.artamus.core.model.perform.{MidiNote, TrackPerformance}
 import nl.roelofruis.artamus.core.model.write.Track
 import nl.roelofruis.artamus.core.model.write.layers.NoteLayer

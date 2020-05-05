@@ -1,6 +1,6 @@
 package server.rendering
 
-import domain.interact.Event
+import nl.roelofruis.artamus.core.api.Event
 import nl.roelofruis.artamus.core.model.write.Track
 import storage.api.DbIO
 

@@ -1,11 +1,11 @@
 package client.infra
 
 import com.typesafe.scalalogging.LazyLogging
-import domain.interact.Event
+import nl.roelofruis.artamus.core.api.Event
 import javax.inject.Inject
 import network.Exceptions.ResponseException
 import network.client.api.ClientAPI
-import pubsub.Dispatcher
+import nl.roelofruis.pubsub.Dispatcher
 
 class DispatchingClientAPI @Inject() (
   dispatcher: Dispatcher[Callback, Event]

@@ -1,6 +1,6 @@
 package nl.roelofruis.artamus.core.ops.formalise
 
-import domain.math.Rational
+import nl.roelofruis.math.Rational
 
 /**
  * Represents the static settings of a quantizer.

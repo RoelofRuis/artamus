@@ -1,7 +1,7 @@
 package server
 
-import domain.interact.{Event, Query}
-import pubsub.{Dispatcher, EventBus}
+import nl.roelofruis.artamus.core.api.{Event, Query}
+import nl.roelofruis.pubsub.{Dispatcher, EventBus}
 
 package object api {
 

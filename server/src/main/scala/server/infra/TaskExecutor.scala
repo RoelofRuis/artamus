@@ -3,9 +3,9 @@ package server.infra
 import java.util.concurrent.{ExecutorService, Executors}
 
 import com.typesafe.scalalogging.LazyLogging
-import domain.interact.Control.{TaskFailed, TaskId, TaskStarted, TaskSuccessful}
-import domain.interact.{Command, Event}
-import domain.workspace.User
+import nl.roelofruis.artamus.core.api.Control.{TaskFailed, TaskId, TaskStarted, TaskSuccessful}
+import nl.roelofruis.artamus.core.api.{Command, Event}
+import nl.roelofruis.artamus.core.model.workspace.User
 import javax.inject.{Inject, Singleton}
 import server.api.{CommandRequest, ServerEventBus}
 import server.infra.TaskExecutor.TaskResult

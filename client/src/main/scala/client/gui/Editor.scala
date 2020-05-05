@@ -4,12 +4,12 @@ import java.awt.event.{WindowAdapter, WindowEvent}
 
 import client.infra.{Callback, Client}
 import client.{CommandExecutor, ModuleLifetimeHooks}
-import domain.interact.Control.{Authenticate, Commit}
-import domain.interact.Display.Render
-import domain.interact.Event
-import domain.interact.Write.NewWorkspace
+import nl.roelofruis.artamus.core.api.Control.{Authenticate, Commit}
+import nl.roelofruis.artamus.core.api.Display.Render
+import nl.roelofruis.artamus.core.api.Event
+import nl.roelofruis.artamus.core.api.Write.NewWorkspace
 import javax.inject.Inject
-import pubsub.Dispatcher
+import nl.roelofruis.pubsub.Dispatcher
 
 import scala.swing.Swing
 

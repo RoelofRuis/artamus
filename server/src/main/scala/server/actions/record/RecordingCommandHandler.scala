@@ -1,8 +1,8 @@
 package server.actions.record
 
-import domain.interact.Record.{ClearRecording, Quantize, RecordNote, SetRecordTransfer}
-import domain.math.temporal.{Duration, Position, Window}
-import domain.primitives.{Note, NoteGroup}
+import nl.roelofruis.artamus.core.api.Record.{ClearRecording, Quantize, RecordNote, SetRecordTransfer}
+import nl.roelofruis.math.temporal.{Duration, Position, Window}
+import nl.roelofruis.artamus.core.model.primitives.{Note, NoteGroup}
 import nl.roelofruis.artamus.core.model.record.Recording
 import nl.roelofruis.artamus.core.ops.formalise.RecordTransfer
 import nl.roelofruis.artamus.core.model.write.layers.{LayerData, NoteLayer, RhythmLayer}

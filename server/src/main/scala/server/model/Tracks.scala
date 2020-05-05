@@ -2,8 +2,8 @@ package server.model
 
 import java.util.UUID
 
-import domain.math.temporal.Window
-import domain.primitives.{Chord, Key, Metre, NoteGroup}
+import nl.roelofruis.math.temporal.Window
+import nl.roelofruis.artamus.core.model.primitives.{Chord, Key, Metre, NoteGroup}
 import nl.roelofruis.artamus.core.model.write.Track.TrackId
 import nl.roelofruis.artamus.core.model.write.Voice.VoiceId
 import nl.roelofruis.artamus.core.model.write._

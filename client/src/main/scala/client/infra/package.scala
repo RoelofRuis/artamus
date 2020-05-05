@@ -1,9 +1,9 @@
 package client
 
 import client.infra.Callback
-import domain.interact.{Event, Request}
+import nl.roelofruis.artamus.core.api.{Event, Request}
 import network.client.api.ClientInterface
-import pubsub.Dispatcher
+import nl.roelofruis.pubsub.Dispatcher
 
 package object infra {
 

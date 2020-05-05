@@ -1,7 +1,7 @@
 package nl.roelofruis.artamus.core.model.write
 
-import domain.math.temporal.Position
-import domain.primitives._
+import nl.roelofruis.math.temporal.Position
+import nl.roelofruis.artamus.core.model.primitives._
 
 import scala.collection.immutable.SortedMap
 

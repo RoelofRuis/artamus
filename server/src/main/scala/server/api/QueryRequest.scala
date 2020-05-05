@@ -1,7 +1,7 @@
 package server.api
 
-import domain.workspace.User
-import pubsub.Dispatchable
+import nl.roelofruis.artamus.core.model.workspace.User
+import nl.roelofruis.pubsub.Dispatchable
 import storage.api.{DbReader, DbResult}
 
 import scala.reflect.ClassTag

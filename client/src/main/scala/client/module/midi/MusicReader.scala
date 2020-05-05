@@ -1,7 +1,7 @@
 package client.module.midi
 
 import client.midi.read.MidiInput
-import domain.primitives._
+import nl.roelofruis.artamus.core.model.primitives._
 import javax.sound.midi.ShortMessage
 import midi.MidiIO
 

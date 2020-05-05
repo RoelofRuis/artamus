@@ -1,7 +1,7 @@
 package client.infra
 
 import com.typesafe.scalalogging.LazyLogging
-import domain.interact.{Command, Query}
+import nl.roelofruis.artamus.core.api.{Command, Query}
 import network.Exceptions.CommunicationException
 
 import scala.annotation.tailrec

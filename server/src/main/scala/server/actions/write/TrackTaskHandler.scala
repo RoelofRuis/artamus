@@ -1,6 +1,6 @@
 package server.actions.write
 
-import domain.interact.Display.Render
+import nl.roelofruis.artamus.core.api.Display.Render
 import javax.inject.{Inject, Singleton}
 import server.api.{CommandHandlerRegistration, CommandRequest}
 import server.rendering.Renderer

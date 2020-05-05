@@ -1,7 +1,7 @@
 package nl.roelofruis.artamus.core.model.write.layers
 
-import domain.math.temporal.Position
-import domain.primitives.{Metre, NoteGroup}
+import nl.roelofruis.math.temporal.Position
+import nl.roelofruis.artamus.core.model.primitives.{Metre, NoteGroup}
 import nl.roelofruis.artamus.core.model.write.{Metres, Voice}
 
 final case class RhythmLayer(

@@ -5,8 +5,8 @@ import nl.roelofruis.artamus.core.model.display.staff.NoteStaff.{Bass, Clef, Tre
 import nl.roelofruis.artamus.core.model.display.glyph.StaffGlyphFamily.{KeyGlyph, NoteGroupGlyph, RestGlyph, TimeSignatureGlyph}
 import nl.roelofruis.artamus.core.model.display.staff._
 import nl.roelofruis.artamus.core.model.display.glyph.Glyphs.{GlyphDuration, InstantGlyph, SingleGlyph}
-import domain.math.IntegerMath
-import domain.primitives._
+import nl.roelofruis.math.IntegerMath
+import nl.roelofruis.artamus.core.model.primitives._
 import nl.roelofruis.artamus.core.model.write.analysis.TwelveToneTuning.TwelveToneFunctions
 
 import scala.annotation.tailrec

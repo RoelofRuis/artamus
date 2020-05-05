@@ -1,9 +1,9 @@
 package server.infra
 
 import com.typesafe.scalalogging.LazyLogging
-import domain.interact.Control.Authenticate
-import domain.interact.{Command, Event, Query, Request}
-import domain.workspace.User
+import nl.roelofruis.artamus.core.api.Control.Authenticate
+import nl.roelofruis.artamus.core.api.{Command, Event, Query, Request}
+import nl.roelofruis.artamus.core.model.workspace.User
 import javax.inject.{Inject, Singleton}
 import network.Exceptions._
 import network.server.api.{ConnectionHandle, ServerAPI}

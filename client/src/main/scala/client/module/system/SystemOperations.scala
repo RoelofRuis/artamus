@@ -1,6 +1,6 @@
 package client.module.system
 
-import domain.interact.Control.{Authenticate, Disconnect}
+import nl.roelofruis.artamus.core.api.Control.{Authenticate, Disconnect}
 import client.module.Operations.{OperationRegistry, ServerOperation}
 import client.module.StdIOTools
 import javax.inject.Inject

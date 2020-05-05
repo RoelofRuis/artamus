@@ -1,7 +1,7 @@
 package server.api
 
-import domain.interact.Event
-import domain.workspace.User
+import nl.roelofruis.artamus.core.api.Event
+import nl.roelofruis.artamus.core.model.workspace.User
 import storage.api.{DbIO, DbResult, IOError, NotFound}
 
 import scala.util.{Failure, Success, Try}

@@ -1,7 +1,7 @@
 package nl.roelofruis.artamus.core.model.write.analysis
 
 import nl.roelofruis.artamus.core.model.write.analysis.Analysis.{Chords, Functions, Intervals}
-import domain.primitives.{Function, Interval, PitchClass}
+import nl.roelofruis.artamus.core.model.primitives.{Function, Interval, PitchClass}
 
 final case class TuningSystem(pcSeq: Seq[Int]) {
   val numSteps: Int = pcSeq.size

@@ -1,8 +1,8 @@
 package client.module.terminal
 
 import client.module.StdIOTools
-import domain.primitives._
-import domain.math._
+import nl.roelofruis.artamus.core.model.primitives._
+import nl.roelofruis.math._
 
 import scala.annotation.tailrec
 

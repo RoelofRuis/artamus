@@ -1,7 +1,7 @@
 package nl.roelofruis.artamus.core.model.write
 
-import domain.math.temporal.{Position, Window}
-import domain.primitives.Chord
+import nl.roelofruis.math.temporal.{Position, Window}
+import nl.roelofruis.artamus.core.model.primitives.Chord
 
 import scala.collection.BufferedIterator
 import scala.collection.immutable.SortedMap

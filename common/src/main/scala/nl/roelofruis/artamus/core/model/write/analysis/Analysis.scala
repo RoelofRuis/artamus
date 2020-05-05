@@ -1,6 +1,6 @@
 package nl.roelofruis.artamus.core.model.write.analysis
 
-import domain.primitives._
+import nl.roelofruis.artamus.core.model.primitives._
 
 object Analysis {
 

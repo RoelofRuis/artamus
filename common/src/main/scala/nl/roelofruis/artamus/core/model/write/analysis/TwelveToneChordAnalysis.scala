@@ -1,6 +1,6 @@
 package nl.roelofruis.artamus.core.model.write.analysis
 
-import domain.primitives.{Chord, _}
+import nl.roelofruis.artamus.core.model.primitives.{Chord, _}
 
 object TwelveToneChordAnalysis {
 

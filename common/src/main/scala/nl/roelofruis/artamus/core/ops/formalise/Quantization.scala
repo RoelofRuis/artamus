@@ -1,8 +1,8 @@
 package nl.roelofruis.artamus.core.ops.formalise
 
-import domain.math.HierarchicalClustering.Centroid
-import domain.math.temporal.{Duration, Position}
-import domain.math.{HierarchicalClustering, Rational}
+import nl.roelofruis.math.HierarchicalClustering.Centroid
+import nl.roelofruis.math.temporal.{Duration, Position}
+import nl.roelofruis.math.{HierarchicalClustering, Rational}
 import nl.roelofruis.artamus.core.model.record.Recording
 
 import scala.annotation.tailrec

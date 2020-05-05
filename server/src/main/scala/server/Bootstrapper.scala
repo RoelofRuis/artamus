@@ -1,6 +1,6 @@
 package server
 
-import domain.interact.{Event, Request}
+import nl.roelofruis.artamus.core.api.{Event, Request}
 import javax.inject.Inject
 import network.server.api.ServerFactory
 

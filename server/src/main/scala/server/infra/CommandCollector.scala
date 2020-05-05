@@ -2,9 +2,9 @@ package server.infra
 
 import java.util.concurrent.ConcurrentHashMap
 
-import domain.interact.Control.Commit
-import domain.interact.{Command, Request}
-import domain.workspace.User
+import nl.roelofruis.artamus.core.api.Control.Commit
+import nl.roelofruis.artamus.core.api.{Command, Request}
+import nl.roelofruis.artamus.core.model.workspace.User
 import javax.inject.{Inject, Singleton}
 
 @Singleton

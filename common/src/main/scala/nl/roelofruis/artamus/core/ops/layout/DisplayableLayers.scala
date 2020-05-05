@@ -6,7 +6,7 @@ import nl.roelofruis.artamus.core.model.display.glyph.StaffGlyphFamily.{NoteGrou
 import nl.roelofruis.artamus.core.ops.layout.ElementLayout.Element
 import nl.roelofruis.artamus.core.model.display.staff.NoteStaff.{Bass, Treble}
 import nl.roelofruis.artamus.core.model.display.staff._
-import domain.primitives.{MidiNoteNumber, Note, NoteGroup}
+import nl.roelofruis.artamus.core.model.primitives.{MidiNoteNumber, Note, NoteGroup}
 import nl.roelofruis.artamus.core.model.write.analysis.TwelveTonePitchSpelling
 import nl.roelofruis.artamus.core.model.write.layers.{ChordLayer, NoteLayer, RhythmLayer}
 

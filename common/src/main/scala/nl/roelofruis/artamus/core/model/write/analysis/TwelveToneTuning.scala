@@ -1,7 +1,7 @@
 package nl.roelofruis.artamus.core.model.write.analysis
 
 import nl.roelofruis.artamus.core.model.write.analysis.Analysis.{Chords, Functions, Intervals}
-import domain.primitives._
+import nl.roelofruis.artamus.core.model.primitives._
 
 object TwelveToneTuning {
 

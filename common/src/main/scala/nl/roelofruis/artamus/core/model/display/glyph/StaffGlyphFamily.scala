@@ -1,9 +1,9 @@
 package nl.roelofruis.artamus.core.model.display.glyph
 
 import nl.roelofruis.artamus.core.model.display.glyph.Glyphs.{Glyph, InstantGlyph}
-import domain.math.FractionalPowerOfTwo
-import domain.math.temporal.Position
-import domain.primitives._
+import nl.roelofruis.math.FractionalPowerOfTwo
+import nl.roelofruis.math.temporal.Position
+import nl.roelofruis.artamus.core.model.primitives._
 
 object StaffGlyphFamily {
 
@@ -37,7 +37,7 @@ object StaffGlyphFamily {
   }
 
   def timeSignatureBuilder(metres: Map[Position, Metre]): Position => Option[Glyph[StaffGlyph]] = position => {
-    import domain.math._
+    import nl.roelofruis.math._
     metres
       .get(position)
       .map { metre =>

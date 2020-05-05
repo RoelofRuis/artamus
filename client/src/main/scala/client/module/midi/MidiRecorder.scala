@@ -5,9 +5,9 @@ import java.util.concurrent.{BlockingQueue, LinkedBlockingQueue}
 
 import client.infra.Client
 import com.typesafe.scalalogging.LazyLogging
-import domain.interact.Control.Commit
-import domain.interact.Record.RecordNote
-import domain.primitives.{Loudness, MidiNoteNumber}
+import nl.roelofruis.artamus.core.api.Control.Commit
+import nl.roelofruis.artamus.core.api.Record.RecordNote
+import nl.roelofruis.artamus.core.model.primitives.{Loudness, MidiNoteNumber}
 import nl.roelofruis.artamus.core.model.record.{MillisecondPosition, RawMidiNote}
 import javax.inject.Inject
 import javax.sound.midi.{MidiMessage, Receiver, ShortMessage}
