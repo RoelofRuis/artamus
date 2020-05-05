@@ -1,6 +1,6 @@
 package server.actions.write
 
-import nl.roelofruis.artamus.core.api.Write.GetLayers
+import artamus.core.api.Write.GetLayers
 import javax.inject.{Inject, Singleton}
 import server.api.{QueryDispatcher, QueryRequest}
 

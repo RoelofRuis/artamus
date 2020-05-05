@@ -1,7 +1,7 @@
 package client.module.midi
 
 import client.midi.write.{MidiSequenceWriter, sequenceBuilder}
-import nl.roelofruis.artamus.core.model.performance.Performance
+import artamus.core.model.performance.Performance
 import midi.MidiIO
 
 object MusicWriter {

@@ -1,14 +1,14 @@
 package client.module.midi
 
 import client.midi.read.MidiInput
-import nl.roelofruis.artamus.core.model.primitives._
+import artamus.core.model.primitives._
 import javax.sound.midi.ShortMessage
 import midi.MidiIO
 
 object MusicReader {
 
   import client.midi.read.Midi._
-  import nl.roelofruis.artamus.core.ops.transform.analysis.TwelveToneTuning._
+  import artamus.core.ops.transform.analysis.TwelveToneTuning._
 
   sealed trait ReadMethod
   case class NoteOn(n: Int) extends ReadMethod

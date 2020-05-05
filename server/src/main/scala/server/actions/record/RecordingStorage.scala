@@ -1,8 +1,8 @@
 package server.actions.record
 
 import javax.inject.Singleton
-import nl.roelofruis.artamus.core.model.recording.{RawMidiNote, Recording}
-import nl.roelofruis.artamus.core.model.workspace.User.UserId
+import artamus.core.model.recording.{RawMidiNote, Recording}
+import artamus.core.model.workspace.User.UserId
 
 import scala.collection.concurrent.TrieMap
 

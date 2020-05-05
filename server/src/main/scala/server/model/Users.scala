@@ -1,7 +1,7 @@
 package server.model
 
-import nl.roelofruis.artamus.core.model.workspace.User
-import nl.roelofruis.artamus.core.model.workspace.User.UserId
+import artamus.core.model.workspace.User
+import artamus.core.model.workspace.User.UserId
 import spray.json.RootJsonFormat
 import storage.api.{DbIO, DbReader, DbResult}
 

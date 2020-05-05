@@ -1,6 +1,6 @@
 package server
 
-import nl.roelofruis.artamus.core.api.{Event, Query}
+import artamus.core.api.{Event, Query}
 import nl.roelofruis.pubsub.{Dispatcher, EventBus}
 
 package object api {

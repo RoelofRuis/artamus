@@ -2,10 +2,10 @@ package client.module.midi.operations
 
 import client.module.Operations.OperationRegistry
 import client.module.midi.MusicReader
-import nl.roelofruis.artamus.core.api.Display.Render
-import nl.roelofruis.artamus.core.api.Write.WriteKey
+import artamus.core.api.Display.Render
+import artamus.core.api.Write.WriteKey
 import nl.roelofruis.math.temporal.Position
-import nl.roelofruis.artamus.core.model.primitives._
+import artamus.core.model.primitives._
 import javax.inject.Inject
 import client.midi.read.MidiInput
 

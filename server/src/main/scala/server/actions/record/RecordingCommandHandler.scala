@@ -1,11 +1,11 @@
 package server.actions.record
 
-import nl.roelofruis.artamus.core.api.Record.{ClearRecording, Quantize, RecordNote, SetRecordTransfer}
+import artamus.core.api.Record.{ClearRecording, Quantize, RecordNote, SetRecordTransfer}
 import nl.roelofruis.math.temporal.{Duration, Position, Window}
-import nl.roelofruis.artamus.core.model.primitives.{Note, NoteGroup}
-import nl.roelofruis.artamus.core.model.recording.Recording
-import nl.roelofruis.artamus.core.ops.formalise.RecordTransfer
-import nl.roelofruis.artamus.core.model.track.layers.{LayerData, NoteLayer, RhythmLayer}
+import artamus.core.model.primitives.{Note, NoteGroup}
+import artamus.core.model.recording.Recording
+import artamus.core.ops.formalise.RecordTransfer
+import artamus.core.model.track.layers.{LayerData, NoteLayer, RhythmLayer}
 import javax.inject.{Inject, Singleton}
 import server.api.{CommandHandlerRegistration, CommandRequest}
 
@@ -40,8 +40,8 @@ private[server] class RecordingCommandHandler @Inject() (
     CommandRequest.ok
   }
 
-  import nl.roelofruis.artamus.core.ops.formalise.Quantization._
-  import nl.roelofruis.artamus.core.ops.transform.analysis.TwelveToneTuning._
+  import artamus.core.ops.formalise.Quantization._
+  import artamus.core.ops.transform.analysis.TwelveToneTuning._
   registry.register[Quantize] { req =>
     storage.getRecording(req.user.id) match {
       case None => CommandRequest.ok

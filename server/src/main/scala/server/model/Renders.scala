@@ -1,7 +1,7 @@
 package server.model
 
-import nl.roelofruis.artamus.core.model.display.render.Render
-import nl.roelofruis.artamus.core.model.track.Track.TrackId
+import artamus.core.model.display.render.Render
+import artamus.core.model.track.Track.TrackId
 import storage.api.{DbIO, DbReader, DbResult}
 
 object Renders {

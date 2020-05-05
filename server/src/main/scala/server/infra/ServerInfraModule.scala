@@ -1,6 +1,6 @@
 package server.infra
 
-import nl.roelofruis.artamus.core.api.{Event, Query, Request}
+import artamus.core.api.{Event, Query, Request}
 import net.codingwell.scalaguice.ScalaModule
 import network.server.api.{ServerAPI, ServerConfig, ServerFactory}
 import nl.roelofruis.pubsub.{EventBus, createDispatcher}

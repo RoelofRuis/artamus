@@ -1,7 +1,7 @@
 package client.infra
 
 import com.typesafe.scalalogging.LazyLogging
-import nl.roelofruis.artamus.core.api.Event
+import artamus.core.api.Event
 import javax.inject.Inject
 import network.Exceptions.ResponseException
 import network.client.api.ClientAPI

@@ -2,9 +2,9 @@ package server.infra
 
 import java.util.UUID
 
-import nl.roelofruis.artamus.core.api.Display.TrackRendered
-import nl.roelofruis.artamus.core.model.workspace.User
-import nl.roelofruis.artamus.core.model.workspace.User.UserId
+import artamus.core.api.Display.TrackRendered
+import artamus.core.model.workspace.User
+import artamus.core.model.workspace.User.UserId
 import javax.inject.Inject
 import server.api.ServerEventBus
 import storage.api.Database

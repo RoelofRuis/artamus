@@ -4,10 +4,10 @@ import java.awt.event.{WindowAdapter, WindowEvent}
 
 import client.infra.{Callback, Client}
 import client.{CommandExecutor, ModuleLifetimeHooks}
-import nl.roelofruis.artamus.core.api.Control.{Authenticate, Commit}
-import nl.roelofruis.artamus.core.api.Display.Render
-import nl.roelofruis.artamus.core.api.Event
-import nl.roelofruis.artamus.core.api.Write.NewWorkspace
+import artamus.core.api.Control.{Authenticate, Commit}
+import artamus.core.api.Display.Render
+import artamus.core.api.Event
+import artamus.core.api.Write.NewWorkspace
 import javax.inject.Inject
 import nl.roelofruis.pubsub.Dispatcher
 

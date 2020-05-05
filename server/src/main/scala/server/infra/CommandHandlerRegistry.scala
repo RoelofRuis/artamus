@@ -2,7 +2,7 @@ package server.infra
 
 import java.util.concurrent.ConcurrentHashMap
 
-import nl.roelofruis.artamus.core.api.Command
+import artamus.core.api.Command
 import javax.annotation.concurrent.ThreadSafe
 import javax.inject.Singleton
 import server.api.CommandHandlerRegistration

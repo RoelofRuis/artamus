@@ -1,9 +1,9 @@
 package server.actions.write
 
-import nl.roelofruis.artamus.core.api.Event
-import nl.roelofruis.artamus.core.api.Write._
-import nl.roelofruis.artamus.core.model.track.Track
-import nl.roelofruis.artamus.core.model.track.layers.{ChordAnalyser, ChordLayer, NoteLayer, RhythmLayer}
+import artamus.core.api.Event
+import artamus.core.api.Write._
+import artamus.core.model.track.Track
+import artamus.core.model.track.layers.{ChordAnalyser, ChordLayer, NoteLayer, RhythmLayer}
 import javax.inject.{Inject, Singleton}
 import server.api.{CommandHandlerRegistration, CommandRequest}
 

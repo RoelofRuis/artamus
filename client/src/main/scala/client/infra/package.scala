@@ -1,7 +1,7 @@
 package client
 
 import client.infra.Callback
-import nl.roelofruis.artamus.core.api.{Event, Request}
+import artamus.core.api.{Event, Request}
 import network.client.api.ClientInterface
 import nl.roelofruis.pubsub.Dispatcher
 

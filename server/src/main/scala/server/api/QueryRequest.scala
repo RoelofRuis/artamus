@@ -1,6 +1,6 @@
 package server.api
 
-import nl.roelofruis.artamus.core.model.workspace.User
+import artamus.core.model.workspace.User
 import nl.roelofruis.pubsub.Dispatchable
 import storage.api.{DbReader, DbResult}
 

@@ -1,7 +1,7 @@
 package client.infra
 
 import com.google.inject.Provides
-import nl.roelofruis.artamus.core.api.{Event, Request}
+import artamus.core.api.{Event, Request}
 import javax.inject.Singleton
 import net.codingwell.scalaguice.ScalaModule
 import network.client.api.{ClientAPI, ClientConfig, ClientFactory}

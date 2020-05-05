@@ -1,6 +1,6 @@
 package server.actions.record
 
-import nl.roelofruis.artamus.core.api.Record.GetCurrentRecording
+import artamus.core.api.Record.GetCurrentRecording
 import javax.inject.{Inject, Singleton}
 import server.api.QueryDispatcher
 

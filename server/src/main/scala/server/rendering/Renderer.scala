@@ -1,7 +1,7 @@
 package server.rendering
 
-import nl.roelofruis.artamus.core.api.Event
-import nl.roelofruis.artamus.core.model.track.Track
+import artamus.core.api.Event
+import artamus.core.model.track.Track
 import storage.api.DbIO
 
 trait Renderer {

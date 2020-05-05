@@ -1,14 +1,14 @@
 package client.module.terminal
 
 import client.module.StdIOTools
-import nl.roelofruis.artamus.core.model.primitives._
+import artamus.core.model.primitives._
 import nl.roelofruis.math._
 
 import scala.annotation.tailrec
 
 object TerminalReader {
 
-  import nl.roelofruis.artamus.core.ops.transform.analysis.TwelveToneTuning._
+  import artamus.core.ops.transform.analysis.TwelveToneTuning._
 
   def readMetre: Metre = {
     val (num, denom) = StdIOTools.read[(Int, Int)]("Input time signature: x/y", "Invalid value", {

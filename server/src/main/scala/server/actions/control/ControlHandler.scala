@@ -1,6 +1,6 @@
 package server.actions.control
 
-import nl.roelofruis.artamus.core.api.Control.Disconnect
+import artamus.core.api.Control.Disconnect
 import javax.inject.{Inject, Singleton}
 import server.api.{CommandHandlerRegistration, CommandRequest}
 

@@ -11,6 +11,7 @@ scalaVersion in ThisBuild := "2.13.1"
 lazy val global = (project in file("."))
   .settings(compilerFlags)
   .aggregate(
+    core,
     common,
     storage,
     client,
@@ -52,6 +53,19 @@ lazy val network = (project in file("network"))
     )
   )
 
+lazy val core = (project in file ("artamus-core"))
+  .settings(
+    name := "artamus-core",
+    description := "Artamus core package",
+    compilerFlags,
+    libraryDependencies ++= Seq(
+      dependencies.javaxInject,
+      dependencies.findbugs,
+      dependencies.microtest % Test
+    )
+  )
+  .dependsOn(common)
+
 lazy val client = (project in file("client"))
   .settings(
     name := "artamus-client",
@@ -71,7 +85,7 @@ lazy val client = (project in file("client"))
       dependencies.scalaSwing
     )
   )
-  .dependsOn(network, common)
+  .dependsOn(core, network, common)
 
 lazy val server = (project in file("server"))
   .settings(
@@ -86,4 +100,4 @@ lazy val server = (project in file("server"))
       dependencies.sprayJson
     )
   )
-  .dependsOn(network, storage, common)
+  .dependsOn(core, network, storage, common)

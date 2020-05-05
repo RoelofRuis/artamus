@@ -1,8 +1,8 @@
 package client.module.system
 
 import client.module.Operations.{OperationRegistry, ServerOperation}
-import nl.roelofruis.artamus.core.api.Display.Render
-import nl.roelofruis.artamus.core.api.Write.{AnalyseChords, NewWorkspace}
+import artamus.core.api.Display.Render
+import artamus.core.api.Write.{AnalyseChords, NewWorkspace}
 import javax.inject.Inject
 
 class ControlOperations @Inject() (

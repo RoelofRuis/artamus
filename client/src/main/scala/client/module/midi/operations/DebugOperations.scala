@@ -3,7 +3,7 @@ package client.module.midi.operations
 import client.infra.{Client, ClientInteraction}
 import client.module.Operations.OperationRegistry
 import com.google.inject.Inject
-import nl.roelofruis.artamus.core.api.Record.GetCurrentRecording
+import artamus.core.api.Record.GetCurrentRecording
 
 class DebugOperations @Inject() (
   registry: OperationRegistry,

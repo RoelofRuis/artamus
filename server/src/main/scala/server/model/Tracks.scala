@@ -3,12 +3,12 @@ package server.model
 import java.util.UUID
 
 import nl.roelofruis.math.temporal.Window
-import nl.roelofruis.artamus.core.model.primitives.{Chord, Key, Metre, NoteGroup}
-import nl.roelofruis.artamus.core.model.track.Track.TrackId
-import nl.roelofruis.artamus.core.model.track.Voice.VoiceId
-import nl.roelofruis.artamus.core.model.track._
-import nl.roelofruis.artamus.core.model.track.layers.Layer.LayerId
-import nl.roelofruis.artamus.core.model.track.layers._
+import artamus.core.model.primitives.{Chord, Key, Metre, NoteGroup}
+import artamus.core.model.track.Track.TrackId
+import artamus.core.model.track.Voice.VoiceId
+import artamus.core.model.track._
+import artamus.core.model.track.layers.Layer.LayerId
+import artamus.core.model.track.layers._
 import spray.json._
 import storage.api.{DbIO, DbReader, DbResult}
 

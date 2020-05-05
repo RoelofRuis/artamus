@@ -4,7 +4,7 @@ import client.infra.{Client, ClientInteraction}
 import client.module.Operations.OperationRegistry
 import client.module.midi.MusicWriter
 import com.typesafe.scalalogging.LazyLogging
-import nl.roelofruis.artamus.core.api.Perform.PreparePerformance
+import artamus.core.api.Perform.PreparePerformance
 import javax.inject.Inject
 import client.midi.write.MidiSequenceWriter
 

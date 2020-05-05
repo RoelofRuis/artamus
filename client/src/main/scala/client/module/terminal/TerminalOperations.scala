@@ -3,14 +3,14 @@ package client.module.terminal
 import client.infra.{Client, ClientInteraction}
 import client.module.Operations.{OperationRegistry, ServerOperation}
 import client.module.StdIOTools
-import nl.roelofruis.artamus.core.api.Command
-import nl.roelofruis.artamus.core.api.Control.Commit
-import nl.roelofruis.artamus.core.api.Display.Render
-import nl.roelofruis.artamus.core.api.Perform.PreparePerformance
-import nl.roelofruis.artamus.core.api.Write._
+import artamus.core.api.Command
+import artamus.core.api.Control.Commit
+import artamus.core.api.Display.Render
+import artamus.core.api.Perform.PreparePerformance
+import artamus.core.api.Write._
 import nl.roelofruis.math.Rational
 import nl.roelofruis.math.temporal.{Duration, Position, Window}
-import nl.roelofruis.artamus.core.model.primitives.NoteGroup
+import artamus.core.model.primitives.NoteGroup
 import javax.inject.Inject
 
 import scala.annotation.tailrec

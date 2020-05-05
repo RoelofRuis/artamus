@@ -1,6 +1,6 @@
 package server.rendering.impl
 
-import nl.roelofruis.artamus.core.model.display.Display
+import artamus.core.model.display.Display
 import server.rendering.model.LilypondFormat
 
 private[rendering] class LilypondInterpreter(

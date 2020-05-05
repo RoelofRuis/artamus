@@ -1,13 +1,13 @@
 package server.rendering.model
 
-import nl.roelofruis.artamus.core.model.display.glyph.ChordStaffGlyphFamily.{ChordNameGlyph, ChordRestGlyph}
-import nl.roelofruis.artamus.core.model.display.staff.NoteStaff.{Bass, Clef, Treble}
-import nl.roelofruis.artamus.core.model.display.glyph.StaffGlyphFamily.{KeyGlyph, NoteGroupGlyph, RestGlyph, TimeSignatureGlyph}
-import nl.roelofruis.artamus.core.model.display.staff._
-import nl.roelofruis.artamus.core.model.display.glyph.Glyphs.{GlyphDuration, InstantGlyph, SingleGlyph}
+import artamus.core.model.display.glyph.ChordStaffGlyphFamily.{ChordNameGlyph, ChordRestGlyph}
+import artamus.core.model.display.staff.NoteStaff.{Bass, Clef, Treble}
+import artamus.core.model.display.glyph.StaffGlyphFamily.{KeyGlyph, NoteGroupGlyph, RestGlyph, TimeSignatureGlyph}
+import artamus.core.model.display.staff._
+import artamus.core.model.display.glyph.Glyphs.{GlyphDuration, InstantGlyph, SingleGlyph}
 import nl.roelofruis.math.IntegerMath
-import nl.roelofruis.artamus.core.model.primitives._
-import nl.roelofruis.artamus.core.ops.transform.analysis.TwelveToneTuning.TwelveToneFunctions
+import artamus.core.model.primitives._
+import artamus.core.ops.transform.analysis.TwelveToneTuning.TwelveToneFunctions
 
 import scala.annotation.tailrec
 

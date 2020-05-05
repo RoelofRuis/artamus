@@ -4,11 +4,11 @@ import client.module.Operations.{OperationRegistry, ServerOperation}
 import client.module.StdIOTools
 import client.module.midi.MidiRecorder
 import com.google.inject.Inject
-import nl.roelofruis.artamus.core.api.Display.Render
-import nl.roelofruis.artamus.core.api.Record.{ClearRecording, Quantize, SetRecordTransfer}
+import artamus.core.api.Display.Render
+import artamus.core.api.Record.{ClearRecording, Quantize, SetRecordTransfer}
 import nl.roelofruis.math.Rational
 import nl.roelofruis.math.temporal.Duration
-import nl.roelofruis.artamus.core.ops.formalise.{Quantizer, RecordTransfer}
+import artamus.core.ops.formalise.{Quantizer, RecordTransfer}
 
 class RecordingOperations @Inject() (
   registry: OperationRegistry,
