@@ -4,7 +4,7 @@ import client.module.Operations.OperationRegistry
 import com.google.inject.Inject
 import javax.sound.midi.MidiDevice.Info
 import client.midi.MidiResourceLoader
-import patching.PatchPanel
+import client.patching.PatchPanel
 
 class DeviceOperations @Inject() (
   patchPanel: PatchPanel,

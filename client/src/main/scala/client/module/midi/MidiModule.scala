@@ -7,7 +7,7 @@ import client.midi.write.MidiSequenceWriter
 import client.midi.MidiResourceLoader
 import midi.DeviceHash
 import net.codingwell.scalaguice.ScalaPrivateModule
-import patching.PatchPanel
+import client.patching.PatchPanel
 
 class MidiModule extends ScalaPrivateModule {
 

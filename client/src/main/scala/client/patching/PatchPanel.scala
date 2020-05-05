@@ -1,12 +1,14 @@
-package patching
+package client.patching
 
 import java.util.concurrent.ConcurrentHashMap
 
-import patching.PatchPanel.PatchCable
+import client.patching.PatchPanel.PatchCable
+import patching.{PatchCableId, PatchingException}
 
 import scala.jdk.CollectionConverters._
 import scala.util.{Failure, Success}
 
+// TODO: combine with MIDI module!
 class PatchPanel() {
 
   type Description = String

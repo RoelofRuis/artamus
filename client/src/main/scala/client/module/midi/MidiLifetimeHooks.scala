@@ -5,7 +5,7 @@ import client.midi.MidiResourceLoader
 import com.typesafe.scalalogging.LazyLogging
 import javax.inject.{Inject, Named, Singleton}
 import midi.{DeviceHash, MidiIO}
-import patching.PatchPanel
+import client.patching.PatchPanel
 
 @Singleton
 class MidiLifetimeHooks @Inject() (

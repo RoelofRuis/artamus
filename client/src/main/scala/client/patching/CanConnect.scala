@@ -1,4 +1,4 @@
-package patching
+package client.patching
 
 import scala.util.Try
 

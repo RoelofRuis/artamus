@@ -6,7 +6,7 @@ import client.midi.read.{AsyncReadableReceiver, MidiInput}
 import javax.inject.{Inject, Named}
 import javax.sound.midi.MidiMessage
 import midi.{DeviceHash, MidiIO}
-import patching.PatchPanel
+import client.patching.PatchPanel
 
 class ReadableMidiInput @Inject() (
   @Named("client.midi-in") deviceHash: DeviceHash,
