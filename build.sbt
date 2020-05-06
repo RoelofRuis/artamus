@@ -8,9 +8,10 @@ organization in ThisBuild := "nl.roelofruis"
 
 scalaVersion in ThisBuild := "2.13.1"
 
-lazy val global = (project in file("."))
+lazy val artamus = (project in file("."))
   .settings(compilerFlags)
   .aggregate(
+    web,
     core,
     common,
     storage,
@@ -65,6 +66,23 @@ lazy val core = (project in file ("artamus-core"))
     )
   )
   .dependsOn(common)
+
+lazy val web = (project in file("artamus-web"))
+  .enablePlugins(ScalaJSPlugin)
+  .settings(
+    name := "artamus-web",
+    description := "Artamus web application",
+    compilerFlags,
+
+    // Dependencies
+    libraryDependencies ++= Seq(
+      dependencies.scalaLogging,
+      dependencies.cask,
+      dependencies.scalaTags,
+      "org.scala-js" %%% "scalajs-dom" % "1.0.0",
+    )
+  )
+  .dependsOn(core, storage)
 
 lazy val client = (project in file("artamus-client"))
   .settings(

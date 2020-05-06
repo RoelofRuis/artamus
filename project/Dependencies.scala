@@ -8,6 +8,8 @@ object Dependencies {
     val sprayJsonVersion = "1.3.5"
     val microtestVersion = "0.7.1"
     val scalaSwingVersion = "2.1.1"
+    val caskVersion = "0.6.0"
+    val scalaTagsVersion = "0.9.1"
 
     val javaxInject     = "javax.inject" % "javax.inject" % "1"
     val findbugs        = "com.google.code.findbugs" % "jsr305" % "3.0.2" // For javax.annotations.concurrency
@@ -18,5 +20,8 @@ object Dependencies {
     val sprayJson       = "io.spray" %% "spray-json" % sprayJsonVersion
     val microtest       = "com.lihaoyi" %% "utest" % microtestVersion
     val scalaSwing      = "org.scala-lang.modules" %% "scala-swing" % scalaSwingVersion
+
+    val cask            = "com.lihaoyi" %% "cask" % caskVersion
+    val scalaTags       = "com.lihaoyi" %% "scalatags" % scalaTagsVersion
   }
 }
