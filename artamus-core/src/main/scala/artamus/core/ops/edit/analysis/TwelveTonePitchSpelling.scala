@@ -1,10 +1,10 @@
-package artamus.core.ops.transform.analysis
+package artamus.core.ops.edit.analysis
 
 import artamus.core.model.primitives.{Note, _}
 
 object TwelveTonePitchSpelling {
 
-  import artamus.core.ops.transform.analysis.TwelveToneTuning._
+  import artamus.core.ops.edit.analysis.TwelveToneTuning._
 
   def spellChord(chord: Chord, key: Key): PitchSpelling = spellPc(chord.root, key)
 

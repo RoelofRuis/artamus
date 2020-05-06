@@ -1,6 +1,6 @@
 package artamus.core.model.primitives
 
-import artamus.core.ops.transform.analysis.TuningSystem
+import artamus.core.ops.edit.analysis.TuningSystem
 
 final case class MidiNoteNumber(value: Int) {
 

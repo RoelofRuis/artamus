@@ -1,6 +1,6 @@
-package artamus.core.ops.transform.analysis
+package artamus.core.ops.edit.analysis
 
-import artamus.core.ops.transform.analysis.Analysis.{Chords, Functions, Intervals}
+import artamus.core.ops.edit.analysis.Analysis.{Chords, Functions, Intervals}
 import artamus.core.model.primitives.{Function, Interval, PitchClass}
 
 final case class TuningSystem(pcSeq: Seq[Int]) {

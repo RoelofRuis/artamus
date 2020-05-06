@@ -7,7 +7,7 @@ import artamus.core.ops.layout.ElementLayout.Element
 import artamus.core.model.display.staff.NoteStaff.{Bass, Treble}
 import artamus.core.model.display.staff._
 import artamus.core.model.primitives.{MidiNoteNumber, Note, NoteGroup}
-import artamus.core.ops.transform.analysis.TwelveTonePitchSpelling
+import artamus.core.ops.edit.analysis.TwelveTonePitchSpelling
 import artamus.core.model.track.layers.{ChordLayer, NoteLayer, RhythmLayer}
 
 object DisplayableLayers {
@@ -57,7 +57,7 @@ object DisplayableLayers {
   implicit class DisplayableNoteLayer(layer: NoteLayer) {
     private val initialKey = layer.keys.initialKey
 
-    import artamus.core.ops.transform.analysis.TwelveToneTuning._
+    import artamus.core.ops.edit.analysis.TwelveToneTuning._
 
     trait InclusionStrategy extends (NoteGroup => Seq[Note])
 

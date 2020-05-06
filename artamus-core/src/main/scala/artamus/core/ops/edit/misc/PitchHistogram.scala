@@ -1,4 +1,4 @@
-package artamus.core.ops.transform.misc
+package artamus.core.ops.edit.misc
 
 final case class PitchHistogram(
   `0`: Long = 0L,

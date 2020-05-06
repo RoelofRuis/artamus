@@ -9,7 +9,7 @@ import artamus.core.ops.formalise.{Quantizer, FormalisationProfile}
 import artamus.core.model.recording.{MillisecondPosition, RawMidiNote}
 import artamus.core.model.workspace.User.UserId
 import artamus.core.model.track.Track.TrackId
-import artamus.core.ops.transform.analysis.TwelveToneTuning
+import artamus.core.ops.edit.analysis.TwelveToneTuning
 import spray.json._
 
 import scala.collection.immutable.SortedMap

@@ -41,7 +41,7 @@ private[server] class RecordingCommandHandler @Inject() (
   }
 
   import artamus.core.ops.formalise.Quantization._
-  import artamus.core.ops.transform.analysis.TwelveToneTuning._
+  import artamus.core.ops.edit.analysis.TwelveToneTuning._
   registry.register[Quantize] { req =>
     storage.getRecording(req.user.id) match {
       case None => CommandRequest.ok

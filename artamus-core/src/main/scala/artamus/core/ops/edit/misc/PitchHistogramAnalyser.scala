@@ -1,4 +1,4 @@
-package artamus.core.ops.transform.misc
+package artamus.core.ops.edit.misc
 
 import artamus.core.model.track.layers.NoteLayer
 

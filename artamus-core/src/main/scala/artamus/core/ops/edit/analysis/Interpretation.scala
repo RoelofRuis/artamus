@@ -1,6 +1,6 @@
-package artamus.core.ops.transform.analysis
+package artamus.core.ops.edit.analysis
 
-import artamus.core.ops.transform.analysis.Interpretation.{AllOf, OneOf}
+import artamus.core.ops.edit.analysis.Interpretation.{AllOf, OneOf}
 
 /**
   * Models an interpretation of some phenomenon as a disjunction of conjunctions.

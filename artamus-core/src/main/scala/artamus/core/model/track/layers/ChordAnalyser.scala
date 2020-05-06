@@ -2,7 +2,7 @@ package artamus.core.model.track.layers
 
 import artamus.core.model.primitives.{Chord, PitchClass}
 import artamus.core.model.track.Chords
-import artamus.core.ops.transform.analysis.{Interpretation, TwelveToneTuning}
+import artamus.core.ops.edit.analysis.{Interpretation, TwelveToneTuning}
 
 object ChordAnalyser {
 

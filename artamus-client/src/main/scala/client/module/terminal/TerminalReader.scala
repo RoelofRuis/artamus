@@ -8,7 +8,7 @@ import scala.annotation.tailrec
 
 object TerminalReader {
 
-  import artamus.core.ops.transform.analysis.TwelveToneTuning._
+  import artamus.core.ops.edit.analysis.TwelveToneTuning._
 
   def readMetre: Metre = {
     val (num, denom) = StdIOTools.read[(Int, Int)]("Input time signature: x/y", "Invalid value", {

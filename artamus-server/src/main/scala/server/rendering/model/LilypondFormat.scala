@@ -7,7 +7,7 @@ import artamus.core.model.display.staff._
 import artamus.core.model.display.glyph.Glyphs.{GlyphDuration, InstantGlyph, SingleGlyph}
 import artamus.core.math.IntegerMath
 import artamus.core.model.primitives._
-import artamus.core.ops.transform.analysis.TwelveToneTuning.TwelveToneFunctions
+import artamus.core.ops.edit.analysis.TwelveToneTuning.TwelveToneFunctions
 
 import scala.annotation.tailrec
 

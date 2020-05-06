@@ -1,4 +1,4 @@
-package artamus.core.ops.transform.analysis
+package artamus.core.ops.edit.analysis
 
 import artamus.core.model.primitives._
 
