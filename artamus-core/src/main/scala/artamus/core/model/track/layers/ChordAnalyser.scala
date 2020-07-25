@@ -4,7 +4,7 @@ import artamus.core.model.primitives.{Chord, PitchClass}
 import artamus.core.model.track.Chords
 import artamus.core.ops.edit.analysis.{Interpretation, TwelveToneTuning}
 
-object ChordAnalyser {
+object ChordAnalyser { // TODO: move to ops?
 
   def chordLayerForNoteLayer(l: NoteLayer): ChordLayer = {
     val chords = l.defaultVoice
