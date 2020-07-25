@@ -7,16 +7,6 @@ After a couple of failed attempts in other languages I decided I wanted to furth
 
 Thus **Artamus** was born. 
 
-### Structure
-
-The application is separated into several subprojects and packages:
-- **artamus-client** Contains a client application with input and viewing logic
-- **artamus-core** Contains the music domain: the data structures and operations that transform them.
-- **artamus-server** Contains a server application that does the calculations.
-- **common** Contains some smaller common packages
-- **network** Contains socket communication (which might be replaced/split off)
-- **storage** Contains a lightweight memory/file storage (which might be replaced/split off)
-
 #### artamus-core
 
 Artamus core contains the main data structures and operations. It's design is outlined in the diagram below.
@@ -26,7 +16,7 @@ The blocks represent the separate data models, the arrows represent the transfor
 
 #### Requirements
 
-The server application requires `Lilypond` which can be downloaded at:
+Rendering sheet music requires `Lilypond` which can be downloaded at:
 http://lilypond.org/download.html
 
 
