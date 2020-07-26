@@ -4,7 +4,7 @@ import artamus.core.model.primitives.{Note, _}
 
 object TwelveTonePitchSpelling {
 
-  import artamus.core.ops.edit.analysis.TwelveToneTuning._
+  import TwelveTone._
 
   def spellChord(chord: Chord, key: Key): PitchSpelling = spellPc(chord.root, key)
 
@@ -12,7 +12,7 @@ object TwelveTonePitchSpelling {
     val spelledPitch = spellPc(note.pitchClass, key)
 
     val newOctave = spelledPitch.span match {
-      case span if span > tuning.span => Octave(note.octave.value - 1)
+      case span if span > tuning.tuningBase.span => Octave(note.octave.value - 1)
       case span if span < 0 => Octave(note.octave.value + 1)
       case _ => note.octave
     }

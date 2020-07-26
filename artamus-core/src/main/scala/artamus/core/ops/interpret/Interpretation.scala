@@ -7,7 +7,7 @@ import artamus.core.model.track.layers.NoteLayer
 
 object Interpretation {
 
-  import artamus.core.ops.edit.analysis.TwelveToneTuning._
+  import artamus.core.ops.edit.analysis.TwelveTone._
 
   val VOLUME = 64
 

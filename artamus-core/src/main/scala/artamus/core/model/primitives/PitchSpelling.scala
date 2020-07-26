@@ -1,14 +1,14 @@
 package artamus.core.model.primitives
 
-import artamus.core.ops.edit.analysis.TuningSystem
+import artamus.core.model.track.analysis.TuningBase
 
 final case class PitchSpelling(step: Step, accidental: Accidental) {
 
-  def toPc(implicit tuning: TuningSystem): PitchClass = PitchClass(span)
+  def toPc(implicit tuning: TuningBase): PitchClass = PitchClass(span)
 
-  def span(implicit tuning: TuningSystem): Int = step.toPc.value + accidental.value
+  def span(implicit tuning: TuningBase): Int = step.toPc.value + accidental.value
 
-  def addInterval(interval: Interval)(implicit tuning: TuningSystem): PitchSpelling = {
+  def addInterval(interval: Interval)(implicit tuning: TuningBase): PitchSpelling = {
     def unboundStepValue(step: Int): Int = {
       if (step >= tuning.numSteps) unboundStepValue(step - tuning.numSteps) + tuning.numPitchClasses
       else tuning.pcSeq(step)

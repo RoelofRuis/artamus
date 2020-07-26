@@ -2,7 +2,7 @@ package artamus.core.model.track.layers
 
 import artamus.core.model.primitives.{Chord, PitchClass}
 import artamus.core.model.track.Chords
-import artamus.core.ops.edit.analysis.{Interpretation, TwelveToneTuning}
+import artamus.core.ops.edit.analysis.{Interpretation, TwelveTone}
 
 object ChordAnalyser { // TODO: move to ops?
 
@@ -22,7 +22,7 @@ object ChordAnalyser { // TODO: move to ops?
     ChordLayer(l.metres, l.keys, chords)
   }
 
-  import TwelveToneTuning._ // TODO: set of chords has to be passed in
+  import TwelveTone._ // TODO: set of chords has to be passed in
 
   private def findChords(set: Seq[PitchClass]): Seq[Chord] = {
     PitchClass.listAll.flatMap{ root =>

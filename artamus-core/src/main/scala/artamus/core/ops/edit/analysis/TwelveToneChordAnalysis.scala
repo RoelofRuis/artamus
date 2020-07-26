@@ -4,7 +4,7 @@ import artamus.core.model.primitives.{Chord, _}
 
 object TwelveToneChordAnalysis {
 
-  import TwelveToneTuning._
+  import TwelveTone._
 
   def findChords(set: Seq[PitchClass]): Seq[Chord] = {
     PitchClass.listAll.flatMap{ root =>

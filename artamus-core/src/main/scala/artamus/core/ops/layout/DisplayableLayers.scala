@@ -57,7 +57,7 @@ object DisplayableLayers {
   implicit class DisplayableNoteLayer(layer: NoteLayer) {
     private val initialKey = layer.keys.initialKey
 
-    import artamus.core.ops.edit.analysis.TwelveToneTuning._
+    import artamus.core.ops.edit.analysis.TwelveTone._
 
     trait InclusionStrategy extends (NoteGroup => Seq[Note])
 
