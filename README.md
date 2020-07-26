@@ -1,4 +1,4 @@
-**Artamus** is a music analysis client/server application.
+**Artamus** is a music analysis library.
 
 ### Background
 For quite some years I've been thinking about what Photoshop for symbolic music (that is, sheet music) would look like. What would it mean to manipulate musical symbols in a meaningful way, and be able to let the computer assist you in making musical decisions.
