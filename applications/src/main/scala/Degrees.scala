@@ -1,20 +1,18 @@
-import scala.io.StdIn
+import spray.json._
+
+final case class Degree(
+  text: String,
+  description: String
+)
 
 object Degrees extends App {
 
-
-
-
-  def parseDegrees(): String = {
-    val parts  = StdIn.readLine().split('|')
-
-    parts.map {
-      case "I" =>
-      case "II" =>
-      case "V" =>
-      case _ =>
-    }
-    ""
+  object Protocol extends DefaultJsonProtocol {
+    implicit val degreeFormat: JsonFormat[Degree] = DefaultJsonProtocol.jsonFormat2(Degree.apply)
   }
+
+  import Protocol._
+
+  val degrees = FileLoader.loadList[Degree]("applications/data/degrees.json")
 
 }

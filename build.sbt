@@ -31,6 +31,7 @@ lazy val applications = (project in file ("applications"))
     compilerFlags,
     libraryDependencies ++= Seq(
       dependencies.javaxInject,
+      dependencies.sprayJson,
       dependencies.microtest % Test
     )
   )
