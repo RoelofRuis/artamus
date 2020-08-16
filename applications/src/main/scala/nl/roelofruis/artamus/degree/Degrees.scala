@@ -17,6 +17,4 @@ object Degrees extends App {
 
   input = expander.expandByRandomRule(input)
 
-  Display.prettyPrint(input)
-
 }
