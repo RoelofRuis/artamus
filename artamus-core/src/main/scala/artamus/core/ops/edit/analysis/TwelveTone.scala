@@ -3,6 +3,7 @@ package artamus.core.ops.edit.analysis
 import artamus.core.model.primitives._
 import artamus.core.model.track.analysis.{Tuning, TuningBase}
 
+/** @deprecated This all has to be loaded from files! */
 object TwelveTone {
 
   implicit val tuningBase: TuningBase = TuningBase(Seq(0, 2, 4, 5, 7, 9, 11))
