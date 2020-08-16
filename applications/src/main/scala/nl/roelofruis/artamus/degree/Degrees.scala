@@ -4,12 +4,13 @@ import scala.io.StdIn
 
 object Degrees extends App {
 
-  val output = for {
-    parser <- InputParser("applications/res/degrees.json")
-    expander <- RuleExpander("applications/res/expansion-rules.json", parser)
-    res <- parser.parseDegrees(StdIn.readLine("Input degrees separated by a space\n > "))
-  } yield expander.expandByRandomRule(res)
+  val parser = InputParser("applications/res/degrees.json").get
+  val expander = RuleExpander("applications/res/expansion-rules.json", parser).get
 
-  println(output)
+  var input = parser.parseDegrees(StdIn.readLine("Input degrees separated by a space\n > "))
+
+  input = expander.expandByRandomRule(input)
+
+  Display.prettyPrint(input)
 
 }
