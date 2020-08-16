@@ -15,11 +15,15 @@ object Degrees extends App {
     .map(degrees.parseExpansionRules)
     .get
   val tuning = FileModel.load[TextTuning]("applications/res/tuning.json").get
-  val scales = FileModel.loadList[TextScale]("applications/res/scales.json").get
 
   var input: List[Degree] = degrees.parseDegrees(StdIn.readLine("Input degrees separated by a space\n > "))
 
   input = expansionRules.expandByRandomRule(input)
+
+  var key: Key = tuning.parseKey(StdIn.readLine("Input key\n > "))
+
+  Display.prettyPrint(input)
+  println(key)
 
   def nameChords(degrees: List[Degree], key: Key): List[Chord] = ???
 

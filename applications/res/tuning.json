@@ -5,5 +5,15 @@
   "textSharp": "#",
   "textFlat": "b",
   "numPitchClasses": 12,
-  "description": "Twelve tone"
+  "description": "Twelve tone",
+  "scales": [
+    {
+      "name": "major",
+      "pitchClassSequence": [0, 2, 4, 5, 7, 9, 11]
+    },
+    {
+      "name": "aeolian minor",
+      "pitchClassSequence": [0, 2, 3, 5, 7, 9, 11]
+    }
+  ]
 }

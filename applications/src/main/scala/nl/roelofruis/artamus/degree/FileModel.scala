@@ -53,11 +53,12 @@ object FileModel extends DefaultJsonProtocol {
     textFlat: String,
     numPitchClasses: Int,
     id: String,
-    description: String
+    description: String,
+    scales: List[TextScale]
   )
 
   object TextTuning {
-    implicit val tuningFormat: JsonFormat[TextTuning] = jsonFormat7(TextTuning.apply)
+    implicit val tuningFormat: JsonFormat[TextTuning] = jsonFormat8(TextTuning.apply)
   }
 
   def loadList[A : JsonFormat](path: String): Try[List[A]] = load[List[A]](path)
