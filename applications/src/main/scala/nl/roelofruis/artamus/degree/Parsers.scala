@@ -1,7 +1,7 @@
 package nl.roelofruis.artamus.degree
 
-import nl.roelofruis.artamus.degree.FileModel.{TextDegree, TextExpansionRule, TextScale, TextTuning}
-import nl.roelofruis.artamus.degree.Model.{Degree, ExpansionRule, Key, PitchSpelling, Scale}
+import nl.roelofruis.artamus.degree.FileModel.{TextExpansionRule, TextTuning}
+import nl.roelofruis.artamus.degree.Model._
 
 object Parsers {
 
@@ -12,13 +12,11 @@ object Parsers {
       val scale = tuning.scales.find(_.name == parts(1)).get
 
       Key(
-        PitchSpelling(index, 0),
+        PitchDescriptor(index, 0),
         Scale(scale.pitchClassSequence)
       )
     }
-  }
 
-  implicit class DegreesParseOps(degrees: List[TextDegree]) {
     def parseExpansionRules(rules: List[TextExpansionRule]): List[ExpansionRule] = {
       rules.flatMap { rule =>
         val baseDegree = parseDegrees(rule.base)
@@ -31,12 +29,10 @@ object Parsers {
     def parseDegrees(input: String): List[Degree] = {
       input
         .split(' ')
-        .flatMap { s => degrees.find(_.text == s) }
-        .map { d => Degree(d.tuningDescriptor.pitchClass, d.tuningDescriptor.step) }
+        .flatMap { s => tuning.degrees.find(_.text == s) }
+        .map { d => Degree(PitchDescriptor(d.pitchClass, d.step)) }
         .toList
     }
   }
-
-
 
 }

@@ -1,22 +1,21 @@
 package nl.roelofruis.artamus.degree
 
-import nl.roelofruis.artamus.degree.FileModel.{TextDegree, TextExpansionRule, TextScale, TextTuning}
-import nl.roelofruis.artamus.degree.Model.{Chord, Degree, Key}
+import nl.roelofruis.artamus.degree.FileModel.{TextExpansionRule, TextTuning}
+import nl.roelofruis.artamus.degree.Model.{Degree, Key}
 
 import scala.io.StdIn
 
 object Degrees extends App {
 
-  import Parsers._
   import Harmony._
+  import Parsers._
 
-  val degrees = FileModel.loadList[TextDegree]("applications/res/degrees.json").get
-  val expansionRules = FileModel.loadList[TextExpansionRule]("applications/res/expansion-rules.json")
-    .map(degrees.parseExpansionRules)
-    .get
   val tuning = FileModel.load[TextTuning]("applications/res/tuning.json").get
+  val expansionRules = FileModel.loadList[TextExpansionRule]("applications/res/expansion-rules.json")
+    .map(tuning.parseExpansionRules)
+    .get
 
-  var input: List[Degree] = degrees.parseDegrees(StdIn.readLine("Input degrees separated by a space\n > "))
+  var input: List[Degree] = tuning.parseDegrees(StdIn.readLine("Input degrees separated by a space\n > "))
 
   input = expansionRules.expandByRandomRule(input)
 
@@ -24,7 +23,5 @@ object Degrees extends App {
 
   Display.prettyPrint(input)
   println(key)
-
-  def nameChords(degrees: List[Degree], key: Key): List[Chord] = ???
 
 }

@@ -8,13 +8,12 @@ object Model {
   )
 
   final case class Degree(
-    pitchClass: Int,
-    step: Int
+    pitch: PitchDescriptor
   )
 
-  final case class PitchSpelling(
-    step: Int,
-    accidental: Int
+  final case class PitchDescriptor(
+    pitchClass: Int,
+    step: Int
   )
 
   final case class Scale(
@@ -22,17 +21,17 @@ object Model {
   )
 
   final case class Key(
-    root: PitchSpelling,
+    root: PitchDescriptor,
     scale: Scale
   )
 
-  final case class ChordQuality(
+  final case class Quality(
     name: String
   )
 
   final case class Chord(
-    root: PitchSpelling,
-    quality: ChordQuality
+    root: PitchDescriptor,
+    quality: Quality
   )
 
 }

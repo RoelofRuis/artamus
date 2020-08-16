@@ -12,8 +12,25 @@
       "pitchClassSequence": [0, 2, 4, 5, 7, 9, 11]
     },
     {
-      "name": "aeolian minor",
+      "name": "minor",
       "pitchClassSequence": [0, 2, 3, 5, 7, 9, 11]
+    }
+  ],
+  "degrees": [
+    {
+      "text": "I",
+      "pitchClass": 0,
+      "step": 0
+    },
+    {
+      "text": "II",
+      "pitchClass": 2,
+      "step": 1
+    },
+    {
+      "text": "V",
+      "pitchClass": 7,
+      "step": 4
     }
   ]
 }
