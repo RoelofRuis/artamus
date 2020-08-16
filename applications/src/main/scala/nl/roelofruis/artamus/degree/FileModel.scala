@@ -39,13 +39,14 @@ object FileModel extends DefaultJsonProtocol {
 
   final case class TextTuning(
     pitchClassSequence: List[Int],
+    noteNames: List[String],
     numPitchClasses: Int,
     id: String,
     description: String
   )
 
   object TextTuning {
-    implicit val tuningFormat: JsonFormat[TextTuning] = jsonFormat4(TextTuning.apply)
+    implicit val tuningFormat: JsonFormat[TextTuning] = jsonFormat5(TextTuning.apply)
   }
 
   def loadList[A : JsonFormat](path: String): Try[List[A]] = load[List[A]](path)

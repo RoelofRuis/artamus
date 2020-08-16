@@ -1,7 +1,7 @@
 package nl.roelofruis.artamus.degree
 
 import nl.roelofruis.artamus.degree.FileModel.{TextDegree, TextExpansionRule}
-import nl.roelofruis.artamus.degree.Model.ExpansionRule
+import nl.roelofruis.artamus.degree.Model.{Degree, ExpansionRule}
 
 import scala.util.Try
 
@@ -15,10 +15,12 @@ final case class InputParser(degrees: List[TextDegree]) {
     }
   }
 
-  def parseDegrees(string: String): List[TextDegree] = {
-    string.split(' ').flatMap { s =>
-      degrees.find(_.text == s)
-    }.toList
+  def parseDegrees(string: String): List[Degree] = {
+    string
+      .split(' ')
+      .flatMap { s => degrees.find(_.text == s) }
+      .map { d => Degree(d.tuningDescriptor.pitchClass, d.tuningDescriptor.step) }
+      .toList
   }
 }
 

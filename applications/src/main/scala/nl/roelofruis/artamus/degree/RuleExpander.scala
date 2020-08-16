@@ -1,7 +1,7 @@
 package nl.roelofruis.artamus.degree
 
-import nl.roelofruis.artamus.degree.FileModel.{TextDegree, TextExpansionRule}
-import nl.roelofruis.artamus.degree.Model.ExpansionRule
+import nl.roelofruis.artamus.degree.FileModel.TextExpansionRule
+import nl.roelofruis.artamus.degree.Model.{Degree, ExpansionRule}
 
 import scala.util.Try
 
@@ -9,7 +9,7 @@ final case class RuleExpander(rules: List[ExpansionRule]) {
 
   import nl.roelofruis.artamus.util.Ops._
 
-  def expandByRandomRule(degrees: List[TextDegree]): List[TextDegree] = {
+  def expandByRandomRule(degrees: List[Degree]): List[Degree] = {
     if (degrees.isEmpty) List()
     else {
       val (elem, index) = degrees.getRandomElementIndex.get

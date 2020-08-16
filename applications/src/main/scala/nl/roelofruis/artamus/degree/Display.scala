@@ -1,12 +1,12 @@
 package nl.roelofruis.artamus.degree
 
-import nl.roelofruis.artamus.degree.FileModel.TextDegree
+import nl.roelofruis.artamus.degree.Model.Degree
 
 object Display {
 
-  def prettyPrint(degrees: List[TextDegree]): Unit = {
+  def prettyPrint(degrees: List[Degree]): Unit = {
     degrees.foreach { d =>
-      println(d.text)
+      println(s"(${d.pitchClass}, ${d.step})")
     }
   }
 
