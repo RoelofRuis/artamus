@@ -1,4 +1,4 @@
-package nl.roelofruis.artamus
+package nl.roelofruis.artamus.degree
 
 import java.nio.file.{Files, Paths}
 

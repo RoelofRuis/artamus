@@ -1,6 +1,6 @@
-package nl.roelofruis.artamus
+package nl.roelofruis.artamus.degree
 
-import nl.roelofruis.artamus.FileModel.TextDegree
+import nl.roelofruis.artamus.degree.FileModel.TextDegree
 
 object Model {
 

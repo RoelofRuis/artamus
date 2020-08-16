@@ -1,4 +1,4 @@
-package nl.roelofruis.artamus
+package nl.roelofruis.artamus.util
 
 import scala.util.Random
 
