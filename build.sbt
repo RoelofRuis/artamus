@@ -27,7 +27,7 @@ lazy val core = (project in file ("artamus-core"))
 lazy val applications = (project in file ("applications"))
   .settings(
     name := "applications",
-    description := "applications using Artamus",
+    description := "Artamus source package",
     compilerFlags,
     libraryDependencies ++= Seq(
       dependencies.javaxInject,
