@@ -8,19 +8,44 @@ import scala.util.Try
 
 object FileModel extends DefaultJsonProtocol {
 
+  final case class TuningDescriptor(
+    id: String,
+    pitchClass: Int,
+    step: Int,
+  )
+
+  object TuningDescriptor {
+    implicit val descriptorFormat: JsonFormat[TuningDescriptor] = jsonFormat3(TuningDescriptor.apply)
+  }
+
   final case class TextDegree(
     text: String,
-    description: String
+    description: String,
+    tuningDescriptor: TuningDescriptor,
   )
+
+  object TextDegree {
+    implicit val degreeFormat: JsonFormat[TextDegree] = jsonFormat3(TextDegree.apply)
+  }
 
   final case class TextExpansionRule(
     base: String,
     expansion: String
   )
 
-  object Protocol {
-    implicit val degreeFormat: JsonFormat[TextDegree] = jsonFormat2(TextDegree.apply)
+  object TextExpansionRule {
     implicit val expansionRuleFormat: JsonFormat[TextExpansionRule] = jsonFormat2(TextExpansionRule.apply)
+  }
+
+  final case class TextTuning(
+    pitchClassSequence: List[Int],
+    numPitchClasses: Int,
+    id: String,
+    description: String
+  )
+
+  object TextTuning {
+    implicit val tuningFormat: JsonFormat[TextTuning] = jsonFormat4(TextTuning.apply)
   }
 
   def loadList[A : JsonFormat](path: String): Try[List[A]] = load[List[A]](path)

@@ -1,14 +1,29 @@
 [
   {
     "text": "I",
-    "description": "First Degree"
+    "description": "First Degree",
+    "tuningDescriptor": {
+      "id": "12",
+      "pitchClass": 0,
+      "step": 0
+    }
   },
   {
     "text": "II",
-    "description": "Second Degree"
+    "description": "Second Degree",
+    "tuningDescriptor": {
+      "id": "12",
+      "pitchClass": 2,
+      "step": 1
+    }
   },
   {
     "text": "V",
-    "description": "Fifth Degree"
+    "description": "Fifth Degree",
+    "tuningDescriptor": {
+      "id": "12",
+      "pitchClass": 7,
+      "step": 4
+    }
   }
 ]

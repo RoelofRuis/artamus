@@ -25,7 +25,6 @@ final case class RuleExpander(rules: List[ExpansionRule]) {
 object RuleExpander {
 
   def apply(ruleFile: String, parser: InputParser): Try[RuleExpander] = {
-    import nl.roelofruis.artamus.degree.FileModel.Protocol._
     for {
       rules <- FileModel.loadList[TextExpansionRule](ruleFile)
     } yield RuleExpander(parser.parseExpansionRules(rules))

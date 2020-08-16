@@ -25,7 +25,6 @@ final case class InputParser(degrees: List[TextDegree]) {
 object InputParser {
 
   def apply(degreesFile: String): Try[InputParser] = {
-    import nl.roelofruis.artamus.degree.FileModel.Protocol._
     for {
       degrees <- FileModel.loadList[TextDegree](degreesFile)
     } yield InputParser(degrees)
