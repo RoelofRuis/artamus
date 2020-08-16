@@ -2,7 +2,7 @@
   {
     "text": "I",
     "tuningDescriptor": {
-      "id": "12",
+      "tuning": "12",
       "pitchClass": 0,
       "step": 0
     }
@@ -10,7 +10,7 @@
   {
     "text": "II",
     "tuningDescriptor": {
-      "id": "12",
+      "tuning": "12",
       "pitchClass": 2,
       "step": 1
     }
@@ -18,7 +18,7 @@
   {
     "text": "V",
     "tuningDescriptor": {
-      "id": "12",
+      "tuning": "12",
       "pitchClass": 7,
       "step": 4
     }

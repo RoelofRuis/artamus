@@ -2,6 +2,8 @@
   "id": "12",
   "pitchClassSequence": [0, 2, 4, 5, 7, 9, 11],
   "noteNames": ["c", "d", "e", "f", "g", "a", "b"],
+  "textSharp": "#",
+  "textFlat": "b",
   "numPitchClasses": 12,
   "description": "Twelve tone"
 }
