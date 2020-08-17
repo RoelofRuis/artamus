@@ -27,15 +27,6 @@ object FileModel extends DefaultJsonProtocol {
     implicit val degreeFormat: JsonFormat[TextDegree] = jsonFormat3(TextDegree.apply)
   }
 
-  final case class TextExpansionRule(
-    base: String,
-    expansion: String
-  )
-
-  object TextExpansionRule {
-    implicit val expansionRuleFormat: JsonFormat[TextExpansionRule] = jsonFormat2(TextExpansionRule.apply)
-  }
-
   final case class TextTuning(
     pitchClassSequence: List[Int],
     noteNames: List[String],

@@ -1,6 +1,6 @@
 package nl.roelofruis.artamus.degree
 
-import nl.roelofruis.artamus.degree.FileModel.{TextExpansionRule, TextTuning}
+import nl.roelofruis.artamus.degree.FileModel.TextTuning
 import nl.roelofruis.artamus.degree.Model._
 
 object Parsers {
@@ -18,15 +18,6 @@ object Parsers {
         PitchDescriptor(index, pc + (sharps - flats)),
         Scale(scale.pitchClassSequence)
       )
-    }
-
-    def parseExpansionRules(rules: List[TextExpansionRule]): List[ExpansionRule] = {
-      rules.flatMap { rule =>
-        val baseDegree = parseDegrees(rule.base)
-        val expansionDegrees = parseDegrees(rule.expansion)
-        if (baseDegree.nonEmpty && expansionDegrees.nonEmpty) Some(ExpansionRule(baseDegree.head, expansionDegrees))
-        else None
-      }
     }
 
     def parseDegrees(input: String): List[Degree] = {
