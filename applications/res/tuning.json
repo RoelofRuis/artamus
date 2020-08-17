@@ -1,7 +1,7 @@
 {
   "id": "12",
   "pitchClassSequence": [0, 2, 4, 5, 7, 9, 11],
-  "noteNames": ["c", "d", "e", "f", "g", "a", "b"],
+  "noteNames": ["C", "D", "E", "F", "G", "A", "B"],
   "textSharp": "#",
   "textFlat": "b",
   "numPitchClasses": 12,

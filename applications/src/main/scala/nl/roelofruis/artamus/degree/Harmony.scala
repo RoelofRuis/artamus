@@ -24,7 +24,10 @@ object Harmony {
 
     implicit class PitchDescriptorOps(descr: PitchDescriptor) {
       def +(that: PitchDescriptor): PitchDescriptor = {
-        ??? // TODO: implement, see existing pitch spelling?
+        val targetStep = (descr.step + that.step) % tuning.pitchClassSequence.size
+        val targetPitchClass = (descr.pitchClass + that.pitchClass) % tuning.numPitchClasses
+
+        PitchDescriptor(targetStep, targetPitchClass)
       }
     }
 

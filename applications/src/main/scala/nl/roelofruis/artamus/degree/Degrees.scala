@@ -9,6 +9,7 @@ object Degrees extends App {
 
   import Harmony._
   import Parsers._
+  import Printing._
 
   val tuning = FileModel.load[TextTuning]("applications/res/tuning.json").get
   val expansionRules = FileModel.loadList[TextExpansionRule]("applications/res/expansion-rules.json")
@@ -21,7 +22,10 @@ object Degrees extends App {
 
   var key: Key = tuning.parseKey(StdIn.readLine("Input key\n > "))
 
-  Display.prettyPrint(input)
+  val chords = tuning.nameChords(input, key)
+
   println(key)
+  println(chords)
+  print(tuning.printChords(chords))
 
 }

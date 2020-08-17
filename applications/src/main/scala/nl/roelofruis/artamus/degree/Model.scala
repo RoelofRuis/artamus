@@ -12,8 +12,8 @@ object Model {
   )
 
   final case class PitchDescriptor(
-    pitchClass: Int,
-    step: Int
+    step: Int,
+    pitchClass: Int
   )
 
   final case class Scale(
