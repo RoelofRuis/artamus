@@ -18,10 +18,10 @@ object Harmony {
 
     def numSteps: Int = tuning.pitchClassSequence.size
 
-    def nameChords(degrees: List[Degree], key: Key): List[Chord] = {
+    def nameChords(degrees: List[Degree], root: PitchDescriptor): List[Chord] = {
       degrees.map { degree =>
-        val chordPitch = degree.pitch + key.root
-        Chord(chordPitch, Quality("major"))
+        val chordPitch = degree.pitch + root
+        Chord(chordPitch, degree.quality)
       }
     }
 

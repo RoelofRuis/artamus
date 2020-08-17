@@ -1,7 +1,7 @@
 package nl.roelofruis.artamus.degree
 
 import nl.roelofruis.artamus.degree.FileModel.TextTuning
-import nl.roelofruis.artamus.degree.Model.{Degree, Key}
+import nl.roelofruis.artamus.degree.Model.{Degree, PitchDescriptor}
 
 import scala.io.StdIn
 
@@ -15,12 +15,10 @@ object Degrees extends App {
 
   var input: List[Degree] = tuning.parseDegrees(StdIn.readLine("Input degrees separated by a space\n > "))
 
-  var key: Key = tuning.parseKey(StdIn.readLine("Input key\n > "))
+  var root: PitchDescriptor = tuning.parsePitchDescriptor(StdIn.readLine("Input key\n > "))
 
-  val chords = tuning.nameChords(input, key)
+  val chords = tuning.nameChords(input, root)
 
-  println(key)
-  println(chords)
   print(tuning.printChords(chords))
 
 }

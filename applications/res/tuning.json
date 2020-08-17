@@ -1,5 +1,4 @@
 {
-  "id": "12",
   "pitchClassSequence": [0, 2, 4, 5, 7, 9, 11],
   "noteNames": ["C", "D", "E", "F", "G", "A", "B"],
   "textSharp": "#",
@@ -20,17 +19,44 @@
     {
       "text": "I",
       "pitchClass": 0,
-      "step": 0
+      "step": 0,
+      "quality": "major"
     },
     {
       "text": "II",
       "pitchClass": 2,
-      "step": 1
+      "step": 1,
+      "quality": "major"
+    },
+    {
+      "text": "III",
+      "pitchClass": 4,
+      "step": 2,
+      "quality": "major"
+    },
+    {
+      "text": "IV",
+      "pitchClass": 5,
+      "step": 3,
+      "quality": "major"
     },
     {
       "text": "V",
       "pitchClass": 7,
-      "step": 4
+      "step": 4,
+      "quality": "major"
+    },
+    {
+      "text": "VI",
+      "pitchClass": 9,
+      "step": 5,
+      "quality": "major"
+    },
+    {
+      "text": "VII",
+      "pitchClass": 11,
+      "step": 6,
+      "quality": "major"
     }
   ]
 }

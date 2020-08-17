@@ -21,10 +21,11 @@ object FileModel extends DefaultJsonProtocol {
     text: String,
     pitchClass: Int,
     step: Int,
+    quality: String,
   )
 
   object TextDegree {
-    implicit val degreeFormat: JsonFormat[TextDegree] = jsonFormat3(TextDegree.apply)
+    implicit val degreeFormat: JsonFormat[TextDegree] = jsonFormat4(TextDegree.apply)
   }
 
   final case class TextTuning(
@@ -33,14 +34,13 @@ object FileModel extends DefaultJsonProtocol {
     textSharp: String,
     textFlat: String,
     numPitchClasses: Int,
-    id: String,
     description: String,
     scales: List[TextScale],
     degrees: List[TextDegree],
   )
 
   object TextTuning {
-    implicit val tuningFormat: JsonFormat[TextTuning] = jsonFormat9(TextTuning.apply)
+    implicit val tuningFormat: JsonFormat[TextTuning] = jsonFormat8(TextTuning.apply)
   }
 
   def loadList[A : JsonFormat](path: String): Try[List[A]] = load[List[A]](path)

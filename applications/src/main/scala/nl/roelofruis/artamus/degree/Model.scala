@@ -8,7 +8,8 @@ object Model {
   )
 
   final case class Degree(
-    pitch: PitchDescriptor
+    pitch: PitchDescriptor,
+    quality: Quality
   )
 
   final case class PitchDescriptor(
