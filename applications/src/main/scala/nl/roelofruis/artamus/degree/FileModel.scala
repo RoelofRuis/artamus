@@ -8,6 +8,16 @@ import scala.util.Try
 
 object FileModel extends DefaultJsonProtocol {
 
+  final case class TextQuality(
+    name: String,
+    symbol: String,
+    intervals: List[String]
+  )
+
+  object TextQuality {
+    implicit val qualityFormat: JsonFormat[TextQuality] = jsonFormat3(TextQuality.apply)
+  }
+
   final case class TextTuning(
     pitchClassSequence: List[Int],
     numPitchClasses: Int,
@@ -17,10 +27,11 @@ object FileModel extends DefaultJsonProtocol {
     textSharp: String,
     textFlat: String,
     description: String,
+    qualities: List[TextQuality]
   )
 
   object TextTuning {
-    implicit val tuningFormat: JsonFormat[TextTuning] = jsonFormat8(TextTuning.apply)
+    implicit val tuningFormat: JsonFormat[TextTuning] = jsonFormat9(TextTuning.apply)
   }
 
   def loadList[A : JsonFormat](path: String): Try[List[A]] = load[List[A]](path)

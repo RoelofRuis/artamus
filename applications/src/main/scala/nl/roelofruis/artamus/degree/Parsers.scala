@@ -27,16 +27,13 @@ object Parsers {
       Degree(descriptor)
     }
 
-    def parseInterval: String => Interval = input => {
-      val descriptor = parseDescriptor(
+    def parseInterval: String => PitchDescriptor = input => parseDescriptor(
         tuning.textSharp,
         tuning.textFlat,
         tuning.textIntervals,
         tuning.pitchClassSequence,
         input
       )
-      Interval(descriptor)
-    }
 
     def parseArray[A : ClassTag](input: String, extractor: String => A): Array[A] = {
       input.split(' ').map(s => extractor(s))

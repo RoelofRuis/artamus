@@ -11,8 +11,8 @@ object Model {
     root: PitchDescriptor,
   )
 
-  final case class Interval(
-    size: PitchDescriptor
+  final case class Quality(
+    intervals: List[PitchDescriptor]
   )
 
   final case class Chord(
