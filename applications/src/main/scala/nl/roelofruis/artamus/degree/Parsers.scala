@@ -8,24 +8,55 @@ import scala.reflect.ClassTag
 object Parsers {
 
   implicit class TuningParseOps(tuning: TextTuning) {
-    def parsePitchDescriptor: String => PitchDescriptor = input => {
-      val step = tuning.textNotes.indexOf(input.replace(tuning.textSharp, "").replace(tuning.textFlat, ""))
-      val pc = tuning.pitchClassSequence(step)
-      val sharps = input.count(_ == tuning.textSharp.head)
-      val flats = input.count(_ == tuning.textFlat.head)
-
-      PitchDescriptor(step, pc + (sharps - flats))
-    }
+    def parsePitchDescriptor: String => PitchDescriptor = input => parseDescriptor(
+      tuning.textSharp,
+      tuning.textFlat,
+      tuning.textNotes,
+      tuning.pitchClassSequence,
+      input
+    )
 
     def parseDegree: String => Degree = input => {
-      val step = tuning.textDegrees.indexOf(input)
-      val pitchClass = tuning.pitchClassSequence(step)
-      Degree(PitchDescriptor(step, pitchClass))
+      val descriptor = parseDescriptor(
+        tuning.textSharp,
+        tuning.textFlat,
+        tuning.textDegrees,
+        tuning.pitchClassSequence,
+        input
+      )
+      Degree(descriptor)
+    }
+
+    def parseInterval: String => Interval = input => {
+      val descriptor = parseDescriptor(
+        tuning.textSharp,
+        tuning.textFlat,
+        tuning.textIntervals,
+        tuning.pitchClassSequence,
+        input
+      )
+      Interval(descriptor)
     }
 
     def parseArray[A : ClassTag](input: String, extractor: String => A): Array[A] = {
       input.split(' ').map(s => extractor(s))
     }
+  }
+
+  def parseDescriptor(
+    sharpSymbol: String,
+    flatSymbol: String,
+    symbolSequence: Seq[String],
+    pitchClassSequence: Seq[Int],
+    input: String
+  ): PitchDescriptor = {
+    val cleanInput = input.replace(sharpSymbol, "").replace(flatSymbol, "")
+    val step = symbolSequence.indexOf(cleanInput)
+    val pitchClass = pitchClassSequence(step)
+    val sharps = input.count(_ == sharpSymbol.head)
+    val flats = input.count(_ == flatSymbol.head)
+
+    PitchDescriptor(step, pitchClass + sharps - flats)
   }
 
 }
