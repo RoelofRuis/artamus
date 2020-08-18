@@ -18,7 +18,7 @@ object Harmony {
 
     def numSteps: Int = tuning.pitchClassSequence.size
 
-    def nameChords(degrees: List[Degree], root: PitchDescriptor): List[Chord] = {
+    def nameChords(degrees: Seq[Degree], root: PitchDescriptor): Seq[Chord] = {
       degrees.map { degree =>
         val chordPitch = degree.pitch + root
         Chord(chordPitch, degree.quality)

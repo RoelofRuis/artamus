@@ -13,7 +13,7 @@ object Degrees extends App {
 
   val tuning = FileModel.load[TextTuning]("applications/res/tuning.json").get
 
-  var input: List[Degree] = tuning.parseDegrees(StdIn.readLine("Input degrees separated by a space\n > "))
+  var input: Array[Degree] = tuning.parseArray(StdIn.readLine("Input degrees separated by a space\n > "), tuning.parseDegree)
 
   var root: PitchDescriptor = tuning.parsePitchDescriptor(StdIn.readLine("Input key\n > "))
 

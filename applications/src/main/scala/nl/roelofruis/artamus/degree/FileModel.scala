@@ -17,26 +17,15 @@ object FileModel extends DefaultJsonProtocol {
     implicit val scaleFormat: JsonFormat[TextScale] = jsonFormat2(TextScale.apply)
   }
 
-  final case class TextDegree(
-    text: String,
-    pitchClass: Int,
-    step: Int,
-    quality: String,
-  )
-
-  object TextDegree {
-    implicit val degreeFormat: JsonFormat[TextDegree] = jsonFormat4(TextDegree.apply)
-  }
-
   final case class TextTuning(
     pitchClassSequence: List[Int],
     noteNames: List[String],
+    degreeNames: List[String],
     textSharp: String,
     textFlat: String,
     numPitchClasses: Int,
     description: String,
     scales: List[TextScale],
-    degrees: List[TextDegree],
   )
 
   object TextTuning {

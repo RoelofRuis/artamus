@@ -7,7 +7,7 @@ object Printing {
 
   implicit class TextOps(tuning: TextTuning) {
 
-    def printChords(chords: List[Chord]): String = {
+    def printChords(chords: Seq[Chord]): String = {
       chords.map { chord => printPitchDescriptor(chord.root) }.mkString("\n")
     }
 
