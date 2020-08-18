@@ -20,7 +20,7 @@ object Parsers {
     def parseDegree: String => Degree = input => {
       val step = tuning.textDegrees.indexOf(input)
       val pitchClass = tuning.pitchClassSequence(step)
-      Degree(PitchDescriptor(step, pitchClass), Quality("major"))
+      Degree(PitchDescriptor(step, pitchClass))
     }
 
     def parseArray[A : ClassTag](input: String, extractor: String => A): Array[A] = {

@@ -21,7 +21,7 @@ object Harmony {
     def nameChords(degrees: Seq[Degree], root: PitchDescriptor): Seq[Chord] = {
       degrees.map { degree =>
         val chordPitch = degree.pitch + root
-        Chord(chordPitch, degree.quality)
+        Chord(chordPitch)
       }
     }
 
