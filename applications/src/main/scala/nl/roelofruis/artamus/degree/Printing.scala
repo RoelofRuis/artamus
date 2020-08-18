@@ -12,7 +12,7 @@ object Printing {
     }
 
     def printPitchDescriptor(descriptor: PitchDescriptor): String = {
-      val base = tuning.noteNames(descriptor.step)
+      val base = tuning.textNotes(descriptor.step)
       val diff = Seq(
         descriptor.pitchClass,
         descriptor.pitchClass + tuning.numPitchClasses,

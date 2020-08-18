@@ -1,19 +1,10 @@
 {
   "pitchClassSequence": [0, 2, 4, 5, 7, 9, 11],
-  "noteNames": ["C", "D", "E", "F", "G", "A", "B"],
-  "degreeNames": ["I", "II", "III", "IV", "V", "VI", "VII"],
+  "numPitchClasses": 12,
+  "textNotes": ["C", "D", "E", "F", "G", "A", "B"],
+  "textDegrees": ["I", "II", "III", "IV", "V", "VI", "VII"],
+  "textIntervals": ["1", "2", "3", "4", "5", "6", "7"],
   "textSharp": "#",
   "textFlat": "b",
-  "numPitchClasses": 12,
-  "description": "Twelve tone",
-  "scales": [
-    {
-      "name": "major",
-      "pitchClassSequence": [0, 2, 4, 5, 7, 9, 11]
-    },
-    {
-      "name": "minor",
-      "pitchClassSequence": [0, 2, 3, 5, 7, 9, 11]
-    }
-  ]
+  "description": "Twelve tone"
 }

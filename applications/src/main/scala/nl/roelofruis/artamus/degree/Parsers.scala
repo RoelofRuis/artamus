@@ -9,7 +9,7 @@ object Parsers {
 
   implicit class TuningParseOps(tuning: TextTuning) {
     def parsePitchDescriptor: String => PitchDescriptor = input => {
-      val step = tuning.noteNames.indexOf(input.replace(tuning.textSharp, "").replace(tuning.textFlat, ""))
+      val step = tuning.textNotes.indexOf(input.replace(tuning.textSharp, "").replace(tuning.textFlat, ""))
       val pc = tuning.pitchClassSequence(step)
       val sharps = input.count(_ == tuning.textSharp.head)
       val flats = input.count(_ == tuning.textFlat.head)
@@ -18,7 +18,7 @@ object Parsers {
     }
 
     def parseDegree: String => Degree = input => {
-      val step = tuning.degreeNames.indexOf(input)
+      val step = tuning.textDegrees.indexOf(input)
       val pitchClass = tuning.pitchClassSequence(step)
       Degree(PitchDescriptor(step, pitchClass), Quality("major"))
     }

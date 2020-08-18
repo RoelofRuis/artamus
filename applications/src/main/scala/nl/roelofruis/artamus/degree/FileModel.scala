@@ -8,24 +8,15 @@ import scala.util.Try
 
 object FileModel extends DefaultJsonProtocol {
 
-  final case class TextScale(
-    name: String,
-    pitchClassSequence: List[Int]
-  )
-
-  object TextScale {
-    implicit val scaleFormat: JsonFormat[TextScale] = jsonFormat2(TextScale.apply)
-  }
-
   final case class TextTuning(
     pitchClassSequence: List[Int],
-    noteNames: List[String],
-    degreeNames: List[String],
+    numPitchClasses: Int,
+    textNotes: List[String],
+    textDegrees: List[String],
+    textIntervals: List[String],
     textSharp: String,
     textFlat: String,
-    numPitchClasses: Int,
     description: String,
-    scales: List[TextScale],
   )
 
   object TextTuning {
