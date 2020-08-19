@@ -6,21 +6,27 @@ import nl.roelofruis.artamus.degree.Model.{Chord, Degree, PitchDescriptor, Quali
 object Write {
 
   implicit class TuningWriteOps(tuning: TextTuning) {
+    // TODO: factor this out
+    import Read._
+    val qualityMap: Map[List[PitchDescriptor], String] = tuning.qualities.map { textQuality =>
+      val intervals = tuning.parseArray(textQuality.intervals, tuning.parseInterval).toList
+      (intervals, textQuality.symbol)
+    }.toMap
 
     def printChords(chords: Seq[Chord]): String = {
       chords.map { chord =>
         printNoteDescriptor(chord.root) + printQuality(chord.quality)
-      }.mkString("\n")
+      }.mkString(" ")
     }
 
     def printDegrees(degrees: Seq[Degree]): String = {
       degrees.map { degree =>
         printDegreeDescriptor(degree.root) + printQuality(degree.quality)
-      }.mkString("\n")
+      }.mkString(" ")
     }
 
     def printQuality(quality: Quality): String = {
-      quality.intervals.toString
+      qualityMap.getOrElse(quality.intervals, "")
     }
 
     def printDegreeDescriptor(descriptor: PitchDescriptor): String = {
