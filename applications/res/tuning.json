@@ -17,6 +17,11 @@
       "name": "minor",
       "symbol": "m",
       "intervals": "1 b3 5"
+    },
+    {
+      "name": "diminished",
+      "symbol": "dim",
+      "intervals": "1 b3 b5"
     }
   ]
 }
