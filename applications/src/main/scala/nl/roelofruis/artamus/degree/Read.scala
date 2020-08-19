@@ -2,82 +2,85 @@ package nl.roelofruis.artamus.degree
 
 import nl.roelofruis.artamus.degree.FileModel.TextTuning
 import nl.roelofruis.artamus.degree.Model._
+import nl.roelofruis.artamus.util.State
 
 import scala.reflect.ClassTag
 
 object Read {
 
   implicit class TuningReadOps(tuning: TextTuning) {
-    def parsePitchDescriptor: String => PitchDescriptor = input => {
-      val (stepSymbol, res1) = find(input, tuning.textNotes)
-      val (sharps, res2) = count(res1, tuning.textSharp)
-      val (flats, _) = count(res2, tuning.textFlat)
-      val step = tuning.textNotes.indexOf(stepSymbol)
-      val pitchClass = tuning.pitchClassSequence(step)
-      PitchDescriptor(step, pitchClass - flats + sharps)
+    def parsePitchDescriptor: State[String, PitchDescriptor] = {
+      for {
+        stepSymbol <- find(tuning.textNotes)
+        sharps <- count(tuning.textSharp)
+        flats <- count(tuning.textFlat)
+        step = tuning.textNotes.indexOf(stepSymbol)
+        pitchClass = tuning.pitchClassSequence(step)
+      } yield PitchDescriptor(step, pitchClass - flats + sharps)
     }
 
-    def parseDegree: String => Degree = input => {
-      val (sharps, res1) = count(input, tuning.textSharp)
-      val (flats, res2) = count(res1, tuning.textFlat)
-      val (stepSymbol, res3) = find(res2, tuning.textDegrees)
-      val quality = parseQuality(res3)
-      val step = tuning.textDegrees.indexOf(stepSymbol)
-      val pitchClass = tuning.pitchClassSequence(step)
-      Degree(PitchDescriptor(step, pitchClass - flats + sharps), quality)
+    def parseDegree: State[String, Degree] = {
+      for {
+        sharps <- count(tuning.textSharp)
+        flats <- count(tuning.textFlat)
+        stepSymbol <- find(tuning.textDegrees)
+        quality <- parseQuality
+        step = tuning.textDegrees.indexOf(stepSymbol)
+        pitchClass = tuning.pitchClassSequence(step)
+      } yield Degree(PitchDescriptor(step, pitchClass - flats + sharps), quality)
     }
 
-    def parseChord: String => Chord = input => {
-      val (stepSymbol, res1) = find(input, tuning.textNotes)
-      val (sharps, res2) = count(res1, tuning.textSharp)
-      val (flats, res3) = count(res2, tuning.textFlat)
-      val step = tuning.textNotes.indexOf(stepSymbol)
-      val pitchClass = tuning.pitchClassSequence(step)
-      val quality = parseQuality(res3)
-      Chord(PitchDescriptor(step, pitchClass - flats + sharps), quality)
+    def parseChord: State[String, Chord] = {
+      for {
+        stepSymbol <- find(tuning.textNotes)
+        sharps <- count(tuning.textSharp)
+        flats <- count(tuning.textFlat)
+        quality <- parseQuality
+        step = tuning.textNotes.indexOf(stepSymbol)
+        pitchClass = tuning.pitchClassSequence(step)
+      } yield Chord(PitchDescriptor(step, pitchClass - flats + sharps), quality)
     }
 
-    def parseQuality: String => Quality = input => {
-      tuning
-        .qualities
-        .find(_.symbol == input)
-        .map { q =>
-          val intervals = parseArray(q.intervals, parseInterval)
-          Quality(intervals.toList)
-        }
-        .get
+    def parseQuality: State[String, Quality] = State { s =>
+      val textQuality = tuning.qualities.find(_.symbol == s).get
+      val descriptors = parseArray(parseInterval).run(textQuality.intervals)._2.toList
+      (s.stripPrefix(textQuality.symbol), Quality(descriptors))
     }
 
-    def parseInterval: String => PitchDescriptor = input => {
-      val (sharps, res1) = count(input, tuning.textSharp)
-      val (flats, res2) = count(res1, tuning.textFlat)
-      val (stepSymbol, _) = find(res2, tuning.textIntervals)
-      val step = tuning.textIntervals.indexOf(stepSymbol)
-      val pitchClass = tuning.pitchClassSequence(step)
-      PitchDescriptor(step, pitchClass - flats + sharps)
+    def parseInterval: State[String, PitchDescriptor] = {
+      for {
+        sharps <- count(tuning.textSharp)
+        flats <- count(tuning.textFlat)
+        stepSymbol <- find(tuning.textIntervals)
+        step = tuning.textIntervals.indexOf(stepSymbol)
+        pitchClass = tuning.pitchClassSequence(step)
+      } yield PitchDescriptor(step, pitchClass - flats + sharps)
     }
 
-    def parseArray[A: ClassTag](input: String, extractor: String => A): Array[A] = {
-      input.split(' ').map(s => extractor(s))
+    def parseArray[A : ClassTag](extractor: State[String, A]): State[String, Array[A]] = State { s =>
+      (s, s.split(' ').map(extractor.run).map(_._2))
     }
-
   }
 
-  def count(input: String, target: String): (Int, String) = {
-    if (input.startsWith(target)) {
-      val result = count(input.stripPrefix(target), target)
-      (result._1 + 1, result._2)
+  def count(target: String): State[String, Int] = State { s =>
+    def loop(i: String): (String, Int) = {
+      if (i.startsWith(target)) {
+        val (res, n) = loop(i.stripPrefix(target))
+        (res, n + 1)
+      }
+      else (i, 0)
     }
-    else (0, input)
+
+    loop(s)
   }
 
-  def find(input: String, options: Seq[String]): (String, String) = {
-    val found = options.map { opt => (input.startsWith(opt), opt) }
+  def find(options: Seq[String]): State[String, String] = State { s =>
+    val found = options.map { opt => (s.startsWith(opt), opt) }
       .filter { case (startsWith, _) => startsWith }
       .maxBy { case (_, opt) => opt.length }
       ._2
 
-    (found, input.stripPrefix(found))
+    (s.stripPrefix(found), found)
   }
 
 }

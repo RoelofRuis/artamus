@@ -14,13 +14,13 @@ object Degrees extends App {
   val tuning = FileModel.load[TextTuning]("applications/res/tuning.json").get
 
   if (StdIn.readLine("D: Degrees, else Chords\n > ") == "D") {
-    val degreeInput: Array[Degree] = tuning.parseArray(StdIn.readLine("Input degrees separated by a space\n > "), tuning.parseDegree)
-    val root: PitchDescriptor = tuning.parsePitchDescriptor(StdIn.readLine("Input root\n > "))
+    val degreeInput: Array[Degree] = tuning.parseArray(tuning.parseDegree).run(StdIn.readLine("Input degrees separated by a space\n > "))._2
+    val root: PitchDescriptor = tuning.parsePitchDescriptor.run(StdIn.readLine("Input root\n > "))._2
     val chords = tuning.nameChords(degreeInput, root)
     print(tuning.printChords(chords))
   } else {
-    val chordInput: Array[Chord] = tuning.parseArray(StdIn.readLine("Input chords separated by a space\n > "), tuning.parseChord)
-    val root: PitchDescriptor = tuning.parsePitchDescriptor(StdIn.readLine("Input key\n > "))
+    val chordInput: Array[Chord] = tuning.parseArray(tuning.parseChord).run(StdIn.readLine("Input chords separated by a space\n > "))._2
+    val root: PitchDescriptor = tuning.parsePitchDescriptor.run(StdIn.readLine("Input key\n > "))._2
     val degrees = tuning.nameDegrees(chordInput, root)
     print(tuning.printDegrees(degrees))
   }

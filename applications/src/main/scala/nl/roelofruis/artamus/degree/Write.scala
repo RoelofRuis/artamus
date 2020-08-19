@@ -9,7 +9,7 @@ object Write {
     // TODO: factor this out
     import Read._
     val qualityMap: Map[List[PitchDescriptor], String] = tuning.qualities.map { textQuality =>
-      val intervals = tuning.parseArray(textQuality.intervals, tuning.parseInterval).toList
+      val intervals = tuning.parseArray(tuning.parseInterval).run(textQuality.intervals)._2.toList
       (intervals, textQuality.symbol)
     }.toMap
 
