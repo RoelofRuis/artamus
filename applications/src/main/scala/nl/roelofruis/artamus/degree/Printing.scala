@@ -1,14 +1,20 @@
 package nl.roelofruis.artamus.degree
 
 import nl.roelofruis.artamus.degree.FileModel.TextTuning
-import nl.roelofruis.artamus.degree.Model.{Chord, PitchDescriptor}
+import nl.roelofruis.artamus.degree.Model.{Chord, PitchDescriptor, Quality}
 
 object Printing {
 
   implicit class TextOps(tuning: TextTuning) {
 
     def printChords(chords: Seq[Chord]): String = {
-      chords.map { chord => printPitchDescriptor(chord.root) }.mkString("\n")
+      chords.map { chord =>
+        printPitchDescriptor(chord.root) + printQuality(chord.quality)
+      }.mkString("\n")
+    }
+
+    def printQuality(quality: Quality): String = {
+      quality.intervals.toString
     }
 
     def printPitchDescriptor(descriptor: PitchDescriptor): String = {

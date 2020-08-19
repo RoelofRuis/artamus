@@ -9,6 +9,7 @@ object Model {
 
   final case class Degree(
     root: PitchDescriptor,
+    quality: Quality
   )
 
   final case class Quality(
@@ -17,6 +18,7 @@ object Model {
 
   final case class Chord(
     root: PitchDescriptor,
+    quality: Quality
   )
 
 }

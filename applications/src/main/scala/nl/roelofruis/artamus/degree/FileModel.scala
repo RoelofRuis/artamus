@@ -11,7 +11,7 @@ object FileModel extends DefaultJsonProtocol {
   final case class TextQuality(
     name: String,
     symbol: String,
-    intervals: List[String]
+    intervals: String
   )
 
   object TextQuality {

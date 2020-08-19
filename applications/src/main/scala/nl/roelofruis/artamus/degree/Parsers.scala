@@ -8,52 +8,65 @@ import scala.reflect.ClassTag
 object Parsers {
 
   implicit class TuningParseOps(tuning: TextTuning) {
-    def parsePitchDescriptor: String => PitchDescriptor = input => parseDescriptor(
-      tuning.textSharp,
-      tuning.textFlat,
-      tuning.textNotes,
-      tuning.pitchClassSequence,
-      input
-    )
+    def parsePitchDescriptor: String => PitchDescriptor = input =>
+      parseDescriptor(tuning.textNotes, input)._1
 
     def parseDegree: String => Degree = input => {
-      val descriptor = parseDescriptor(
-        tuning.textSharp,
-        tuning.textFlat,
+      val (descriptor, res) = parseDescriptor(
         tuning.textDegrees,
-        tuning.pitchClassSequence,
         input
       )
-      Degree(descriptor)
+      val quality = parseQuality(res)
+      Degree(descriptor, quality)
     }
 
-    def parseInterval: String => PitchDescriptor = input => parseDescriptor(
-        tuning.textSharp,
-        tuning.textFlat,
-        tuning.textIntervals,
-        tuning.pitchClassSequence,
-        input
-      )
+    def parseQuality: String => Quality = input => {
+      tuning
+        .qualities
+        .find(_.symbol == input)
+        .map { q =>
+          val intervals = parseArray(q.intervals, parseInterval)
+          Quality(intervals.toList)
+        }
+        .get
+    }
+
+    def parseInterval: String => PitchDescriptor = input =>
+      parseDescriptor(tuning.textIntervals, input)._1
 
     def parseArray[A : ClassTag](input: String, extractor: String => A): Array[A] = {
       input.split(' ').map(s => extractor(s))
     }
+
+    def parseDescriptor(
+      symbolSequence: Seq[String],
+      input: String
+    ): (PitchDescriptor, String) = {
+      val (sharps, res1) = count(input, tuning.textSharp)
+      val (flats, res2) = count(res1, tuning.textFlat)
+      val (stepSymbol, res3) = find(res2, symbolSequence)
+      val step = symbolSequence.indexOf(stepSymbol)
+      val pitchClass = tuning.pitchClassSequence(step)
+
+      (PitchDescriptor(step, pitchClass + sharps - flats), res3)
+    }
   }
 
-  def parseDescriptor(
-    sharpSymbol: String,
-    flatSymbol: String,
-    symbolSequence: Seq[String],
-    pitchClassSequence: Seq[Int],
-    input: String
-  ): PitchDescriptor = {
-    val cleanInput = input.replace(sharpSymbol, "").replace(flatSymbol, "")
-    val step = symbolSequence.indexOf(cleanInput)
-    val pitchClass = pitchClassSequence(step)
-    val sharps = input.count(_ == sharpSymbol.head)
-    val flats = input.count(_ == flatSymbol.head)
+  def count(input: String, target: String): (Int, String) = {
+    if (input.startsWith(target)) {
+      val result = count(input.stripPrefix(target), target)
+      (result._1 + 1, result._2)
+    }
+    else (0, input)
+  }
 
-    PitchDescriptor(step, pitchClass + sharps - flats)
+  def find(input: String, options: Seq[String]): (String, String) = {
+    val found = options.map { opt => (input.startsWith(opt), opt) }
+      .filter { case (startsWith, _) => startsWith }
+      .maxBy { case (_, opt) => opt.length }
+      ._2
+
+    (found, input.stripPrefix(found))
   }
 
 }
