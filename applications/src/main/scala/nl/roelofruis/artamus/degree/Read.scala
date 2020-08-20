@@ -11,34 +11,26 @@ object Read {
   implicit class TuningReadOps(tuning: TextTuning) {
     def parsePitchDescriptor: State[String, PitchDescriptor] = {
       for {
-        stepSymbol <- find(tuning.textNotes)
-        sharps <- count(tuning.textSharp)
-        flats <- count(tuning.textFlat)
-        step = tuning.textNotes.indexOf(stepSymbol)
+        step <- find(tuning.textNotes)
+        accidentals <- parseAccidentals
         pitchClass = tuning.pitchClassSequence(step)
-      } yield PitchDescriptor(step, pitchClass - flats + sharps)
+      } yield PitchDescriptor(step, pitchClass + accidentals)
     }
 
     def parseDegree: State[String, Degree] = {
       for {
-        sharps <- count(tuning.textSharp)
-        flats <- count(tuning.textFlat)
-        stepSymbol <- find(tuning.textDegrees)
+        accidentals <- parseAccidentals
+        step <- find(tuning.textDegrees)
         quality <- parseQuality
-        step = tuning.textDegrees.indexOf(stepSymbol)
         pitchClass = tuning.pitchClassSequence(step)
-      } yield Degree(PitchDescriptor(step, pitchClass - flats + sharps), quality)
+      } yield Degree(PitchDescriptor(step, pitchClass + accidentals), quality)
     }
 
     def parseChord: State[String, Chord] = {
       for {
-        stepSymbol <- find(tuning.textNotes)
-        sharps <- count(tuning.textSharp)
-        flats <- count(tuning.textFlat)
+        pitchDescriptor <- parsePitchDescriptor
         quality <- parseQuality
-        step = tuning.textNotes.indexOf(stepSymbol)
-        pitchClass = tuning.pitchClassSequence(step)
-      } yield Chord(PitchDescriptor(step, pitchClass - flats + sharps), quality)
+      } yield Chord(pitchDescriptor, quality)
     }
 
     def parseQuality: State[String, Quality] = State { s =>
@@ -49,12 +41,17 @@ object Read {
 
     def parseInterval: State[String, PitchDescriptor] = {
       for {
+        accidentals <- parseAccidentals
+        step <- find(tuning.textIntervals)
+        pitchClass = tuning.pitchClassSequence(step)
+      } yield PitchDescriptor(step, pitchClass + accidentals)
+    }
+
+    def parseAccidentals: State[String, Int] = {
+      for {
         sharps <- count(tuning.textSharp)
         flats <- count(tuning.textFlat)
-        stepSymbol <- find(tuning.textIntervals)
-        step = tuning.textIntervals.indexOf(stepSymbol)
-        pitchClass = tuning.pitchClassSequence(step)
-      } yield PitchDescriptor(step, pitchClass - flats + sharps)
+      } yield sharps - flats
     }
 
     def parseArray[A : ClassTag](extractor: State[String, A]): State[String, Array[A]] = State { s =>
@@ -74,13 +71,15 @@ object Read {
     loop(s)
   }
 
-  def find(options: Seq[String]): State[String, String] = State { s =>
+  def find(options: Seq[String]): State[String, Int] = State { s =>
     val found = options.map { opt => (s.startsWith(opt), opt) }
       .filter { case (startsWith, _) => startsWith }
       .maxBy { case (_, opt) => opt.length }
       ._2
 
-    (s.stripPrefix(found), found)
+    val index = options.indexOf(found)
+
+    (s.stripPrefix(found), index)
   }
 
 }
