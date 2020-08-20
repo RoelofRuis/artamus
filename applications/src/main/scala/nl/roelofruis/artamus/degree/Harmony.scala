@@ -34,8 +34,14 @@ object Harmony {
 
     def nameDegrees(chords: Seq[Chord], key: Key): Seq[Degree] = {
       chords.map { chord =>
-        // TODO: expand!
-        val degreePitch = chord.root - key.root
+        // TODO: return option based on whether the quality matches the scale.
+        val rootPitch = chord.root - key.root
+        val scalePitchClass = key.scale.pitchClassSequence(rootPitch.step)
+        val pitchClassDifference = rootPitch.pitchClass - scalePitchClass
+
+        val tuningPitch = PitchDescriptor(rootPitch.step, tuning.pitchClassSequence(rootPitch.step))
+        val degreePitch = tuningPitch + PitchDescriptor(0, pitchClassDifference)
+
         Degree(degreePitch, chord.quality)
       }
     }
