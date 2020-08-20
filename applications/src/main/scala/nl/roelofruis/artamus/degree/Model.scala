@@ -21,4 +21,13 @@ object Model {
     quality: Quality
   )
 
+  final case class Scale(
+    pitchClassSequence: List[Int]
+  )
+
+  final case class Key(
+    root: PitchDescriptor,
+    scale: Scale
+  )
+
 }

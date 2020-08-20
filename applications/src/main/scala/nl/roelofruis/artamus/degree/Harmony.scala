@@ -32,9 +32,10 @@ object Harmony {
       }
     }
 
-    def nameDegrees(chords: Seq[Chord], root: PitchDescriptor): Seq[Degree] = {
+    def nameDegrees(chords: Seq[Chord], key: Key): Seq[Degree] = {
       chords.map { chord =>
-        val degreePitch = chord.root - root
+        // TODO: expand!
+        val degreePitch = chord.root - key.root
         Degree(degreePitch, chord.quality)
       }
     }

@@ -4,6 +4,7 @@ import nl.roelofruis.artamus.degree.FileModel.TextTuning
 import nl.roelofruis.artamus.degree.Model._
 import nl.roelofruis.artamus.util.State
 
+import scala.annotation.tailrec
 import scala.reflect.ClassTag
 
 object Read {
@@ -15,6 +16,19 @@ object Read {
         accidentals <- parseAccidentals
         pitchClass = tuning.pitchClassSequence(step)
       } yield PitchDescriptor(step, pitchClass + accidentals)
+    }
+
+    def parseKey: State[String, Key] = {
+      for {
+        root <- parsePitchDescriptor
+        _ <- strip(" ")
+        scale <- parseScale
+      } yield Key(root, scale)
+    }
+
+    def parseScale: State[String, Scale] = State { s =>
+      val textScale = tuning.scales.find(_.name == s).get // TODO: No get!
+      (s.stripPrefix(textScale.name), Scale(textScale.pitchClassSequence))
     }
 
     def parseDegree: State[String, Degree] = {
@@ -34,7 +48,7 @@ object Read {
     }
 
     def parseQuality: State[String, Quality] = State { s =>
-      val textQuality = tuning.qualities.find(_.symbol == s).get
+      val textQuality = tuning.qualities.find(_.symbol == s).get // TODO: No get!
       val descriptors = parseArray(parseInterval).run(textQuality.intervals)._2.toList
       (s.stripPrefix(textQuality.symbol), Quality(descriptors))
     }
@@ -59,6 +73,14 @@ object Read {
     }
   }
 
+  def strip(target: String): State[String, Unit] = State { s =>
+    @tailrec def loop(i: String): String = {
+      if (i.startsWith(target)) loop(i.stripPrefix(target))
+      else i
+    }
+    (loop(s), ())
+  }
+
   def count(target: String): State[String, Int] = State { s =>
     def loop(i: String): (String, Int) = {
       if (i.startsWith(target)) {
@@ -74,7 +96,7 @@ object Read {
   def find(options: Seq[String]): State[String, Int] = State { s =>
     val found = options.map { opt => (s.startsWith(opt), opt) }
       .filter { case (startsWith, _) => startsWith }
-      .maxBy { case (_, opt) => opt.length }
+      .maxBy { case (_, opt) => opt.length } // TODO: Could be non existent!
       ._2
 
     val index = options.indexOf(found)
