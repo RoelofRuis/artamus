@@ -7,11 +7,7 @@ case class RNA(tuning: Tuning) extends TuningMaths {
   final case class DegreeHypothesis(
     chord: Chord,
     options: Seq[DegreeInKey] = Seq()
-  ) {
-    def add(hypothesis: DegreeInKey): DegreeHypothesis = copy(
-      options = options :+ hypothesis
-    )
-  }
+  )
 
   final case class DegreeInKey(
     degreePitch: PitchDescriptor,
@@ -21,14 +17,15 @@ case class RNA(tuning: Tuning) extends TuningMaths {
   import nl.roelofruis.artamus.tuning.Printer._
 
   def nameDegrees(chords: Seq[Chord], baseKey: Key): Seq[Degree] = {
-    val hypotheses = chords.map { DegreeHypothesis(_) }
+    val keys = baseKey.scale.asPitchDescriptors.map { descriptor =>
+      Key(baseKey.root + descriptor, baseKey.scale)
+    }
 
-    val chordsInKey = hypotheses
-      .map { hypothesis =>
-        // Find chords that are part of the key
-        val chord = hypothesis.chord
-        if (baseKey.contains(chord)) hypothesis.add(DegreeInKey(chord.root - baseKey.root, baseKey))
-        else hypothesis
+    val chordsInKey = chords.map { chord =>
+        DegreeHypothesis(
+          chord,
+          keys.flatMap { key => if (key.contains(chord)) Some(DegreeInKey(chord.root - key.root, key)) else None }
+        )
       }
 
     chordsInKey.foreach { h =>

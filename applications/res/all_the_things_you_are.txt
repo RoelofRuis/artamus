@@ -5,5 +5,5 @@ Ab D G
 Am D G
 F# B E C
 Fm Bbm Eb Ab
-Db Gb Cm Bdim
+Db Dbm Cm Bdim
 Bbm Eb Ab

@@ -44,5 +44,9 @@ trait TuningMaths {
         }
       }
     }
+
+    def asPitchDescriptors: List[PitchDescriptor] = {
+      scale.pitchClassSequence.zipWithIndex.map { case (pitchClass, step) => PitchDescriptor(step, pitchClass) }
+    }
   }
 }
