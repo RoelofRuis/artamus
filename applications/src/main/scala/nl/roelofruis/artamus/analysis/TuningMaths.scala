@@ -26,8 +26,8 @@ trait TuningMaths {
 
   implicit class KeyMath(key: Key) {
     def contains(chord: Chord): Boolean = {
-      val rectifiedRoot = chord.root - key.root
-      key.scale.hasQualityAtPitchClass(rectifiedRoot.pitchClass, chord.quality)
+      val relativeRoot = chord.root - key.root
+      key.scale.hasQualityAtPitchClass(relativeRoot.pitchClass, chord.quality)
     }
   }
 
