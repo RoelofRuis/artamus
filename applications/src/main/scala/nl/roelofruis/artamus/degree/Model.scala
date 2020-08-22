@@ -1,6 +1,6 @@
 package nl.roelofruis.artamus.degree
 
-import nl.roelofruis.artamus.tuning.Parser.MusicObjectsReadable
+import nl.roelofruis.artamus.tuning.Parser.MusicObjectsParser
 
 object Model {
 
@@ -42,6 +42,6 @@ object Model {
     textDegrees: List[String],
     scaleMap: Map[String, Scale],
     qualityMap: Map[String, Quality],
-  ) extends MusicObjectsReadable
+  ) extends MusicObjectsParser
 
 }

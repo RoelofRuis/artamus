@@ -69,7 +69,7 @@ object TuningLoader {
       description: String,
       textQualities: List[TextQuality],
       textScales: List[TextScale]
-    ) extends MusicPrimitivesReadable
+    ) extends MusicPrimitivesParser
 
     object TextTuning {
       implicit val tuningFormat: JsonFormat[TextTuning] = jsonFormat10(TextTuning.apply)

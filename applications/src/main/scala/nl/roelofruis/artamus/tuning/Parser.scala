@@ -8,7 +8,7 @@ import scala.reflect.ClassTag
 
 object Parser {
 
-  trait MusicPrimitivesReadable {
+  trait MusicPrimitivesParser {
     val pitchClassSequence: List[Int]
     val textNotes: List[String]
     val textIntervals: List[String]
@@ -39,7 +39,7 @@ object Parser {
     }
   }
 
-  trait MusicObjectsReadable extends MusicPrimitivesReadable {
+  trait MusicObjectsParser extends MusicPrimitivesParser {
     val textDegrees: List[String]
     val scaleMap: Map[String, Scale]
     val qualityMap: Map[String, Quality]
