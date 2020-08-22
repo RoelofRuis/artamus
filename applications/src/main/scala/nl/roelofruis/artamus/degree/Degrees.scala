@@ -20,8 +20,8 @@ object Degrees extends App {
     print(tuning.printChords(chords))
   } else {
     val chordInput: Array[Chord] = tuning.parseArray(tuning.parseChord).run(StdIn.readLine("Input chords separated by a space\n > "))._2
-    val root: PitchDescriptor = tuning.parsePitchDescriptor.run(StdIn.readLine("Input key\n > "))._2
-    val degrees = tuning.nameDegrees(chordInput, root)
+    val key: Key = tuning.parseKey.run(StdIn.readLine("Input key\n > "))._2
+    val degrees = tuning.nameDegrees(chordInput, key)
     print(tuning.printDegrees(degrees))
   }
 
