@@ -9,7 +9,7 @@ import scala.io.{Source, StdIn}
 object Degrees extends App {
 
   import nl.roelofruis.artamus.tuning.Parser._
-  import nl.roelofruis.artamus.tuning.Write._
+  import nl.roelofruis.artamus.tuning.Printer._
 
   val tuning = TuningLoader.loadTuning
   val chords = read("applications/res/all_the_things_you_are.txt")

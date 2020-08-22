@@ -18,6 +18,8 @@ case class RNA(tuning: Tuning) extends TuningMaths {
     key: Key,
   )
 
+  import nl.roelofruis.artamus.tuning.Printer._
+
   def nameDegrees(chords: Seq[Chord], baseKey: Key): Seq[Degree] = {
     val hypotheses = chords.map { DegreeHypothesis(_) }
 
@@ -30,7 +32,12 @@ case class RNA(tuning: Tuning) extends TuningMaths {
       }
 
     chordsInKey.foreach { h =>
-      println(h)
+      val chord = tuning.printChord(h.chord)
+      val options = h.options
+        .map { hyp => tuning.printDegreeDescriptor(hyp.degreePitch) + " in " + tuning.printKey(hyp.key) }
+        .mkString(" | ")
+
+      println(s"$chord = $options")
     }
 
     chords.map { chord =>

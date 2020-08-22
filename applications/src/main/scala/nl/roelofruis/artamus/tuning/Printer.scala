@@ -2,24 +2,22 @@ package nl.roelofruis.artamus.tuning
 
 import nl.roelofruis.artamus.degree.Model._
 
-object Write {
+object Printer {
 
   implicit class TuningWriteOps(tuning: Tuning) {
-    def printChords(chords: Seq[Chord]): String = {
-      chords.map { chord =>
-        printNoteDescriptor(chord.root) + printQuality(chord.quality)
-      }.mkString(" ")
-    }
+    def printChords(chords: Seq[Chord]): String = chords.map(printChord).mkString(" ")
 
-    def printDegrees(degrees: Seq[Degree]): String = {
-      degrees.map { degree =>
-        printDegreeDescriptor(degree.root) + printQuality(degree.quality)
-      }.mkString(" ")
-    }
+    def printChord(chord: Chord): String = printNoteDescriptor(chord.root) + printQuality(chord.quality)
 
-    def printQuality(quality: Quality): String = {
-      tuning.qualityMap.map(_.swap).getOrElse(quality, "")
-    }
+    def printDegrees(degrees: Seq[Degree]): String = degrees.map(printDegree).mkString(" ")
+
+    def printDegree(degree: Degree): String = printDegreeDescriptor(degree.root) + printQuality(degree.quality)
+
+    def printQuality(quality: Quality): String = tuning.qualityMap.map(_.swap).getOrElse(quality, "?")
+
+    def printKey(key: Key): String = tuning.printNoteDescriptor(key.root) + " " + tuning.printScale(key.scale)
+
+    def printScale(scale: Scale): String = tuning.scaleMap.map(_.swap).getOrElse(scale, "?")
 
     def printDegreeDescriptor(descriptor: PitchDescriptor): String = {
       val base = tuning.textDegrees(descriptor.step)
