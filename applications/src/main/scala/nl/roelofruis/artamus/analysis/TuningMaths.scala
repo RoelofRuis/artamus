@@ -1,10 +1,9 @@
 package nl.roelofruis.artamus.analysis
 
-import nl.roelofruis.artamus.degree.FileModel.TextTuning
 import nl.roelofruis.artamus.degree.Model._
 
 trait TuningMaths {
-  val tuning: TextTuning
+  val tuning: Tuning
 
   def numSteps: Int = tuning.pitchClassSequence.size
 
@@ -46,5 +45,4 @@ trait TuningMaths {
       }
     }
   }
-
 }

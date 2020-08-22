@@ -1,25 +1,32 @@
 package nl.roelofruis.artamus.degree
 
 import nl.roelofruis.artamus.analysis.RNA
-import nl.roelofruis.artamus.degree.FileModel.TextTuning
 import nl.roelofruis.artamus.degree.Model.{Chord, Key}
+import nl.roelofruis.artamus.tuning.TuningLoader
 
-import scala.io.StdIn
+import scala.io.{Source, StdIn}
 
 object Degrees extends App {
 
-  import Read._
-  import Write._
+  import nl.roelofruis.artamus.tuning.Parser._
+  import nl.roelofruis.artamus.tuning.Write._
 
-  val tuning = FileModel.load[TextTuning]("applications/res/tuning.json").get
-  val chords = FileModel.read("applications/res/all_the_things_you_are.txt")
+  val tuning = TuningLoader.loadTuning
+  val chords = read("applications/res/all_the_things_you_are.txt")
 
   val rna = RNA(tuning)
-  val chordInput: Array[Chord] = tuning.parseArray(tuning.parseChord).run(chords)._2
+  val chordInput: Array[Chord] = parseArray(tuning.parseChord).run(chords).value
   println(chords)
-  val key: Key = tuning.parseKey.run(StdIn.readLine("Input key\n > "))._2
+  val key: Key = tuning.parseKey.run(StdIn.readLine("Input key\n > ")).value
   val degrees = rna.nameDegrees(chordInput, key)
 
   print(tuning.printDegrees(degrees))
+
+  def read(path: String): String = {
+    val source = Source.fromFile(path)
+    val res = source.getLines().mkString(" ")
+    source.close()
+    res
+  }
 
 }

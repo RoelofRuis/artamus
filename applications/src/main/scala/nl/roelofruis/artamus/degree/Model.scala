@@ -1,5 +1,7 @@
 package nl.roelofruis.artamus.degree
 
+import nl.roelofruis.artamus.tuning.Parser.MusicObjectsReadable
+
 object Model {
 
   final case class PitchDescriptor(
@@ -13,7 +15,7 @@ object Model {
   )
 
   final case class Quality(
-    intervals: List[PitchDescriptor]
+    intervals: Seq[PitchDescriptor]
   )
 
   final case class Chord(
@@ -29,5 +31,17 @@ object Model {
     root: PitchDescriptor,
     scale: Scale
   )
+
+  final case class Tuning(
+    pitchClassSequence: List[Int],
+    numPitchClasses: Int,
+    textNotes: List[String],
+    textIntervals: List[String],
+    textSharp: String,
+    textFlat: String,
+    textDegrees: List[String],
+    scaleMap: Map[String, Scale],
+    qualityMap: Map[String, Quality],
+  ) extends MusicObjectsReadable
 
 }

@@ -7,7 +7,7 @@
   "textSharp": "#",
   "textFlat": "b",
   "description": "Twelve tone",
-  "qualities": [
+  "textQualities": [
     {
       "name": "major",
       "symbol": "",
@@ -24,7 +24,7 @@
       "intervals": "1 b3 b5"
     }
   ],
-  "scales": [
+  "textScales": [
     {
       "name": "major",
       "pitchClassSequence": [0, 2, 4, 5, 7, 9, 11]

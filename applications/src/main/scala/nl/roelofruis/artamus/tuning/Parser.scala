@@ -1,22 +1,48 @@
-package nl.roelofruis.artamus.degree
+package nl.roelofruis.artamus.tuning
 
-import nl.roelofruis.artamus.degree.FileModel.TextTuning
 import nl.roelofruis.artamus.degree.Model._
 import nl.roelofruis.artamus.util.State
 
 import scala.annotation.tailrec
 import scala.reflect.ClassTag
 
-object Read {
+object Parser {
 
-  implicit class TuningReadOps(tuning: TextTuning) {
+  trait MusicPrimitivesReadable {
+    val pitchClassSequence: List[Int]
+    val textNotes: List[String]
+    val textIntervals: List[String]
+    val textSharp: String
+    val textFlat: String
+
     def parsePitchDescriptor: State[String, PitchDescriptor] = {
       for {
-        step <- find(tuning.textNotes)
+        step <- find(textNotes)
         accidentals <- parseAccidentals
-        pitchClass = tuning.pitchClassSequence(step)
+        pitchClass = pitchClassSequence(step)
       } yield PitchDescriptor(step, pitchClass + accidentals)
     }
+
+    def parseInterval: State[String, PitchDescriptor] = {
+      for {
+        accidentals <- parseAccidentals
+        step <- find(textIntervals)
+        pitchClass = pitchClassSequence(step)
+      } yield PitchDescriptor(step, pitchClass + accidentals)
+    }
+
+    def parseAccidentals: State[String, Int] = {
+      for {
+        sharps <- count(textSharp)
+        flats <- count(textFlat)
+      } yield sharps - flats
+    }
+  }
+
+  trait MusicObjectsReadable extends MusicPrimitivesReadable {
+    val textDegrees: List[String]
+    val scaleMap: Map[String, Scale]
+    val qualityMap: Map[String, Quality]
 
     def parseKey: State[String, Key] = {
       for {
@@ -27,16 +53,21 @@ object Read {
     }
 
     def parseScale: State[String, Scale] = State { s =>
-      val textScale = tuning.scales.find(_.name == s).get // TODO: No get!
-      (s.stripPrefix(textScale.name), Scale(textScale.pitchClassSequence))
+      val scale = scaleMap.get(s).get // TODO: No get!
+      ("", scale)
+    }
+
+    def parseQuality: State[String, Quality] = State { s =>
+      val quality = qualityMap.get(s).get // TODO: No get!
+      ("", quality)
     }
 
     def parseDegree: State[String, Degree] = {
       for {
         accidentals <- parseAccidentals
-        step <- find(tuning.textDegrees)
+        step <- find(textDegrees)
         quality <- parseQuality
-        pitchClass = tuning.pitchClassSequence(step)
+        pitchClass = pitchClassSequence(step)
       } yield Degree(PitchDescriptor(step, pitchClass + accidentals), quality)
     }
 
@@ -46,31 +77,10 @@ object Read {
         quality <- parseQuality
       } yield Chord(pitchDescriptor, quality)
     }
+  }
 
-    def parseQuality: State[String, Quality] = State { s =>
-      val textQuality = tuning.qualities.find(_.symbol == s).get // TODO: No get!
-      val descriptors = parseArray(parseInterval).run(textQuality.intervals)._2.toList
-      (s.stripPrefix(textQuality.symbol), Quality(descriptors))
-    }
-
-    def parseInterval: State[String, PitchDescriptor] = {
-      for {
-        accidentals <- parseAccidentals
-        step <- find(tuning.textIntervals)
-        pitchClass = tuning.pitchClassSequence(step)
-      } yield PitchDescriptor(step, pitchClass + accidentals)
-    }
-
-    def parseAccidentals: State[String, Int] = {
-      for {
-        sharps <- count(tuning.textSharp)
-        flats <- count(tuning.textFlat)
-      } yield sharps - flats
-    }
-
-    def parseArray[A : ClassTag](extractor: State[String, A]): State[String, Array[A]] = State { s =>
-      (s, s.split(' ').map(extractor.run).map(_._2))
-    }
+  def parseArray[A : ClassTag](extractor: State[String, A]): State[String, Array[A]] = State { s =>
+    (s, s.split(' ').map(extractor.run).map(_.value))
   }
 
   def strip(target: String): State[String, Unit] = State { s =>

@@ -1,9 +1,8 @@
 package nl.roelofruis.artamus.analysis
 
-import nl.roelofruis.artamus.degree.FileModel.TextTuning
-import nl.roelofruis.artamus.degree.Model.{Chord, Degree, Key, PitchDescriptor}
+import nl.roelofruis.artamus.degree.Model._
 
-case class RNA(tuning: TextTuning) extends TuningMaths {
+case class RNA(tuning: Tuning) extends TuningMaths {
 
   final case class DegreeHypothesis(
     chord: Chord,
