@@ -1,9 +1,9 @@
-Fm Bbm Eb Ab
-Db G C
-Cm Fm Bb Eb
-Ab D G
-Am D G
-F# B E C
-Fm Bbm Eb Ab
-Db Dbm Cm Bdim
-Bbm Eb Ab
+Fm7 Bbm7 Eb7 AbM7
+DbM7 G7 CM7
+Cm7 Fm7 Bb7 EbM7
+AbM7 D7 GM7
+Am7 D7 GM7
+F#m7 B7 EM7 C7
+Fm7 Bbm7 Eb7 AbM7
+DbM7 Dbm7 Cm7 Bdim
+Bbm7 Eb7 AbM7
