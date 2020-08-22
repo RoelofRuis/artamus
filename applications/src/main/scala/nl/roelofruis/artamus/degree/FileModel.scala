@@ -4,6 +4,7 @@ import java.nio.file.{Files, Paths}
 
 import spray.json._
 
+import scala.io.Source
 import scala.util.Try
 
 object FileModel extends DefaultJsonProtocol {
@@ -48,6 +49,13 @@ object FileModel extends DefaultJsonProtocol {
 
   def load[A : JsonFormat](path: String): Try[A] = {
     Try { new String(Files.readAllBytes(Paths.get(path))).parseJson.convertTo[A] }
+  }
+
+  def read(path: String): String = {
+    val source = Source.fromFile(path)
+    val res = source.getLines().mkString(" ")
+    source.close()
+    res
   }
 
 }
