@@ -1,7 +1,7 @@
 package nl.roelofruis.artamus.degree
 
-import nl.roelofruis.artamus.analysis.RNA
 import nl.roelofruis.artamus.degree.Model.{Chord, PitchDescriptor}
+import nl.roelofruis.artamus.analysis.rna.RNA
 import nl.roelofruis.artamus.tuning.TuningLoader
 
 import scala.io.{Source, StdIn}

@@ -1,6 +1,7 @@
-package nl.roelofruis.artamus.analysis
+package nl.roelofruis.artamus.analysis.rna
 
-import nl.roelofruis.artamus.analysis.RNA.{Hypothesis, State}
+import nl.roelofruis.artamus.analysis.TuningMaths
+import nl.roelofruis.artamus.analysis.rna.RNA.{Hypothesis, State}
 import nl.roelofruis.artamus.degree.Model._
 
 object RNA {

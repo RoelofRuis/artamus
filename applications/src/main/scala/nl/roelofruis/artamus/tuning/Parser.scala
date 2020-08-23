@@ -10,6 +10,7 @@ object Parser {
 
   trait MusicPrimitivesParser {
     val pitchClassSequence: List[Int]
+    val textDegrees: List[String]
     val textNotes: List[String]
     val textIntervals: List[String]
     val textSharp: String
@@ -19,6 +20,14 @@ object Parser {
       for {
         step <- find(textNotes)
         accidentals <- parseAccidentals
+        pitchClass = pitchClassSequence(step)
+      } yield PitchDescriptor(step, pitchClass + accidentals)
+    }
+
+    def parseDegreeDescriptor: State[String, PitchDescriptor] = {
+      for {
+        accidentals <- parseAccidentals
+        step <- find(textDegrees)
         pitchClass = pitchClassSequence(step)
       } yield PitchDescriptor(step, pitchClass + accidentals)
     }
@@ -40,7 +49,6 @@ object Parser {
   }
 
   trait MusicObjectsParser extends MusicPrimitivesParser {
-    val textDegrees: List[String]
     val scaleMap: Map[String, Scale]
     val qualityMap: Map[String, Quality]
 
@@ -64,11 +72,9 @@ object Parser {
 
     def parseDegree: State[String, Degree] = {
       for {
-        accidentals <- parseAccidentals
-        step <- find(textDegrees)
+        descriptor <- parseDegreeDescriptor
         quality <- parseQuality
-        pitchClass = pitchClassSequence(step)
-      } yield Degree(PitchDescriptor(step, pitchClass + accidentals), quality)
+      } yield Degree(descriptor, quality)
     }
 
     def parseChord: State[String, Chord] = {
