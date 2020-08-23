@@ -1,19 +1,16 @@
 package nl.roelofruis.artamus.tuning
 
-import java.nio.file.{Files, Paths}
-
 import nl.roelofruis.artamus.degree.Model.{Quality, Scale, Tuning}
 import nl.roelofruis.artamus.tuning.TuningLoader.FileModel.TextTuning
+import nl.roelofruis.artamus.util.File
 import spray.json._
-
-import scala.util.Try
 
 object TuningLoader {
 
   import Parser._
 
   def loadTuning: Tuning = {
-    val textTuning = FileModel.load[TextTuning]("applications/res/tuning.json").get // TODO: remove get
+    val textTuning = File.load[TextTuning]("applications/res/tuning.json").get // TODO: remove get
 
     val symbolQualityMap = textTuning.textQualities.map { quality =>
       val parsed = parseArray(textTuning.parseInterval).run(quality.intervals).value
@@ -74,14 +71,5 @@ object TuningLoader {
     object TextTuning {
       implicit val tuningFormat: JsonFormat[TextTuning] = jsonFormat10(TextTuning.apply)
     }
-
-    def loadList[A : JsonFormat](path: String): Try[List[A]] = load[List[A]](path)
-
-    def load[A : JsonFormat](path: String): Try[A] = {
-      Try { new String(Files.readAllBytes(Paths.get(path))).parseJson.convertTo[A] }
-    }
-
   }
-
-
 }

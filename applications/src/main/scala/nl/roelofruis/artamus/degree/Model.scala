@@ -24,7 +24,7 @@ object Model {
   )
 
   final case class Scale(
-    pitchClassSequence: List[Int]
+    pitchClassSequence: Seq[Int]
   )
 
   final case class Key(

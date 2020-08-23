@@ -1,0 +1,18 @@
+{
+  "transitions": [
+    {
+      "name": "",
+      "description": "",
+      "premise": "S",
+      "rule": "_:1:_",
+      "weight": 0
+    },
+    {
+      "name": "",
+      "description": "",
+      "premise": "V:5:s",
+      "rule": "V:~1:s",
+      "weight": 1
+    }
+  ]
+}

@@ -7,6 +7,13 @@ trait TuningMaths {
 
   def numSteps: Int = tuning.pitchClassSequence.size
 
+  def allPitchDescriptors: Seq[PitchDescriptor] = tuning
+    .pitchClassSequence
+    .zipWithIndex
+    .flatMap { case (pitchClass, step) =>
+      Seq(-1, 0, 1).map { accidental => PitchDescriptor(step, pitchClass + accidental) }
+    }
+
   implicit class PitchDescriptorMath(descr: PitchDescriptor) {
     def +(that: PitchDescriptor): PitchDescriptor = {
       val targetStep = (descr.step + that.step) % numSteps
@@ -45,7 +52,7 @@ trait TuningMaths {
       }
     }
 
-    def asPitchDescriptors: List[PitchDescriptor] = {
+    def asPitchDescriptors: Seq[PitchDescriptor] = {
       scale.pitchClassSequence.zipWithIndex.map { case (pitchClass, step) => PitchDescriptor(step, pitchClass) }
     }
   }

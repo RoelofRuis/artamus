@@ -57,6 +57,14 @@
     {
       "name": "minor",
       "pitchClassSequence": [0, 2, 3, 5, 7, 8, 10]
+    },
+    {
+      "name": "harmonic minor",
+      "pitchClassSequence": [0, 2, 3, 5, 7, 8, 11]
+    },
+    {
+      "name": "melodic minor",
+      "pitchClassSequence": [0, 2, 3, 5, 7, 9, 11]
     }
   ]
 }
