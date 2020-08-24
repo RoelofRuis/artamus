@@ -25,11 +25,13 @@ object RNALoader {
 
     def parseKeyInterval(interval: String): AllowedKeyInterval = {
       if (interval == "_") AnyKeyInterval
+      else if (interval == "x") SameKeyInterval
       else SpecificKeyInterval(tuning.parseInterval.run(interval).value)
     }
 
     def parseScale(scale: String): AllowedScale = {
       if (scale == "_") AnyScale
+      else if (scale == "x") SameScale
       else SpecificScale(tuning.parseScale.run(scale).value)
     }
 
@@ -65,14 +67,13 @@ object RNALoader {
 
     final case class TextRNATransition(
       name: String,
-      description: String,
       premise: String,
       transition: String,
       weight: Int
     )
 
     object TextRNATransition {
-      implicit val textRNATransitionFormat: JsonFormat[TextRNATransition] = jsonFormat5(TextRNATransition.apply)
+      implicit val textRNATransitionFormat: JsonFormat[TextRNATransition] = jsonFormat4(TextRNATransition.apply)
     }
   }
 

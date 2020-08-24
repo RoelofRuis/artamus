@@ -14,10 +14,12 @@ object Model {
 
   sealed trait AllowedKeyInterval
   final case object AnyKeyInterval extends AllowedKeyInterval
+  final case object SameKeyInterval extends AllowedKeyInterval
   final case class SpecificKeyInterval(interval: PitchDescriptor) extends AllowedKeyInterval
 
   sealed trait AllowedScale
   final case object AnyScale extends AllowedScale
+  final case object SameScale extends AllowedScale
   final case class SpecificScale(scale: Scale) extends AllowedScale
 
   final case class TransitionDescription(

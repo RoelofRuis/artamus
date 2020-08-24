@@ -21,7 +21,7 @@ object Degrees extends App {
   val rna = RNA(tuning, rnaRules)
   val chordInput: Array[Chord] = parseArray(tuning.parseChord).run(chords).value
   println(chords)
-  val root: PitchDescriptor = tuning.parsePitchDescriptor.run("Bb").value // StdIn.readLine("Input root\n > ")).value
+  val root: PitchDescriptor = tuning.parsePitchDescriptor.run("G").value // StdIn.readLine("Input root\n > ")).value
   val degrees = rna.nameDegrees(chordInput, root)
 
   print(tuning.printDegrees(degrees))
