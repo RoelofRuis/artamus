@@ -10,6 +10,13 @@
     {
       "name": "",
       "description": "",
+      "premise": "_:_:_",
+      "transition": "_:_:_",
+      "weight": -10
+    },
+    {
+      "name": "",
+      "description": "",
       "premise": "II:_:_",
       "transition": "V:_:_",
       "weight": 5
@@ -27,13 +34,6 @@
       "premise": "I:_:_",
       "transition": "IV:_:_",
       "weight": 2
-    },
-    {
-      "name": "",
-      "description": "",
-      "premise": "_:_:_",
-      "transition": "_:_:_",
-      "weight": 0
     },
     {
       "name": "end",

@@ -31,21 +31,51 @@ case class RNA(tuning: Tuning, rules: RNARules) extends TuningMaths {
   }
 
   def nameDegrees(chords: Seq[Chord], root: PitchDescriptor): Seq[Degree] = {
-    val queue = new mutable.PriorityQueue[Graph]()
-    queue.enqueue(Graph(chords.toList, Seq()))
 
-    val resultsRequired = 1
+    val (successes, failures) = graphSearch(chords, root, 1, true)
+
+    printGraphs(successes.dequeueAll)
+    printGraphs(failures.dequeueAll)
+
+    def printGraphs(graphs: Seq[Graph]): Unit = {
+      graphs.foreach { graph =>
+        println("> ")
+        graph.stateList.map {
+          case EndState(weight) => s"END [$weight]"
+          case s @ State(chord, keyInterval, key, weight) =>
+            val textChord = tuning.printChord(chord)
+            val textDegree = tuning.printDegreeDescriptor(s.degreePitch)
+            val textKey = tuning.printKey(key)
+            val textKeyInterval = tuning.printIntervalDescriptor(keyInterval)
+            s"$textChord: $textDegree in $textKey ($textKeyInterval) [$weight]"
+        }.foreach(println)
+      }
+    }
+
+    Seq()
+  }
+
+  private def graphSearch(
+    chords: Seq[Chord],
+    root: PitchDescriptor,
+    resultsRequired: Int,
+    includeFailures: Boolean
+  ): (mutable.PriorityQueue[Graph], mutable.PriorityQueue[Graph]) = {
+    val inputStates = new mutable.PriorityQueue[Graph]()
+    inputStates.enqueue(Graph(chords.toList, Seq()))
+    val failures = new mutable.PriorityQueue[Graph]()
+    val successes = new mutable.PriorityQueue[Graph]()
 
     @tailrec
-    def transition(queue: mutable.PriorityQueue[Graph], results: Seq[Graph]): Seq[Graph] = {
-      if (results.size >= resultsRequired) {
-        println(s"Search terminated with [${results.size}] results")
-        results
-      } else if (queue.isEmpty) {
+    def search: (mutable.PriorityQueue[Graph], mutable.PriorityQueue[Graph]) = {
+      if (successes.size >= resultsRequired) {
+        println(s"Search terminated with [${successes.size}] results")
+        (failures, successes)
+      } else if (inputStates.isEmpty) {
         println("Search exhausted")
-        results
+        (failures, successes)
       } else {
-        val graph = queue.dequeue()
+        val graph = inputStates.dequeue()
         graph.nodeList match {
           case Nil =>
             val completedGraphs = findApplicableTransitions(graph.stateList.lastOption, ending = true)
@@ -54,7 +84,10 @@ case class RNA(tuning: Tuning, rules: RNARules) extends TuningMaths {
                 case _ => Seq()
               }
               .map(state => Graph(Nil, graph.stateList :+ state))
-            transition(queue, results ++ completedGraphs)
+
+            if (completedGraphs.isEmpty && includeFailures) failures.enqueue(graph)
+            else successes.enqueue(completedGraphs: _*)
+            search
 
           case chord :: tail =>
             val newGraphs = findApplicableTransitions(graph.stateList.lastOption, ending = false)
@@ -64,28 +97,15 @@ case class RNA(tuning: Tuning, rules: RNARules) extends TuningMaths {
                 case _ => Seq()
               }
               .map(state => Graph(tail, graph.stateList :+ state))
-            newGraphs.foreach(graph => queue.enqueue(graph))
-            transition(queue, results)
+
+            if (newGraphs.isEmpty && includeFailures) failures.enqueue(graph)
+            else newGraphs.foreach(g => inputStates.enqueue(g))
+            search
         }
       }
     }
 
-    val res = transition(queue, Seq())
-
-    res.foreach { graph =>
-      println("> ")
-      graph.stateList.map {
-        case EndState(weight) => s"END [$weight]"
-        case s @ State(chord, keyInterval, key, weight) =>
-          val textChord = tuning.printChord(chord)
-          val textDegree = tuning.printDegreeDescriptor(s.degreePitch)
-          val textKey = tuning.printKey(key)
-          val textKeyInterval = tuning.printIntervalDescriptor(keyInterval)
-          s"$textChord: $textDegree in $textKey ($textKeyInterval) [$weight]"
-      }.foreach(println)
-    }
-
-    Seq()
+    search
   }
 
   private def findNextStates(
