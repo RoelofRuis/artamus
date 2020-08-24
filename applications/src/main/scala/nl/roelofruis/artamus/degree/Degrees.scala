@@ -14,8 +14,6 @@ object Degrees extends App {
   val tuning = TuningLoader.loadTuning
   val rnaRules = RNALoader.loadRNA(tuning)
 
-  rnaRules.transitions.foreach(println)
-
   val file = "autumn_leaves" // StdIn.readLine("Input file\n > ")
 
   val chords = read(s"applications/res/${file}.txt")

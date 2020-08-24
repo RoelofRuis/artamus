@@ -33,6 +33,7 @@ case class RNA(tuning: Tuning, rules: RNARules) extends TuningMaths {
     queue.enqueue(Graph(chords.toList, Seq()))
 
     val resultsRequired = 1
+    val DEBUG_earlyReturnSize = 2
 
     @tailrec
     def transition(queue: mutable.PriorityQueue[Graph], results: Seq[Graph]): Seq[Graph] = {
@@ -52,8 +53,6 @@ case class RNA(tuning: Tuning, rules: RNARules) extends TuningMaths {
                 case _ => Seq()
               }
               .map(state => Graph(Nil, graph.stateList :+ state))
-
-            println(s"Found ${completedGraphs.size} completed graphs")
             transition(queue, results ++ completedGraphs)
 
           case chord :: tail =>
@@ -64,10 +63,9 @@ case class RNA(tuning: Tuning, rules: RNARules) extends TuningMaths {
                 case _ => Seq()
               }
               .map(state => Graph(tail, graph.stateList :+ state))
-
-            println(s"Found ${newGraphs.size} expansions")
             newGraphs.foreach(graph => queue.enqueue(graph))
-            transition(queue, results)
+            if (tail.size == DEBUG_earlyReturnSize) queue.dequeueAll // TODO: remove
+            else transition(queue, results)
         }
       }
     }
@@ -76,14 +74,15 @@ case class RNA(tuning: Tuning, rules: RNARules) extends TuningMaths {
 
     res.foreach { graph =>
       import nl.roelofruis.artamus.tuning.Printer._ // TODO: remove
+      println("> ")
       graph.stateList.map {
-        case EndState(_) => "END"
-        case s @ State(chord, keyInterval, key, _) =>
+        case EndState(weight) => s"END [$weight]"
+        case s @ State(chord, keyInterval, key, weight) =>
           val textChord = tuning.printChord(chord)
           val textDegree = tuning.printDegreeDescriptor(s.degreePitch)
           val textKey = tuning.printKey(key)
           val textKeyInterval = tuning.printIntervalDescriptor(keyInterval)
-          s"$textChord: $textDegree in $textKey ($textKeyInterval)"
+          s"$textChord: $textDegree in $textKey ($textKeyInterval) [$weight]"
       }.foreach(println)
     }
 
@@ -110,6 +109,7 @@ case class RNA(tuning: Tuning, rules: RNARules) extends TuningMaths {
           weight
         )
       )
+        .filter(state => allowedDegrees(transition.degree)(state.degreePitch))
       else None
     }
   }
@@ -128,31 +128,45 @@ case class RNA(tuning: Tuning, rules: RNARules) extends TuningMaths {
     }
   }
 
+  private def allowedDegrees(filter: AllowedDegree): PitchDescriptor => Boolean = descriptor => {
+    filter match {
+      case AnyDegree => true
+      case SpecificDegree(filterDegree) => filterDegree == descriptor
+    }
+  }
+
   private def findApplicableTransitions(currentState: Option[StateType], ending: Boolean): List[TransitionType] = {
     currentState match {
-      case None =>
-        rules.transitions.collect { case s: TransitionStart => s }
+      case None => rules.transitions.collect { case s: TransitionStart => s }
       case Some(state: State) =>
-        if (ending) {
+        if ( ! ending) {
+          rules
+            .transitions
+            .collect { case s: Transition => s }
+            .filter(s => allowedCurrentState(s.currentState, state))
+        } else {
           rules
             .transitions
             .collect { case s: TransitionEnd => s }
             .filter(s => allowedCurrentState(s.currentState, state))
         }
-        else {
-          rules
-            .transitions
-            .collect { case s: Transition => s }
-            .filter(s => allowedCurrentState(s.currentState, state))
-        }
     }
   }
 
-  private def allowedCurrentState(description: TransitionDescription, state: State): Boolean = {
-    description.degree match {
+  private def allowedCurrentState(transition: TransitionDescription, state: State): Boolean = {
+    val validDegree = transition.degree match {
       case AnyDegree => true
       case SpecificDegree(degree) => state.degreePitch == degree
     }
+    val validKeyInterval = transition.keyInterval match {
+      case AnyKeyInterval => true
+      case SpecificKeyInterval(interval) => state.keyInterval == interval
+    }
+    val validScale = transition.scale match {
+      case AnyScale => true
+      case SpecificScale(scale) => state.key.scale == scale
+    }
+    validDegree && validKeyInterval && validScale
   }
 
 }
