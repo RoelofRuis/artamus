@@ -1,20 +1,11 @@
 {
   "transitions": [
     {
-      "name": "",
-      "description": "",
+      "name": "start",
+      "description": "Start with any degree",
       "premise": "S",
-      "transition": "_:1:_",
-      "relative": false,
+      "transition": "_:_:_",
       "weight": 0
-    },
-    {
-      "name": "",
-      "description": "",
-      "premise": "V:5:s",
-      "transition": "V:1:s",
-      "relative": true,
-      "weight": 1
     }
   ]
 }

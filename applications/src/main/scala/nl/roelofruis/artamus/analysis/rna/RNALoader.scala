@@ -1,55 +1,57 @@
 package nl.roelofruis.artamus.analysis.rna
 
+import nl.roelofruis.artamus.analysis.rna.Model.{AllowedDegree, AllowedKeyInterval, AllowedScale, AnyDegree, AnyKeyInterval, AnyScale, RNARules, SpecificDegree, SpecificKeyInterval, SpecificScale, Transition, TransitionDescription, TransitionEnd, TransitionRule, TransitionStart}
 import nl.roelofruis.artamus.degree.Model.Tuning
-import nl.roelofruis.artamus.analysis.rna.RNALoader.FileModel.TextRNARules
 import nl.roelofruis.artamus.util.File
 import spray.json._
 
 object RNALoader {
+  import nl.roelofruis.artamus.analysis.rna.RNALoader.FileModel.TextRNARules
 
-  import nl.roelofruis.artamus.tuning.Parser._
-
-  def loadRNA(tuning: Tuning): TextRNARules = {
-    val textRules = File.load[TextRNARules]("applications/res/rna_rules.json").get // TODO: remove get
-
-    textRules.transitions.map { textTransition =>
-
-    }
-
-    textRules
-
-    def parseRule(rule: String) = {
-      if (rule == "S") ??? // START NODE
+  def loadRNA(tuning: Tuning): RNARules = {
+    def parseRule(rule: String): TransitionRule = {
+      if (rule == "S") TransitionStart
+      else if (rule == "E") TransitionEnd
       else {
         val parts = rule.split(':')
-        val degree = parseDegree(parts(0))
-        val step = parseStep(parts(1))
-        val scale = parseScale(parts(2))
+        TransitionDescription(
+          parseDegree(parts(0)),
+          parseKeyInterval(parts(1)),
+          parseScale(parts(2))
+        )
       }
     }
 
-    def parseDegree(degree: String) = {
-      if (degree == "_") ??? // ANY DEGREE
-      else tuning.parseDegreeDescriptor.run(degree).value
+    def parseDegree(degree: String): AllowedDegree = {
+      if (degree == "_") AnyDegree
+      else SpecificDegree(tuning.parseDegreeDescriptor.run(degree).value)
     }
 
-    def parseStep(step: String) = {
-      if (step == "_") ??? // ANY STEP
-      else tuning.parseInterval.run(step)
+    def parseKeyInterval(interval: String): AllowedKeyInterval = {
+      if (interval == "_") AnyKeyInterval
+      else SpecificKeyInterval(tuning.parseInterval.run(interval).value)
     }
 
-    def parseScale(scale: String) = {
-      if (scale == "_") ??? // ANY SCALE
-      else if (scale == "s") ??? // SAME SCALE
-      else tuning.parseScale.run(scale).value
+    def parseScale(scale: String): AllowedScale = {
+      if (scale == "_") AnyScale
+      else SpecificScale(tuning.parseScale.run(scale).value)
     }
 
-    ???
+    val textRules = File.load[TextRNARules]("applications/res/rna_rules.json").get // TODO: remove get
+
+    val transitions = textRules.transitions.map { textTransition =>
+      println(textTransition.description)
+      Transition(
+        parseRule(textTransition.premise),
+        parseRule(textTransition.transition),
+        textTransition.weight
+      )
+    }
+
+    RNARules(transitions)
   }
 
-
-
-  object FileModel extends DefaultJsonProtocol {
+  private object FileModel extends DefaultJsonProtocol {
     final case class TextRNARules(
       transitions: List[TextRNATransition]
     )
@@ -63,12 +65,11 @@ object RNALoader {
       description: String,
       premise: String,
       transition: String,
-      relative: Boolean,
       weight: Int
     )
 
     object TextRNATransition {
-      implicit val textRNATransitionFormat: JsonFormat[TextRNATransition] = jsonFormat6(TextRNATransition.apply)
+      implicit val textRNATransitionFormat: JsonFormat[TextRNATransition] = jsonFormat5(TextRNATransition.apply)
     }
   }
 

@@ -1,11 +1,11 @@
 package nl.roelofruis.artamus.tuning
 
 import nl.roelofruis.artamus.degree.Model.{Quality, Scale, Tuning}
-import nl.roelofruis.artamus.tuning.TuningLoader.FileModel.TextTuning
 import nl.roelofruis.artamus.util.File
 import spray.json._
 
 object TuningLoader {
+  import nl.roelofruis.artamus.tuning.TuningLoader.FileModel.TextTuning
 
   import Parser._
 
@@ -34,7 +34,7 @@ object TuningLoader {
     )
   }
 
-  object FileModel extends DefaultJsonProtocol {
+  private object FileModel extends DefaultJsonProtocol {
 
     final case class TextScale(
       name: String,

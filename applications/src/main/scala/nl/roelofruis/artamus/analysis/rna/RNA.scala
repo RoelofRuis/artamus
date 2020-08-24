@@ -1,6 +1,7 @@
 package nl.roelofruis.artamus.analysis.rna
 
 import nl.roelofruis.artamus.analysis.TuningMaths
+import nl.roelofruis.artamus.analysis.rna.Model.RNARules
 import nl.roelofruis.artamus.analysis.rna.RNA.{Hypothesis, State}
 import nl.roelofruis.artamus.degree.Model._
 
@@ -19,7 +20,7 @@ object RNA {
 
 }
 
-case class RNA(tuning: Tuning) extends TuningMaths {
+case class RNA(tuning: Tuning, rules: RNARules) extends TuningMaths {
 
   import nl.roelofruis.artamus.tuning.Printer._ // TODO: remove
 
