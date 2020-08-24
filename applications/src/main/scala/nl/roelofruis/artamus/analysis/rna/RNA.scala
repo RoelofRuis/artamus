@@ -13,11 +13,12 @@ case class RNA(tuning: Tuning, rules: RNARules) extends TuningMaths {
   private final case class EndState(weight: Int) extends StateType
   private final case class State(
     chord: Chord,
-    degreePitch: PitchDescriptor,
     keyInterval: PitchDescriptor,
     key: Key,
     weight: Int
-  ) extends StateType
+  ) extends StateType {
+    def degreePitch: PitchDescriptor = chord.root - key.root
+  }
 
   private final case class Graph(
     nodeList: List[Chord],
@@ -77,9 +78,9 @@ case class RNA(tuning: Tuning, rules: RNARules) extends TuningMaths {
       import nl.roelofruis.artamus.tuning.Printer._ // TODO: remove
       graph.stateList.map {
         case EndState(_) => "END"
-        case State(chord, degreePitch, keyInterval, key, _) =>
+        case s @ State(chord, keyInterval, key, _) =>
           val textChord = tuning.printChord(chord)
-          val textDegree = tuning.printDegreeDescriptor(degreePitch)
+          val textDegree = tuning.printDegreeDescriptor(s.degreePitch)
           val textKey = tuning.printKey(key)
           val textKeyInterval = tuning.printIntervalDescriptor(keyInterval)
           s"$textChord: $textDegree in $textKey ($textKeyInterval)"
@@ -104,7 +105,6 @@ case class RNA(tuning: Tuning, rules: RNARules) extends TuningMaths {
       if (key.contains(chord)) Some(
         State(
           chord,
-          chord.root - key.root,
           key.root - root,
           key,
           weight
