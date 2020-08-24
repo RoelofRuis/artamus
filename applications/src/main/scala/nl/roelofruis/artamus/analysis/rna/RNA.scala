@@ -9,6 +9,8 @@ import scala.collection.mutable
 
 case class RNA(tuning: Tuning, rules: RNARules) extends TuningMaths {
 
+  import nl.roelofruis.artamus.tuning.Printer._ // TODO: remove
+
   private sealed trait StateType { val weight: Int }
   private final case class EndState(weight: Int) extends StateType
   private final case class State(
@@ -33,7 +35,6 @@ case class RNA(tuning: Tuning, rules: RNARules) extends TuningMaths {
     queue.enqueue(Graph(chords.toList, Seq()))
 
     val resultsRequired = 1
-    val DEBUG_earlyReturnSize = 2
 
     @tailrec
     def transition(queue: mutable.PriorityQueue[Graph], results: Seq[Graph]): Seq[Graph] = {
@@ -47,7 +48,7 @@ case class RNA(tuning: Tuning, rules: RNARules) extends TuningMaths {
         val graph = queue.dequeue()
         graph.nodeList match {
           case Nil =>
-            val completedGraphs = findApplicableTransitions(graph.stateList.headOption, ending = true)
+            val completedGraphs = findApplicableTransitions(graph.stateList.lastOption, ending = true)
               .flatMap {
                 case TransitionEnd(_, weight) => Seq(EndState(weight))
                 case _ => Seq()
@@ -56,7 +57,7 @@ case class RNA(tuning: Tuning, rules: RNARules) extends TuningMaths {
             transition(queue, results ++ completedGraphs)
 
           case chord :: tail =>
-            val newGraphs = findApplicableTransitions(graph.stateList.headOption, ending = false)
+            val newGraphs = findApplicableTransitions(graph.stateList.lastOption, ending = false)
               .flatMap {
                 case TransitionStart(nextState, weight) => findNextStates(chord, nextState, root, weight)
                 case Transition(_, nextState, weight) => findNextStates(chord, nextState, root, weight)
@@ -64,8 +65,7 @@ case class RNA(tuning: Tuning, rules: RNARules) extends TuningMaths {
               }
               .map(state => Graph(tail, graph.stateList :+ state))
             newGraphs.foreach(graph => queue.enqueue(graph))
-            if (tail.size == DEBUG_earlyReturnSize) queue.dequeueAll // TODO: remove
-            else transition(queue, results)
+            transition(queue, results)
         }
       }
     }
@@ -73,7 +73,6 @@ case class RNA(tuning: Tuning, rules: RNARules) extends TuningMaths {
     val res = transition(queue, Seq())
 
     res.foreach { graph =>
-      import nl.roelofruis.artamus.tuning.Printer._ // TODO: remove
       println("> ")
       graph.stateList.map {
         case EndState(weight) => s"END [$weight]"
@@ -109,9 +108,9 @@ case class RNA(tuning: Tuning, rules: RNARules) extends TuningMaths {
           weight
         )
       )
-        .filter(state => allowedDegrees(transition.degree)(state.degreePitch))
       else None
     }
+      .filter(state => allowedDegrees(transition.degree)(state.degreePitch))
   }
 
   private def allowedIntervals(filter: AllowedKeyInterval): PitchDescriptor => Boolean = descriptor => {
