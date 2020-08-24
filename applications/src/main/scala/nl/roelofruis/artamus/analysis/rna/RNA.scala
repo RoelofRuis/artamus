@@ -12,6 +12,7 @@ case class RNA(tuning: Tuning, rules: RNARules) extends TuningMaths {
   private sealed trait StateType { val weight: Int }
   private final case class EndState(weight: Int) extends StateType
   private final case class State(
+    chord: Chord,
     degreePitch: PitchDescriptor,
     keyInterval: PitchDescriptor,
     key: Key,
@@ -35,7 +36,7 @@ case class RNA(tuning: Tuning, rules: RNARules) extends TuningMaths {
     @tailrec
     def transition(queue: mutable.PriorityQueue[Graph], results: Seq[Graph]): Seq[Graph] = {
       if (results.size >= resultsRequired) {
-        println("Search terminated")
+        println(s"Search terminated with [${results.size}] results")
         results
       } else if (queue.isEmpty) {
         println("Search exhausted")
@@ -43,37 +44,47 @@ case class RNA(tuning: Tuning, rules: RNARules) extends TuningMaths {
       } else {
         val graph = queue.dequeue()
         graph.nodeList match {
-          case Nil => results
+          case Nil =>
+            val completedGraphs = findApplicableTransitions(graph.stateList.headOption, ending = true)
+              .flatMap {
+                case TransitionEnd(_, weight) => Seq(EndState(weight))
+                case _ => Seq()
+              }
+              .map(state => Graph(Nil, graph.stateList :+ state))
+
+            println(s"Found ${completedGraphs.size} completed graphs")
+            transition(queue, results ++ completedGraphs)
+
           case chord :: tail =>
-            val newGraphs = findApplicableTransitions(graph.stateList.headOption, tail.isEmpty)
+            val newGraphs = findApplicableTransitions(graph.stateList.headOption, ending = false)
               .flatMap {
                 case TransitionStart(nextState, weight) => findNextStates(chord, nextState, root, weight)
                 case Transition(_, nextState, weight) => findNextStates(chord, nextState, root, weight)
-                case TransitionEnd(_, weight) => Seq(EndState(weight))
+                case _ => Seq()
               }
               .map(state => Graph(tail, graph.stateList :+ state))
 
-            val completedGraphs = newGraphs.filter(_.stateList.lastOption.collect { case s: EndState => s }.isDefined)
-            val newExpansions = newGraphs.filter(_.stateList.lastOption.collect { case s: State => s }.isDefined )
-
-            println(s"Found ${completedGraphs.size} completed graphs")
-            println(s"Found ${newExpansions.size} expansions")
-            newExpansions.foreach(graph => queue.enqueue(graph))
-            transition(queue, results ++ completedGraphs)
+            println(s"Found ${newGraphs.size} expansions")
+            newGraphs.foreach(graph => queue.enqueue(graph))
+            transition(queue, results)
         }
       }
     }
 
     val res = transition(queue, Seq())
 
-    println(res.size)
-
-    import nl.roelofruis.artamus.tuning.Printer._ // TODO: remove
-    res.head.stateList.map {
-      case EndState(_) => "END"
-      case State(degreePitch, keyInterval, key, _) =>
-        s"${tuning.printDegreeDescriptor(degreePitch)} in ${tuning.printKey(key)} (${tuning.printIntervalDescriptor(keyInterval)})"
-    }.foreach(println)
+    res.foreach { graph =>
+      import nl.roelofruis.artamus.tuning.Printer._ // TODO: remove
+      graph.stateList.map {
+        case EndState(_) => "END"
+        case State(chord, degreePitch, keyInterval, key, _) =>
+          val textChord = tuning.printChord(chord)
+          val textDegree = tuning.printDegreeDescriptor(degreePitch)
+          val textKey = tuning.printKey(key)
+          val textKeyInterval = tuning.printIntervalDescriptor(keyInterval)
+          s"$textChord: $textDegree in $textKey ($textKeyInterval)"
+      }.foreach(println)
+    }
 
     Seq()
   }
@@ -92,6 +103,7 @@ case class RNA(tuning: Tuning, rules: RNARules) extends TuningMaths {
     allowedKeys.flatMap { key =>
       if (key.contains(chord)) Some(
         State(
+          chord,
           chord.root - key.root,
           key.root - root,
           key,
@@ -116,12 +128,12 @@ case class RNA(tuning: Tuning, rules: RNARules) extends TuningMaths {
     }
   }
 
-  private def findApplicableTransitions(currentState: Option[StateType], toEnd: Boolean): List[TransitionType] = {
+  private def findApplicableTransitions(currentState: Option[StateType], ending: Boolean): List[TransitionType] = {
     currentState match {
       case None =>
         rules.transitions.collect { case s: TransitionStart => s }
       case Some(state: State) =>
-        if (toEnd) {
+        if (ending) {
           rules
             .transitions
             .collect { case s: TransitionEnd => s }
