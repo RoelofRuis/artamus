@@ -35,6 +35,7 @@ case class RNA(tuning: Tuning, rules: RNARules) extends TuningMaths {
     val (successes, failures) = graphSearch(chords, root, 1, true)
 
     printGraphs(successes.dequeueAll)
+    println("Failures")
     printGraphs(failures.dequeueAll)
 
     def printGraphs(graphs: Seq[Graph]): Unit = {
@@ -70,10 +71,10 @@ case class RNA(tuning: Tuning, rules: RNARules) extends TuningMaths {
     def search: (mutable.PriorityQueue[Graph], mutable.PriorityQueue[Graph]) = {
       if (successes.size >= resultsRequired) {
         println(s"Search terminated with [${successes.size}] results")
-        (failures, successes)
+        (successes, failures)
       } else if (inputStates.isEmpty) {
         println("Search exhausted")
-        (failures, successes)
+        (successes, failures)
       } else {
         val graph = inputStates.dequeue()
         graph.nodeList match {
