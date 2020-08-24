@@ -7,7 +7,7 @@ trait TuningMaths {
 
   def numSteps: Int = tuning.pitchClassSequence.size
 
-  def allPitchDescriptors: Seq[PitchDescriptor] = tuning
+  def getAllPitchDescriptors: Seq[PitchDescriptor] = tuning
     .pitchClassSequence
     .zipWithIndex
     .flatMap { case (pitchClass, step) =>

@@ -5,7 +5,7 @@ import nl.roelofruis.artamus.degree.Model.{PitchDescriptor, Scale}
 object Model {
 
   final case class RNARules(
-    transitions: List[Transition]
+    transitions: List[TransitionType]
   )
 
   sealed trait AllowedDegree
@@ -20,19 +20,27 @@ object Model {
   final case object AnyScale extends AllowedScale
   final case class SpecificScale(scale: Scale) extends AllowedScale
 
-  sealed trait TransitionRule
-  final case object TransitionStart extends TransitionRule
-  final case object TransitionEnd extends TransitionRule
   final case class TransitionDescription(
     degree: AllowedDegree,
     keyInterval: AllowedKeyInterval,
     scale: AllowedScale
-  ) extends TransitionRule
+  )
+
+  sealed trait TransitionType
+  final case class TransitionStart(
+    nextState: TransitionDescription,
+    weight: Int
+  ) extends TransitionType
 
   final case class Transition(
-    previousState: TransitionRule,
-    currentState: TransitionRule,
+    currentState: TransitionDescription,
+    nextState: TransitionDescription,
     weight: Int
-  )
+  ) extends TransitionType
+
+  final case class TransitionEnd(
+    currentState: TransitionDescription,
+    weight: Int
+  ) extends TransitionType
 
 }

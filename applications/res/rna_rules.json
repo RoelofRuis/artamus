@@ -3,9 +3,23 @@
     {
       "name": "start",
       "description": "Start with any degree",
-      "premise": "S",
+      "premise": "START",
       "transition": "_:_:_",
       "weight": 0
+    },
+    {
+      "name": "anything will go",
+      "description": "Just for testing",
+      "premise": "_:_:_",
+      "transition": "_:_:_",
+      "weight": 1
+    },
+    {
+      "name": "end",
+      "description": "End with any degree",
+      "premise": "_:_:_",
+      "transition": "END",
+      "weight": 1
     }
   ]
 }
