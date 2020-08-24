@@ -96,7 +96,7 @@ case class RNA(tuning: Tuning, rules: RNARules) extends TuningMaths {
     weight: Int
   ): Seq[State] = {
     val allowedKeys = for {
-      keyRoot <- getAllPitchDescriptors.map(_ + root).filter(allowedIntervals(transition.keyInterval))
+      keyRoot <- getAllPitchDescriptors.filter(allowedIntervals(transition.keyInterval)).map(_ + root)
       scale <- tuning.scaleMap.values.filter(allowedScales(transition.scale))
     } yield Key(keyRoot, scale)
 
