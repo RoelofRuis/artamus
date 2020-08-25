@@ -105,7 +105,14 @@ case class RNA(tuning: Tuning, rules: RNARules) extends TuningMaths {
       .map { transition =>
         State(possibleNext.chord, possibleNext.degree, possibleNext.key, transition.weight + keyChangePenalty)
       }
-    if (newStates.isEmpty) Seq(State(possibleNext.chord, possibleNext.degree, possibleNext.key, rules.penalties.unknownTransition))
+    if (newStates.isEmpty) {
+      Seq(State(
+        possibleNext.chord,
+        possibleNext.degree,
+        possibleNext.key,
+        rules.penalties.unknownTransition + keyChangePenalty
+      ))
+    }
     else newStates
   }
 
