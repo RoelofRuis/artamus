@@ -42,10 +42,6 @@ object RNALoader {
         parseRule(textTransition.transition),
         textTransition.weight
       )
-      else if (textTransition.transition == "END") TransitionEnd(
-        parseRule(textTransition.premise),
-        textTransition.weight
-      )
       else Transition(
         parseRule(textTransition.premise),
         parseRule(textTransition.transition),

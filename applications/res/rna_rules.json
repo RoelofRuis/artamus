@@ -7,46 +7,9 @@
       "weight": 0
     },
     {
-      "name": "",
-      "premise": "II:x:x",
-      "transition": "V:x:x",
-      "weight": 5
-    },
-    {
-      "name": "",
-      "premise": "II:x:minor",
-      "transition": "V:x:harmonic minor",
-      "weight": 5
-    },
-    {
-      "name": "",
-      "premise": "V:x:x",
-      "transition": "I:x:x",
-      "weight": 10
-    },
-    {
-      "name": "",
-      "premise": "I:x:x",
-      "transition": "IV:x:x",
-      "weight": 2
-    },
-    {
-      "name": "",
-      "premise": "I:x:minor",
-      "transition": "I:x:major",
-      "weight": 2
-    },
-    {
-      "name": "",
+      "name": "any",
       "premise": "_:_:_",
       "transition": "_:_:_",
-      "weight": -5
-    },
-    {
-      "name": "end",
-      "description": "End with any degree",
-      "premise": "I:_:_",
-      "transition": "END",
       "weight": 0
     }
   ]

@@ -11,20 +11,18 @@ case class RNA(tuning: Tuning, rules: RNARules) extends TuningMaths {
 
   import nl.roelofruis.artamus.tuning.Printer._ // TODO: remove
 
-  private sealed trait StateType { val weight: Int }
-  private final case class EndState(weight: Int) extends StateType
   private final case class State(
     chord: Chord,
     keyInterval: PitchDescriptor,
     key: Key,
     weight: Int
-  ) extends StateType {
+  ) {
     def degreePitch: PitchDescriptor = chord.root - key.root
   }
 
   private final case class Graph(
     nodeList: List[Chord],
-    stateList: Seq[StateType]
+    stateList: Seq[State]
   ) extends Ordered[Graph] {
     val score: Int = stateList.foldRight(0) { case (state, sum) => sum + state.weight}
     override def compare(that: Graph): Int = score.compareTo(that.score)
@@ -42,7 +40,6 @@ case class RNA(tuning: Tuning, rules: RNARules) extends TuningMaths {
       graphs.foreach { graph =>
         println("> ")
         graph.stateList.map {
-          case EndState(weight) => s"END [$weight]"
           case s @ State(chord, keyInterval, key, weight) =>
             val textChord = tuning.printChord(chord)
             val textDegree = tuning.printDegreeDescriptor(s.degreePitch)
@@ -63,7 +60,7 @@ case class RNA(tuning: Tuning, rules: RNARules) extends TuningMaths {
     includeFailures: Boolean
   ): (mutable.PriorityQueue[Graph], mutable.PriorityQueue[Graph]) = {
     val inputStates = new mutable.PriorityQueue[Graph]()
-    inputStates.enqueue(Graph(chords.toList, Seq()))
+    inputStates.enqueue(Graph(chords.reverse.toList, Seq()))
     val failures = new mutable.PriorityQueue[Graph]()
     val successes = new mutable.PriorityQueue[Graph]()
 
@@ -77,28 +74,20 @@ case class RNA(tuning: Tuning, rules: RNARules) extends TuningMaths {
         (successes, failures)
       } else {
         val graph = inputStates.dequeue()
-        val currentState = graph.stateList.lastOption.collect { case s: State => s }
+        val currentState = graph.stateList.headOption
         graph.nodeList match {
           case Nil =>
-            val completedGraphs = findApplicableTransitions(currentState, ending = true)
-              .flatMap {
-                case TransitionEnd(_, weight) => Seq(EndState(weight))
-                case _ => Seq()
-              }
-              .map(state => Graph(Nil, graph.stateList :+ state))
-
-            if (completedGraphs.isEmpty && includeFailures) failures.enqueue(graph)
-            else successes.enqueue(completedGraphs: _*)
+            successes.enqueue(graph)
             search
 
           case chord :: tail =>
-            val newGraphs = findApplicableTransitions(currentState, ending = false)
+            val newGraphs = findApplicableTransitions(currentState)
               .flatMap {
                 case TransitionStart(nextState, weight) => findNextStates(chord, currentState, nextState, root, weight)
                 case Transition(_, nextState, weight) => findNextStates(chord, currentState, nextState, root, weight)
                 case _ => Seq()
               }
-              .map(state => Graph(tail, graph.stateList :+ state))
+              .map(state => Graph(tail, state +: graph.stateList))
 
             if (newGraphs.isEmpty && includeFailures) failures.enqueue(graph)
             else newGraphs.foreach(g => inputStates.enqueue(g))
@@ -159,21 +148,14 @@ case class RNA(tuning: Tuning, rules: RNARules) extends TuningMaths {
     }
   }
 
-  private def findApplicableTransitions(currentState: Option[State], ending: Boolean): List[TransitionType] = {
+  private def findApplicableTransitions(currentState: Option[State]): List[TransitionType] = {
     currentState match {
       case None => rules.transitions.collect { case s: TransitionStart => s }
       case Some(state: State) =>
-        if ( ! ending) {
-          rules
-            .transitions
-            .collect { case s: Transition => s }
-            .filter(s => allowedCurrentState(s.currentState, state))
-        } else {
-          rules
-            .transitions
-            .collect { case s: TransitionEnd => s }
-            .filter(s => allowedCurrentState(s.currentState, state))
-        }
+        rules
+          .transitions
+          .collect { case s: Transition => s }
+          .filter(s => allowedCurrentState(s.currentState, state))
     }
   }
 

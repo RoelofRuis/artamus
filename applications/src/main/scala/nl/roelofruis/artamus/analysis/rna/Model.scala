@@ -40,9 +40,4 @@ object Model {
     weight: Int
   ) extends TransitionType
 
-  final case class TransitionEnd(
-    currentState: TransitionDescription,
-    weight: Int
-  ) extends TransitionType
-
 }

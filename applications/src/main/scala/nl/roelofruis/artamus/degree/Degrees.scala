@@ -14,14 +14,14 @@ object Degrees extends App {
   val tuning = TuningLoader.loadTuning
   val rnaRules = RNALoader.loadRNA(tuning)
 
-  val file = "autumn_leaves" // StdIn.readLine("Input file\n > ")
+  val file = "my_romance" // StdIn.readLine("Input file\n > ")
 
   val chords = read(s"applications/res/${file}.txt")
 
   val rna = RNA(tuning, rnaRules)
   val chordInput: Array[Chord] = parseArray(tuning.parseChord).run(chords).value
   println(chords)
-  val root: PitchDescriptor = tuning.parsePitchDescriptor.run("G").value // StdIn.readLine("Input root\n > ")).value
+  val root: PitchDescriptor = tuning.parsePitchDescriptor.run("C").value // StdIn.readLine("Input root\n > ")).value
   val degrees = rna.nameDegrees(chordInput, root)
 
   print(tuning.printDegrees(degrees))
