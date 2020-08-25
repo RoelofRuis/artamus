@@ -15,30 +15,38 @@
     },
     {
       "quality": "m7",
-      "options": ["1:minor:Im7", "2:major:IIm7", "3:major:IIIm7", "6:major:VIm7"]
+      "options": ["1:minor:Im7", "2:major:IIm7", "3:major:IIIm7", "4:major:IVm7", "6:major:VIm7"]
     },
     {
       "quality": "m7b5",
       "options": ["2:minor:IIm7b5"]
     },
     {
-      "quality": "dim",
-      "options": ["7:major:VIIdim"]
+      "quality": "dim7",
+      "options": ["7:major:VIIdim7", "b3:major:bIIIdim7"]
     },
     {
       "quality": "+7",
-      "options": ["5:major:V7"]
+      "options": ["5:major:V7", "5:minor:V7", "3:minor:V7/VI"]
     }
   ],
   "transitions": [
-    {"from": "IM7", "to": "VIm7", "weight": 1},
+    {"from": "IM7", "to": "IIm7", "weight": 1},
+    {"from": "IM7", "to": "IIIm7", "weight": 1},
     {"from": "IM7", "to": "IVM7", "weight": 1},
+    {"from": "IM7", "to": "V7", "weight": 1},
+    {"from": "IM7", "to": "VIm7", "weight": 1},
     {"from": "IIm7", "to": "V7", "weight": 3},
     {"from": "IIm7b5", "to": "V7", "weight": 3},
+    {"from": "bIIIdim7", "to": "IIm7", "weight": 2},
+    {"from": "IVM7", "to": "IVm7", "weight": 1},
     {"from": "VIm7", "to": "IIm7", "weight": 1},
     {"from": "V7", "to": "IM7", "weight": 5},
     {"from": "V7", "to": "Im7", "weight": 5},
-    {"from": "V7/V", "to": "V7", "weight": 1},
-    {"from": "V7/II", "to": "IIm7", "weight": 1}
+    {"from": "V7/II", "to": "IIm7", "weight": 8},
+    {"from": "V7/III", "to": "IIIm7", "weight": 8},
+    {"from": "V7/IV", "to": "IVM7", "weight": 8},
+    {"from": "V7/V", "to": "V7", "weight": 8},
+    {"from": "V7/VI", "to": "VIm7", "weight": 8}
   ]
 }
