@@ -5,10 +5,15 @@ import nl.roelofruis.artamus.degree.Model.{Degree, PitchDescriptor, Quality, Sca
 object Model {
 
   final case class RNARules(
-    keyChangePenalty: Int,
     numResultsRequired: Int,
+    penalties: RNAPenalties,
     functions: List[RNAFunction],
     transitions: List[RNATransition]
+  )
+
+  final case class RNAPenalties(
+    keyChange: Int,
+    unknownTransition: Int
   )
 
   final case class RNATransition(

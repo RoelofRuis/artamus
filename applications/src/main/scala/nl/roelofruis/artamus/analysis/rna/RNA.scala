@@ -97,18 +97,15 @@ case class RNA(tuning: Tuning, rules: RNARules) extends TuningMaths {
   }
 
   private def findTransitions(currentState: State, possibleNext: DegreeHypothesis): Seq[State] = {
-    if (currentState.key != possibleNext.key) {
-      Seq(State(possibleNext.chord, possibleNext.degree, possibleNext.key, rules.keyChangePenalty))
-    } else {
-      rules
-        .transitions
-        .flatMap { transition =>
-          val isWeighted = transition.from == currentState.degree && transition.to == possibleNext.degree
-          if (! isWeighted) None
-          else Some(State(possibleNext.chord, possibleNext.degree, possibleNext.key, transition.weight))
-        }
-    }
-
+    val keyChangePenalty = if (currentState.key != possibleNext.key) rules.penalties.keyChange else 0
+    val newStates = rules
+      .transitions
+      .filter(transition => transition.from == currentState.degree && transition.to == possibleNext.degree)
+      .map { transition =>
+        State(possibleNext.chord, possibleNext.degree, possibleNext.key, transition.weight + keyChangePenalty)
+      }
+    if (newStates.isEmpty) Seq(State(possibleNext.chord, possibleNext.degree, possibleNext.key, rules.penalties.unknownTransition))
+    else newStates
   }
 
   def findPossibleDegrees(chord: Chord): List[DegreeHypothesis] = {

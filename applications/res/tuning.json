@@ -10,7 +10,7 @@
   "textQualities": [
     {
       "name": "major",
-      "symbol": "",
+      "symbol": "M",
       "intervals": "1 3 5"
     },
     {

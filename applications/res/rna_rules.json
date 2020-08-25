@@ -1,6 +1,9 @@
 {
   "numResultsRequired": 1,
-  "keyChangePenalty": -10,
+  "penalties": {
+    "keyChange": -10,
+    "unknownTransition": -100
+  },
   "functions": [
     {
       "quality": "M7",
@@ -21,6 +24,10 @@
     {
       "quality": "dim",
       "options": ["7:major:VIIdim"]
+    },
+    {
+      "quality": "+7",
+      "options": ["5:major:V7"]
     }
   ],
   "transitions": [
