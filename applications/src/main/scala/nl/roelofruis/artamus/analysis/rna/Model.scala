@@ -6,6 +6,7 @@ object Model {
 
   final case class RNARules(
     keyChangePenalty: Int,
+    numResultsRequired: Int,
     functions: List[RNAFunction],
     transitions: List[RNATransition]
   )

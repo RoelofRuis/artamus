@@ -34,7 +34,7 @@ case class RNA(tuning: Tuning, rules: RNARules) extends TuningMaths {
 
   def nameDegrees(chords: Seq[Chord]): Seq[Degree] = {
 
-    val successes= graphSearch(chords, 1)
+    val successes = graphSearch(chords)
 
     printGraphs(successes.dequeueAll)
 
@@ -54,17 +54,14 @@ case class RNA(tuning: Tuning, rules: RNARules) extends TuningMaths {
     Seq()
   }
 
-  private def graphSearch(
-    chords: Seq[Chord],
-    resultsRequired: Int
-  ): mutable.PriorityQueue[Graph] = {
+  private def graphSearch(chords: Seq[Chord]): mutable.PriorityQueue[Graph] = {
     val inputStates = new mutable.PriorityQueue[Graph]()
     inputStates.enqueue(Graph(chords.toList, Seq()))
     val successes = new mutable.PriorityQueue[Graph]()
 
     @tailrec
     def search: mutable.PriorityQueue[Graph] = {
-      if (successes.size >= resultsRequired) {
+      if (successes.size >= rules.numResultsRequired) {
         println(s"Search terminated with [${successes.size}] results")
         successes
       } else if (inputStates.isEmpty) {

@@ -38,6 +38,7 @@ object RNALoader {
 
     RNARules(
       textRules.keyChangePenalty,
+      textRules.numResultsRequired,
       functions,
       transitions
     )
@@ -46,12 +47,13 @@ object RNALoader {
   private object FileModel extends DefaultJsonProtocol {
     final case class TextRNARules(
       keyChangePenalty: Int,
+      numResultsRequired: Int,
       functions: List[TextRNAFunction],
       transitions: List[TextRNATransition]
     )
 
     object TextRNARules {
-      implicit val rnaRulesFormat: JsonFormat[TextRNARules] = jsonFormat3(TextRNARules.apply)
+      implicit val rnaRulesFormat: JsonFormat[TextRNARules] = jsonFormat4(TextRNARules.apply)
     }
 
     final case class TextRNAFunction(
