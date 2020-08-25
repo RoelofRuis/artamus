@@ -69,11 +69,12 @@ case class RNA(tuning: Tuning, rules: RNARules) extends TuningMaths {
         successes
       } else {
         val graph = inputStates.dequeue()
-
         graph.nodeList match {
           case Nil => successes.enqueue(graph)
           case chord :: tail =>
             val hypotheses = findPossibleDegrees(chord)
+
+            if (hypotheses.isEmpty) println(s"WARNING: EMPTY HYPOTHESIS @ $chord")
 
             graph.stateList.lastOption match {
               case None => hypotheses.foreach { hypothesis =>
