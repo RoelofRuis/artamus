@@ -10,7 +10,7 @@ object TuningLoader {
   import Parser._
 
   def loadTuning: Tuning = {
-    val textTuning = File.load[TextTuning]("applications/res/tuning.json").get // TODO: remove get
+    val textTuning = File.load[TextTuning]("applications/data/tuning.json").get // TODO: remove get
 
     val symbolQualityMap = textTuning.textQualities.map { quality =>
       val parsed = parseArray(textTuning.parseInterval).run(quality.intervals).value

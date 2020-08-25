@@ -16,7 +16,7 @@ object Degrees extends App {
 
   val file = StdIn.readLine("Input file\n > ")
 
-  val chords = read(s"applications/res/${file}.txt")
+  val chords = read(s"applications/charts/${file}.txt")
 
   val rna = RNA(tuning, rnaRules)
   val chordInput: Array[Chord] = parseArray(tuning.parseChord).run(chords).value

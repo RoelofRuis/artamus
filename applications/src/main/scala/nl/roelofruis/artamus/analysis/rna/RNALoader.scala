@@ -19,7 +19,7 @@ object RNALoader {
       )
     }
 
-    val textRules = File.load[TextRNARules]("applications/res/rna_rules.json").get // TODO: remove get
+    val textRules = File.load[TextRNARules]("applications/data/rna_rules.json").get // TODO: remove get
 
     val functions = textRules.functions.map { textFunction =>
       RNAFunction(
