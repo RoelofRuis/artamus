@@ -1,8 +1,8 @@
 {
   "numResultsRequired": 1,
   "penalties": {
-    "keyChange": -10,
-    "unknownTransition": -100
+    "keyChange": -5,
+    "unknownTransition": -10
   },
   "functions": [
     {
