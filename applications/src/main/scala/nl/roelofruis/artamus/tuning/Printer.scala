@@ -11,7 +11,13 @@ object Printer {
 
     def printDegrees(degrees: Seq[Degree]): String = degrees.map(printDegree).mkString(" ")
 
-    def printDegree(degree: Degree): String = printDegreeDescriptor(degree.root) + printQuality(degree.quality)
+    def printDegree(degree: Degree): String = {
+      val descriptor = printDegreeDescriptor(degree.root) + printQuality(degree.quality)
+      degree.relativeTo match {
+        case None => descriptor
+        case Some(relative) => descriptor + "/" + printDegreeDescriptor(relative)
+      }
+    }
 
     def printQuality(quality: Quality): String = tuning.qualityMap.map(_.swap).getOrElse(quality, "?")
 

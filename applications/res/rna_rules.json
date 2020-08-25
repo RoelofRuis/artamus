@@ -1,16 +1,53 @@
 {
-  "transitions": [
+  "keyChangePenalty": -10,
+  "functions": [
     {
-      "name": "start",
-      "premise": "START",
-      "transition": "_:_:_",
-      "weight": 0
+      "quality": "M7",
+      "options": ["1:major:IM7", "4:major:IVM7"]
     },
     {
-      "name": "any",
-      "premise": "_:_:_",
-      "transition": "_:_:_",
-      "weight": 0
+      "quality": "7",
+      "options": ["5:major:V7", "5:minor:V7", "6:major:V7/II", "2:major:V7/V"]
+    },
+    {
+      "quality": "m7",
+      "options": ["2:major:IIm7", "6:major:VIm7"]
+    },
+    {
+      "quality": "m7b5",
+      "options": ["2:minor:IIm7b5"]
+    }
+  ],
+  "transitions": [
+    {
+      "from": "V7/II",
+      "to": "IIm7",
+      "weight": 1
+    },
+    {
+      "from": "IM7",
+      "to": "VIm7",
+      "weight": 1
+    },
+    {
+      "from": "VIm7",
+      "to": "IIm7",
+      "weight": 1
+    },
+    {
+      "from": "IIm7",
+      "to": "V7",
+      "weight": 1
+    },
+    {
+      "from": "IIm7b5",
+      "to": "V7",
+      "weight": 1
+    },
+    {
+      "from": "V7",
+      "to": "IM7",
+      "weight": 1
     }
   ]
 }

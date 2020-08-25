@@ -11,14 +11,18 @@ case class RNA(tuning: Tuning, rules: RNARules) extends TuningMaths {
 
   import nl.roelofruis.artamus.tuning.Printer._ // TODO: remove
 
+  final case class DegreeHypothesis(
+    chord: Chord,
+    degree: Degree,
+    key: Key
+  )
+
   private final case class State(
     chord: Chord,
-    keyInterval: PitchDescriptor,
+    degree: Degree,
     key: Key,
     weight: Int
-  ) {
-    def degreePitch: PitchDescriptor = chord.root - key.root
-  }
+  )
 
   private final case class Graph(
     nodeList: List[Chord],
@@ -28,24 +32,21 @@ case class RNA(tuning: Tuning, rules: RNARules) extends TuningMaths {
     override def compare(that: Graph): Int = score.compareTo(that.score)
   }
 
-  def nameDegrees(chords: Seq[Chord], root: PitchDescriptor): Seq[Degree] = {
+  def nameDegrees(chords: Seq[Chord]): Seq[Degree] = {
 
-    val (successes, failures) = graphSearch(chords, root, 1, true)
+    val successes= graphSearch(chords, 1)
 
     printGraphs(successes.dequeueAll)
-    println("Failures")
-    printGraphs(failures.dequeueAll)
 
     def printGraphs(graphs: Seq[Graph]): Unit = {
       graphs.foreach { graph =>
         println("> ")
         graph.stateList.map {
-          case s @ State(chord, keyInterval, key, weight) =>
+          case State(chord, degree, key, weight) =>
             val textChord = tuning.printChord(chord)
-            val textDegree = tuning.printDegreeDescriptor(s.degreePitch)
+            val textDegree = tuning.printDegree(degree)
             val textKey = tuning.printKey(key)
-            val textKeyInterval = tuning.printIntervalDescriptor(keyInterval)
-            s"$textChord: $textDegree in $textKey ($textKeyInterval) [$weight]"
+            s"$textChord: $textDegree in $textKey [$weight]"
         }.foreach(println)
       }
     }
@@ -55,126 +56,78 @@ case class RNA(tuning: Tuning, rules: RNARules) extends TuningMaths {
 
   private def graphSearch(
     chords: Seq[Chord],
-    root: PitchDescriptor,
-    resultsRequired: Int,
-    includeFailures: Boolean
-  ): (mutable.PriorityQueue[Graph], mutable.PriorityQueue[Graph]) = {
+    resultsRequired: Int
+  ): mutable.PriorityQueue[Graph] = {
     val inputStates = new mutable.PriorityQueue[Graph]()
-    inputStates.enqueue(Graph(chords.reverse.toList, Seq()))
-    val failures = new mutable.PriorityQueue[Graph]()
+    inputStates.enqueue(Graph(chords.toList, Seq()))
     val successes = new mutable.PriorityQueue[Graph]()
 
     @tailrec
-    def search: (mutable.PriorityQueue[Graph], mutable.PriorityQueue[Graph]) = {
+    def search: mutable.PriorityQueue[Graph] = {
       if (successes.size >= resultsRequired) {
         println(s"Search terminated with [${successes.size}] results")
-        (successes, failures)
+        successes
       } else if (inputStates.isEmpty) {
         println("Search exhausted")
-        (successes, failures)
+        successes
       } else {
         val graph = inputStates.dequeue()
-        val currentState = graph.stateList.headOption
+
         graph.nodeList match {
-          case Nil =>
-            successes.enqueue(graph)
-            search
-
+          case Nil => successes.enqueue(graph)
           case chord :: tail =>
-            val newGraphs = findApplicableTransitions(currentState)
-              .flatMap {
-                case TransitionStart(nextState, weight) => findNextStates(chord, currentState, nextState, root, weight)
-                case Transition(_, nextState, weight) => findNextStates(chord, currentState, nextState, root, weight)
-                case _ => Seq()
-              }
-              .map(state => Graph(tail, state +: graph.stateList))
+            val hypotheses = findPossibleDegrees(chord)
 
-            if (newGraphs.isEmpty && includeFailures) failures.enqueue(graph)
-            else newGraphs.foreach(g => inputStates.enqueue(g))
-            search
+            graph.stateList.lastOption match {
+              case None => hypotheses.foreach { hypothesis =>
+                  inputStates.enqueue(
+                    Graph(
+                      tail,
+                      Seq(State(hypothesis.chord, hypothesis.degree, hypothesis.key, 0))
+                    ))
+                }
+              case Some(currentState) =>
+                hypotheses
+                  .flatMap(hyp => findTransitions(currentState, hyp))
+                  .foreach { state => inputStates.enqueue(Graph(tail, graph.stateList :+ state)) }
+            }
         }
+        search
       }
     }
 
     search
   }
 
-  private def findNextStates(
-    chord: Chord,
-    currentState: Option[State],
-    transition: TransitionDescription,
-    root: PitchDescriptor,
-    weight: Int
-  ): Seq[State] = {
-    val allowedKeys = for {
-      keyRoot <- getAllPitchDescriptors.filter(allowedIntervals(transition.keyInterval, currentState)).map(_ + root)
-      scale <- tuning.scaleMap.values.filter(allowedScales(transition.scale, currentState))
-    } yield Key(keyRoot, scale)
-
-    allowedKeys.flatMap { key =>
-      if (key.contains(chord)) Some(
-        State(
-          chord,
-          key.root - root,
-          key,
-          weight
-        )
-      )
-      else None
+  private def findTransitions(currentState: State, possibleNext: DegreeHypothesis): Seq[State] = {
+    if (currentState.key != possibleNext.key) {
+      Seq(State(possibleNext.chord, possibleNext.degree, possibleNext.key, rules.keyChangePenalty))
+    } else {
+      rules
+        .transitions
+        .flatMap { transition =>
+          val isWeighted = transition.from == currentState.degree && transition.to == possibleNext.degree
+          if (! isWeighted) None
+          else Some(State(possibleNext.chord, possibleNext.degree, possibleNext.key, transition.weight))
+        }
     }
-      .filter(state => allowedDegrees(transition.degree)(state.degreePitch))
+
   }
 
-  private def allowedIntervals(filter: AllowedKeyInterval, currentState: Option[State]): PitchDescriptor => Boolean = descriptor => {
-    filter match {
-      case AnyKeyInterval => true
-      case SameKeyInterval => currentState.map(_.keyInterval).contains(descriptor)
-      case SpecificKeyInterval(filterDescriptor) => filterDescriptor == descriptor
-    }
-  }
-
-  private def allowedScales(filter: AllowedScale, currentState: Option[State]): Scale => Boolean = scale => {
-    filter match {
-      case AnyScale => true
-      case SameScale => currentState.map(_.key.scale).contains(scale)
-      case SpecificScale(filterScale) => filterScale == scale
-    }
-  }
-
-  private def allowedDegrees(filter: AllowedDegree): PitchDescriptor => Boolean = descriptor => {
-    filter match {
-      case AnyDegree => true
-      case SpecificDegree(filterDegree) => filterDegree == descriptor
-    }
-  }
-
-  private def findApplicableTransitions(currentState: Option[State]): List[TransitionType] = {
-    currentState match {
-      case None => rules.transitions.collect { case s: TransitionStart => s }
-      case Some(state: State) =>
-        rules
-          .transitions
-          .collect { case s: Transition => s }
-          .filter(s => allowedCurrentState(s.currentState, state))
-    }
-  }
-
-  private def allowedCurrentState(transition: TransitionDescription, state: State): Boolean = {
-    val validDegree = transition.degree match {
-      case AnyDegree => true
-      case SpecificDegree(degree) => state.degreePitch == degree
-    }
-    val validKeyInterval = transition.keyInterval match {
-      case AnyKeyInterval => true
-      case SameKeyInterval => true
-      case SpecificKeyInterval(interval) => state.keyInterval == interval
-    }
-    val validScale = transition.scale match {
-      case AnyScale => true
-      case SameScale => true
-      case SpecificScale(scale) => state.key.scale == scale
-    }
-    validDegree && validKeyInterval && validScale
+  def findPossibleDegrees(chord: Chord): List[DegreeHypothesis] = {
+    rules
+      .functions
+      .filter(_.quality == chord.quality)
+      .flatMap { function =>
+        function.options.map { option =>
+          val degreeRoot =  chord.root - option.keyInterval
+          DegreeHypothesis(
+            chord,
+            option.explainedAs,
+            Key(degreeRoot, option.scale)
+          )
+        }
+      }
   }
 
 }

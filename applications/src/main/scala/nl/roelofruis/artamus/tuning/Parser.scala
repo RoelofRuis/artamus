@@ -70,11 +70,18 @@ object Parser {
       ("", quality)
     }
 
-    def parseDegree: State[String, Degree] = {
-      for {
+    def parseDegree: State[String, Degree] = State { s =>
+      val parts = s.split("/")
+      val firstPart = for {
         descriptor <- parseDegreeDescriptor
         quality <- parseQuality
-      } yield Degree(descriptor, quality)
+      } yield (descriptor, quality)
+
+      val (descriptor, quality) = firstPart.run(parts(0)).value
+      val relativeTo = if (parts.size == 2) {
+        Some(parseDegreeDescriptor.run(parts(1)).value)
+      } else None
+      ("", Degree(descriptor, quality, relativeTo))
     }
 
     def parseChord: State[String, Chord] = {

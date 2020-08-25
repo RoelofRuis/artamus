@@ -1,6 +1,6 @@
 package nl.roelofruis.artamus.degree
 
-import nl.roelofruis.artamus.degree.Model.{Chord, PitchDescriptor}
+import nl.roelofruis.artamus.degree.Model.Chord
 import nl.roelofruis.artamus.analysis.rna.{RNA, RNALoader}
 import nl.roelofruis.artamus.tuning.TuningLoader
 
@@ -14,15 +14,15 @@ object Degrees extends App {
   val tuning = TuningLoader.loadTuning
   val rnaRules = RNALoader.loadRNA(tuning)
 
-  val file = "my_romance" // StdIn.readLine("Input file\n > ")
+  val file = StdIn.readLine("Input file\n > ")
 
   val chords = read(s"applications/res/${file}.txt")
 
   val rna = RNA(tuning, rnaRules)
   val chordInput: Array[Chord] = parseArray(tuning.parseChord).run(chords).value
   println(chords)
-  val root: PitchDescriptor = tuning.parsePitchDescriptor.run("C").value // StdIn.readLine("Input root\n > ")).value
-  val degrees = rna.nameDegrees(chordInput, root)
+
+  val degrees = rna.nameDegrees(chordInput)
 
   print(tuning.printDegrees(degrees))
 

@@ -11,7 +11,8 @@ object Model {
 
   final case class Degree(
     root: PitchDescriptor,
-    quality: Quality
+    quality: Quality,
+    relativeTo: Option[PitchDescriptor] = None
   )
 
   final case class Quality(
