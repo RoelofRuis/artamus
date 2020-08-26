@@ -11,23 +11,20 @@ case class RNA(tuning: Tuning, rules: RNARules) extends TuningMaths {
 
   import nl.roelofruis.artamus.tuning.Printer._ // TODO: remove
 
-  final case class DegreeHypothesis(
+  final case class NodeHypothesis(
     chord: Chord,
     degree: Degree,
     key: Key
   )
 
-  private final case class State(
+  private final case class Node(
     chord: Chord,
     degree: Degree,
     key: Key,
     weight: Int
   )
 
-  private final case class Graph(
-    nodeList: List[Chord],
-    stateList: Seq[State]
-  ) extends Ordered[Graph] {
+  private final case class Graph(stateList: Seq[Node]) extends Ordered[Graph] {
     val score: Int = stateList.foldRight(0) { case (state, sum) => sum + state.weight}
     override def compare(that: Graph): Int = score.compareTo(that.score)
   }
@@ -40,9 +37,9 @@ case class RNA(tuning: Tuning, rules: RNARules) extends TuningMaths {
 
     def printGraphs(graphs: Seq[Graph]): Unit = {
       graphs.foreach { graph =>
-        println("> ")
+        println(s" > Total score [${graph.score}] >")
         graph.stateList.map {
-          case State(chord, degree, key, weight) =>
+          case Node(chord, degree, key, weight) =>
             val textChord = tuning.printChord(chord)
             val textDegree = tuning.printDegree(degree)
             val textKey = tuning.printKey(key)
@@ -56,7 +53,7 @@ case class RNA(tuning: Tuning, rules: RNARules) extends TuningMaths {
 
   private def graphSearch(chords: Seq[Chord]): mutable.PriorityQueue[Graph] = {
     val inputStates = new mutable.PriorityQueue[Graph]()
-    inputStates.enqueue(Graph(chords.toList, Seq()))
+    inputStates.enqueue(Graph(Seq()))
     val successes = new mutable.PriorityQueue[Graph]()
 
     @tailrec
@@ -69,25 +66,23 @@ case class RNA(tuning: Tuning, rules: RNARules) extends TuningMaths {
         successes
       } else {
         val graph = inputStates.dequeue()
-        graph.nodeList match {
-          case Nil => successes.enqueue(graph)
-          case chord :: tail =>
-            val hypotheses = findPossibleDegrees(chord)
+        val graphStateSize = graph.stateList.size
 
-            if (hypotheses.isEmpty) println(s"WARNING: EMPTY HYPOTHESIS @ $chord")
+        chords.lift(graphStateSize) match {
+          case None => successes.enqueue(graph)
+          case Some(nextChord) =>
+            val hypotheses = findPossibleNodes(nextChord)
 
-            graph.stateList.lastOption match {
-              case None => hypotheses.foreach { hypothesis =>
-                  inputStates.enqueue(
-                    Graph(
-                      tail,
-                      Seq(State(hypothesis.chord, hypothesis.degree, hypothesis.key, 0))
-                    ))
-                }
-              case Some(currentState) =>
-                hypotheses
-                  .flatMap(hyp => findTransitions(currentState, hyp))
-                  .foreach { state => inputStates.enqueue(Graph(tail, graph.stateList :+ state)) }
+            if (hypotheses.isEmpty) println(s"WARNING: EMPTY HYPOTHESIS @ $nextChord")
+
+            if (graphStateSize == 0) {
+              hypotheses.foreach { hypothesis =>
+                inputStates.enqueue(Graph(Seq(Node(hypothesis.chord, hypothesis.degree, hypothesis.key, 0))))
+              }
+            } else {
+              hypotheses
+                .flatMap(hyp => findTransitions(graph.stateList.last, hyp))
+                .foreach { state => inputStates.enqueue(Graph(graph.stateList :+ state)) }
             }
         }
         search
@@ -97,16 +92,16 @@ case class RNA(tuning: Tuning, rules: RNARules) extends TuningMaths {
     search
   }
 
-  private def findTransitions(currentState: State, possibleNext: DegreeHypothesis): Seq[State] = {
-    val keyChangePenalty = if (currentState.key != possibleNext.key) rules.penalties.keyChange else 0
+  private def findTransitions(currentNode: Node, possibleNext: NodeHypothesis): Seq[Node] = {
+    val keyChangePenalty = if (currentNode.key != possibleNext.key) rules.penalties.keyChange else 0
     val newStates = rules
       .transitions
-      .filter(transition => transition.from == currentState.degree && transition.to == possibleNext.degree)
+      .filter(transition => transition.from == currentNode.degree && transition.to == possibleNext.degree)
       .map { transition =>
-        State(possibleNext.chord, possibleNext.degree, possibleNext.key, transition.weight + keyChangePenalty)
+        Node(possibleNext.chord, possibleNext.degree, possibleNext.key, transition.weight + keyChangePenalty)
       }
     if (newStates.isEmpty) {
-      Seq(State(
+      Seq(Node(
         possibleNext.chord,
         possibleNext.degree,
         possibleNext.key,
@@ -116,14 +111,14 @@ case class RNA(tuning: Tuning, rules: RNARules) extends TuningMaths {
     else newStates
   }
 
-  def findPossibleDegrees(chord: Chord): List[DegreeHypothesis] = {
+  def findPossibleNodes(chord: Chord): List[NodeHypothesis] = {
     rules
       .functions
       .filter(_.quality == chord.quality)
       .flatMap { function =>
         function.options.map { option =>
           val degreeRoot =  chord.root - option.keyInterval
-          DegreeHypothesis(
+          NodeHypothesis(
             chord,
             option.explainedAs,
             Key(degreeRoot, option.scale)
