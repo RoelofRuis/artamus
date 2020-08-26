@@ -1,0 +1,11 @@
+{
+  "numResultsRequired": 1,
+  "penalties": {
+    "keyChange": -5,
+    "unknownTransition": -10
+  },
+  "rulesFiles": [
+    "rna-simple_four_voices",
+    "rna-other"
+  ]
+}

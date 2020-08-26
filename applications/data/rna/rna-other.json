@@ -1,0 +1,23 @@
+{
+  "functions": [
+    {
+      "quality": "7",
+      "options": ["2:major:V7/V", "3:major:V7/VI", "#4:major:V7/VII", "6:major:V7/II", "7:major:V7/III"]
+    },
+    {
+      "quality": "+7",
+      "options": ["3:minor:V7/VI"]
+    }
+  ],
+  "transitions": [
+    {"from": "IIIm7", "to": "V7/II", "weight": 1},
+    {"from": "V7/II", "to": "IIm7", "weight": 1},
+    {"from": "V7/III", "to": "IIIm7", "weight": 1},
+    {"from": "V7/IV", "to": "IVM7", "weight": 1},
+    {"from": "V7/V", "to": "V7", "weight": 1},
+    {"from": "V7/V", "to": "IIm7", "weight": 1},
+    {"from": "V7/VI", "to": "VIm7", "weight": 1},
+    {"from": "V7/VI", "to": "V7/II", "weight": 1},
+    {"from": "VIm7", "to": "V7/V", "weight": 1}
+  ]
+}

@@ -6,7 +6,7 @@ import nl.roelofruis.artamus.util.File
 import spray.json._
 
 object RNALoader {
-  import nl.roelofruis.artamus.analysis.rna.RNALoader.FileModel.TextRNARules
+  import nl.roelofruis.artamus.analysis.rna.RNALoader.FileModel.{TextRNASettings, TextRNARules}
 
   def loadRNA(tuning: Tuning): RNARules = {
     def parseOption(option: String): RNAFunctionOption = {
@@ -19,44 +19,59 @@ object RNALoader {
       )
     }
 
-    val textRules = File.load[TextRNARules]("applications/data/rna_rules.json").get // TODO: remove get
+    val textSettings = File.load[TextRNASettings]("applications/data/rna/settings.json").get // TODO: remove get
 
-    val functions = textRules.functions.map { textFunction =>
-      RNAFunction(
-        tuning.parseQuality.run(textFunction.quality).value,
-        textFunction.options.map(parseOption)
-      )
-    }
+    val (functions, transitions) = textSettings.rulesFiles.map { rulesFile =>
+      val textRules = File.load[TextRNARules](s"applications/data/rna/$rulesFile.json").get // TODO: remove get
 
-    val transitions = textRules.transitions.map { textTransition =>
-      RNATransition(
-        tuning.parseDegree.run(textTransition.from).value,
-        tuning.parseDegree.run(textTransition.to).value,
-        textTransition.weight
-      )
+      val functions = textRules.functions.map { textFunction =>
+        RNAFunction(
+          tuning.parseQuality.run(textFunction.quality).value,
+          textFunction.options.map(parseOption)
+        )
+      }
+
+      val transitions = textRules.transitions.map { textTransition =>
+        RNATransition(
+          tuning.parseDegree.run(textTransition.from).value,
+          tuning.parseDegree.run(textTransition.to).value,
+          textTransition.weight
+        )
+      }
+      (functions.toSet, transitions.toSet)
+    }.foldRight((Set[RNAFunction](), Set[RNATransition]())) {
+      case ((functionsAcc, transitionsAcc), (functions, transitions)) => (functionsAcc ++ functions, transitionsAcc ++ transitions)
     }
 
     RNARules(
-      textRules.numResultsRequired,
+      textSettings.numResultsRequired,
       RNAPenalties(
-        textRules.penalties.keyChange,
-        textRules.penalties.unknownTransition
+        textSettings.penalties.keyChange,
+        textSettings.penalties.unknownTransition
       ),
-      functions,
-      transitions
+      functions.toList,
+      transitions.toList
     )
   }
 
   private object FileModel extends DefaultJsonProtocol {
-    final case class TextRNARules(
+    final case class TextRNASettings(
       numResultsRequired: Int,
       penalties: TextRNAPenalties,
+      rulesFiles: List[String]
+    )
+
+    object TextRNASettings {
+      implicit val rnaSettingsFormat: JsonFormat[TextRNASettings] = jsonFormat3(TextRNASettings.apply)
+    }
+
+    final case class TextRNARules(
       functions: List[TextRNAFunction],
       transitions: List[TextRNATransition]
     )
 
     object TextRNARules {
-      implicit val rnaRulesFormat: JsonFormat[TextRNARules] = jsonFormat4(TextRNARules.apply)
+      implicit val rnaRulesFormat: JsonFormat[TextRNARules] = jsonFormat2(TextRNARules.apply)
     }
 
     final case class TextRNAPenalties(
