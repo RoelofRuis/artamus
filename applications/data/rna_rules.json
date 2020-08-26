@@ -47,6 +47,7 @@
     {"from": "V7/III", "to": "IIIm7", "weight": 5},
     {"from": "V7/IV", "to": "IVM7", "weight": 5},
     {"from": "V7/V", "to": "V7", "weight": 5},
-    {"from": "V7/VI", "to": "VIm7", "weight": 5}
+    {"from": "V7/VI", "to": "VIm7", "weight": 5},
+    {"from": "V7/VI", "to": "V7/II", "weight": 5}
   ]
 }
