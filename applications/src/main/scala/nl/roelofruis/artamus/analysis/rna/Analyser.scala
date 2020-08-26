@@ -1,26 +1,10 @@
 package nl.roelofruis.artamus.analysis.rna
 
 import nl.roelofruis.artamus.analysis.TuningMaths
-import nl.roelofruis.artamus.analysis.rna.Analyser.{RNANode, RNANodeHypothesis}
 import nl.roelofruis.artamus.analysis.rna.Model._
 import nl.roelofruis.artamus.degree.Model._
 import nl.roelofruis.artamus.search.GraphSearch
-import nl.roelofruis.artamus.search.GraphSearch.{Graph, Node}
-
-object Analyser {
-  final case class RNANodeHypothesis(
-    chord: Chord,
-    degree: Degree,
-    key: Key
-  )
-
-  final case class RNANode(
-    chord: Chord,
-    degree: Degree,
-    key: Key,
-    weight: Int
-  ) extends Node
-}
+import nl.roelofruis.artamus.search.GraphSearch.Graph
 
 case class Analyser(tuning: Tuning, rules: RNARules) extends TuningMaths {
 

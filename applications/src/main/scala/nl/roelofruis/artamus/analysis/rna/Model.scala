@@ -1,6 +1,7 @@
 package nl.roelofruis.artamus.analysis.rna
 
-import nl.roelofruis.artamus.degree.Model.{Degree, PitchDescriptor, Quality, Scale}
+import nl.roelofruis.artamus.degree.Model.{Chord, Degree, Key, PitchDescriptor, Quality, Scale}
+import nl.roelofruis.artamus.search.GraphSearch.Node
 
 object Model {
 
@@ -33,5 +34,18 @@ object Model {
     scale: Scale,
     explainedAs: Degree
   )
+
+  final case class RNANodeHypothesis(
+    chord: Chord,
+    degree: Degree,
+    key: Key
+  )
+
+  final case class RNANode(
+    chord: Chord,
+    degree: Degree,
+    key: Key,
+    weight: Int
+  ) extends Node
 
 }

@@ -8,7 +8,7 @@ import spray.json._
 object RNALoader {
   import nl.roelofruis.artamus.analysis.rna.RNALoader.FileModel.{TextRNASettings, TextRNARules}
 
-  def loadRNA(tuning: Tuning): RNARules = {
+  def loadAnalyser(tuning: Tuning): Analyser = {
     def parseOption(option: String): RNAFunctionOption = {
       val parts = option.split(':')
 
@@ -44,7 +44,7 @@ object RNALoader {
       case ((functionsAcc, transitionsAcc), (functions, transitions)) => (functionsAcc ++ functions, transitionsAcc ++ transitions)
     }
 
-    RNARules(
+    val rules = RNARules(
       textSettings.numResultsRequired,
       RNAPenalties(
         textSettings.penalties.keyChange,
@@ -53,6 +53,8 @@ object RNALoader {
       functions.toList,
       transitions.toList
     )
+
+    Analyser(tuning, rules)
   }
 
   private object FileModel extends DefaultJsonProtocol {

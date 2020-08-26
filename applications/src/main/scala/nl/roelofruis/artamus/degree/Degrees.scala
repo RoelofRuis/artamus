@@ -1,7 +1,7 @@
 package nl.roelofruis.artamus.degree
 
-import nl.roelofruis.artamus.analysis.rna.Analyser.RNANode
-import nl.roelofruis.artamus.analysis.rna.{Analyser, RNALoader}
+import nl.roelofruis.artamus.analysis.rna.Model.RNANode
+import nl.roelofruis.artamus.analysis.rna.RNALoader
 import nl.roelofruis.artamus.degree.Model.Chord
 import nl.roelofruis.artamus.tuning.TuningLoader
 
@@ -13,17 +13,16 @@ object Degrees extends App {
   import nl.roelofruis.artamus.tuning.Printer._
 
   val tuning = TuningLoader.loadTuning
-  val rnaRules = RNALoader.loadRNA(tuning)
+  val rnaAnalyser = RNALoader.loadAnalyser(tuning)
 
   val file = StdIn.readLine("Input file\n > ")
 
   val chords = read(s"applications/charts/${file}.txt")
 
-  val rna = Analyser(tuning, rnaRules)
   val chordInput: Array[Chord] = parseArray(tuning.parseChord).run(chords).value
   println(chords)
 
-  val graphs = rna.nameDegrees(chordInput)
+  val graphs = rnaAnalyser.nameDegrees(chordInput)
 
   graphs.foreach { graph =>
     println(s" > Total score [${graph.score}] >")
