@@ -1,56 +1,39 @@
 package nl.roelofruis.artamus.analysis.rna
 
 import nl.roelofruis.artamus.analysis.TuningMaths
+import nl.roelofruis.artamus.analysis.rna.Analyser.{RNANode, RNANodeHypothesis}
 import nl.roelofruis.artamus.analysis.rna.Model._
 import nl.roelofruis.artamus.degree.Model._
 import nl.roelofruis.artamus.search.GraphSearch
 import nl.roelofruis.artamus.search.GraphSearch.{Graph, Node}
 
-case class RNA(tuning: Tuning, rules: RNARules) extends TuningMaths {
-
-  import nl.roelofruis.artamus.tuning.Printer._ // TODO: remove
-
+object Analyser {
   final case class RNANodeHypothesis(
     chord: Chord,
     degree: Degree,
     key: Key
   )
 
-  private final case class RNANode(
+  final case class RNANode(
     chord: Chord,
     degree: Degree,
     key: Key,
     weight: Int
   ) extends Node
+}
 
-  def nameDegrees(chords: Seq[Chord]): Seq[Degree] = {
+case class Analyser(tuning: Tuning, rules: RNARules) extends TuningMaths {
 
-    val successes = GraphSearch.bestFirst(
+  def nameDegrees(chords: Seq[Chord]): Seq[Graph[RNANode]] = {
+    GraphSearch.bestFirst(
       rules.numResultsRequired,
       chords,
       findPossibleNodes,
       findTransitions
     )
-
-    printGraphs(successes)
-
-    def printGraphs(graphs: Seq[Graph[RNANode]]): Unit = {
-      graphs.foreach { graph =>
-        println(s" > Total score [${graph.score}] >")
-        graph.stateList.map {
-          case RNANode(chord, degree, key, weight) =>
-            val textChord = tuning.printChord(chord)
-            val textDegree = tuning.printDegree(degree)
-            val textKey = tuning.printKey(key)
-            s"$textChord: $textDegree in $textKey [$weight]"
-        }.foreach(println)
-      }
-    }
-
-    Seq()
   }
 
-  def findPossibleNodes: Chord => List[RNANodeHypothesis] = chord => {
+  private def findPossibleNodes: Chord => List[RNANodeHypothesis] = chord => {
     rules
       .functions
       .filter(_.quality == chord.quality)
