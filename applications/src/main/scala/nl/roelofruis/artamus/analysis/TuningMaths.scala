@@ -5,9 +5,9 @@ import nl.roelofruis.artamus.degree.Model._
 trait TuningMaths {
   val tuning: Tuning
 
-  def numSteps: Int = tuning.pitchClassSequence.size
+  lazy val numSteps: Int = tuning.pitchClassSequence.size
 
-  def getAllPitchDescriptors: Seq[PitchDescriptor] = tuning
+  lazy val getAllPitchDescriptors: Seq[PitchDescriptor] = tuning
     .pitchClassSequence
     .zipWithIndex
     .flatMap { case (pitchClass, step) =>
@@ -27,6 +27,16 @@ trait TuningMaths {
       val targetPitchClass = ((descr.pitchClass - that.pitchClass) + tuning.numPitchClasses) % tuning.numPitchClasses
 
       PitchDescriptor(targetStep, targetPitchClass)
+    }
+
+    def enharmonicEquivalent: Option[PitchDescriptor] = {
+      Seq(
+        PitchDescriptor((descr.step - 1 + numSteps) % numSteps, descr.pitchClass),
+        PitchDescriptor((descr.step + 1) % numSteps, descr.pitchClass)
+      ).find { equiv =>
+        val pitchClassDifference = Math.abs(tuning.pitchClassSequence(equiv.step) - descr.pitchClass)
+        pitchClassDifference == 1 || pitchClassDifference == 11
+      }
     }
   }
 

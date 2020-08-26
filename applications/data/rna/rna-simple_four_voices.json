@@ -18,7 +18,8 @@
     },
     {
       "quality": "dim7",
-      "options": ["7:major:VIIdim7", "b3:major:bIIIdim7"]
+      "options": ["7:major:VIIdim7", "b3:major:bIIIdim7"],
+      "allowEnharmonicEquivalents": true
     },
     {
       "quality": "+7",
@@ -31,12 +32,13 @@
     {"from": "IM7", "to": "IVM7", "weight": 1},
     {"from": "IM7", "to": "V7", "weight": 1},
     {"from": "IM7", "to": "VIm7", "weight": 1},
-    {"from": "IIm7", "to": "V7", "weight": 1},
+    {"from": "IIm7", "to": "V7", "weight": 2},
     {"from": "IIm7b5", "to": "V7", "weight": 1},
     {"from": "IVM7", "to": "IVm7", "weight": 1},
     {"from": "IVm7", "to": "IM7", "weight": 1},
-    {"from": "V7", "to": "IM7", "weight": 1},
-    {"from": "V7", "to": "Im7", "weight": 1},
-    {"from": "VIm7", "to": "IIm7", "weight": 1}
+    {"from": "V7", "to": "IM7", "weight": 3},
+    {"from": "V7", "to": "Im7", "weight": 3},
+    {"from": "VIm7", "to": "IIm7", "weight": 1},
+    {"from": "bIIIdim7", "to": "IIm7", "weight": 1}
   ]
 }

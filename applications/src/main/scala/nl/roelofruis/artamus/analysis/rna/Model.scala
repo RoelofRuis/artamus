@@ -24,7 +24,8 @@ object Model {
 
   final case class RNAFunction(
     quality: Quality,
-    options: List[RNAFunctionOption]
+    options: List[RNAFunctionOption],
+    allowEnharmonicEquivalents: Boolean
   )
 
   final case class RNAFunctionOption(

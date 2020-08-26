@@ -27,7 +27,8 @@ object RNALoader {
       val functions = textRules.functions.map { textFunction =>
         RNAFunction(
           tuning.parseQuality.run(textFunction.quality).value,
-          textFunction.options.map(parseOption)
+          textFunction.options.map(parseOption),
+          textFunction.allowEnharmonicEquivalents.getOrElse(false)
         )
       }
 
@@ -85,11 +86,12 @@ object RNALoader {
 
     final case class TextRNAFunction(
       quality: String,
-      options: List[String]
+      options: List[String],
+      allowEnharmonicEquivalents: Option[Boolean]
     )
 
     object TextRNAFunction {
-      implicit val rnafunctionFormat: JsonFormat[TextRNAFunction] = jsonFormat2(TextRNAFunction.apply)
+      implicit val rnafunctionFormat: JsonFormat[TextRNAFunction] = jsonFormat3(TextRNAFunction.apply)
     }
 
     final case class TextRNATransition(

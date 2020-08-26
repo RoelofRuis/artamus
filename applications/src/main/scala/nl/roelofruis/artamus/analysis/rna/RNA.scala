@@ -55,33 +55,41 @@ case class RNA(tuning: Tuning, rules: RNARules) extends TuningMaths {
       .functions
       .filter(_.quality == chord.quality)
       .flatMap { function =>
-        function.options.map { option =>
-          val degreeRoot =  chord.root - option.keyInterval
-          RNANodeHypothesis(
+        function.options.flatMap { option =>
+          val degreeRoot = chord.root - option.keyInterval
+
+          val hypothesis = RNANodeHypothesis(
             chord,
             option.explainedAs,
             Key(degreeRoot, option.scale)
           )
+
+          if (function.allowEnharmonicEquivalents) {
+            degreeRoot.enharmonicEquivalent match {
+              case None => Seq(hypothesis)
+              case Some(equivalentRoot) => Seq(hypothesis, hypothesis.copy(key=Key(equivalentRoot, option.scale)))
+            }
+          } else Seq(hypothesis)
         }
       }
   }
 
-  private def findTransitions: (Option[RNANode], RNANodeHypothesis) => Seq[RNANode] = (current, possibleNext) => {
+  private def findTransitions: (Option[RNANode], RNANodeHypothesis) => Seq[RNANode] = (current, hypothesis) => {
     current match {
-      case None => Seq(RNANode(possibleNext.chord, possibleNext.degree, possibleNext.key, 0))
+      case None => Seq(RNANode(hypothesis.chord, hypothesis.degree, hypothesis.key, 0))
       case Some(currentNode) =>
-        val keyChangePenalty = if (currentNode.key != possibleNext.key) rules.penalties.keyChange else 0
+        val keyChangePenalty = if (currentNode.key != hypothesis.key) rules.penalties.keyChange else 0
         val newStates = rules
           .transitions
-          .filter(transition => transition.from == currentNode.degree && transition.to == possibleNext.degree)
+          .filter(transition => transition.from == currentNode.degree && transition.to == hypothesis.degree)
           .map { transition =>
-            RNANode(possibleNext.chord, possibleNext.degree, possibleNext.key, transition.weight + keyChangePenalty)
+            RNANode(hypothesis.chord, hypothesis.degree, hypothesis.key, transition.weight + keyChangePenalty)
           }
         if (newStates.isEmpty) {
           Seq(RNANode(
-            possibleNext.chord,
-            possibleNext.degree,
-            possibleNext.key,
+            hypothesis.chord,
+            hypothesis.degree,
+            hypothesis.key,
             rules.penalties.unknownTransition + keyChangePenalty
           ))
         }
