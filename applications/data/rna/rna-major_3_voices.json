@@ -1,0 +1,38 @@
+{
+  "functions": [
+    {
+      "quality": "M",
+      "options": ["1:major:IM", "4:major:IVM", "5:major:VM"]
+    },
+    {
+      "quality": "m",
+      "options": ["2:major:IIm", "3:major:IIIm", "6:major:VIm"]
+    },
+    {
+      "quality": "dim",
+      "options": ["7:major:VIIdim"]
+    }
+  ],
+  "transitions": [
+    {"from": "IM", "to": "IIm", "weight": 1},
+    {"from": "IM", "to": "IIIm", "weight": 1},
+    {"from": "IM", "to": "IVM", "weight": 1},
+    {"from": "IM", "to": "VM", "weight": 1},
+    {"from": "IM", "to": "VIm", "weight": 1},
+    {"from": "IM", "to": "VIIdim", "weight": 1},
+    {"from": "IIm", "to": "VM", "weight": 1},
+    {"from": "IIm", "to": "IIIm", "weight": 1},
+    {"from": "IIIm", "to": "IVM", "weight": 1},
+    {"from": "IIIm", "to": "VIm", "weight": 1},
+    {"from": "IVM", "to": "IIm", "weight": 1},
+    {"from": "IVM", "to": "VM", "weight": 1},
+    {"from": "VM", "to": "IM", "weight": 1},
+    {"from": "VM", "to": "IIIm", "weight": 1},
+    {"from": "VM", "to": "VIm", "weight": 1},
+    {"from": "VIm", "to": "IVM", "weight": 1},
+    {"from": "VIm", "to": "IIm", "weight": 1},
+    {"from": "VIIdim", "to": "IM", "weight": 1},
+    {"from": "VIIdim", "to": "IIIm", "weight": 1},
+    {"from": "VIIdim", "to": "VIm", "weight": 1}
+  ]
+}
