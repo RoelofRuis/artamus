@@ -1,6 +1,7 @@
 package nl.roelofruis.artamus.analysis
 
-import nl.roelofruis.artamus.degree.Model._
+import nl.roelofruis.artamus.core.Model._
+import nl.roelofruis.artamus.tuning.Model.Tuning
 
 trait TuningMaths {
   val tuning: Tuning

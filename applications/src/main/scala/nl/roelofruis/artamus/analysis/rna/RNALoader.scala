@@ -1,12 +1,12 @@
 package nl.roelofruis.artamus.analysis.rna
 
 import nl.roelofruis.artamus.analysis.rna.Model._
-import nl.roelofruis.artamus.degree.Model.Tuning
+import nl.roelofruis.artamus.tuning.Model.Tuning
 import nl.roelofruis.artamus.util.File
 import spray.json._
 
 object RNALoader {
-  import nl.roelofruis.artamus.analysis.rna.RNALoader.FileModel.{TextRNASettings, TextRNARules}
+  import nl.roelofruis.artamus.analysis.rna.RNALoader.FileModel.{TextRNARules, TextRNASettings}
 
   def loadAnalyser(tuning: Tuning): Analyser = {
     def parseOption(option: String): RNAFunctionOption = {

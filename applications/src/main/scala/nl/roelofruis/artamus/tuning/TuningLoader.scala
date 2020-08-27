@@ -1,13 +1,13 @@
 package nl.roelofruis.artamus.tuning
 
-import nl.roelofruis.artamus.degree.Model.{Quality, Scale, Tuning}
+import nl.roelofruis.artamus.core.Model.{Quality, Scale}
+import nl.roelofruis.artamus.tuning.Model.Tuning
 import nl.roelofruis.artamus.util.File
 import spray.json._
 
 object TuningLoader {
-  import nl.roelofruis.artamus.tuning.TuningLoader.FileModel.TextTuning
-
   import Parser._
+  import nl.roelofruis.artamus.tuning.TuningLoader.FileModel.TextTuning
 
   def loadTuning: Tuning = {
     val textTuning = File.load[TextTuning]("applications/data/tuning.json").get // TODO: remove get
@@ -28,6 +28,8 @@ object TuningLoader {
       textTuning.textIntervals,
       textTuning.textSharp,
       textTuning.textFlat,
+      textTuning.textBarLine,
+      textTuning.textBeatIndication,
       textTuning.textDegrees,
       scaleMap,
       symbolQualityMap
@@ -63,13 +65,15 @@ object TuningLoader {
       textIntervals: List[String],
       textSharp: String,
       textFlat: String,
+      textBarLine: String,
+      textBeatIndication: String,
       description: String,
       textQualities: List[TextQuality],
       textScales: List[TextScale]
     ) extends MusicPrimitivesParser
 
     object TextTuning {
-      implicit val tuningFormat: JsonFormat[TextTuning] = jsonFormat10(TextTuning.apply)
+      implicit val tuningFormat: JsonFormat[TextTuning] = jsonFormat12(TextTuning.apply)
     }
   }
 }

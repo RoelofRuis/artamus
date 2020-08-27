@@ -1,6 +1,4 @@
-package nl.roelofruis.artamus.degree
-
-import nl.roelofruis.artamus.tuning.Parser.MusicObjectsParser
+package nl.roelofruis.artamus.core
 
 object Model {
 
@@ -33,16 +31,9 @@ object Model {
     scale: Scale
   )
 
-  final case class Tuning(
-    pitchClassSequence: List[Int],
-    numPitchClasses: Int,
-    textNotes: List[String],
-    textIntervals: List[String],
-    textSharp: String,
-    textFlat: String,
-    textDegrees: List[String],
-    scaleMap: Map[String, Scale],
-    qualityMap: Map[String, Quality],
-  ) extends MusicObjectsParser
+  final case class BeatDuration[A](
+    beats: Int,
+    a: A
+  )
 
 }

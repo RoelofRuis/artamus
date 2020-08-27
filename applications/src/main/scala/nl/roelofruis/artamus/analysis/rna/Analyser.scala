@@ -2,9 +2,10 @@ package nl.roelofruis.artamus.analysis.rna
 
 import nl.roelofruis.artamus.analysis.TuningMaths
 import nl.roelofruis.artamus.analysis.rna.Model._
-import nl.roelofruis.artamus.degree.Model._
+import nl.roelofruis.artamus.core.Model._
 import nl.roelofruis.artamus.search.GraphSearch
 import nl.roelofruis.artamus.search.GraphSearch.Graph
+import nl.roelofruis.artamus.tuning.Model.Tuning
 
 case class Analyser(tuning: Tuning, rules: RNARules) extends TuningMaths {
 

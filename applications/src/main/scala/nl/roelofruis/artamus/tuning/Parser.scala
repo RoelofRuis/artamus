@@ -1,6 +1,6 @@
 package nl.roelofruis.artamus.tuning
 
-import nl.roelofruis.artamus.degree.Model._
+import nl.roelofruis.artamus.core.Model._
 import nl.roelofruis.artamus.util.State
 
 import scala.annotation.tailrec
@@ -49,6 +49,8 @@ object Parser {
   }
 
   trait MusicObjectsParser extends MusicPrimitivesParser {
+    val textBarLine: String
+    val textBeatIndication: String
     val scaleMap: Map[String, Scale]
     val qualityMap: Map[String, Quality]
 
@@ -89,6 +91,26 @@ object Parser {
         pitchDescriptor <- parsePitchDescriptor
         quality <- parseQuality
       } yield Chord(pitchDescriptor, quality)
+    }
+
+    def parseChordSequence: State[String, Seq[BeatDuration[Chord]]] = State { s =>
+      val res = s.split(textBarLine)
+        .flatMap { bar =>
+          println(bar)
+          bar
+            .trim.split(' ')
+            .foldRight(Seq[BeatDuration[Chord]]()) { case (element, acc) =>
+              println(element)
+              if (element == textBeatIndication) {
+                acc.headOption match {
+                  case None => acc
+                  case Some(dur) => BeatDuration(dur.beats + 1, dur.a) +: acc.tail
+                }
+              }
+              else BeatDuration(1, parseChord.run(element).value) +: acc
+            }
+        }.toSeq
+      ("", res)
     }
   }
 

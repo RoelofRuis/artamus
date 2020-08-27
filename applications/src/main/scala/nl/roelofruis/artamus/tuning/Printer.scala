@@ -1,6 +1,7 @@
 package nl.roelofruis.artamus.tuning
 
-import nl.roelofruis.artamus.degree.Model._
+import nl.roelofruis.artamus.core.Model._
+import nl.roelofruis.artamus.tuning.Model.Tuning
 
 object Printer {
 

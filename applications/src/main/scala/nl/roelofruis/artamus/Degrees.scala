@@ -1,8 +1,8 @@
-package nl.roelofruis.artamus.degree
+package nl.roelofruis.artamus
 
 import nl.roelofruis.artamus.analysis.rna.Model.RNANode
 import nl.roelofruis.artamus.analysis.rna.RNALoader
-import nl.roelofruis.artamus.degree.Model.Chord
+import nl.roelofruis.artamus.core.Model.Chord
 import nl.roelofruis.artamus.tuning.TuningLoader
 
 import scala.io.{Source, StdIn}
@@ -18,6 +18,10 @@ object Degrees extends App {
   val file = StdIn.readLine("Input file\n > ")
 
   val chords = read(s"applications/charts/${file}.txt")
+
+  val cc = tuning.parseChordSequence.run(chords).value
+
+  println(cc)
 
   val chordInput: Array[Chord] = parseArray(tuning.parseChord).run(chords).value
   println(chords)

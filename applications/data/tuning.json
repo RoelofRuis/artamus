@@ -6,6 +6,8 @@
   "textIntervals": ["1", "2", "3", "4", "5", "6", "7"],
   "textSharp": "#",
   "textFlat": "b",
+  "textBarLine": "\\|",
+  "textBeatIndication": "\\.",
   "description": "Twelve tone",
   "textQualities": [
     {

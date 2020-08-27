@@ -1,6 +1,7 @@
 package nl.roelofruis.artamus.analysis
 
-import nl.roelofruis.artamus.degree.Model.{Chord, Degree, PitchDescriptor, Tuning}
+import nl.roelofruis.artamus.core.Model.{Chord, Degree, PitchDescriptor}
+import nl.roelofruis.artamus.tuning.Model.Tuning
 
 case class ChordAnalysis(tuning: Tuning) extends TuningMaths {
 
