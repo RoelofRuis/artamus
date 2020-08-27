@@ -2,7 +2,7 @@
   "numResultsRequired": 1,
   "penalties": {
     "keyChange": -5,
-    "unknownTransition": -10
+    "unknownTransition": -5
   },
   "rulesFiles": [
     "rna-simple_four_voices",

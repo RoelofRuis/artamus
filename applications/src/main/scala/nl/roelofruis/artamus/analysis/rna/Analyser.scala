@@ -44,24 +44,17 @@ case class Analyser(tuning: Tuning, rules: RNARules) extends TuningMaths {
   private def findTransitions: (Option[RNANode], RNANodeHypothesis) => Seq[RNANode] = (current, hypothesis) => {
     current match {
       case None => Seq(RNANode(hypothesis.chord, hypothesis.degree, hypothesis.key, 0))
-      case Some(currentNode) =>
-        val keyChangePenalty = if (currentNode.key != hypothesis.key) rules.penalties.keyChange else 0
+      case Some(currentNode) if currentNode.key == hypothesis.key =>
         val newStates = rules
           .transitions
           .filter(transition => transition.from == currentNode.degree && transition.to == hypothesis.degree)
-          .map { transition =>
-            RNANode(hypothesis.chord, hypothesis.degree, hypothesis.key, transition.weight + keyChangePenalty)
-          }
-        if (newStates.isEmpty) {
-          Seq(RNANode(
-            hypothesis.chord,
-            hypothesis.degree,
-            hypothesis.key,
-            rules.penalties.unknownTransition + keyChangePenalty
-          ))
-        }
+          .map { transition => hypothesisToNode(hypothesis, transition.weight) }
+        if (newStates.isEmpty) Seq(hypothesisToNode(hypothesis, rules.penalties.unknownTransition))
         else newStates
+      case Some(_) => Seq(hypothesisToNode(hypothesis, rules.penalties.keyChange))
     }
   }
+
+  private def hypothesisToNode(hyp: RNANodeHypothesis, weight: Int): RNANode = RNANode(hyp.chord, hyp.degree, hyp.key, weight)
 
 }
