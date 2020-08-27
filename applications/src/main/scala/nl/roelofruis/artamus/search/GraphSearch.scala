@@ -24,6 +24,18 @@ object GraphSearch {
     val inputStates = new mutable.PriorityQueue[Graph[N]]()
     inputStates.enqueue(Graph[N](Seq()))
 
+    // Cache known hypotheses for speedup
+    val hypothesisMap = new mutable.HashMap[S, Seq[H]]()
+    def getHypotheses(state: S): Seq[H] = {
+      hypothesisMap.get(state) match {
+        case Some(hypotheses) => hypotheses
+        case None =>
+          val hypotheses = findHypotheses(state)
+          hypothesisMap.put(state, hypotheses)
+          hypotheses
+      }
+    }
+
     @tailrec
     def search: mutable.PriorityQueue[Graph[N]] = {
       if (inputStates.isEmpty || successes.size >= numResultsRequired) successes
@@ -34,7 +46,7 @@ object GraphSearch {
         stateSequence.lift(graphStateSize) match {
           case None => successes.enqueue(graph)
           case Some(nextState) =>
-            val hypotheses = findHypotheses(nextState)
+            val hypotheses = getHypotheses(nextState)
 
             hypotheses
                 .flatMap(hyp => findTransitions(graph.stateList.lastOption, hyp))
