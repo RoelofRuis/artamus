@@ -36,6 +36,7 @@
     {"from": "IIm7b5", "to": "V7", "weight": 2},
     {"from": "IIIm7", "to": "bIIIdim7", "weight": 1},
     {"from": "IVM7", "to": "IVm7", "weight": 1},
+    {"from": "IVM7", "to": "IM7", "weight": 1},
     {"from": "IVm7", "to": "IM7", "weight": 1},
     {"from": "V7", "to": "IM7", "weight": 3},
     {"from": "V7", "to": "Im7", "weight": 3},
