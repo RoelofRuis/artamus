@@ -1,0 +1,32 @@
+{
+  "functions": [
+    {
+      "quality": "M7",
+      "options": ["3:major:IIIM7", "6:major:VIM7"]
+    },
+    {
+      "quality": "7",
+      "options": ["5:minor:V7", "7:minor:VII7"]
+    },
+    {
+      "quality": "m7",
+      "options": ["1:minor:Im7", "4:minor:IVm7", "5:minor:Vm7"]
+    },
+    {
+      "quality": "m7b5",
+      "options": ["2:minor:IIm7b5"]
+    },
+    {
+      "quality": "+7",
+      "options": ["5:minor:V7"]
+    }
+  ],
+  "transitions": [
+    {"from": "Im7", "to": "Vm7", "weight": 1},
+    {"from": "Im7", "to": "V7", "weight": 1},
+    {"from": "Im7", "to": "IVm7", "weight": 1},
+    {"from": "Im7", "to": "VII7", "weight": 1},
+    {"from": "IIm7b5", "to": "V7", "weight": 2},
+    {"from": "V7", "to": "Im7", "weight": 3}
+  ]
+}
