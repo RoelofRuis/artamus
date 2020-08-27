@@ -36,7 +36,7 @@ object RNALoader {
         RNATransition(
           tuning.parseDegree.run(textTransition.from).value,
           tuning.parseDegree.run(textTransition.to).value,
-          textTransition.weight
+          textTransition.weight.getOrElse(1)
         )
       }
       (functions.toSet, transitions.toSet)
@@ -99,7 +99,7 @@ object RNALoader {
     final case class TextRNATransition(
       from: String,
       to: String,
-      weight: Int
+      weight: Option[Int]
     )
 
     object TextRNATransition {

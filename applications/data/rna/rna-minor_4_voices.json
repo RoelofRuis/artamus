@@ -22,10 +22,10 @@
     }
   ],
   "transitions": [
-    {"from": "Im7", "to": "Vm7", "weight": 1},
-    {"from": "Im7", "to": "V7", "weight": 1},
-    {"from": "Im7", "to": "IVm7", "weight": 1},
-    {"from": "Im7", "to": "VII7", "weight": 1},
+    {"from": "Im7", "to": "Vm7"},
+    {"from": "Im7", "to": "V7"},
+    {"from": "Im7", "to": "IVm7"},
+    {"from": "Im7", "to": "VII7"},
     {"from": "IIm7b5", "to": "V7", "weight": 2},
     {"from": "V7", "to": "Im7", "weight": 3}
   ]
