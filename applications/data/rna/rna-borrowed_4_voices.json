@@ -1,12 +1,21 @@
 {
   "functions": [
     {
+      "quality": "7",
+      "options": ["b7:major:bVII7", "b6:major:bVI7"]
+    },
+    {
       "quality": "m7",
       "options": ["4:major:IVm7"]
     }
   ],
   "transitions": [
+    {"from": "IVM7", "to": "bVII7"},
     {"from": "IVM7", "to": "IVm7"},
-    {"from": "IVm7", "to": "IIIm7"}
+    {"from": "IVm7", "to": "IIIm7"},
+    {"from": "bVI7", "to": "V7"},
+    {"from": "bVI7", "to": "bVII7"},
+    {"from": "bVII7", "to": "VIm7"},
+    {"from": "bVII7", "to": "IM7"}
   ]
 }
