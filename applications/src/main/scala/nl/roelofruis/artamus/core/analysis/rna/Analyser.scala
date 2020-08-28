@@ -1,13 +1,13 @@
 package nl.roelofruis.artamus.core.analysis.rna
 
-import nl.roelofruis.artamus.core.Model._
+import nl.roelofruis.artamus.core.Pitched._
 import nl.roelofruis.artamus.core.analysis.TuningMaths
 import nl.roelofruis.artamus.core.analysis.rna.Model._
 import nl.roelofruis.artamus.core.math.algorithms.GraphSearch
 import nl.roelofruis.artamus.core.math.algorithms.GraphSearch.Graph
-import nl.roelofruis.artamus.tuning.Model.Tuning
+import nl.roelofruis.artamus.settings.Model.Settings
 
-case class Analyser(tuning: Tuning, rules: RNARules) extends TuningMaths {
+case class Analyser(tuning: Settings, rules: RNARules) extends TuningMaths {
 
   def nameDegrees(chords: Seq[Chord]): Option[Graph[RNANode]] = {
     GraphSearch.bestFirst(

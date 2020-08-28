@@ -5,8 +5,8 @@ import nl.roelofruis.artamus.core.analysis.rna.RNALoader
 import nl.roelofruis.artamus.parsing.Model.ParseError
 import nl.roelofruis.artamus.parsing.Parser._
 import nl.roelofruis.artamus.core.math.algorithms.GraphSearch.Graph
-import nl.roelofruis.artamus.tuning.Model.Tuning
-import nl.roelofruis.artamus.tuning.TuningLoader
+import nl.roelofruis.artamus.settings.Model.Settings
+import nl.roelofruis.artamus.settings.SettingsLoader
 
 import scala.io.{Source, StdIn}
 import scala.util.{Failure, Success}
@@ -14,7 +14,7 @@ import scala.util.{Failure, Success}
 object Degrees extends App {
 
   val result = for {
-    tuning      <- TuningLoader.loadTuning
+    tuning      <- SettingsLoader.loadTuning
     rnaAnalyser <- RNALoader.loadAnalyser(tuning)
     file        = StdIn.readLine("Input file\n > ")
     chords      = read(s"applications/charts/${file}.txt")
@@ -31,8 +31,8 @@ object Degrees extends App {
     case Failure(ex) => throw ex
   }
 
-  def printDegrees(option: Option[Graph[RNANode]], tuning: Tuning): Unit = {
-    import nl.roelofruis.artamus.tuning.Printer._
+  def printDegrees(option: Option[Graph[RNANode]], tuning: Settings): Unit = {
+    import nl.roelofruis.artamus.settings.Printer._
     option match {
       case None => println("No solution found")
       case Some(graph) =>

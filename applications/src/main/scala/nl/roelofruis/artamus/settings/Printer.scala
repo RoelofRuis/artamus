@@ -1,11 +1,11 @@
-package nl.roelofruis.artamus.tuning
+package nl.roelofruis.artamus.settings
 
-import nl.roelofruis.artamus.core.Model._
-import nl.roelofruis.artamus.tuning.Model.Tuning
+import nl.roelofruis.artamus.core.Pitched._
+import nl.roelofruis.artamus.settings.Model.Settings
 
 object Printer {
 
-  implicit class TuningWriteOps(tuning: Tuning) {
+  implicit class TuningWriteOps(tuning: Settings) {
     def printChords(chords: Seq[Chord]): String = chords.map(printChord).mkString(" ")
 
     def printChord(chord: Chord): String = printNoteDescriptor(chord.root) + printQuality(chord.quality)

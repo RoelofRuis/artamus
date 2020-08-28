@@ -1,6 +1,6 @@
 package nl.roelofruis.artamus.parsing
 
-import nl.roelofruis.artamus.core.Model.{Quality, Scale}
+import nl.roelofruis.artamus.core.Pitched.{Quality, Scale}
 
 import scala.util.Try
 

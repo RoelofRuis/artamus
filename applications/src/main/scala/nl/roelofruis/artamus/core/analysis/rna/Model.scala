@@ -1,6 +1,6 @@
 package nl.roelofruis.artamus.core.analysis.rna
 
-import nl.roelofruis.artamus.core.Model.{Chord, Degree, Key, PitchDescriptor, Quality, Scale}
+import nl.roelofruis.artamus.core.Pitched.{Chord, Degree, Key, PitchDescriptor, Quality, Scale}
 import nl.roelofruis.artamus.core.math.algorithms.GraphSearch.Node
 
 object Model {

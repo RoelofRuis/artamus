@@ -3,14 +3,14 @@ package nl.roelofruis.artamus.core.analysis.rna
 import nl.roelofruis.artamus.core.analysis.rna.Model._
 import nl.roelofruis.artamus.parsing.Model.ParseResult
 import nl.roelofruis.artamus.parsing.Parser._
-import nl.roelofruis.artamus.tuning.Model.Tuning
+import nl.roelofruis.artamus.settings.Model.Settings
 import nl.roelofruis.artamus.util.File
 import spray.json._
 
 object RNALoader {
   import nl.roelofruis.artamus.core.analysis.rna.RNALoader.FileModel.{TextRNAFunction, TextRNARules, TextRNASettings, TextRNATransition}
 
-  def loadAnalyser(tuning: Tuning): ParseResult[Analyser] = {
+  def loadAnalyser(tuning: Settings): ParseResult[Analyser] = {
     def parseRulesFiles(files: List[String]): ParseResult[(Set[RNAFunction], Set[RNATransition])] = {
       files.map { file =>
         for {
@@ -56,7 +56,7 @@ object RNALoader {
       }.invert
 
     for {
-      textSettings <- File.load[TextRNASettings]("applications/data/rna/settings.json")
+      textSettings <- File.load[TextRNASettings]("applications/data/rna/system_settings.json")
       (functions, transitions) <- parseRulesFiles(textSettings.rulesFiles)
     } yield Analyser(
       tuning,

@@ -1,10 +1,10 @@
 package nl.roelofruis.artamus.core.analysis
 
-import nl.roelofruis.artamus.core.Model._
-import nl.roelofruis.artamus.tuning.Model.Tuning
+import nl.roelofruis.artamus.core.Pitched._
+import nl.roelofruis.artamus.settings.Model.Settings
 
 trait TuningMaths {
-  val tuning: Tuning
+  val tuning: Settings
 
   lazy val numSteps: Int = tuning.pitchClassSequence.size
 

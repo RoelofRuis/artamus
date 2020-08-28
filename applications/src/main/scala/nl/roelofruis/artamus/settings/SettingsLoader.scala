@@ -1,22 +1,22 @@
-package nl.roelofruis.artamus.tuning
+package nl.roelofruis.artamus.settings
 
-import nl.roelofruis.artamus.core.Model.{Quality, Scale}
+import nl.roelofruis.artamus.core.Pitched.{Quality, Scale}
 import nl.roelofruis.artamus.parsing.Model.{ParseResult, PitchedPrimitives}
-import nl.roelofruis.artamus.parsing.MusicPrimitivesParser
-import nl.roelofruis.artamus.tuning.Model.Tuning
+import nl.roelofruis.artamus.settings.Model.Settings
 import nl.roelofruis.artamus.util.File
 import spray.json._
 import nl.roelofruis.artamus.parsing.Parser._
 
-object TuningLoader {
-  import nl.roelofruis.artamus.tuning.TuningLoader.FileModel.TextTuning
+object SettingsLoader {
+  import nl.roelofruis.artamus.settings.SettingsLoader.FileModel.TextTuning
 
-  def loadTuning: ParseResult[Tuning] = {
+  def loadTuning: ParseResult[Settings] = {
     for {
-      textTuning <- File.load[TextTuning]("applications/data/tuning.json")
+      textTuning <- File.load[TextTuning]("applications/data/system_settings.json")
       qualityMap <- parseQualityMap(textTuning)
+      defaultMetre <- textTuning.parser(textTuning.defaultMetre).parseMetre
       scaleMap = buildScaleMap(textTuning)
-    } yield Tuning(
+    } yield Settings(
       textTuning.pitchClassSequence,
       textTuning.numPitchClasses,
       textTuning.textNotes,
@@ -27,13 +27,14 @@ object TuningLoader {
       textTuning.textBeatIndication,
       textTuning.textDegrees,
       scaleMap,
-      qualityMap
+      qualityMap,
+      defaultMetre,
     )
   }
 
   private def parseQualityMap(textTuning: TextTuning): ParseResult[Map[String, Quality]] =
     textTuning.textQualities.map { quality =>
-      val parser = MusicPrimitivesParser(quality.intervals, textTuning)
+      val parser = textTuning.parser(quality.intervals)
       parser.parseList(parser.parseInterval, " ").map { intervals =>
         (quality.symbol, Quality(intervals))
       }
@@ -69,6 +70,7 @@ object TuningLoader {
     final case class TextTuning(
       pitchClassSequence: List[Int],
       numPitchClasses: Int,
+      defaultMetre: String,
       textNotes: List[String],
       textDegrees: List[String],
       textIntervals: List[String],
@@ -81,7 +83,7 @@ object TuningLoader {
     ) extends PitchedPrimitives
 
     object TextTuning {
-      implicit val tuningFormat: JsonFormat[TextTuning] = jsonFormat11(TextTuning.apply)
+      implicit val tuningFormat: JsonFormat[TextTuning] = jsonFormat12(TextTuning.apply)
     }
   }
 }

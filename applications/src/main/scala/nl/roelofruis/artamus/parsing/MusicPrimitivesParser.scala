@@ -1,6 +1,7 @@
 package nl.roelofruis.artamus.parsing
 
-import nl.roelofruis.artamus.core.Model.PitchDescriptor
+import nl.roelofruis.artamus.core.Pitched.PitchDescriptor
+import nl.roelofruis.artamus.core.Temporal.{Metre, PulseGroup}
 import nl.roelofruis.artamus.parsing.Model.{ParseResult, PitchedPrimitives}
 
 import scala.annotation.tailrec
@@ -49,6 +50,13 @@ trait MusicPrimitivesParser {
     }
     loop(List())
   }
+
+  def parseMetre: ParseResult[Metre] = for {
+    num <- buffer.findIndex(Seq("1", "2", "3", "4", "5"))
+    _ <- buffer.expectExactly("/", 1)
+    denom <- buffer.findIndex(Seq("1", "2", "4", "8"))
+  } yield Metre(Seq(PulseGroup(denom, num)))
+
 }
 
 object MusicPrimitivesParser {

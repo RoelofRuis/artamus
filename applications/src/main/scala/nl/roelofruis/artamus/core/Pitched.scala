@@ -1,6 +1,6 @@
 package nl.roelofruis.artamus.core
 
-object Model {
+object Pitched {
 
   final case class PitchDescriptor(
     step: Int,
