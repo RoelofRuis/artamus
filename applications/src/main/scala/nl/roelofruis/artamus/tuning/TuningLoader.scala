@@ -1,27 +1,22 @@
 package nl.roelofruis.artamus.tuning
 
 import nl.roelofruis.artamus.core.Model.{Quality, Scale}
+import nl.roelofruis.artamus.parsing.Model.{ParseResult, PitchedPrimitives}
+import nl.roelofruis.artamus.parsing.MusicPrimitivesParser
 import nl.roelofruis.artamus.tuning.Model.Tuning
 import nl.roelofruis.artamus.util.File
 import spray.json._
+import nl.roelofruis.artamus.parsing.Parser._
 
 object TuningLoader {
-  import Parser._
   import nl.roelofruis.artamus.tuning.TuningLoader.FileModel.TextTuning
 
-  def loadTuning: Tuning = {
-    val textTuning = File.load[TextTuning]("applications/data/tuning.json").get // TODO: remove get
-
-    val symbolQualityMap = textTuning.textQualities.map { quality =>
-      val parsed = parseArray(textTuning.parseInterval).run(quality.intervals).value
-      (quality.symbol, Quality(parsed))
-    }.toMap
-
-    val scaleMap = textTuning.textScales.map { scale =>
-      (scale.name, Scale(scale.pitchClassSequence))
-    }.toMap
-
-    Tuning(
+  def loadTuning: ParseResult[Tuning] = {
+    for {
+      textTuning <- File.load[TextTuning]("applications/data/tuning.json")
+      qualityMap <- parseQualityMap(textTuning)
+      scaleMap = buildScaleMap(textTuning)
+    } yield Tuning(
       textTuning.pitchClassSequence,
       textTuning.numPitchClasses,
       textTuning.textNotes,
@@ -32,8 +27,22 @@ object TuningLoader {
       textTuning.textBeatIndication,
       textTuning.textDegrees,
       scaleMap,
-      symbolQualityMap
+      qualityMap
     )
+  }
+
+  private def parseQualityMap(textTuning: TextTuning): ParseResult[Map[String, Quality]] =
+    textTuning.textQualities.map { quality =>
+      val parser = MusicPrimitivesParser(quality.intervals, textTuning)
+      parser.parseList(parser.parseInterval, " ").map { intervals =>
+        (quality.symbol, Quality(intervals))
+      }
+    }
+      .invert
+      .map(_.toMap)
+
+  private def buildScaleMap(textTuning: TextTuning): Map[String, Scale] = {
+    textTuning.textScales.map { scale => (scale.name, Scale(scale.pitchClassSequence)) }.toMap
   }
 
   private object FileModel extends DefaultJsonProtocol {
@@ -67,13 +76,12 @@ object TuningLoader {
       textFlat: String,
       textBarLine: String,
       textBeatIndication: String,
-      description: String,
       textQualities: List[TextQuality],
       textScales: List[TextScale]
-    ) extends MusicPrimitivesParser
+    ) extends PitchedPrimitives
 
     object TextTuning {
-      implicit val tuningFormat: JsonFormat[TextTuning] = jsonFormat12(TextTuning.apply)
+      implicit val tuningFormat: JsonFormat[TextTuning] = jsonFormat11(TextTuning.apply)
     }
   }
 }

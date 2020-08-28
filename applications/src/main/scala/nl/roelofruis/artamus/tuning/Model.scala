@@ -1,7 +1,7 @@
 package nl.roelofruis.artamus.tuning
 
 import nl.roelofruis.artamus.core.Model.{Quality, Scale}
-import nl.roelofruis.artamus.tuning.Parser.MusicObjectsParser
+import nl.roelofruis.artamus.parsing.Model.{PitchedObjects, PitchedPrimitives, TemporalPrimitives}
 
 object Model {
 
@@ -17,6 +17,6 @@ object Model {
     textDegrees: List[String],
     scaleMap: Map[String, Scale],
     qualityMap: Map[String, Quality],
-  ) extends MusicObjectsParser
+  ) extends PitchedPrimitives with PitchedObjects with TemporalPrimitives
 
 }
