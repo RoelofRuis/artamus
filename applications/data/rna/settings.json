@@ -1,5 +1,5 @@
 {
-  "numResultsRequired": 1,
+  "numResultsRequired": 10,
   "penalties": {
     "keyChange": -5,
     "unknownTransition": -5
