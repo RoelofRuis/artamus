@@ -5,6 +5,7 @@ import nl.roelofruis.artamus.util.State
 
 import scala.annotation.tailrec
 import scala.reflect.ClassTag
+import scala.util.matching.Regex
 
 object Parser {
 
@@ -94,13 +95,11 @@ object Parser {
     }
 
     def parseChordSequence: State[String, Seq[BeatDuration[Chord]]] = State { s =>
-      val res = s.split(textBarLine)
+      val res = s.split(Regex.quote(textBarLine))
         .flatMap { bar =>
-          println(bar)
           bar
             .trim.split(' ')
             .foldRight(Seq[BeatDuration[Chord]]()) { case (element, acc) =>
-              println(element)
               if (element == textBeatIndication) {
                 acc.headOption match {
                   case None => acc

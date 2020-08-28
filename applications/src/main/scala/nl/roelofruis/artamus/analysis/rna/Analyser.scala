@@ -9,13 +9,13 @@ import nl.roelofruis.artamus.tuning.Model.Tuning
 
 case class Analyser(tuning: Tuning, rules: RNARules) extends TuningMaths {
 
-  def nameDegrees(chords: Seq[Chord]): Seq[Graph[RNANode]] = {
+  def nameDegrees(chords: Seq[Chord]): Option[Graph[RNANode]] = {
     GraphSearch.bestFirst(
       rules.numResultsRequired,
       chords,
       findPossibleNodes,
       findTransitions
-    )
+    ).headOption
   }
 
   private def findPossibleNodes: Chord => List[RNANodeHypothesis] = chord => {
