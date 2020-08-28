@@ -1,10 +1,10 @@
-package nl.roelofruis.artamus.analysis.rna
+package nl.roelofruis.artamus.core.analysis.rna
 
-import nl.roelofruis.artamus.analysis.TuningMaths
-import nl.roelofruis.artamus.analysis.rna.Model._
 import nl.roelofruis.artamus.core.Model._
-import nl.roelofruis.artamus.search.GraphSearch
-import nl.roelofruis.artamus.search.GraphSearch.Graph
+import nl.roelofruis.artamus.core.analysis.TuningMaths
+import nl.roelofruis.artamus.core.analysis.rna.Model._
+import nl.roelofruis.artamus.core.math.algorithms.GraphSearch
+import nl.roelofruis.artamus.core.math.algorithms.GraphSearch.Graph
 import nl.roelofruis.artamus.tuning.Model.Tuning
 
 case class Analyser(tuning: Tuning, rules: RNARules) extends TuningMaths {

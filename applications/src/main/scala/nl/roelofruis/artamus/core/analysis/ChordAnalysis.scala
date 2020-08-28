@@ -1,4 +1,4 @@
-package nl.roelofruis.artamus.analysis
+package nl.roelofruis.artamus.core.analysis
 
 import nl.roelofruis.artamus.core.Model.{Chord, Degree, PitchDescriptor}
 import nl.roelofruis.artamus.tuning.Model.Tuning

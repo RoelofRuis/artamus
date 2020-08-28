@@ -39,6 +39,7 @@ trait MusicObjectsParser extends MusicPrimitivesParser {
     pitchDescriptor <- parsePitchDescriptor
     quality <- parseQuality
   } yield Chord(pitchDescriptor, quality)
+
 }
 
 object MusicObjectsParser {

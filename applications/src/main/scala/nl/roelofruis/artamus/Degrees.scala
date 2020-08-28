@@ -1,10 +1,10 @@
 package nl.roelofruis.artamus
 
-import nl.roelofruis.artamus.analysis.rna.Model.RNANode
-import nl.roelofruis.artamus.analysis.rna.RNALoader
+import nl.roelofruis.artamus.core.analysis.rna.Model.RNANode
+import nl.roelofruis.artamus.core.analysis.rna.RNALoader
 import nl.roelofruis.artamus.parsing.Model.ParseError
 import nl.roelofruis.artamus.parsing.Parser._
-import nl.roelofruis.artamus.search.GraphSearch.Graph
+import nl.roelofruis.artamus.core.math.algorithms.GraphSearch.Graph
 import nl.roelofruis.artamus.tuning.Model.Tuning
 import nl.roelofruis.artamus.tuning.TuningLoader
 
@@ -14,15 +14,15 @@ import scala.util.{Failure, Success}
 object Degrees extends App {
 
   val result = for {
-    tuning <- TuningLoader.loadTuning
+    tuning      <- TuningLoader.loadTuning
     rnaAnalyser <- RNALoader.loadAnalyser(tuning)
-    file = StdIn.readLine("Input file\n > ")
-    chords = read(s"applications/charts/${file}.txt")
+    file        = StdIn.readLine("Input file\n > ")
+    chords      = read(s"applications/charts/${file}.txt")
     chordParser = tuning.parser(chords)
-    chordInput <- chordParser.parseList(chordParser.parseChord, " ")
-    _ = println(chordInput)
-    degrees = rnaAnalyser.nameDegrees(chordInput)
-    _ = printDegrees(degrees, tuning)
+    chordInput  <- chordParser.parseList(chordParser.parseChord, " ")
+    _           = println(chordInput)
+    degrees     = rnaAnalyser.nameDegrees(chordInput)
+    _           = printDegrees(degrees, tuning)
   } yield ()
 
   result match {

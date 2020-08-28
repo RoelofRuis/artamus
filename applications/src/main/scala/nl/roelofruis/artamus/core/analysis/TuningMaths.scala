@@ -1,4 +1,4 @@
-package nl.roelofruis.artamus.analysis
+package nl.roelofruis.artamus.core.analysis
 
 import nl.roelofruis.artamus.core.Model._
 import nl.roelofruis.artamus.tuning.Model.Tuning

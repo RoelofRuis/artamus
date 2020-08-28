@@ -31,9 +31,4 @@ object Model {
     scale: Scale
   )
 
-  final case class BeatDuration[A](
-    beats: Int,
-    a: A
-  )
-
 }

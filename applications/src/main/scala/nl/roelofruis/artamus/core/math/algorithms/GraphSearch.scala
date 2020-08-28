@@ -1,4 +1,4 @@
-package nl.roelofruis.artamus.search
+package nl.roelofruis.artamus.core.math.algorithms
 
 import scala.annotation.tailrec
 import scala.collection.mutable
