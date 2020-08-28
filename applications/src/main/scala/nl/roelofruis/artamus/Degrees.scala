@@ -13,6 +13,8 @@ import scala.util.{Failure, Success}
 
 object Degrees extends App {
 
+  import nl.roelofruis.artamus.settings.Printer._
+
   val result = for {
     tuning      <- SettingsLoader.loadTuning
     rnaAnalyser <- RNALoader.loadAnalyser(tuning)
@@ -20,7 +22,7 @@ object Degrees extends App {
     chords      = read(s"applications/charts/${file}.txt")
     chordParser = tuning.parser(chords)
     chordInput  <- chordParser.parseList(chordParser.parseChord, " ")
-    _           = println(chordInput)
+    _           = println(tuning.printChords(chordInput))
     degrees     = rnaAnalyser.nameDegrees(chordInput)
     _           = printDegrees(degrees, tuning)
   } yield ()
@@ -32,7 +34,6 @@ object Degrees extends App {
   }
 
   def printDegrees(option: Option[Graph[RNANode]], tuning: Settings): Unit = {
-    import nl.roelofruis.artamus.settings.Printer._
     option match {
       case None => println("No solution found")
       case Some(graph) =>

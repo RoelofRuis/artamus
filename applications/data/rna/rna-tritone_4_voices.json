@@ -1,0 +1,11 @@
+{
+  "functions": [
+    {
+      "quality": "7",
+      "options": ["b3:major:V7T/II"]
+    }
+  ],
+  "transitions": [
+    {"from": "V7T/II", "to": "IIm7"}
+  ]
+}

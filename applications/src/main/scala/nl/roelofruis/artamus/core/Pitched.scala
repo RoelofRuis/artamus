@@ -10,7 +10,8 @@ object Pitched {
   final case class Degree(
     root: PitchDescriptor,
     quality: Quality,
-    relativeTo: Option[PitchDescriptor] = None
+    relativeTo: Option[PitchDescriptor] = None,
+    tritoneSub: Boolean = false
   )
 
   final case class Quality(

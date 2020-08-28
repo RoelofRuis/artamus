@@ -26,7 +26,8 @@ trait MusicObjectsParser extends MusicPrimitivesParser {
     val degree = for {
       descriptor <- parseDegreeDescriptor
       quality <- parseQuality
-    } yield Degree(descriptor, quality)
+      isTritoneSub = buffer.has("T")
+    } yield Degree(descriptor, quality, None, isTritoneSub)
 
     if (buffer.has("/")) {
       for {

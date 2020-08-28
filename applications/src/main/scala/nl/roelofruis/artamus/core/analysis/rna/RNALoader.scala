@@ -56,7 +56,7 @@ object RNALoader {
       }.invert
 
     for {
-      textSettings <- File.load[TextRNASettings]("applications/data/rna/system_settings.json")
+      textSettings <- File.load[TextRNASettings]("applications/data/rna/settings.json")
       (functions, transitions) <- parseRulesFiles(textSettings.rulesFiles)
     } yield Analyser(
       tuning,

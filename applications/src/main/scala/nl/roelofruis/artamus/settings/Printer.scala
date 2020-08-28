@@ -14,9 +14,10 @@ object Printer {
 
     def printDegree(degree: Degree): String = {
       val descriptor = printDegreeDescriptor(degree.root) + printQuality(degree.quality)
+      val tritoneSub = if (degree.tritoneSub) "T" else ""
       degree.relativeTo match {
         case None => descriptor
-        case Some(relative) => descriptor + "/" + printDegreeDescriptor(relative)
+        case Some(relative) => descriptor + tritoneSub + "/" + printDegreeDescriptor(relative)
       }
     }
 
