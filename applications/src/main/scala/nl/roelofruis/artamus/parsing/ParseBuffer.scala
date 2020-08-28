@@ -87,7 +87,7 @@ private [parsing] class ParseBuffer private (
         (atLeast, atMost) match {
           case (None, None) => Success(())
           case (None, Some(upper)) =>
-            if (v <= upper) Success(()) else error(s"Excpected at most $atMost [$target]")
+            if (v <= upper) Success(()) else error(s"Expected at most $atMost [$target]")
           case (Some(lower), None) =>
             if (v >= lower) Success(()) else error(s"Expected at least $atLeast [$target]")
           case (Some(lower), Some(upper)) =>
