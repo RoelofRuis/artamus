@@ -1,6 +1,7 @@
 package nl.roelofruis.artamus.parsing
 
 import nl.roelofruis.artamus.core.Pitched.{Quality, Scale}
+import nl.roelofruis.artamus.core.Temporal.Metre
 
 import scala.util.Try
 
@@ -24,9 +25,10 @@ object Model {
     val qualityMap: Map[String, Quality]
   }
 
-  trait TemporalPrimitives {
+  trait Temporal {
     val textBarLine: String
     val textBeatIndication: String
+    val defaultMetre: Metre
   }
 
 }

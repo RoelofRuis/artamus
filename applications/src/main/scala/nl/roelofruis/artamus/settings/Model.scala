@@ -2,7 +2,7 @@ package nl.roelofruis.artamus.settings
 
 import nl.roelofruis.artamus.core.Pitched.{Quality, Scale}
 import nl.roelofruis.artamus.core.Temporal.Metre
-import nl.roelofruis.artamus.parsing.Model.{PitchedObjects, PitchedPrimitives, TemporalPrimitives}
+import nl.roelofruis.artamus.parsing.Model.{PitchedObjects, PitchedPrimitives, Temporal}
 
 object Model {
 
@@ -19,6 +19,6 @@ object Model {
     scaleMap: Map[String, Scale],
     qualityMap: Map[String, Quality],
     defaultMetre: Metre,
-  ) extends PitchedPrimitives with PitchedObjects with TemporalPrimitives
+  ) extends PitchedPrimitives with PitchedObjects with Temporal
 
 }

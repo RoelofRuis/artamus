@@ -1,10 +1,11 @@
 package nl.roelofruis.artamus.parsing
 
 import nl.roelofruis.artamus.core.Pitched._
-import nl.roelofruis.artamus.parsing.Model.{ParseResult, PitchedObjects, PitchedPrimitives, TemporalPrimitives}
+import nl.roelofruis.artamus.core.math.temporal.Window
+import nl.roelofruis.artamus.parsing.Model.{ParseResult, PitchedObjects, PitchedPrimitives, Temporal}
 
 trait MusicObjectsParser extends MusicPrimitivesParser {
-  val symbols: PitchedPrimitives with PitchedObjects with TemporalPrimitives
+  val symbols: PitchedPrimitives with PitchedObjects with Temporal
   val buffer: ParseBuffer
 
   def parseKey: ParseResult[Key] = for {
@@ -44,9 +45,9 @@ trait MusicObjectsParser extends MusicPrimitivesParser {
 
 object MusicObjectsParser {
 
-  def apply(text: String, primitives: PitchedPrimitives with PitchedObjects with TemporalPrimitives): MusicObjectsParser = {
+  def apply(text: String, primitives: PitchedPrimitives with PitchedObjects with Temporal): MusicObjectsParser = {
     new MusicObjectsParser {
-      override val symbols: PitchedPrimitives with PitchedObjects with TemporalPrimitives = primitives
+      override val symbols: PitchedPrimitives with PitchedObjects with Temporal = primitives
       override val buffer: ParseBuffer = ParseBuffer(text)
     }
   }
