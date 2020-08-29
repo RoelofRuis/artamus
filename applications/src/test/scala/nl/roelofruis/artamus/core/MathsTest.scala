@@ -3,7 +3,7 @@ package nl.roelofruis.artamus.core
 import Maths._
 import utest._
 
-object PackageMathTest extends TestSuite {
+object MathsTest extends TestSuite {
 
   val tests: Tests = Tests {
     test("accepts powers of 2") {

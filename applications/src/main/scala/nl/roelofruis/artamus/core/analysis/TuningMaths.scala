@@ -21,31 +21,33 @@ trait TuningMaths {
     .pitchClassSequence
     .zipWithIndex
     .flatMap { case (pitchClass, step) =>
-      Seq(-1, 0, 1).map { accidental => PitchDescriptor(step, pitchClass + accidental) }
+      Seq(-1, 0, 1).map { accidental => pd(step, pitchClass + accidental) }
     }
+
+  def pd(step: Int, pitchClass: Int): PitchDescriptor = {
+    var actualStep = step
+    while (actualStep < 0) actualStep += numSteps
+    var actualPitchClass = pitchClass
+    while (actualPitchClass < 0) actualPitchClass += tuning.numPitchClasses
+    PitchDescriptor(actualStep % numSteps, actualPitchClass % tuning.numPitchClasses)
+  }
 
   implicit class PitchDescriptorMath(descr: PitchDescriptor) {
     def +(that: PitchDescriptor): PitchDescriptor = {
-      val targetStep = (descr.step + that.step) % numSteps
-      val targetPitchClass = (descr.pitchClass + that.pitchClass) % tuning.numPitchClasses
-
-      PitchDescriptor(targetStep, targetPitchClass)
+      pd(descr.step + that.step, descr.pitchClass + that.pitchClass)
     }
 
     def -(that: PitchDescriptor): PitchDescriptor = {
-      val targetStep = ((descr.step - that.step) + numSteps) % numSteps
-      val targetPitchClass = ((descr.pitchClass - that.pitchClass) + tuning.numPitchClasses) % tuning.numPitchClasses
-
-      PitchDescriptor(targetStep, targetPitchClass)
+      pd(descr.step - that.step, descr.pitchClass - that.pitchClass)
     }
 
     def enharmonicEquivalent: Option[PitchDescriptor] = {
       Seq(
-        PitchDescriptor((descr.step - 1 + numSteps) % numSteps, descr.pitchClass),
-        PitchDescriptor((descr.step + 1) % numSteps, descr.pitchClass)
+        pd(descr.step - 1, descr.pitchClass),
+        pd(descr.step + 1, descr.pitchClass)
       ).find { equiv =>
         val pitchClassDifference = Math.abs(tuning.pitchClassSequence(equiv.step) - descr.pitchClass)
-        pitchClassDifference == 1 || pitchClassDifference == 11
+        pitchClassDifference <= 1 || pitchClassDifference == 11
       }
     }
   }
@@ -73,7 +75,7 @@ trait TuningMaths {
     }
 
     def asPitchDescriptors: Seq[PitchDescriptor] = {
-      scale.pitchClassSequence.zipWithIndex.map { case (pitchClass, step) => PitchDescriptor(step, pitchClass) }
+      scale.pitchClassSequence.zipWithIndex.map { case (pitchClass, step) => pd(step, pitchClass) }
     }
   }
 }
