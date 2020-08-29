@@ -1,10 +1,19 @@
 package nl.roelofruis.artamus.core.analysis
 
 import nl.roelofruis.artamus.core.Pitched._
-import nl.roelofruis.artamus.application.Model.Settings // TODO: invert dependencies
+import nl.roelofruis.artamus.core.analysis.TuningMaths.TuningDefinition
+
+object TuningMaths {
+
+  trait TuningDefinition {
+    val pitchClassSequence: List[Int]
+    val numPitchClasses: Int
+  }
+
+}
 
 trait TuningMaths {
-  val tuning: Settings
+  val tuning: TuningDefinition
 
   lazy val numSteps: Int = tuning.pitchClassSequence.size
 

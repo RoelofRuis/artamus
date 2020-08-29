@@ -2,6 +2,7 @@ package nl.roelofruis.artamus.application
 
 import nl.roelofruis.artamus.core.Pitched.{Quality, Scale}
 import nl.roelofruis.artamus.core.Temporal.Metre
+import nl.roelofruis.artamus.core.analysis.TuningMaths.TuningDefinition
 
 import scala.util.Try
 
@@ -44,6 +45,6 @@ object Model {
     scaleMap: Map[String, Scale],
     qualityMap: Map[String, Quality],
     defaultMetre: Metre,
-  ) extends PitchedPrimitives with PitchedObjects with Temporal
+  ) extends PitchedPrimitives with PitchedObjects with Temporal with TuningDefinition
 
 }
