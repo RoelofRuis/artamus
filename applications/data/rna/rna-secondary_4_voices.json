@@ -19,7 +19,6 @@
     {"from": "V7/III", "to": "IIIm7"},
     {"from": "V7/III", "to": "V7/VI"},
     {"from": "V7/IV", "to": "IVM7"},
-    {"from": "V7/V", "to": "IIm7", "weight": 0},
     {"from": "V7/V", "to": "V7"},
     {"from": "V7/VI", "to": "VIm7"},
     {"from": "V7/VI", "to": "VIM7"},
