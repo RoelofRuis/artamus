@@ -1,19 +1,18 @@
 package nl.roelofruis.artamus
 
 import nl.roelofruis.artamus.core.analysis.rna.Model.RNANode
-import nl.roelofruis.artamus.core.analysis.rna.RNALoader
-import nl.roelofruis.artamus.parsing.Model.ParseError
-import nl.roelofruis.artamus.parsing.Parser._
-import nl.roelofruis.artamus.core.math.algorithms.GraphSearch.Graph
-import nl.roelofruis.artamus.settings.Model.Settings
-import nl.roelofruis.artamus.settings.SettingsLoader
+import nl.roelofruis.artamus.application.Model.ParseError
+import nl.roelofruis.artamus.application.Parser._
+import nl.roelofruis.artamus.core.algorithms.GraphSearch.Graph
+import nl.roelofruis.artamus.application.Model.Settings
+import nl.roelofruis.artamus.application.{RNALoader, SettingsLoader}
 
 import scala.io.{Source, StdIn}
 import scala.util.{Failure, Success}
 
 object Degrees extends App {
 
-  import nl.roelofruis.artamus.settings.Printer._
+  import nl.roelofruis.artamus.application.Printer._
 
   val result = for {
     tuning      <- SettingsLoader.loadTuning

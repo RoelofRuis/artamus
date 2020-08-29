@@ -1,7 +1,7 @@
 package nl.roelofruis.artamus.core.analysis
 
 import nl.roelofruis.artamus.core.Pitched._
-import nl.roelofruis.artamus.settings.Model.Settings
+import nl.roelofruis.artamus.application.Model.Settings // TODO: invert dependencies
 
 trait TuningMaths {
   val tuning: Settings

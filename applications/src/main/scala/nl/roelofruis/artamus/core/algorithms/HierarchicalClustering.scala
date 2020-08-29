@@ -1,4 +1,4 @@
-package nl.roelofruis.artamus.core.math.algorithms
+package nl.roelofruis.artamus.core.algorithms
 
 import scala.annotation.tailrec
 

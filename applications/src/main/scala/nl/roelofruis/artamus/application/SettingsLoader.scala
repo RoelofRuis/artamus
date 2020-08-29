@@ -1,14 +1,13 @@
-package nl.roelofruis.artamus.settings
+package nl.roelofruis.artamus.application
 
 import nl.roelofruis.artamus.core.Pitched.{Quality, Scale}
-import nl.roelofruis.artamus.parsing.Model.{ParseResult, PitchedPrimitives}
-import nl.roelofruis.artamus.settings.Model.Settings
-import nl.roelofruis.artamus.util.File
+import Model.{ParseResult, PitchedPrimitives}
+import nl.roelofruis.artamus.application.Model.Settings
 import spray.json._
-import nl.roelofruis.artamus.parsing.Parser._
+import Parser._
 
 object SettingsLoader {
-  import nl.roelofruis.artamus.settings.SettingsLoader.FileModel.TextTuning
+  import nl.roelofruis.artamus.application.SettingsLoader.FileModel.TextTuning
 
   def loadTuning: ParseResult[Settings] = {
     for {

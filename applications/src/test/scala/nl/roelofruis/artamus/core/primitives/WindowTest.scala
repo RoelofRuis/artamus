@@ -1,6 +1,5 @@
-package nl.roelofruis.artamus.core.math.temporal
+package nl.roelofruis.artamus.core.primitives
 
-import nl.roelofruis.artamus.core.math.Rational
 import utest._
 
 object WindowTest extends TestSuite {

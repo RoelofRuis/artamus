@@ -1,7 +1,7 @@
-package nl.roelofruis.artamus.settings
+package nl.roelofruis.artamus.application
 
 import nl.roelofruis.artamus.core.Pitched._
-import nl.roelofruis.artamus.settings.Model.Settings
+import nl.roelofruis.artamus.application.Model.Settings
 
 object Printer {
 

@@ -1,6 +1,6 @@
-package nl.roelofruis.artamus.parsing
+package nl.roelofruis.artamus.application
 
-import nl.roelofruis.artamus.parsing.Model.{ParseResult, PitchedObjects, PitchedPrimitives, Temporal}
+import nl.roelofruis.artamus.application.Model.{ParseResult, PitchedObjects, PitchedPrimitives, Temporal}
 
 import scala.util.Try
 

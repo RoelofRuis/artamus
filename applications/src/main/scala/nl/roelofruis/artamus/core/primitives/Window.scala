@@ -1,4 +1,4 @@
-package nl.roelofruis.artamus.core.math.temporal
+package nl.roelofruis.artamus.core.primitives
 
 /** A time window expressed by a position with a duration. The duration might be zero, expressing an instantaneous
   * moment.

@@ -1,11 +1,10 @@
-package nl.roelofruis.artamus.util
+package nl.roelofruis.artamus.application
 
 import java.nio.file.{Files, Paths}
 
-import spray.json.JsonFormat
+import spray.json.{JsonFormat, _}
 
 import scala.util.Try
-import spray.json._
 
 object File extends DefaultJsonProtocol {
   def load[A : JsonFormat](path: String): Try[A] = {

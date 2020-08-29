@@ -1,7 +1,7 @@
-package nl.roelofruis.artamus.parsing
+package nl.roelofruis.artamus.application
 
 import nl.roelofruis.artamus.core.Pitched._
-import nl.roelofruis.artamus.parsing.Model.{ParseResult, PitchedObjects, PitchedPrimitives, Temporal}
+import nl.roelofruis.artamus.application.Model.{ParseResult, PitchedObjects, PitchedPrimitives, Temporal}
 
 trait MusicObjectsParser extends MusicPrimitivesParser {
   val symbols: PitchedPrimitives with PitchedObjects with Temporal

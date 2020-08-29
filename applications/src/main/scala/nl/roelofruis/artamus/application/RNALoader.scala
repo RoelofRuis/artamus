@@ -1,14 +1,13 @@
-package nl.roelofruis.artamus.core.analysis.rna
+package nl.roelofruis.artamus.application
 
+import nl.roelofruis.artamus.application.Model.{ParseResult, Settings}
+import nl.roelofruis.artamus.application.Parser._
+import nl.roelofruis.artamus.core.analysis.rna.Analyser
 import nl.roelofruis.artamus.core.analysis.rna.Model._
-import nl.roelofruis.artamus.parsing.Model.ParseResult
-import nl.roelofruis.artamus.parsing.Parser._
-import nl.roelofruis.artamus.settings.Model.Settings
-import nl.roelofruis.artamus.util.File
 import spray.json._
 
 object RNALoader {
-  import nl.roelofruis.artamus.core.analysis.rna.RNALoader.FileModel.{TextRNAFunction, TextRNARules, TextRNASettings, TextRNATransition}
+  import RNALoader.FileModel.{TextRNAFunction, TextRNARules, TextRNASettings, TextRNATransition}
 
   def loadAnalyser(tuning: Settings): ParseResult[Analyser] = {
     def parseRulesFiles(files: List[String]): ParseResult[(Set[RNAFunction], Set[RNATransition])] = {

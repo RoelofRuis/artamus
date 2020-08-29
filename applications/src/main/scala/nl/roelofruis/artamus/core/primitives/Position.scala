@@ -1,6 +1,4 @@
-package nl.roelofruis.artamus.core.math.temporal
-
-import nl.roelofruis.artamus.core.math.Rational
+package nl.roelofruis.artamus.core.primitives
 
 /** A rational valued position. Its value might be negative.
   *

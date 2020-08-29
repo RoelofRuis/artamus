@@ -1,6 +1,6 @@
 package nl.roelofruis.artamus.core
 
-import nl.roelofruis.artamus.core.math.FractionalPowerOfTwo
+import nl.roelofruis.artamus.core.Maths.FractionalPowerOfTwo
 
 object Temporal {
 

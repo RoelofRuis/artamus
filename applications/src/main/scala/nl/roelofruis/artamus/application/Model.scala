@@ -1,4 +1,4 @@
-package nl.roelofruis.artamus.parsing
+package nl.roelofruis.artamus.application
 
 import nl.roelofruis.artamus.core.Pitched.{Quality, Scale}
 import nl.roelofruis.artamus.core.Temporal.Metre
@@ -30,5 +30,20 @@ object Model {
     val textBeatIndication: String
     val defaultMetre: Metre
   }
+
+  final case class Settings(
+    pitchClassSequence: List[Int],
+    numPitchClasses: Int,
+    textNotes: List[String],
+    textIntervals: List[String],
+    textSharp: String,
+    textFlat: String,
+    textBarLine: String,
+    textBeatIndication: String,
+    textDegrees: List[String],
+    scaleMap: Map[String, Scale],
+    qualityMap: Map[String, Quality],
+    defaultMetre: Metre,
+  ) extends PitchedPrimitives with PitchedObjects with Temporal
 
 }

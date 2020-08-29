@@ -1,16 +1,16 @@
-package nl.roelofruis.artamus.parsing
+package nl.roelofruis.artamus.application
 
-import nl.roelofruis.artamus.parsing.Model.{ParseError, ParseResult}
+import nl.roelofruis.artamus.application.Model.{ParseError, ParseResult}
 
 import scala.util.{Failure, Success}
 
-private[parsing] object ParseBuffer {
+private[application] object ParseBuffer {
 
   def apply(text: String): ParseBuffer = new ParseBuffer(text, 0)
 
 }
 
-private [parsing] class ParseBuffer private (
+private [application] class ParseBuffer private (
   private val text: String,
   private var position: Int = 0
 ) {

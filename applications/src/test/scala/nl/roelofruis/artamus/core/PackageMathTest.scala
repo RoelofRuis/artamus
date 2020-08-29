@@ -1,5 +1,6 @@
-package nl.roelofruis.artamus.core.math
+package nl.roelofruis.artamus.core
 
+import Maths._
 import utest._
 
 object PackageMathTest extends TestSuite {
