@@ -2,10 +2,14 @@
   "functions": [
     {
       "quality": "7",
-      "options": ["b3:major:V7T/II"]
+      "options": ["b2:major:V7T", "b3:major:V7T/II"]
     }
   ],
   "transitions": [
+    {"from": "IM7", "to": "V7T"},
+    {"from": "IM7", "to": "V7T/II"},
+    {"from": "IIm7", "to": "VT7", "weight": 2},
+    {"from": "V7T", "to": "IM7", "weight": 3},
     {"from": "V7T/II", "to": "IIm7"}
   ]
 }
