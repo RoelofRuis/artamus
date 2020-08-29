@@ -3,6 +3,7 @@
   "unknownKeyChangePenalty": -10,
   "unknownTransitionPenalty": -4,
   "keyChanges": [
+    {"from": "major", "to": "1:minor", "weight": -5},
     {"from": "major", "to": "4:major", "weight": -5},
     {"from": "major", "to": "b3:major", "weight": -5},
     {"from": "major", "to": "3:major", "weight": -5},
@@ -10,7 +11,8 @@
     {"from": "major", "to": "6:major", "weight": -5},
     {"from": "major", "to": "b6:minor", "weight": -5},
     {"from": "major", "to": "b6:major", "weight": -5},
-    {"from": "minor", "to": "b3:major", "weight": -5}
+    {"from": "minor", "to": "b3:major", "weight": -5},
+    {"from": "minor", "to": "1:major", "weight": -5}
   ],
   "rulesFiles": [
     "rna-major_4_voices",
