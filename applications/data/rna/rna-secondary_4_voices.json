@@ -11,6 +11,8 @@
   ],
   "transitions": [
     {"from": "IM7", "to": "V7/IV"},
+    {"from": "IM7", "to": "V7/V"},
+    {"from": "IM7", "to": "V7/VI"},
     {"from": "IIIm7", "to": "V7/II"},
     {"from": "V7/II", "to": "IIm7"},
     {"from": "V7/II", "to": "V7/V"},
