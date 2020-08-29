@@ -53,7 +53,7 @@ trait MusicPrimitivesParser {
 
   def parseMetre: ParseResult[Metre] = for {
     num <- buffer.findIndex(Seq("1", "2", "3", "4", "5"))
-    _ <- buffer.expectExactly("/", 1)
+    _ <- buffer.expectOne("/")
     denom <- buffer.findIndex(Seq("1", "2", "4", "8"))
   } yield Metre(Seq(PulseGroup(denom, num)))
 

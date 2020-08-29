@@ -50,9 +50,18 @@ case class Analyser(tuning: Settings, rules: RNARules) extends TuningMaths {
           .transitions
           .filter(transition => transition.from == currentNode.degree && transition.to == hypothesis.degree)
           .map(transition => hypothesisToNode(hypothesis, transition.weight))
-        if (newStates.isEmpty && currentNode.degree.relativeTo.isEmpty) Seq(hypothesisToNode(hypothesis, rules.penalties.unknownTransition))
+        if (newStates.isEmpty && currentNode.degree.relativeTo.isEmpty) Seq(hypothesisToNode(hypothesis, rules.unknownTransitionPenalty))
         else newStates
-      case Some(_) => Seq(hypothesisToNode(hypothesis, rules.penalties.keyChange))
+      case Some(currentNode) =>
+        val keyChanges = rules
+          .keyChanges
+          .filter { keyChange =>
+            val targetRoot = hypothesis.key.root - currentNode.key.root
+            Key(targetRoot, hypothesis.key.scale) == keyChange.key
+          }
+          .map(keyChange => hypothesisToNode(hypothesis, keyChange.weight))
+        if (keyChanges.isEmpty) Seq(hypothesisToNode(hypothesis, rules.unknownKeyChangePenalty))
+        else keyChanges
     }
   }
 

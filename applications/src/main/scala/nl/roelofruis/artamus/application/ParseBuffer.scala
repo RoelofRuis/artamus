@@ -78,8 +78,8 @@ private [application] class ParseBuffer private (
     Success(())
   }
 
+  def expectOne(target: String): ParseResult[Unit] = expectExactly(target, 1)
   def expectExactly(target: String, num: Int): ParseResult[Unit] = expect(target, Some(num), Some(num))
-
   def expect(target: String, atLeast: Option[Int] = None, atMost: Option[Int] = None): ParseResult[Unit] = {
     count(target) match {
       case Failure(ex) => Failure(ex)

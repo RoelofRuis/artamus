@@ -2,12 +2,13 @@ package nl.roelofruis.artamus.application
 
 import nl.roelofruis.artamus.application.Model.{ParseResult, Settings}
 import nl.roelofruis.artamus.application.Parser._
+import nl.roelofruis.artamus.core.Pitched.Key
 import nl.roelofruis.artamus.core.analysis.rna.Analyser
 import nl.roelofruis.artamus.core.analysis.rna.Model._
 import spray.json._
 
 object RNALoader {
-  import RNALoader.FileModel.{TextRNAFunction, TextRNARules, TextRNASettings, TextRNATransition}
+  import RNALoader.FileModel.{TextRNAFunction, TextRNAKeyChange, TextRNARules, TextRNASettings, TextRNATransition}
 
   def loadAnalyser(tuning: Settings): ParseResult[Analyser] = {
     def parseRulesFiles(files: List[String]): ParseResult[(Set[RNAFunction], Set[RNATransition])] = {
@@ -42,14 +43,25 @@ object RNALoader {
       }.invert
     }
 
+    def parseKeyChanges(keyChanges: List[TextRNAKeyChange]): ParseResult[List[RNAKeyChange]] = {
+      keyChanges.map { keyChange =>
+        val parser = tuning.parser(keyChange.to)
+        for {
+          interval <- parser.parseInterval
+          _ <- parser.buffer.expectOne(":")
+          scale <- parser.parseScale
+        } yield RNAKeyChange(Key(interval, scale), keyChange.weight)
+      }.invert
+    }
+
     def parseOptions(options: List[String]): ParseResult[List[RNAFunctionOption]] =
       options.map { option =>
         val parser = tuning.parser(option)
         for {
           interval <- parser.parseInterval
-          _ <- parser.buffer.expectExactly(":", 1)
+          _ <- parser.buffer.expectOne(":")
           scale <- parser.parseScale
-          _ <- parser.buffer.expectExactly(":", 1)
+          _ <- parser.buffer.expectOne(":")
           degree <- parser.parseDegree
         } yield RNAFunctionOption(interval, scale, degree)
       }.invert
@@ -57,14 +69,14 @@ object RNALoader {
     for {
       textSettings <- File.load[TextRNASettings]("applications/data/rna/settings.json")
       (functions, transitions) <- parseRulesFiles(textSettings.rulesFiles)
+      keyChanges <- parseKeyChanges(textSettings.keyChanges)
     } yield Analyser(
       tuning,
       RNARules(
         textSettings.numResultsRequired,
-        RNAPenalties(
-          textSettings.penalties.keyChange,
-          textSettings.penalties.unknownTransition
-        ),
+        textSettings.unknownTransitionPenalty,
+        textSettings.unknownKeyChangePenalty,
+        keyChanges,
         functions.toList,
         transitions.toList
       )
@@ -74,12 +86,23 @@ object RNALoader {
   private object FileModel extends DefaultJsonProtocol {
     final case class TextRNASettings(
       numResultsRequired: Int,
-      penalties: TextRNAPenalties,
+      unknownKeyChangePenalty: Int,
+      unknownTransitionPenalty: Int,
+      keyChanges: List[TextRNAKeyChange],
       rulesFiles: List[String]
     )
 
     object TextRNASettings {
-      implicit val rnaSettingsFormat: JsonFormat[TextRNASettings] = jsonFormat3(TextRNASettings.apply)
+      implicit val rnaSettingsFormat: JsonFormat[TextRNASettings] = jsonFormat5(TextRNASettings.apply)
+    }
+
+    final case class TextRNAKeyChange(
+      to: String,
+      weight: Int
+    )
+
+    object TextRNAKeyChange {
+      implicit val rnaKeyChangeFormat: JsonFormat[TextRNAKeyChange] = jsonFormat2(TextRNAKeyChange.apply)
     }
 
     final case class TextRNARules(
@@ -89,15 +112,6 @@ object RNALoader {
 
     object TextRNARules {
       implicit val rnaRulesFormat: JsonFormat[TextRNARules] = jsonFormat2(TextRNARules.apply)
-    }
-
-    final case class TextRNAPenalties(
-      keyChange: Int,
-      unknownTransition: Int
-    )
-
-    object TextRNAPenalties {
-      implicit val rnaPenaltiesFormat: JsonFormat[TextRNAPenalties] = jsonFormat2(TextRNAPenalties.apply)
     }
 
     final case class TextRNAFunction(
