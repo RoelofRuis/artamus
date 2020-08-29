@@ -57,7 +57,8 @@ case class Analyser(tuning: Settings, rules: RNARules) extends TuningMaths {
           .keyChanges
           .filter { keyChange =>
             val targetRoot = hypothesis.key.root - currentNode.key.root
-            Key(targetRoot, hypothesis.key.scale) == keyChange.key
+            val targetRootsMatch = keyChange.keyTo.root.enharmonicEquivalent.contains(targetRoot) || keyChange.keyTo.root == targetRoot
+            keyChange.scaleFrom == currentNode.key.scale && targetRootsMatch && keyChange.keyTo.scale == hypothesis.key.scale
           }
           .map(keyChange => hypothesisToNode(hypothesis, keyChange.weight))
         if (keyChanges.isEmpty) Seq(hypothesisToNode(hypothesis, rules.unknownKeyChangePenalty))

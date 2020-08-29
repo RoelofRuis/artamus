@@ -45,12 +45,14 @@ object RNALoader {
 
     def parseKeyChanges(keyChanges: List[TextRNAKeyChange]): ParseResult[List[RNAKeyChange]] = {
       keyChanges.map { keyChange =>
-        val parser = tuning.parser(keyChange.to)
+        val scaleParser = tuning.parser(keyChange.from)
+        val keyParser = tuning.parser(keyChange.to)
         for {
-          interval <- parser.parseInterval
-          _ <- parser.buffer.expectOne(":")
-          scale <- parser.parseScale
-        } yield RNAKeyChange(Key(interval, scale), keyChange.weight)
+          scaleFrom <- scaleParser.parseScale
+          interval <- keyParser.parseInterval
+          _ <- keyParser.buffer.expectOne(":")
+          scale <- keyParser.parseScale
+        } yield RNAKeyChange(scaleFrom, Key(interval, scale), keyChange.weight)
       }.invert
     }
 
@@ -97,12 +99,13 @@ object RNALoader {
     }
 
     final case class TextRNAKeyChange(
+      from: String,
       to: String,
       weight: Int
     )
 
     object TextRNAKeyChange {
-      implicit val rnaKeyChangeFormat: JsonFormat[TextRNAKeyChange] = jsonFormat2(TextRNAKeyChange.apply)
+      implicit val rnaKeyChangeFormat: JsonFormat[TextRNAKeyChange] = jsonFormat3(TextRNAKeyChange.apply)
     }
 
     final case class TextRNARules(

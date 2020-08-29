@@ -15,7 +15,8 @@ object Model {
   )
 
   final case class RNAKeyChange(
-    key: Key,
+    scaleFrom: Scale,
+    keyTo: Key,
     weight: Int
   )
 
