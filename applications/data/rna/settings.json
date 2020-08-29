@@ -1,8 +1,8 @@
 {
-  "numResultsRequired": 10,
+  "numResultsRequired": 3,
   "penalties": {
-    "keyChange": -5,
-    "unknownTransition": -10
+    "keyChange": -6,
+    "unknownTransition": -3
   },
   "rulesFiles": [
     "rna-major_4_voices",
