@@ -9,7 +9,7 @@ trait MusicObjectsParser extends MusicPrimitivesParser {
 
   def parseKey: ParseResult[Key] = for {
     root <- parsePitchDescriptor
-    _ <- buffer.ignore(" ")
+    _ <- buffer.skipSpaces
     scale <- parseScale
   } yield Key(root, scale)
 

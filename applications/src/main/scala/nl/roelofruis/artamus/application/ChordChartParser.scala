@@ -17,13 +17,17 @@ case class ChordChartParser(
 
     def parseBars(barList: Seq[Seq[Chord]]): ParseResult[Seq[Seq[Chord]]] = {
       if (parser.buffer.has(tuning.textBarLine)) {
-        parser.buffer.ignore(" ")
+        parser.buffer.skipSpaces
         if (parser.buffer.isExhausted) Success(barList)
         else parseBars(barList :+ Seq())
+      } else if (parser.buffer.has(tuning.textRepeatMark)) {
+        parser.buffer.skipSpaces
+        val Seq(bar, _) = barList.takeRight(2)
+        parseBars(barList.dropRight(1) :+ bar)
       } else for {
-        _ <- parser.buffer.ignore(" ")
+        _ <- parser.buffer.skipSpaces
         chord <- parser.parseChord
-        _ <- parser.buffer.ignore(" ")
+        _ <- parser.buffer.skipSpaces
         bars <- parseBars(barList.dropRight(1) :+ (barList.last :+ chord))
       } yield bars
     }

@@ -40,7 +40,7 @@ trait MusicPrimitivesParser {
       else {
         val parseResult = for {
           res <- parse
-          _ <- buffer.ignore(separator)
+          _ <- buffer.skip(separator)
         } yield res
         parseResult match {
           case Success(a) => loop(res :+ a)
