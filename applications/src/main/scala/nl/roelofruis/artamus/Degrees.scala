@@ -48,7 +48,7 @@ object Degrees extends App {
   }
 
   def printChart(chart: Seq[(Duration, Chord)], tuning: Settings): String = {
-    chart.map { case (duration, chord) => s"${duration.v} ${tuning.printChord(chord)}"}.mkString("\n")
+    chart.map { case (duration, chord) => s"${tuning.printChord(chord)} - ${duration.v}"}.mkString(", ")
   }
 
   def read(path: String): String = {
