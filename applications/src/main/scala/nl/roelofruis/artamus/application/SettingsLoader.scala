@@ -23,7 +23,7 @@ object SettingsLoader {
       textTuning.textSharp,
       textTuning.textFlat,
       textTuning.textBarLine,
-      textTuning.textBeatIndication,
+      textTuning.textRepeatMark,
       textTuning.textDegrees,
       scaleMap,
       qualityMap,
@@ -76,7 +76,7 @@ object SettingsLoader {
       textSharp: String,
       textFlat: String,
       textBarLine: String,
-      textBeatIndication: String,
+      textRepeatMark: String,
       textQualities: List[TextQuality],
       textScales: List[TextScale]
     ) extends PitchedPrimitives

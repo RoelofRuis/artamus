@@ -8,7 +8,7 @@ import nl.roelofruis.artamus.core.primitives.Duration
 
 import scala.util.{Failure, Success}
 
-class ChordChartParser(
+case class ChordChartParser(
   tuning: PitchedPrimitives with PitchedObjects with TemporalSettings
 ) extends TemporalMaths {
 
@@ -28,7 +28,7 @@ class ChordChartParser(
       } yield bars
     }
 
-    parseBars(Seq(Seq())).flatMap { bars =>
+    val chordsPerBar = parseBars(Seq(Seq())).flatMap { bars =>
       val chordsWithDuration = bars.map { bar =>
         tuning.defaultMetre
           .divide(bar.size)
@@ -36,6 +36,15 @@ class ChordChartParser(
       }
       if ( ! chordsWithDuration.forall(_.isDefined)) Failure(ParseError("Unable to determine chord length", text))
       else Success(chordsWithDuration.collect { case Some(x) => x }.flatten)
+    }
+
+    chordsPerBar.map { chords =>
+      chords.foldRight(Seq[(Duration, Chord)]()) {
+        case ((duration, chord), Seq()) => Seq((duration, chord))
+        case ((duration, chord), acc) if (acc.last._2 == chord) =>
+          acc.dropRight(1) :+ (Duration(acc.last._1.v + duration.v), acc.last._2)
+        case ((duration, chord), acc) => acc :+ (duration, chord)
+      }
     }
   }
 

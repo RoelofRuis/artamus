@@ -28,7 +28,7 @@ object Model {
 
   trait TemporalSettings {
     val textBarLine: String
-    val textBeatIndication: String
+    val textRepeatMark: String
     val defaultMetre: Metre
   }
 
@@ -40,7 +40,7 @@ object Model {
     textSharp: String,
     textFlat: String,
     textBarLine: String,
-    textBeatIndication: String,
+    textRepeatMark: String,
     textDegrees: List[String],
     scaleMap: Map[String, Scale],
     qualityMap: Map[String, Quality],

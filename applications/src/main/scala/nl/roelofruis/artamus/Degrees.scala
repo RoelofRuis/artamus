@@ -19,7 +19,7 @@ object Degrees extends App {
     rnaAnalyser <- RNALoader.loadAnalyser(tuning)
     file        = StdIn.readLine("Input file\n > ")
     chords      = read(s"applications/charts/${file}.txt")
-    chartParser = new ChordChartParser(tuning)
+    chartParser = ChordChartParser(tuning)
     chordChart  <- chartParser.parseChordChart(chords)
     _           = println(printChart(chordChart, tuning))
     degrees     = rnaAnalyser.nameDegrees(chordChart.map(_._2))

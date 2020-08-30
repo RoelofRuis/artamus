@@ -8,7 +8,7 @@
   "textSharp": "#",
   "textFlat": "b",
   "textBarLine": "|",
-  "textBeatIndication": ".",
+  "textRepeatMark": "%",
   "textQualities": [
     {
       "name": "major",
