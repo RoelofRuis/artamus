@@ -24,7 +24,7 @@ case class ChordChartParser(
         _ <- parser.buffer.ignore(" ")
         chord <- parser.parseChord
         _ <- parser.buffer.ignore(" ")
-        bars <- parseBars(barList.dropRight(1) ++ Seq(barList.last :+ chord))
+        bars <- parseBars(barList.dropRight(1) :+ (barList.last :+ chord))
       } yield bars
     }
 
@@ -39,11 +39,11 @@ case class ChordChartParser(
     }
 
     chordsPerBar.map { chords =>
-      chords.foldRight(Seq[(Duration, Chord)]()) {
-        case ((duration, chord), Seq()) => Seq((duration, chord))
-        case ((duration, chord), acc) if (acc.last._2 == chord) =>
+      chords.foldLeft(Seq[(Duration, Chord)]()) {
+        case (Seq(), (duration, chord)) => Seq((duration, chord))
+        case (acc, (duration, chord)) if (acc.last._2 == chord) =>
           acc.dropRight(1) :+ (Duration(acc.last._1.v + duration.v), acc.last._2)
-        case ((duration, chord), acc) => acc :+ (duration, chord)
+        case (acc, (duration, chord)) => acc :+ (duration, chord)
       }
     }
   }
