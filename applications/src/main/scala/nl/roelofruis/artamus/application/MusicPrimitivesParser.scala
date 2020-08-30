@@ -52,10 +52,10 @@ trait MusicPrimitivesParser {
   }
 
   def parseMetre: ParseResult[Metre] = for {
-    num <- buffer.findIndex(Seq("1", "2", "3", "4", "5"))
+    numPulses <- buffer.findIndex(Seq("1", "2", "3", "4", "5"))
     _ <- buffer.expectOne("/")
-    denom <- buffer.findIndex(Seq("1", "2", "4", "8"))
-  } yield Metre(Seq(PulseGroup(denom, num)))
+    pulseBase <- buffer.findIndex(Seq("1", "2", "4", "8")) // 1 / pow(2, n): The index produces the correct value of n
+  } yield Metre(Seq(PulseGroup(pulseBase, numPulses + 1)))
 
 }
 

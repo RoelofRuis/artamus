@@ -1,6 +1,6 @@
 package nl.roelofruis.artamus.application
 
-import nl.roelofruis.artamus.application.Model.{ParseResult, PitchedObjects, PitchedPrimitives, Temporal}
+import nl.roelofruis.artamus.application.Model.{ParseResult, PitchedObjects, PitchedPrimitives, TemporalSettings}
 
 import scala.util.Try
 
@@ -10,7 +10,7 @@ object Parser {
     def parser(text: String): MusicPrimitivesParser = MusicPrimitivesParser(text, symbols)
   }
 
-  implicit class Objects(symbols: PitchedPrimitives with PitchedObjects with Temporal) {
+  implicit class Objects(symbols: PitchedPrimitives with PitchedObjects with TemporalSettings) {
     def parser(text: String): MusicObjectsParser = MusicObjectsParser(text, symbols)
   }
 

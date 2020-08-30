@@ -18,10 +18,10 @@ private [application] class ParseBuffer private (
   private def state: String = text.slice(position, text.length)
   private def advanceOver(text: String): Unit = position += text.length
   private def error[A](msg: String): ParseResult[A] = {
-    Failure(ParseError(
-      msg,
-      text.patch(position, "<", 0).patch(position + 2, ">", 0)
-    ))
+    var errorIndication = text.patch(position, "<", 0).patch(position + 2, ">", 0)
+    if (position > 10) errorIndication = errorIndication.patch(0, "... ", position - 10)
+    if (position + 12 < text.length) errorIndication = errorIndication.patch(position + 12, " ...", text.length)
+    Failure(ParseError(msg, errorIndication))
   }
 
   def isExhausted: Boolean = position >= text.length

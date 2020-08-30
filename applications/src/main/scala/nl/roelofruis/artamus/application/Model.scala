@@ -26,7 +26,7 @@ object Model {
     val qualityMap: Map[String, Quality]
   }
 
-  trait Temporal {
+  trait TemporalSettings {
     val textBarLine: String
     val textBeatIndication: String
     val defaultMetre: Metre
@@ -45,6 +45,6 @@ object Model {
     scaleMap: Map[String, Scale],
     qualityMap: Map[String, Quality],
     defaultMetre: Metre,
-  ) extends PitchedPrimitives with PitchedObjects with Temporal with TuningDefinition
+  ) extends PitchedPrimitives with PitchedObjects with TemporalSettings with TuningDefinition
 
 }
