@@ -9,7 +9,7 @@ object GraphSearch {
     val weight: Int
   }
 
-  final case class Graph[N <: Node](stateList: Seq[N]) extends Ordered[Graph[N]] {
+  private final case class Graph[N <: Node](stateList: Seq[N]) extends Ordered[Graph[N]] {
     val score: Int = stateList.foldRight(0) { case (state, sum) => sum + state.weight}
     override def compare(that: Graph[N]): Int = score.compareTo(that.score)
   }
@@ -19,7 +19,7 @@ object GraphSearch {
     stateSequence: Seq[S],
     findHypotheses: S => Seq[H],
     findTransitions: (Option[N], H) => Seq[N]
-  ): Seq[Graph[N]] = {
+  ): Seq[Seq[N]] = {
     val successes = new mutable.PriorityQueue[Graph[N]]()
     val inputStates = new mutable.PriorityQueue[Graph[N]]()
     inputStates.enqueue(Graph[N](Seq()))
@@ -56,7 +56,7 @@ object GraphSearch {
       }
     }
 
-    search.take(numResultsRequired).toSeq
+    search.take(numResultsRequired).map(_.stateList).toSeq
   }
 
 }

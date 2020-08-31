@@ -3,7 +3,6 @@ package nl.roelofruis.artamus
 import nl.roelofruis.artamus.application.Model.{ParseError, Settings}
 import nl.roelofruis.artamus.application.{ChordChartParser, RNALoader, SettingsLoader}
 import nl.roelofruis.artamus.core.Pitched.Chord
-import nl.roelofruis.artamus.core.algorithms.GraphSearch.Graph
 import nl.roelofruis.artamus.core.analysis.rna.Model.RNANode
 import nl.roelofruis.artamus.core.primitives.Duration
 
@@ -32,12 +31,12 @@ object Degrees extends App {
     case Failure(ex) => throw ex
   }
 
-  def printDegrees(option: Option[Graph[RNANode]], tuning: Settings): Unit = {
+  def printDegrees(option: Option[Seq[RNANode]], tuning: Settings): Unit = {
     option match {
       case None => println("No solution found")
-      case Some(graph) =>
-        println(s" > Total score [${graph.score}] >")
-        graph.stateList.map {
+      case Some(sequence) =>
+        println(s" > Total score [${sequence.map(_.weight).sum}] >")
+        sequence.map {
           case RNANode(chord, degree, key, weight) =>
             val textChord = tuning.printChord(chord)
             val textDegree = tuning.printDegree(degree)
