@@ -8,16 +8,15 @@ import nl.roelofruis.artamus.core.analysis.rna.Model._
 
 case class Analyser(tuning: Settings, rules: RNARules) extends TunedMaths {
 
-  def nameDegrees(chords: Seq[Chord]): Option[Seq[RNANode]] = {
+  def nameDegrees(chords: Seq[Chord]): Option[Array[RNANode]] = {
     GraphSearch.bestFirst(
-      rules.numResultsRequired,
-      chords,
+      rules.maxSolutionsToCheck,
       findPossibleNodes,
-      findTransitions
-    ).headOption
+      scoreTransition
+    )(chords)
   }
 
-  private def findPossibleNodes: Chord => List[RNANodeHypothesis] = chord => {
+  private def findPossibleNodes: Chord => List[RNANode] = chord => {
     rules
       .functions
       .filter(_.quality == chord.quality)
@@ -25,7 +24,7 @@ case class Analyser(tuning: Settings, rules: RNARules) extends TunedMaths {
         function.options.flatMap { option =>
           val degreeRoot = chord.root - option.keyInterval
 
-          val hypothesis = RNANodeHypothesis(
+          val hypothesis = RNANode(
             chord,
             option.explainedAs,
             Key(degreeRoot, option.scale)
@@ -41,30 +40,33 @@ case class Analyser(tuning: Settings, rules: RNARules) extends TunedMaths {
       }
   }
 
-  private def findTransitions: (Option[RNANode], RNANodeHypothesis) => Seq[RNANode] = (current, hypothesis) => {
-    current match {
-      case None => Seq(RNANode(hypothesis.chord, hypothesis.degree, hypothesis.key, 0))
-      case Some(currentNode) if currentNode.key == hypothesis.key =>
-        val newStates = rules
+  private def scoreTransition: (RNANode, RNANode) => Option[Int] = (current, next) => {
+      if (current.key == next.key) {
+        val maxScore = rules
           .transitions
-          .filter(transition => transition.from == currentNode.degree && transition.to == hypothesis.degree)
-          .map(transition => hypothesisToNode(hypothesis, transition.weight))
-        if (newStates.isEmpty && currentNode.degree.relativeTo.isEmpty) Seq(hypothesisToNode(hypothesis, rules.unknownTransitionPenalty))
-        else newStates
-      case Some(currentNode) =>
-        val keyChanges = rules
+          .filter(transition => transition.from == current.degree && transition.to == next.degree)
+          .map(transition => transition.weight)
+          .maxOption
+
+        maxScore match {
+          case None if current.degree.relativeTo.isEmpty => Some(rules.unknownTransitionPenalty)
+          case s => s
+        }
+      } else {
+        val maxScore = rules
           .keyChanges
           .filter { keyChange =>
-            val targetRoot = hypothesis.key.root - currentNode.key.root
+            val targetRoot = next.key.root - current.key.root
             val targetRootsMatch = keyChange.keyTo.root.enharmonicEquivalent.contains(targetRoot) || keyChange.keyTo.root == targetRoot
-            keyChange.scaleFrom == currentNode.key.scale && targetRootsMatch && keyChange.keyTo.scale == hypothesis.key.scale
+            keyChange.scaleFrom == current.key.scale && targetRootsMatch && keyChange.keyTo.scale == next.key.scale
           }
-          .map(keyChange => hypothesisToNode(hypothesis, keyChange.weight))
-        if (keyChanges.isEmpty) Seq(hypothesisToNode(hypothesis, rules.unknownKeyChangePenalty))
-        else keyChanges
+          .map(keyChange => keyChange.weight)
+          .maxOption
+
+        maxScore match {
+          case None => Some(rules.unknownKeyChangePenalty)
+          case s => s
+        }
     }
   }
-
-  private def hypothesisToNode(hyp: RNANodeHypothesis, weight: Int): RNANode = RNANode(hyp.chord, hyp.degree, hyp.key, weight)
-
 }

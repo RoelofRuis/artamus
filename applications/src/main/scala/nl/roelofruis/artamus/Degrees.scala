@@ -31,17 +31,16 @@ object Degrees extends App {
     case Failure(ex) => throw ex
   }
 
-  def printDegrees(option: Option[Seq[RNANode]], tuning: Settings): Unit = {
+  def printDegrees(option: Option[Array[RNANode]], tuning: Settings): Unit = {
     option match {
       case None => println("No solution found")
       case Some(sequence) =>
-        println(s" > Total score [${sequence.map(_.weight).sum}] >")
         sequence.map {
-          case RNANode(chord, degree, key, weight) =>
+          case RNANode(chord, degree, key) =>
             val textChord = tuning.printChord(chord)
             val textDegree = tuning.printDegree(degree)
             val textKey = tuning.printKey(key)
-            s"$textChord: $textDegree in $textKey [$weight]"
+            s"$textChord: $textDegree in $textKey"
         }.foreach(println)
     }
   }

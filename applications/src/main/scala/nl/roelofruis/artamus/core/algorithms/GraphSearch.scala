@@ -1,62 +1,51 @@
 package nl.roelofruis.artamus.core.algorithms
 
-import scala.annotation.tailrec
 import scala.collection.mutable
+import scala.reflect.ClassTag
 
 object GraphSearch {
 
-  trait Node {
-    val weight: Int
+  private final case class Solution(path: Array[Int], score: Int) extends Ordered[Solution] {
+    override def compare(that: Solution): Int = score.compare(that.score)
   }
 
-  private final case class Graph[N <: Node](stateList: Seq[N]) extends Ordered[Graph[N]] {
-    val score: Int = stateList.foldRight(0) { case (state, sum) => sum + state.weight}
-    override def compare(that: Graph[N]): Int = score.compareTo(that.score)
-  }
+  def bestFirst[S, N : ClassTag](
+    maxSolutionsToCheck: Int,
+    findNodes: S => Seq[N],
+    scoreTransition: (N, N) => Option[Int]
+  )(stateSequence: Seq[S]): Option[Array[N]] = {
+    var best: Option[Solution] = None
+    var checkedSolutions: Int = 0
 
-  def bestFirst[S, N <: Node, H](
-    numResultsRequired: Int,
-    stateSequence: Seq[S],
-    findHypotheses: S => Seq[H],
-    findTransitions: (Option[N], H) => Seq[N]
-  ): Seq[Seq[N]] = {
-    val successes = new mutable.PriorityQueue[Graph[N]]()
-    val inputStates = new mutable.PriorityQueue[Graph[N]]()
-    inputStates.enqueue(Graph[N](Seq()))
+    val inputStates = new mutable.PriorityQueue[Solution]()
+    val hypotheses: Array[Array[(N, Int)]] = stateSequence.map { state => findNodes(state).zipWithIndex.toArray }.toArray
 
-    // Cache known hypotheses for speedup
-    val hypothesisMap = new mutable.HashMap[S, Seq[H]]()
-    def getHypotheses(state: S): Seq[H] = {
-      hypothesisMap.get(state) match {
-        case Some(hypotheses) => hypotheses
+    hypotheses(0).foreach { case (_, i) => inputStates.enqueue(Solution(Array(i), 0)) }
+
+    while (inputStates.nonEmpty && checkedSolutions < maxSolutionsToCheck) {
+      val bestSolution = inputStates.dequeue()
+      val pathIndex = bestSolution.path.length
+
+      hypotheses.lift(pathIndex) match {
         case None =>
-          val hypotheses = findHypotheses(state)
-          hypothesisMap.put(state, hypotheses)
-          hypotheses
+          checkedSolutions += 1
+          best match {
+            case None => best = Some(bestSolution)
+            case Some(previous) if bestSolution.score > previous.score => best = Some(bestSolution)
+            case _ =>
+          }
+        case Some(nodes) =>
+          nodes.map { case (next, i) =>
+            val current = hypotheses(pathIndex - 1)(bestSolution.path.last)._1
+            scoreTransition(current, next)
+              .map { transitionScore =>
+                inputStates.enqueue(Solution(bestSolution.path :+ i, bestSolution.score + transitionScore))
+              }
+          }
       }
     }
 
-    @tailrec
-    def search: mutable.PriorityQueue[Graph[N]] = {
-      if (inputStates.isEmpty || successes.size >= numResultsRequired) successes
-      else {
-        val graph = inputStates.dequeue()
-        val graphStateSize = graph.stateList.size
-
-        stateSequence.lift(graphStateSize) match {
-          case None => successes.enqueue(graph)
-          case Some(nextState) =>
-            val hypotheses = getHypotheses(nextState)
-
-            hypotheses
-                .flatMap(hyp => findTransitions(graph.stateList.lastOption, hyp))
-                .foreach { state => inputStates.enqueue(Graph(graph.stateList :+ state)) }
-        }
-        search
-      }
-    }
-
-    search.take(numResultsRequired).map(_.stateList).toSeq
+    best.map { case Solution(path, _) => path.zipWithIndex.map { case (n, m) => hypotheses.apply(m).apply(n)._1 }}
   }
 
 }

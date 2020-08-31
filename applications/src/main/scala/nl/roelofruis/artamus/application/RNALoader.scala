@@ -75,7 +75,7 @@ object RNALoader {
     } yield Analyser(
       tuning,
       RNARules(
-        textSettings.numResultsRequired,
+        textSettings.maxSolutionsToCheck,
         textSettings.unknownTransitionPenalty,
         textSettings.unknownKeyChangePenalty,
         keyChanges,
@@ -87,7 +87,7 @@ object RNALoader {
 
   private object FileModel extends DefaultJsonProtocol {
     final case class TextRNASettings(
-      numResultsRequired: Int,
+      maxSolutionsToCheck: Int,
       unknownKeyChangePenalty: Int,
       unknownTransitionPenalty: Int,
       keyChanges: List[TextRNAKeyChange],

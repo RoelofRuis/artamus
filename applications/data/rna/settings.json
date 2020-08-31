@@ -1,5 +1,5 @@
 {
-  "numResultsRequired": 10,
+  "maxSolutionsToCheck": 10000,
   "unknownKeyChangePenalty": -10,
   "unknownTransitionPenalty": -4,
   "keyChanges": [
