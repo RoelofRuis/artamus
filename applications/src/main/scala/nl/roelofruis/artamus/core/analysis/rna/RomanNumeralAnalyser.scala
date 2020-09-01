@@ -6,7 +6,7 @@ import nl.roelofruis.artamus.core.algorithms.GraphSearch
 import nl.roelofruis.artamus.core.analysis.TunedMaths
 import nl.roelofruis.artamus.core.analysis.rna.Model._
 
-case class Analyser(tuning: Settings, rules: RNARules) extends TunedMaths {
+case class RomanNumeralAnalyser(tuning: Settings, rules: RNARules) extends TunedMaths {
 
   def nameDegrees(chords: Seq[Chord]): Option[Array[RNANode]] = {
     GraphSearch.bestFirst(
@@ -16,7 +16,7 @@ case class Analyser(tuning: Settings, rules: RNARules) extends TunedMaths {
     )(chords)
   }
 
-  private def findPossibleNodes: Chord => List[RNANode] = chord => {
+  def findPossibleNodes: Chord => List[RNANode] = chord => {
     rules
       .functions
       .filter(_.quality == chord.quality)
@@ -40,7 +40,7 @@ case class Analyser(tuning: Settings, rules: RNARules) extends TunedMaths {
       }
   }
 
-  private def scoreTransition: (RNANode, RNANode) => Option[Int] = (current, next) => {
+  def scoreTransition: (RNANode, RNANode) => Option[Int] = (current, next) => {
       if (current.key == next.key) {
         val maxScore = rules
           .transitions

@@ -1,7 +1,7 @@
 {
   "maxSolutionsToCheck": 10000,
   "unknownKeyChangePenalty": -10,
-  "unknownTransitionPenalty": -3,
+  "unknownTransitionPenalty": -4,
   "keyChanges": [
     {"from": "major", "to": "1:minor", "weight": -5},
     {"from": "major", "to": "4:major", "weight": -5},
