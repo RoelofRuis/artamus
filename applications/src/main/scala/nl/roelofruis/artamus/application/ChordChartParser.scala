@@ -25,7 +25,7 @@ case class ChordChartParser(
         val Seq(previousBar, bar) = barList.takeRight(2)
         if (bar.isEmpty) {
           // in new bar: repeat whole previous bar
-          parseBars(barList.dropRight(1) :+ bar)
+          parseBars(barList.dropRight(1) :+ previousBar)
         } else {
           // in existing bar: repeat previous chord
           parseBars(barList.dropRight(1) :+ (bar :+ bar.last))
