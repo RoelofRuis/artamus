@@ -11,22 +11,22 @@
   ],
   "transitions": [
     {"from": "IM7", "to": "V7/IV"},
-    {"from": "Im7", "to": "V7/IV"},
+    {"from": "I-7", "to": "V7/IV"},
     {"from": "IM7", "to": "V7/V"},
-    {"from": "Im7", "to": "V7/V"},
+    {"from": "I-7", "to": "V7/V"},
     {"from": "IM7", "to": "V7/VI"},
-    {"from": "Im7", "to": "V7/VI"},
-    {"from": "IIm7", "to": "V7/VI"},
-    {"from": "IIIm7", "to": "V7/II"},
-    {"from": "V7/II", "to": "IIm7", "weight": 2},
+    {"from": "I-7", "to": "V7/VI"},
+    {"from": "II-7", "to": "V7/VI"},
+    {"from": "III-7", "to": "V7/II"},
+    {"from": "V7/II", "to": "II-7", "weight": 2},
     {"from": "V7/II", "to": "V7/V"},
-    {"from": "V7/III", "to": "IIIm7", "weight": 2},
+    {"from": "V7/III", "to": "III-7", "weight": 2},
     {"from": "V7/III", "to": "V7/VI"},
     {"from": "V7/IV", "to": "IVM7", "weight": 2},
     {"from": "V7/V", "to": "V7", "weight": 2},
-    {"from": "V7/VI", "to": "VIm7", "weight": 2},
+    {"from": "V7/VI", "to": "VI-7", "weight": 2},
     {"from": "V7/VI", "to": "VIM7", "weight": 2},
     {"from": "V7/VI", "to": "V7/II"},
-    {"from": "VIm7", "to": "V7/V"}
+    {"from": "VI-7", "to": "V7/V"}
   ]
 }

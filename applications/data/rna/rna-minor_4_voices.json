@@ -9,12 +9,12 @@
       "options": ["5:minor:V7", "7:minor:VII7"]
     },
     {
-      "quality": "m7",
-      "options": ["1:minor:Im7", "4:minor:IVm7", "5:minor:Vm7"]
+      "quality": "-7",
+      "options": ["1:minor:I-7", "4:minor:IV-7", "5:minor:V-7"]
     },
     {
-      "quality": "m7b5",
-      "options": ["2:minor:IIm7b5"]
+      "quality": "-7b5",
+      "options": ["2:minor:II-7b5"]
     },
     {
       "quality": "+7",
@@ -22,11 +22,11 @@
     }
   ],
   "transitions": [
-    {"from": "Im7", "to": "Vm7"},
-    {"from": "Im7", "to": "V7"},
-    {"from": "Im7", "to": "IVm7"},
-    {"from": "Im7", "to": "VII7"},
-    {"from": "IIm7b5", "to": "V7", "weight": 2},
-    {"from": "V7", "to": "Im7", "weight": 3}
+    {"from": "I-7", "to": "V-7"},
+    {"from": "I-7", "to": "V7"},
+    {"from": "I-7", "to": "IV-7"},
+    {"from": "I-7", "to": "VII7"},
+    {"from": "II-7b5", "to": "V7", "weight": 2},
+    {"from": "V7", "to": "I-7", "weight": 3}
   ]
 }

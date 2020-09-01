@@ -17,7 +17,7 @@
     },
     {
       "name": "minor",
-      "symbol": "m",
+      "symbol": "-",
       "intervals": "1 b3 5"
     },
     {
@@ -42,12 +42,12 @@
     },
     {
       "name": "minor 7",
-      "symbol": "m7",
+      "symbol": "-7",
       "intervals": "1 b3 5 b7"
     },
     {
       "name": "minor 7 flat 5",
-      "symbol": "m7b5",
+      "symbol": "-7b5",
       "intervals": "1 b3 b5 b7"
     },
     {
