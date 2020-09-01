@@ -14,24 +14,32 @@
     },
     {
       "quality": "dim7",
-      "options": ["7:major:VIIdim7", "b3:major:bIIIdim7"],
+      "options": ["7:major:VIIdim7", "b3:major:bIIIdim7", "b2:major:bIIdim7"],
       "allowEnharmonicEquivalents": true
     },
     {
       "quality": "+7",
       "options": ["5:major:V7"]
+    },
+    {
+      "quality": "6",
+      "options": ["1:major:I6"]
     }
   ],
   "transitions": [
+    {"from": "IM6", "to": "IM7"},
+    {"from": "IM7", "to": "IM6"},
     {"from": "IM7", "to": "II-7"},
     {"from": "IM7", "to": "III-7"},
     {"from": "IM7", "to": "IVM7"},
     {"from": "IM7", "to": "V7"},
     {"from": "IM7", "to": "VI-7"},
     {"from": "IM7", "to": "VIIdim7"},
+    {"from": "bIIdim7", "to": "IM7"},
     {"from": "II-7", "to": "V7", "weight": 2},
     {"from": "II-7", "to": "III-7"},
     {"from": "II-7", "to": "IVM7"},
+    {"from": "II-7", "to": "bIIdim7"},
     {"from": "III-7", "to": "IVM7"},
     {"from": "III-7", "to": "VI-7"},
     {"from": "III-7", "to": "bIIIdim7"},
@@ -40,6 +48,7 @@
     {"from": "IVM7", "to": "III-7"},
     {"from": "IVM7", "to": "V7"},
     {"from": "V7", "to": "IM7", "weight": 3},
+    {"from": "V7", "to": "IM6", "weight": 3},
     {"from": "V7", "to": "IVM7"},
     {"from": "VI-7", "to": "IVM7"},
     {"from": "VI-7", "to": "II-7"},
