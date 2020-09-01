@@ -6,7 +6,7 @@
     },
     {
       "quality": "7",
-      "options": ["5:major:V7", "5:minor:V7"]
+      "options": ["4:major:IV7", "5:major:V7", "5:minor:V7"]
     },
     {
       "quality": "-7",
@@ -35,6 +35,7 @@
     {"from": "IM7", "to": "V7"},
     {"from": "IM7", "to": "VI-7"},
     {"from": "IM7", "to": "VIIdim7"},
+    {"from": "IM7", "to": "IV7"},
     {"from": "bIIdim7", "to": "IM7"},
     {"from": "II-7", "to": "V7", "weight": 2},
     {"from": "II-7", "to": "III-7"},
@@ -47,8 +48,9 @@
     {"from": "IVM7", "to": "II-7"},
     {"from": "IVM7", "to": "III-7"},
     {"from": "IVM7", "to": "V7"},
+    {"from": "IV7", "to": "IM7"},
     {"from": "V7", "to": "IM7", "weight": 3},
-    {"from": "V7", "to": "IM6", "weight": 3},
+    {"from": "V7", "to": "I6", "weight": 3},
     {"from": "V7", "to": "IVM7"},
     {"from": "VI-7", "to": "IVM7"},
     {"from": "VI-7", "to": "II-7"},
