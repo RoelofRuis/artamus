@@ -22,8 +22,14 @@ case class ChordChartParser(
         else parseBars(barList :+ Seq())
       } else if (parser.buffer.has(tuning.textRepeatMark)) {
         parser.buffer.skipSpaces
-        val Seq(bar, _) = barList.takeRight(2)
-        parseBars(barList.dropRight(1) :+ bar)
+        val Seq(previousBar, bar) = barList.takeRight(2)
+        if (bar.isEmpty) {
+          // in new bar: repeat whole previous bar
+          parseBars(barList.dropRight(1) :+ bar)
+        } else {
+          // in existing bar: repeat previous chord
+          parseBars(barList.dropRight(1) :+ (bar :+ bar.last))
+        }
       } else for {
         _ <- parser.buffer.skipSpaces
         chord <- parser.parseChord
