@@ -1,1 +1,2 @@
-EbM7 C-7 F-7 Edim7 | EbM7 % F-7 Bb7 | Eb6 % Bb-7 Eb7 | AbM7 Db7 |
+EbM7 C-7 F-7 Edim7 | EbM7 % F-7   Bb7 | Eb6 % Bb-7 Eb7 | AbM7   Db7     |
+A-7b5    Ab7       | G-7  % A-7b5 D7  | GM7 % Ab-7 Db7 | GbM7 % F-7 Bb7 |
