@@ -6,7 +6,7 @@ import utest._
 
 object TemporalMathsTest extends TestSuite with TemporalMaths {
 
-  val metre: Metre = Metre(Seq(PulseGroup(4, 4)))
+  val metre: Metre = Metre(Seq(PulseGroup(2, 4))) // represents 4/4th metre
 
   val tests: Tests = Tests {
     test("divide the metre if possible") {
