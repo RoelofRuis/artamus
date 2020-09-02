@@ -12,6 +12,7 @@ import scala.util.{Failure, Success}
 
 object Degrees extends App {
 
+  import nl.roelofruis.artamus.application.AnalysisCSVWriter._
   import nl.roelofruis.artamus.application.Printer._
 
   val result = for {
@@ -23,6 +24,7 @@ object Degrees extends App {
     chordChart  <- chartParser.parseChordChart(chords)
     _           = println(printChart(chordChart, tuning))
     degrees     = rnaAnalyser.nameDegrees(chordChart.map(_._2))
+    _           = tuning.writeCSV(degrees, file)
     _           = printDegrees(degrees, tuning, rnaAnalyser)
   } yield ()
 
