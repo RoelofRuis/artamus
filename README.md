@@ -19,6 +19,4 @@ The blocks represent the separate data models, the arrows represent the transfor
 Rendering sheet music requires `Lilypond` which can be downloaded at:
 http://lilypond.org/download.html
 
-
-
-[Keyboard Reference](docs.keyboard.md)
+[Keyboard Reference](doc/keyboard.md)
