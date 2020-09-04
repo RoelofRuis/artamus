@@ -23,6 +23,8 @@ object Printer {
 
     def printQuality(quality: Quality): String = settings.qualityMap.map(_.swap).getOrElse(quality, "?")
 
+    def printKeyDegree(key: Key): String= settings.printDegreeDescriptor(key.root) + " " + settings.printScale(key.scale)
+
     def printKey(key: Key): String = settings.printNoteDescriptor(key.root) + " " + settings.printScale(key.scale)
 
     def printScale(scale: Scale): String = settings.scaleMap.map(_.swap).getOrElse(scale, "?")

@@ -3,7 +3,7 @@ package nl.roelofruis.artamus
 import nl.roelofruis.artamus.application.Model.{ParseError, Settings}
 import nl.roelofruis.artamus.application.{ChordChartParser, RNALoader, SettingsLoader}
 import nl.roelofruis.artamus.core.Pitched.Chord
-import nl.roelofruis.artamus.core.analysis.rna.Model.RNANode
+import nl.roelofruis.artamus.core.analysis.rna.Model.{RNAAnalysedChord, RNANode}
 import nl.roelofruis.artamus.core.analysis.rna.RomanNumeralAnalyser
 import nl.roelofruis.artamus.core.primitives.Duration
 
@@ -34,17 +34,19 @@ object Degrees extends App {
     case Failure(ex) => throw ex
   }
 
-  def printDegrees(option: Option[Array[RNANode]], tuning: Settings, analyser: RomanNumeralAnalyser): Unit = {
+  def printDegrees(option: Option[Array[RNAAnalysedChord]], tuning: Settings, analyser: RomanNumeralAnalyser): Unit = {
     option match {
       case None => println("No solution found")
       case Some(sequence) =>
         val transitions = sequence
           .sliding(2, 1)
-          .map { case Array(a, b) => (a, b, analyser.scoreTransition(a, b)) }
+          .map { case Array(a, b) => (a, b, analyser.scoreTransition(
+            RNANode(a.chord, a.degree, a.relativeKey), RNANode(b.chord, b.degree, b.relativeKey)))
+          }
           .toSeq
         println(s"Total Score: ${transitions.map(_._3.get).sum}")
         transitions
-          .map { case (RNANode(chord1, degree1, key1), RNANode(chord2, degree2, key2), score) =>
+          .map { case (RNAAnalysedChord(chord1, key1, degree1, _), RNAAnalysedChord(chord2, key2, degree2, _), score) =>
             val textChord1 = tuning.printChord(chord1)
             val textDegree1 = tuning.printDegree(degree1)
             val textKey1 = tuning.printKey(key1)

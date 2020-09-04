@@ -8,12 +8,27 @@ import nl.roelofruis.artamus.core.analysis.rna.Model._
 
 case class RomanNumeralAnalyser(tuning: Settings, rules: RNARules) extends TunedMaths {
 
-  def nameDegrees(chords: Seq[Chord]): Option[Array[RNANode]] = {
-    GraphSearch.bestFirst(
+  def nameDegrees(chords: Seq[Chord]): Option[Array[RNAAnalysedChord]] = {
+    val analysis = GraphSearch.bestFirst(
       rules.maxSolutionsToCheck,
       findPossibleNodes,
       scoreTransition
     )(chords)
+
+    analysis match {
+      case Some(result) if result.length >= 1 =>
+        val firstRoot = result.head.key.root
+        val analysedChords = result.map { node =>
+          RNAAnalysedChord(
+            node.chord,
+            node.key,
+            node.degree,
+            node.key.copy(root = node.key.root - firstRoot)
+          )
+        }
+        Some(analysedChords)
+      case _ => None
+    }
   }
 
   def findPossibleNodes: Chord => List[RNANode] = chord => {

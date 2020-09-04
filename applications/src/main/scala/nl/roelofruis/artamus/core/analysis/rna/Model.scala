@@ -48,4 +48,11 @@ object Model {
     key: Key
   )
 
+  final case class RNAAnalysedChord(
+    chord: Chord,
+    relativeKey: Key,
+    degree: Degree,
+    absoluteKey: Key,
+  )
+
 }
