@@ -9,7 +9,7 @@ object Model {
     unknownTransitionPenalty: Int,
     unknownKeyChangePenalty: Int,
     keyChanges: List[RNAKeyChange],
-    functions: List[RNAFunction],
+    interpretations: List[RNAInterpretation],
     transitions: List[RNATransition]
   )
 
@@ -30,13 +30,13 @@ object Model {
     weight: Int
   )
 
-  final case class RNAFunction(
+  final case class RNAInterpretation(
     quality: Quality,
-    options: List[RNAFunctionOption],
+    options: List[RNAInterpretationOption],
     allowEnharmonicEquivalents: Boolean
   )
 
-  final case class RNAFunctionOption(
+  final case class RNAInterpretationOption(
     keyInterval: PitchDescriptor,
     scale: Scale,
     explainedAs: Degree

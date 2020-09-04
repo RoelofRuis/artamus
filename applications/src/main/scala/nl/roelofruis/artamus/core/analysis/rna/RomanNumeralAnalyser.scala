@@ -18,7 +18,7 @@ case class RomanNumeralAnalyser(tuning: Settings, rules: RNARules) extends Tuned
 
   def findPossibleNodes: Chord => List[RNANode] = chord => {
     rules
-      .functions
+      .interpretations
       .filter(_.quality == chord.quality)
       .flatMap { function =>
         function.options.flatMap { option =>

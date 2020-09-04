@@ -8,18 +8,18 @@ import nl.roelofruis.artamus.core.analysis.rna.Model._
 import spray.json._
 
 object RNALoader {
-  import RNALoader.FileModel.{TextRNAFunction, TextRNAKeyChange, TextRNARules, TextRNASettings, TextRNATransition}
+  import RNALoader.FileModel.{TextRNAInterpretation, TextRNAKeyChange, TextRNARules, TextRNASettings, TextRNATransition}
 
   def loadAnalyser(tuning: Settings): ParseResult[RomanNumeralAnalyser] = {
-    def parseRulesFiles(files: List[String]): ParseResult[(Set[RNAFunction], Set[RNATransition])] = {
+    def parseRulesFiles(files: List[String]): ParseResult[(Set[RNAInterpretation], Set[RNATransition])] = {
       files.map { file =>
         for {
           textRules <- File.load[TextRNARules](s"applications/data/rna/$file.json")
-          functions <- parseFunctions(textRules.functions)
+          interpretations <- parseInterpretations(textRules.interpretations)
           transitions <- parseTransitions(textRules.transitions)
-        } yield (functions, transitions)
-      }.invert.map(_.foldLeft((Set[RNAFunction](), Set[RNATransition]())) {
-        case ((functionsAcc, transitionsAcc), (functions, transitions)) => (functionsAcc ++ functions, transitionsAcc ++ transitions)
+        } yield (interpretations, transitions)
+      }.invert.map(_.foldLeft((Set[RNAInterpretation](), Set[RNATransition]())) {
+        case ((interpretationsAcc, transitionsAcc), (interpretations, transitions)) => (interpretationsAcc ++ interpretations, transitionsAcc ++ transitions)
       })
     }
 
@@ -33,13 +33,13 @@ object RNALoader {
       }.invert
     }
 
-    def parseFunctions(functions: List[TextRNAFunction]): ParseResult[List[RNAFunction]] = {
-      functions.map { textFunction =>
+    def parseInterpretations(interpretations: List[TextRNAInterpretation]): ParseResult[List[RNAInterpretation]] = {
+      interpretations.map { textInterpretation =>
         for {
-          quality <- tuning.parser(textFunction.quality).parseQuality
-          options <- parseOptions(textFunction.options)
-          allowEnharmonicEquivalents = textFunction.allowEnharmonicEquivalents.getOrElse(false)
-        } yield RNAFunction(quality, options, allowEnharmonicEquivalents)
+          quality <- tuning.parser(textInterpretation.quality).parseQuality
+          options <- parseOptions(textInterpretation.options)
+          allowEnharmonicEquivalents = textInterpretation.allowEnharmonicEquivalents.getOrElse(false)
+        } yield RNAInterpretation(quality, options, allowEnharmonicEquivalents)
       }.invert
     }
 
@@ -56,7 +56,7 @@ object RNALoader {
       }.invert
     }
 
-    def parseOptions(options: List[String]): ParseResult[List[RNAFunctionOption]] =
+    def parseOptions(options: List[String]): ParseResult[List[RNAInterpretationOption]] =
       options.map { option =>
         val parser = tuning.parser(option)
         for {
@@ -65,12 +65,12 @@ object RNALoader {
           scale <- parser.parseScale
           _ <- parser.buffer.expectOne(":")
           degree <- parser.parseDegree
-        } yield RNAFunctionOption(interval, scale, degree)
+        } yield RNAInterpretationOption(interval, scale, degree)
       }.invert
 
     for {
       textSettings <- File.load[TextRNASettings]("applications/data/rna/settings.json")
-      (functions, transitions) <- parseRulesFiles(textSettings.rulesFiles)
+      (interpretations, transitions) <- parseRulesFiles(textSettings.rulesFiles)
       keyChanges <- parseKeyChanges(textSettings.keyChanges)
     } yield RomanNumeralAnalyser(
       tuning,
@@ -79,7 +79,7 @@ object RNALoader {
         textSettings.unknownTransitionPenalty,
         textSettings.unknownKeyChangePenalty,
         keyChanges,
-        functions.toList,
+        interpretations.toList,
         transitions.toList
       )
     )
@@ -109,7 +109,7 @@ object RNALoader {
     }
 
     final case class TextRNARules(
-      functions: List[TextRNAFunction],
+      interpretations: List[TextRNAInterpretation],
       transitions: List[TextRNATransition]
     )
 
@@ -117,14 +117,14 @@ object RNALoader {
       implicit val rnaRulesFormat: JsonFormat[TextRNARules] = jsonFormat2(TextRNARules.apply)
     }
 
-    final case class TextRNAFunction(
+    final case class TextRNAInterpretation(
       quality: String,
       options: List[String],
       allowEnharmonicEquivalents: Option[Boolean]
     )
 
-    object TextRNAFunction {
-      implicit val rnafunctionFormat: JsonFormat[TextRNAFunction] = jsonFormat3(TextRNAFunction.apply)
+    object TextRNAInterpretation {
+      implicit val rnaInterpretationFormat: JsonFormat[TextRNAInterpretation] = jsonFormat3(TextRNAInterpretation.apply)
     }
 
     final case class TextRNATransition(

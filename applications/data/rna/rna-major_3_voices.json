@@ -1,5 +1,5 @@
 {
-  "functions": [
+  "interpretations": [
     {
       "quality": "M",
       "options": ["1:major:IM", "4:major:IVM", "5:major:VM"]

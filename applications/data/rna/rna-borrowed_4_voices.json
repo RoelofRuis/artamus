@@ -1,5 +1,5 @@
 {
-  "functions": [
+  "interpretations": [
     {
       "quality": "7",
       "options": ["2:major:II7", "b7:major:bVII7", "b6:major:bVI7"]
