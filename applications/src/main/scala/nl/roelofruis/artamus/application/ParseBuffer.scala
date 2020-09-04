@@ -88,11 +88,11 @@ private [application] class ParseBuffer private (
         (atLeast, atMost) match {
           case (None, None) => Success(())
           case (None, Some(upper)) =>
-            if (v <= upper) Success(()) else error(s"Expected at most $atMost [$target]")
+            if (v <= upper) Success(()) else error(s"Expected `$target` at most $upper times")
           case (Some(lower), None) =>
-            if (v >= lower) Success(()) else error(s"Expected at least $atLeast [$target]")
+            if (v >= lower) Success(()) else error(s"Expected `$target` at least $lower times")
           case (Some(lower), Some(upper)) =>
-            if (v >= lower && v <= upper) Success(()) else error(s"Expected between $atLeast and $atMost [$target]")
+            if (v >= lower && v <= upper) Success(()) else error(s"Expected `$target` between $lower and $upper times")
         }
     }
   }

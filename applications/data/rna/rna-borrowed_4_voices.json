@@ -5,8 +5,13 @@
       "options": ["2:major:II7", "b7:major:bVII7", "b6:major:bVI7"]
     },
     {
-      "quality": "-",
+      "quality": "-7",
       "options": ["4:major:IV-7"]
+    },
+    {
+      "quality": "-7",
+      "options": ["1:major:I-7"],
+      "allowEnharmonicEquivalents": true
     }
   ],
   "transitions": [
@@ -18,6 +23,7 @@
     {"from": "bVI7", "to": "V7"},
     {"from": "bVI7", "to": "bVII7"},
     {"from": "bVII7", "to": "VI-7"},
-    {"from": "bVII7", "to": "IM7"}
+    {"from": "bVII7", "to": "IM7"},
+    {"from": "bVII7", "to": "III-7"}
   ]
 }
