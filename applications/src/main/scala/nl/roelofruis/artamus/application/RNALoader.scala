@@ -3,14 +3,13 @@ package nl.roelofruis.artamus.application
 import nl.roelofruis.artamus.application.Model.{ParseResult, Settings}
 import nl.roelofruis.artamus.application.Parser._
 import nl.roelofruis.artamus.core.Pitched.Key
-import nl.roelofruis.artamus.core.analysis.rna.RomanNumeralAnalyser
 import nl.roelofruis.artamus.core.analysis.rna.Model._
 import spray.json._
 
 object RNALoader {
   import RNALoader.FileModel.{TextRNAInterpretation, TextRNAKeyChange, TextRNARules, TextRNASettings, TextRNATransition}
 
-  def loadAnalyser(tuning: Settings): ParseResult[RomanNumeralAnalyser] = {
+  def loadRules(tuning: Settings): ParseResult[RNARules] = {
     def parseRulesFiles(files: List[String]): ParseResult[(Set[RNAInterpretation], Set[RNATransition])] = {
       files.map { file =>
         for {
@@ -72,16 +71,13 @@ object RNALoader {
       textSettings <- File.load[TextRNASettings]("applications/data/rna/settings.json")
       (interpretations, transitions) <- parseRulesFiles(textSettings.rulesFiles)
       keyChanges <- parseKeyChanges(textSettings.keyChanges)
-    } yield RomanNumeralAnalyser(
-      tuning,
-      RNARules(
-        textSettings.maxSolutionsToCheck,
-        textSettings.unknownTransitionPenalty,
-        textSettings.unknownKeyChangePenalty,
-        keyChanges,
-        interpretations.toList,
-        transitions.toList
-      )
+    } yield RNARules(
+      textSettings.maxSolutionsToCheck,
+      textSettings.unknownTransitionPenalty,
+      textSettings.unknownKeyChangePenalty,
+      keyChanges,
+      interpretations.toList,
+      transitions.toList
     )
   }
 

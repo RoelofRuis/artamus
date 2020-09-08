@@ -17,7 +17,8 @@ object Degrees extends App {
 
   val result = for {
     tuning      <- SettingsLoader.loadTuning
-    rnaAnalyser <- RNALoader.loadAnalyser(tuning)
+    rnaRules <- RNALoader.loadRules(tuning)
+    rnaAnalyser = RomanNumeralAnalyser(tuning, rnaRules)
     file        = StdIn.readLine("Input file\n > ")
     chords      = read(s"applications/charts/${file}.txt")
     chartParser = ChordChartParser(tuning)
