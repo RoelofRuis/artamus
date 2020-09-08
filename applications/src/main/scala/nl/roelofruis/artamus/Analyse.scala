@@ -1,31 +1,29 @@
 package nl.roelofruis.artamus
 
 import nl.roelofruis.artamus.application.Model.Settings
-import nl.roelofruis.artamus.application.{ChordChartParser, RNALoader, SettingsLoader, Application}
+import nl.roelofruis.artamus.application.{Application, ChordChartParser, RNALoader, SettingsLoader}
 import nl.roelofruis.artamus.core.Pitched.Chord
 import nl.roelofruis.artamus.core.analysis.rna.Model.{RNAAnalysedChord, RNANode}
 import nl.roelofruis.artamus.core.analysis.rna.RomanNumeralAnalyser
 import nl.roelofruis.artamus.core.primitives.Duration
 
-import scala.io.{Source, StdIn}
-
 object Analyse extends App {
 
   import nl.roelofruis.artamus.application.AnalysisCSVWriter._
   import nl.roelofruis.artamus.application.Printer._
+  import nl.roelofruis.artamus.application.Reader._
 
   val program = for {
-    tuning      <- SettingsLoader.loadTuning
-    rnaRules    <- RNALoader.loadRules(tuning)
-    rnaAnalyser = RomanNumeralAnalyser(tuning, rnaRules)
-    file        = StdIn.readLine("Input file\n > ")
-    chords      = read(s"applications/charts/${file}.txt")
-    chartParser = ChordChartParser(tuning)
-    chordChart  <- chartParser.parseChordChart(chords)
-    _           = println(printChart(chordChart, tuning))
-    degrees     = rnaAnalyser.nameDegrees(chordChart.map(_._2))
-    _           = tuning.writeCSV(degrees, file)
-    _           = printDegrees(degrees, tuning, rnaAnalyser)
+    tuning         <- SettingsLoader.loadTuning
+    rnaRules       <- RNALoader.loadRules(tuning)
+    rnaAnalyser    = RomanNumeralAnalyser(tuning, rnaRules)
+    (chords, file) <- readFile("applications/charts/{file}.txt")
+    chartParser    = ChordChartParser(tuning)
+    chordChart     <- chartParser.parseChordChart(chords)
+    _              = println(printChart(chordChart, tuning))
+    degrees        = rnaAnalyser.nameDegrees(chordChart.map(_._2))
+    _              = tuning.writeCSV(degrees, file)
+    _              = printDegrees(degrees, tuning, rnaAnalyser)
   } yield ()
 
   Application.run(program)
@@ -56,13 +54,6 @@ object Analyse extends App {
 
   def printChart(chart: Seq[(Duration, Chord)], tuning: Settings): String = {
     chart.map { case (duration, chord) => s"${tuning.printChord(chord)} - ${duration.v}"}.mkString(", ")
-  }
-
-  def read(path: String): String = {
-    val source = Source.fromFile(path)
-    val res = source.getLines().mkString(" ")
-    source.close()
-    res
   }
 
 }

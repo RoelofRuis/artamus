@@ -1,20 +1,18 @@
 package nl.roelofruis.artamus
 
 import nl.roelofruis.artamus.application.Model.Settings
-import nl.roelofruis.artamus.application.Parser._
 import nl.roelofruis.artamus.application.{Application, RNALoader, SettingsLoader}
 import nl.roelofruis.artamus.core.analysis.rna.Model.RNATransition
-
-import scala.io.StdIn
 
 object Db extends App {
 
   import nl.roelofruis.artamus.application.Printer._
+  import nl.roelofruis.artamus.application.Reader._
 
   val program = for {
     tuning      <- SettingsLoader.loadTuning
     rnaRules    <- RNALoader.loadRules(tuning)
-    degree      <- tuning.parser(StdIn.readLine("From degree\n >")).parseDegree
+    degree      <- tuning.readDegree
     result      = rnaRules.transitions.filter { _.from == degree }
     _           = printTransitions(result, tuning)
   } yield ()
