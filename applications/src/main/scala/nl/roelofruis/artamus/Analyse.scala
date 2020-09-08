@@ -1,23 +1,22 @@
 package nl.roelofruis.artamus
 
-import nl.roelofruis.artamus.application.Model.{ParseError, Settings}
-import nl.roelofruis.artamus.application.{ChordChartParser, RNALoader, SettingsLoader}
+import nl.roelofruis.artamus.application.Model.Settings
+import nl.roelofruis.artamus.application.{ChordChartParser, RNALoader, SettingsLoader, Application}
 import nl.roelofruis.artamus.core.Pitched.Chord
 import nl.roelofruis.artamus.core.analysis.rna.Model.{RNAAnalysedChord, RNANode}
 import nl.roelofruis.artamus.core.analysis.rna.RomanNumeralAnalyser
 import nl.roelofruis.artamus.core.primitives.Duration
 
 import scala.io.{Source, StdIn}
-import scala.util.{Failure, Success}
 
-object Degrees extends App {
+object Analyse extends App {
 
   import nl.roelofruis.artamus.application.AnalysisCSVWriter._
   import nl.roelofruis.artamus.application.Printer._
 
-  val result = for {
+  val program = for {
     tuning      <- SettingsLoader.loadTuning
-    rnaRules <- RNALoader.loadRules(tuning)
+    rnaRules    <- RNALoader.loadRules(tuning)
     rnaAnalyser = RomanNumeralAnalyser(tuning, rnaRules)
     file        = StdIn.readLine("Input file\n > ")
     chords      = read(s"applications/charts/${file}.txt")
@@ -29,11 +28,7 @@ object Degrees extends App {
     _           = printDegrees(degrees, tuning, rnaAnalyser)
   } yield ()
 
-  result match {
-    case Success(()) =>
-    case Failure(ParseError(message, input)) => println(s"$message in [$input]")
-    case Failure(ex) => throw ex
-  }
+  Application.run(program)
 
   def printDegrees(option: Option[Array[RNAAnalysedChord]], tuning: Settings, analyser: RomanNumeralAnalyser): Unit = {
     option match {
