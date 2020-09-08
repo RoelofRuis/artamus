@@ -17,7 +17,7 @@ object Db extends App {
     _           = printTransitions(result, tuning)
   } yield ()
 
-  Application.run(Application.maybeQuit(program))
+  Application.runRepeated(program)
 
   def printTransitions(transitions: Seq[RNATransition], tuning: Settings): Unit = {
     transitions.map { transition =>

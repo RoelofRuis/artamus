@@ -1,6 +1,6 @@
 package nl.roelofruis.artamus
 
-import nl.roelofruis.artamus.application.Model.Settings
+import nl.roelofruis.artamus.application.Model.{ParseResult, Settings}
 import nl.roelofruis.artamus.application.{Application, ChordChartParser, RNALoader, SettingsLoader}
 import nl.roelofruis.artamus.core.Pitched.Chord
 import nl.roelofruis.artamus.core.analysis.rna.Model.{RNAAnalysedChord, RNANode}
@@ -13,7 +13,7 @@ object Analyse extends App {
   import nl.roelofruis.artamus.application.Printer._
   import nl.roelofruis.artamus.application.Reader._
 
-  val program = for {
+  def program: ParseResult[Unit] = for {
     tuning         <- SettingsLoader.loadTuning
     rnaRules       <- RNALoader.loadRules(tuning)
     rnaAnalyser    = RomanNumeralAnalyser(tuning, rnaRules)
@@ -26,7 +26,7 @@ object Analyse extends App {
     _              = printDegrees(degrees, tuning, rnaAnalyser)
   } yield ()
 
-  Application.run(program)
+  Application.runRepeated(program)
 
   def printDegrees(option: Option[Array[RNAAnalysedChord]], tuning: Settings, analyser: RomanNumeralAnalyser): Unit = {
     option match {
