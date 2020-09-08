@@ -1,5 +1,7 @@
 package nl.roelofruis.artamus.application
 
+import java.io.FileNotFoundException
+
 import nl.roelofruis.artamus.application.Model.{ParseError, ParseResult, Settings}
 import nl.roelofruis.artamus.core.Pitched.Degree
 
@@ -29,6 +31,8 @@ object Reader {
       val contents = source.getLines().mkString(" ")
       source.close()
       (contents, fileName)
+    }.recoverWith {
+      case _: FileNotFoundException => Failure(ParseError(s"File cannot be found", path))
     }
   }
 
