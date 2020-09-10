@@ -1,7 +1,7 @@
 package nl.roelofruis.artamus.core.analysis.rna
 
-import nl.roelofruis.artamus.core.Pitched.{Chord, Degree, Key, PitchDescriptor, Quality, Scale}
-import nl.roelofruis.artamus.core.primitives.Windowed
+import nl.roelofruis.artamus.core.Containers.Windowed
+import nl.roelofruis.artamus.core.Pitched._
 
 object Model {
 

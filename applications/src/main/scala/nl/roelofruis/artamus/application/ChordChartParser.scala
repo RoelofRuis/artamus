@@ -1,10 +1,11 @@
 package nl.roelofruis.artamus.application
 
-import nl.roelofruis.artamus.application.Model.{ParseError, ParseResult, PitchedObjects, PitchedPrimitives, TemporalSettings}
+import nl.roelofruis.artamus.application.Model._
 import nl.roelofruis.artamus.application.Parser._
+import nl.roelofruis.artamus.core.Containers.Windowed
 import nl.roelofruis.artamus.core.Pitched.Chord
 import nl.roelofruis.artamus.core.analysis.TemporalMaths
-import nl.roelofruis.artamus.core.primitives.{Duration, Position, Windowed}
+import nl.roelofruis.artamus.core.primitives.Position
 
 import scala.util.{Failure, Success}
 

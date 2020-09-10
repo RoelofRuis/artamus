@@ -2,10 +2,10 @@ package nl.roelofruis.artamus
 
 import nl.roelofruis.artamus.application.Model.{ParseResult, Settings}
 import nl.roelofruis.artamus.application.{Application, ChordChartParser, RNALoader, SettingsLoader}
+import nl.roelofruis.artamus.core.Containers.Windowed
 import nl.roelofruis.artamus.core.Pitched.Chord
 import nl.roelofruis.artamus.core.analysis.rna.Model.{RNAAnalysedChord, RNANode}
 import nl.roelofruis.artamus.core.analysis.rna.RomanNumeralAnalyser
-import nl.roelofruis.artamus.core.primitives.{Duration, Windowed}
 
 object Analyse extends App {
 
