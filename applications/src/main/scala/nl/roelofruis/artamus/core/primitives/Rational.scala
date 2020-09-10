@@ -14,6 +14,11 @@ final case class Rational private (n: Int, d: Int) extends Ordered[Rational] {
   def *(that: Rational): Rational = Rational.apply(n * that.n, d * that.d)
 
   def /(a: Int): Rational = Rational.apply(n, d * a)
+  def /(that: Rational): Rational = Rational.apply(n * that.d,d * that.n)
+  def %(that: Rational): Int = {
+    val res = this / that
+    res.n / res.d
+  }
 
   def -(that: Rational): Rational = {
     if (that.n == 0) this

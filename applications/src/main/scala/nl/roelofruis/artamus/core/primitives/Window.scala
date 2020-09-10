@@ -10,7 +10,7 @@ package nl.roelofruis.artamus.core.primitives
   */
 final case class Window(start: Position, duration: Duration) {
 
-  /** @return The absolute position that this window ends*/
+  /** @return The absolute position that this window ends */
   def end: Position = start + duration
 
   /**

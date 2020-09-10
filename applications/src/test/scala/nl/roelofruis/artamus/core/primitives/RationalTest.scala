@@ -99,6 +99,22 @@ object RationalTest extends TestSuite {
         Rational(355, 113).toDouble - 3.1415929 < 1e-7
       )
     }
+    test("division") {
+      assert(
+        Rational(1, 1) / Rational(1, 1) == Rational(1, 1),
+        Rational(2, 1) / Rational(1, 4) == Rational(8, 1),
+        Rational(1, 2) / Rational(1, 4) == Rational(2, 1),
+        Rational(1, 4) / Rational(1, 3) == Rational(3, 4),
+        Rational(3, 4) / Rational(1, 3) == Rational(9, 4)
+      )
+    }
+    test("modulo") {
+      assert(
+        Rational(1, 1) % Rational(1, 1) == 1,
+        Rational(1, 1) % Rational(1, 4) == 4,
+        Rational(1, 8) % Rational(1, 4) == 0,
+      )
+    }
   }
 
 }
