@@ -1,5 +1,8 @@
 package nl.roelofruis.artamus.core
 
+import nl.roelofruis.artamus.core.Containers.Windowed
+import nl.roelofruis.artamus.core.analysis.rna.Model.RNAAnalysedChord
+
 object Pitched {
 
   final case class PitchDescriptor(
@@ -31,5 +34,8 @@ object Pitched {
     root: PitchDescriptor,
     scale: Scale
   )
+
+  type ChordTrack = Seq[Windowed[Chord]]
+  type AnalysedTrack = Seq[Windowed[RNAAnalysedChord]]
 
 }

@@ -3,7 +3,7 @@ package nl.roelofruis.artamus.application
 import nl.roelofruis.artamus.application.Model._
 import nl.roelofruis.artamus.application.Parser._
 import nl.roelofruis.artamus.core.Containers.Windowed
-import nl.roelofruis.artamus.core.Pitched.Chord
+import nl.roelofruis.artamus.core.Pitched.{Chord, ChordTrack}
 import nl.roelofruis.artamus.core.analysis.TemporalMaths
 import nl.roelofruis.artamus.core.primitives.Position
 
@@ -13,7 +13,7 @@ case class ChordChartParser(
   tuning: PitchedPrimitives with PitchedObjects with TemporalSettings
 ) extends TemporalMaths {
 
-  def parseChordChart(text: String): ParseResult[Seq[Windowed[Chord]]] = {
+  def parseChordChart(text: String): ParseResult[ChordTrack] = {
     val parser = tuning.parser(text)
 
     def parseBars(barList: Seq[Seq[Chord]]): ParseResult[Seq[Seq[Chord]]] = {

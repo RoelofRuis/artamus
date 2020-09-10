@@ -9,30 +9,34 @@ import nl.roelofruis.artamus.core.analysis.rna.Model._
 
 case class RomanNumeralAnalyser(tuning: Settings, rules: RNARules) extends TunedMaths {
 
-  def nameDegrees(chords: Seq[Windowed[Chord]]): Option[Array[RNAAnalysedChord]] = {
+  type WindowedRNANode = Windowed[RNANode]
+
+  def nameDegrees(chordTrack: ChordTrack): AnalysedTrack = {
     val analysis = GraphSearch.bestFirst(
       rules.maxSolutionsToCheck,
       findPossibleNodes,
       scoreTransition
-    )(chords)
+    )(chordTrack)
 
     analysis match {
       case Some(result) if result.length >= 1 =>
-        val firstRoot = result.head.key.root
-        val analysedChords = result.map { node =>
-          RNAAnalysedChord(
-            node.chord,
-            node.key,
-            node.degree,
-            node.key.copy(root = node.key.root - firstRoot)
+        val firstRoot = result.head.element.key.root
+        result.map { node =>
+          Windowed(
+            node.window,
+            RNAAnalysedChord(
+              node.element.chord,
+              node.element.key,
+              node.element.degree,
+              node.element.key.copy(root = node.element.key.root - firstRoot)
+            )
           )
         }
-        Some(analysedChords)
-      case _ => None
+      case _ => Seq()
     }
   }
 
-  def findPossibleNodes: Windowed[Chord] => List[RNANode] = chord => {
+  def findPossibleNodes: Windowed[Chord] => List[WindowedRNANode] = chord => {
     rules
       .interpretations
       .filter(_.quality == chord.element.quality)
@@ -41,48 +45,53 @@ case class RomanNumeralAnalyser(tuning: Settings, rules: RNARules) extends Tuned
           val degreeRoot = chord.element.root - option.keyInterval
 
           val hypothesis = RNANode(
-            chord,
+            chord.element,
             option.explainedAs,
             Key(degreeRoot, option.scale)
           )
 
           if (function.allowEnharmonicEquivalents) {
             degreeRoot.enharmonicEquivalent match {
-              case None => Seq(hypothesis)
-              case Some(equivalentRoot) => Seq(hypothesis, hypothesis.copy(key=Key(equivalentRoot, option.scale)))
+              case None => Seq(Windowed(chord.window, hypothesis))
+              case Some(equivalentRoot) => Seq(
+                Windowed(chord.window, hypothesis),
+                Windowed(chord.window, hypothesis.copy(key=Key(equivalentRoot, option.scale)))
+              )
             }
-          } else Seq(hypothesis)
+          } else Seq(Windowed(chord.window, hypothesis))
         }
       }
   }
 
-  def scoreTransition: (RNANode, RNANode) => Option[Int] = (current, next) => {
-      if (current.key == next.key) {
-        val maxScore = rules
-          .transitions
-          .filter(transition => transition.from == current.degree && transition.to == next.degree)
-          .map(transition => transition.weight)
-          .maxOption
+  def scoreTransition: (WindowedRNANode, WindowedRNANode) => Option[Int] = (currentWindow, nextWindow) => {
+    val current = currentWindow.element
+    val next = nextWindow.element
+    if (current.key == next.key) {
+      val maxScore = rules
+        .transitions
+        .filter(transition => transition.from == current.degree && transition.to == next.degree)
+        .map(transition => transition.weight)
+        .maxOption
 
-        maxScore match {
-          case None if current.degree.relativeTo.isEmpty => Some(rules.unknownTransitionPenalty)
-          case s => s
+      maxScore match {
+        case None if current.degree.relativeTo.isEmpty => Some(rules.unknownTransitionPenalty)
+        case s => s
+      }
+    } else {
+      val maxScore = rules
+        .keyChanges
+        .filter { keyChange =>
+          val targetRoot = next.key.root - current.key.root
+          val targetRootsMatch = keyChange.keyTo.root.enharmonicEquivalent.contains(targetRoot) || keyChange.keyTo.root == targetRoot
+          keyChange.scaleFrom == current.key.scale && targetRootsMatch && keyChange.keyTo.scale == next.key.scale
         }
-      } else {
-        val maxScore = rules
-          .keyChanges
-          .filter { keyChange =>
-            val targetRoot = next.key.root - current.key.root
-            val targetRootsMatch = keyChange.keyTo.root.enharmonicEquivalent.contains(targetRoot) || keyChange.keyTo.root == targetRoot
-            keyChange.scaleFrom == current.key.scale && targetRootsMatch && keyChange.keyTo.scale == next.key.scale
-          }
-          .map(keyChange => keyChange.weight)
-          .maxOption
+        .map(keyChange => keyChange.weight)
+        .maxOption
 
-        maxScore match {
-          case None => Some(rules.unknownKeyChangePenalty)
-          case s => s
-        }
+      maxScore match {
+        case None => Some(rules.unknownKeyChangePenalty)
+        case s => s
+      }
     }
   }
 }
