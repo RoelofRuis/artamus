@@ -22,6 +22,4 @@ object Position {
   def apply(i: Int): Position = Position(Rational(i))
   def apply(n: Int, d: Int): Position = Position(Rational(n, d))
 
-  def at(duration: Duration): Position = Position(duration.v)
-
 }

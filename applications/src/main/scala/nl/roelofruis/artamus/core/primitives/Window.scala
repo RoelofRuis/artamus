@@ -65,6 +65,19 @@ final case class Window(start: Position, duration: Duration) {
     Window(smallestStart, largestEnd - smallestStart)
   }
 
+  /**
+   * Stretches this window to end on the given position.
+   * If the position is earlier than the end of this window, ends the window earlier. If the position is earlier than
+   * the start of this window, returns an instantaneous window at the current start position.
+   *
+   * @param pos Position
+   * @return Window
+   */
+  def stretchTo(pos: Position): Window = {
+    if (pos < start) Window(start, Duration.ZERO)
+    else Window(start, pos - start)
+  }
+
   /** @return Boolean Whether this window has zero duration. */
   def isInstant: Boolean = duration == Duration.ZERO
 

@@ -5,7 +5,7 @@ import nl.roelofruis.artamus.application.{Application, ChordChartParser, RNALoad
 import nl.roelofruis.artamus.core.Pitched.Chord
 import nl.roelofruis.artamus.core.analysis.rna.Model.{RNAAnalysedChord, RNANode}
 import nl.roelofruis.artamus.core.analysis.rna.RomanNumeralAnalyser
-import nl.roelofruis.artamus.core.primitives.Duration
+import nl.roelofruis.artamus.core.primitives.{Duration, Windowed}
 
 object Analyse extends App {
 
@@ -21,7 +21,7 @@ object Analyse extends App {
     chartParser    = ChordChartParser(tuning)
     chordChart     <- chartParser.parseChordChart(chords)
     _              = println(printChart(chordChart, tuning))
-    degrees        = rnaAnalyser.nameDegrees(chordChart.map(_._2))
+    degrees        = rnaAnalyser.nameDegrees(chordChart.map(_.element))
     _              = tuning.writeCSV(degrees, file)
     _              = printDegrees(degrees, tuning, rnaAnalyser)
   } yield ()
@@ -52,8 +52,8 @@ object Analyse extends App {
     }
   }
 
-  def printChart(chart: Seq[(Duration, Chord)], tuning: Settings): String = {
-    chart.map { case (duration, chord) => s"${tuning.printChord(chord)} - ${duration.v}"}.mkString(", ")
+  def printChart(chart: Seq[Windowed[Chord]], tuning: Settings): String = {
+    chart.map { windowed => s"${tuning.printChord(windowed.element)} - ${windowed.window.duration.v}"}.mkString(", ")
   }
 
 }

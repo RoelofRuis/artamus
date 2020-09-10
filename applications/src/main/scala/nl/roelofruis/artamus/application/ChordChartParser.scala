@@ -4,7 +4,7 @@ import nl.roelofruis.artamus.application.Model.{ParseError, ParseResult, Pitched
 import nl.roelofruis.artamus.application.Parser._
 import nl.roelofruis.artamus.core.Pitched.Chord
 import nl.roelofruis.artamus.core.analysis.TemporalMaths
-import nl.roelofruis.artamus.core.primitives.Duration
+import nl.roelofruis.artamus.core.primitives.{Duration, Position, Windowed}
 
 import scala.util.{Failure, Success}
 
@@ -12,14 +12,14 @@ case class ChordChartParser(
   tuning: PitchedPrimitives with PitchedObjects with TemporalSettings
 ) extends TemporalMaths {
 
-  def parseChordChart(text: String): ParseResult[Seq[(Duration, Chord)]] = {
+  def parseChordChart(text: String): ParseResult[Seq[Windowed[Chord]]] = {
     val parser = tuning.parser(text)
 
     def parseBars(barList: Seq[Seq[Chord]]): ParseResult[Seq[Seq[Chord]]] = {
       if (parser.buffer.has(tuning.textBarLine)) {
         parser.buffer.skipSpaces
-        if (parser.buffer.isExhausted) Success(barList)
-        else parseBars(barList :+ Seq())
+        if (parser.buffer.isExhausted) Success(barList) // All done
+        else parseBars(barList :+ Seq()) // Insert next bar
       } else if (parser.buffer.has(tuning.textRepeatMark)) {
         parser.buffer.skipSpaces
         val Seq(previousBar, bar) = barList.takeRight(2)
@@ -49,13 +49,18 @@ case class ChordChartParser(
     }
 
     chordsPerBar.map { chords =>
-      chords.foldLeft(Seq[(Duration, Chord)]()) {
-        case (Seq(), (duration, chord)) => Seq((duration, chord))
-        case (acc, (duration, chord)) if (acc.last._2 == chord) =>
-          acc.dropRight(1) :+ (Duration(acc.last._1.v + duration.v), acc.last._2)
-        case (acc, (duration, chord)) => acc :+ (duration, chord)
+      chords.foldLeft((Position.ZERO, Seq[Windowed[Chord]]())) {
+        case ((pos, acc), (duration, chord)) if acc.nonEmpty && acc.last.element == chord =>
+          val nextPos = pos + duration
+          val nextSeq = acc.dropRight(1) :+ acc.last.copy(window=acc.last.window.stretchTo(nextPos))
+          (nextPos, nextSeq)
+
+        case ((pos, acc), (duration, chord)) =>
+          val nextPos = pos + duration
+          val nextSeq = acc :+ Windowed(pos, duration, chord)
+          (nextPos, nextSeq)
       }
-    }
+    }.map(_._2)
   }
 
 }
