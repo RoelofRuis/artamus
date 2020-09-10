@@ -5,10 +5,11 @@ import nl.roelofruis.artamus.core.Pitched._
 import nl.roelofruis.artamus.core.algorithms.GraphSearch
 import nl.roelofruis.artamus.core.analysis.TunedMaths
 import nl.roelofruis.artamus.core.analysis.rna.Model._
+import nl.roelofruis.artamus.core.primitives.Windowed
 
 case class RomanNumeralAnalyser(tuning: Settings, rules: RNARules) extends TunedMaths {
 
-  def nameDegrees(chords: Seq[Chord]): Option[Array[RNAAnalysedChord]] = {
+  def nameDegrees(chords: Seq[Windowed[Chord]]): Option[Array[RNAAnalysedChord]] = {
     val analysis = GraphSearch.bestFirst(
       rules.maxSolutionsToCheck,
       findPossibleNodes,
@@ -31,13 +32,13 @@ case class RomanNumeralAnalyser(tuning: Settings, rules: RNARules) extends Tuned
     }
   }
 
-  def findPossibleNodes: Chord => List[RNANode] = chord => {
+  def findPossibleNodes: Windowed[Chord] => List[RNANode] = chord => {
     rules
       .interpretations
-      .filter(_.quality == chord.quality)
+      .filter(_.quality == chord.element.quality)
       .flatMap { function =>
         function.options.flatMap { option =>
-          val degreeRoot = chord.root - option.keyInterval
+          val degreeRoot = chord.element.root - option.keyInterval
 
           val hypothesis = RNANode(
             chord,

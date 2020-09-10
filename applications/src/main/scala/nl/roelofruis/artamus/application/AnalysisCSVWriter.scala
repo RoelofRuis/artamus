@@ -16,7 +16,7 @@ object AnalysisCSVWriter {
         case Some(analysis) =>
           val writer = new PrintWriter(new File(s"applications/charts/$filename.csv"))
           analysis.foreach { rnaNode =>
-            val chordName = settings.printChord(rnaNode.chord)
+            val chordName = settings.printChord(rnaNode.chord.element)
             val degree = settings.printDegree(rnaNode.degree)
             val absoluteKey = settings.printKeyDegree(rnaNode.absoluteKey)
             val relativeKey = settings.printKey(rnaNode.relativeKey)

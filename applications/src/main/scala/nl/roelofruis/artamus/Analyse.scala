@@ -21,7 +21,7 @@ object Analyse extends App {
     chartParser    = ChordChartParser(tuning)
     chordChart     <- chartParser.parseChordChart(chords)
     _              = println(printChart(chordChart, tuning))
-    degrees        = rnaAnalyser.nameDegrees(chordChart.map(_.element))
+    degrees        = rnaAnalyser.nameDegrees(chordChart)
     _              = tuning.writeCSV(degrees, file)
     _              = printDegrees(degrees, tuning, rnaAnalyser)
   } yield ()
@@ -41,10 +41,10 @@ object Analyse extends App {
         println(s"Total Score: ${transitions.map(_._3.get).sum}")
         transitions
           .map { case (RNAAnalysedChord(chord1, key1, degree1, _), RNAAnalysedChord(chord2, key2, degree2, _), score) =>
-            val textChord1 = tuning.printChord(chord1)
+            val textChord1 = tuning.printChord(chord1.element)
             val textDegree1 = tuning.printDegree(degree1)
             val textKey1 = tuning.printKey(key1)
-            val textChord2 = tuning.printChord(chord2)
+            val textChord2 = tuning.printChord(chord2.element)
             val textDegree2 = tuning.printDegree(degree2)
             val textKey2 = tuning.printKey(key2)
             s"$textChord1: $textDegree1 in $textKey1 -> $textChord2: $textDegree2 in $textKey2 [${score.get}]"

@@ -1,6 +1,7 @@
 package nl.roelofruis.artamus.core.analysis.rna
 
 import nl.roelofruis.artamus.core.Pitched.{Chord, Degree, Key, PitchDescriptor, Quality, Scale}
+import nl.roelofruis.artamus.core.primitives.Windowed
 
 object Model {
 
@@ -43,13 +44,13 @@ object Model {
   )
 
   final case class RNANode(
-    chord: Chord,
+    chord: Windowed[Chord],
     degree: Degree,
     key: Key
   )
 
   final case class RNAAnalysedChord(
-    chord: Chord,
+    chord: Windowed[Chord],
     relativeKey: Key,
     degree: Degree,
     absoluteKey: Key,
