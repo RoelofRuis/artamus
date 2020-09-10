@@ -1,8 +1,6 @@
 package nl.roelofruis.artamus.core.primitives
 
-/**
- * Represents any element positioned in time.
- */
+/** Represents any element with a duration, positioned in time. */
 final case class Windowed[A](window: Window, element: A)
 
 object Windowed {

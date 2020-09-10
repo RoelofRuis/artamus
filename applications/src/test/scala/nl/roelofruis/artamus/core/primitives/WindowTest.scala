@@ -33,6 +33,11 @@ object WindowTest extends TestSuite {
       assert( ! window1.isInstant)
       assert( ! window2.isInstant)
     }
+    test("stretches to") {
+      assert(window1.stretchTo(Position(1, 4)) == Window(Position.ZERO, Duration(Rational(1, 4))))
+      assert(window1.stretchTo(Position(1, 16)) == Window(Position.ZERO, Duration(Rational(1, 16))))
+      assert(window2.stretchTo(Position(1,4)) == Window(Position(1, 2), Duration.ZERO))
+    }
   }
 
 }
