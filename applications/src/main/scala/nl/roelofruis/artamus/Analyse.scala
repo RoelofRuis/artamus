@@ -2,10 +2,11 @@ package nl.roelofruis.artamus
 
 import nl.roelofruis.artamus.application.Model.{ParseResult, Settings}
 import nl.roelofruis.artamus.application.{Application, ChordChartParser, RNALoader, SettingsLoader}
-import nl.roelofruis.artamus.core.common.Containers.{Positioned, TemporalInstantMap, TemporalMap, Windowed}
+import nl.roelofruis.artamus.core.common.Containers.{Positioned, TemporalInstantMap, Windowed}
 import nl.roelofruis.artamus.core.common.Position
+import nl.roelofruis.artamus.core.layout.DisplayableMusic
 import nl.roelofruis.artamus.core.track.Layer.ChordLayer
-import nl.roelofruis.artamus.core.track.Pitched.{ChordTrack, RomanNumeralTrack}
+import nl.roelofruis.artamus.core.track.Pitched.ChordTrack
 import nl.roelofruis.artamus.core.track.Temporal.Metre
 import nl.roelofruis.artamus.core.track.Track
 import nl.roelofruis.artamus.core.track.analysis.rna.Model.{RNAAnalysedChord, RNANode}
@@ -28,11 +29,12 @@ object Analyse extends App {
     degrees        = rnaAnalyser.analyse(chordTrack)
     _              = tuning.writeCSV(degrees, file)
     _              = printDegrees(degrees, tuning, rnaAnalyser)
+    displayable    = DisplayableMusic.fromTrack(makeTrack(chordTrack, tuning.defaultMetre))
   } yield ()
 
   Application.runRepeated(program)
 
-  def degreeTrack(chords: ChordTrack, defaultMetre: Metre): Track = {
+  def makeTrack(chords: ChordTrack, defaultMetre: Metre): Track = {
     Track(
       Seq(
         ChordLayer(
