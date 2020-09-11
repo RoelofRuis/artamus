@@ -1,7 +1,8 @@
-package nl.roelofruis.artamus.core.layout
+package nl.roelofruis.artamus.core.layout.algorithms
 
 import nl.roelofruis.artamus.core.common.Containers.Positioned
 import nl.roelofruis.artamus.core.common.Position
+import nl.roelofruis.artamus.core.layout.Glyph
 import nl.roelofruis.artamus.core.track.Temporal.Metre
 
 final case class LayoutDescription[A](

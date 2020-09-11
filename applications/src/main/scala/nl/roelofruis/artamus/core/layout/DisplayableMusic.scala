@@ -8,7 +8,7 @@ final case class DisplayableMusic(staffGroup: StaffGroup)
 
 object DisplayableMusic {
 
-  import DisplayableLayers._
+  import nl.roelofruis.artamus.core.layout.algorithms.DisplayableLayers._
 
   def fromTrack(track: Track): DisplayableMusic = {
     val staffGroup = track.layers

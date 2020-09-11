@@ -1,11 +1,11 @@
-package nl.roelofruis.artamus.core.layout
+package nl.roelofruis.artamus.core.layout.algorithms
 
-import nl.roelofruis.artamus.core.common.Containers.Windowed
+import nl.roelofruis.artamus.core.common.Containers.{Windowed, _}
 import nl.roelofruis.artamus.core.layout.ChordStaffGlyph.{ChordNameGlyph, ChordRestGlyph}
-import nl.roelofruis.artamus.core.layout.Layout.Element
 import nl.roelofruis.artamus.core.layout.Staff.{ChordStaff, StaffGroup}
+import nl.roelofruis.artamus.core.layout.algorithms.Layout.Element
+import nl.roelofruis.artamus.core.layout.ChordStaffGlyph
 import nl.roelofruis.artamus.core.track.Layer.ChordLayer
-import nl.roelofruis.artamus.core.common.Containers._
 
 object DisplayableLayers {
 
