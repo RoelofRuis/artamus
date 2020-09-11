@@ -9,9 +9,9 @@ import nl.roelofruis.artamus.core.analysis.rna.Model._
 
 case class RomanNumeralAnalyser(tuning: Settings, rules: RNARules) extends TunedMaths {
 
-  type WindowedRNANode = Windowed[RNANode]
+  private type WindowedRNANode = Windowed[RNANode]
 
-  def nameDegrees(chordTrack: ChordTrack): AnalysedTrack = {
+  def analyse(chordTrack: ChordTrack): RomanNumeralTrack = {
     val analysis = GraphSearch.bestFirst(
       rules.maxSolutionsToCheck,
       findPossibleNodes,

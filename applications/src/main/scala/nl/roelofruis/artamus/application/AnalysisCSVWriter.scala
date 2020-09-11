@@ -3,7 +3,7 @@ package nl.roelofruis.artamus.application
 import java.io.{File, PrintWriter}
 
 import nl.roelofruis.artamus.application.Model.Settings
-import nl.roelofruis.artamus.core.Pitched.AnalysedTrack
+import nl.roelofruis.artamus.core.Pitched.RomanNumeralTrack
 import nl.roelofruis.artamus.core.primitives.Rational
 
 object AnalysisCSVWriter {
@@ -11,7 +11,7 @@ object AnalysisCSVWriter {
   import Printer._
 
   implicit class SettingsOps(settings: Settings) {
-    def writeCSV(analysedTrack: AnalysedTrack, filename: String): Unit = {
+    def writeCSV(analysedTrack: RomanNumeralTrack, filename: String): Unit = {
       val writer = new PrintWriter(new File(s"applications/charts/$filename.csv"))
       analysedTrack.foreach { rnaNode =>
         val duration = rnaNode.window.duration

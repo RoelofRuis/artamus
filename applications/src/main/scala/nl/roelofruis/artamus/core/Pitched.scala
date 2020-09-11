@@ -36,6 +36,6 @@ object Pitched {
   )
 
   type ChordTrack = Seq[Windowed[Chord]]
-  type AnalysedTrack = Seq[Windowed[RNAAnalysedChord]]
+  type RomanNumeralTrack = Seq[Windowed[RNAAnalysedChord]]
 
 }

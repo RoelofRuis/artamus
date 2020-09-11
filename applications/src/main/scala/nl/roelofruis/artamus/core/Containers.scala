@@ -14,4 +14,6 @@ object Containers {
 
   }
 
+  final case class Positioned[A](position: Position, element: A)
+
 }

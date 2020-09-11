@@ -3,7 +3,7 @@ package nl.roelofruis.artamus
 import nl.roelofruis.artamus.application.Model.{ParseResult, Settings}
 import nl.roelofruis.artamus.application.{Application, ChordChartParser, RNALoader, SettingsLoader}
 import nl.roelofruis.artamus.core.Containers.Windowed
-import nl.roelofruis.artamus.core.Pitched.{AnalysedTrack, ChordTrack}
+import nl.roelofruis.artamus.core.Pitched.{RomanNumeralTrack, ChordTrack}
 import nl.roelofruis.artamus.core.analysis.rna.Model.{RNAAnalysedChord, RNANode}
 import nl.roelofruis.artamus.core.analysis.rna.RomanNumeralAnalyser
 
@@ -21,14 +21,14 @@ object Analyse extends App {
     chartParser    = ChordChartParser(tuning)
     chordTrack     <- chartParser.parseChordChart(chords)
     _              = println(printChart(chordTrack, tuning))
-    degrees        = rnaAnalyser.nameDegrees(chordTrack)
+    degrees        = rnaAnalyser.analyse(chordTrack)
     _              = tuning.writeCSV(degrees, file)
     _              = printDegrees(degrees, tuning, rnaAnalyser)
   } yield ()
 
   Application.runRepeated(program)
 
-  def printDegrees(track: AnalysedTrack, tuning: Settings, analyser: RomanNumeralAnalyser): Unit = {
+  def printDegrees(track: RomanNumeralTrack, tuning: Settings, analyser: RomanNumeralAnalyser): Unit = {
     val transitions = track
       .sliding(2, 1)
       .map { case Seq(a, b) => (a, b, analyser.scoreTransition(

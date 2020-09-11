@@ -1,5 +1,6 @@
 package nl.roelofruis.artamus.core
 
+import nl.roelofruis.artamus.core.Containers.Positioned
 import nl.roelofruis.artamus.core.Maths.FractionalPowerOfTwo
 
 object Temporal {
@@ -12,5 +13,7 @@ object Temporal {
     baseDuration: FractionalPowerOfTwo,
     numberOfBeats: Int
   )
+
+  type MetreSequence = Seq[Positioned[Metre]]
 
 }
