@@ -28,6 +28,14 @@ object Containers {
 
   type TemporalInstantMap[A] = SortedMap[Position, A]
 
+  object TemporalInstantMap {
+    def fromSequence[A](seq: Seq[Positioned[A]]): TemporalInstantMap[A] = {
+      seq.foldLeft(SortedMap[Position, A]()) {
+        case (acc, positioned) => acc.updated(positioned.position, positioned.element)
+      }
+    }
+  }
+
   implicit class TemporalInstantMapOps[A](map: TemporalInstantMap[A]) {
     def iteratePositioned: LazyList[Positioned[A]] = {
       val (_, active) = map.head

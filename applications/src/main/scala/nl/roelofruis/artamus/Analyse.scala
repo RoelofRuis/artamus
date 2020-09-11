@@ -2,8 +2,12 @@ package nl.roelofruis.artamus
 
 import nl.roelofruis.artamus.application.Model.{ParseResult, Settings}
 import nl.roelofruis.artamus.application.{Application, ChordChartParser, RNALoader, SettingsLoader}
-import nl.roelofruis.artamus.core.common.Containers.Windowed
-import nl.roelofruis.artamus.core.track.Pitched.{RomanNumeralTrack, ChordTrack}
+import nl.roelofruis.artamus.core.common.Containers.{Positioned, TemporalInstantMap, TemporalMap, Windowed}
+import nl.roelofruis.artamus.core.common.Position
+import nl.roelofruis.artamus.core.track.Layer.ChordLayer
+import nl.roelofruis.artamus.core.track.Pitched.{ChordTrack, RomanNumeralTrack}
+import nl.roelofruis.artamus.core.track.Temporal.Metre
+import nl.roelofruis.artamus.core.track.Track
 import nl.roelofruis.artamus.core.track.analysis.rna.Model.{RNAAnalysedChord, RNANode}
 import nl.roelofruis.artamus.core.track.analysis.rna.RomanNumeralAnalyser
 
@@ -28,8 +32,19 @@ object Analyse extends App {
 
   Application.runRepeated(program)
 
-  def printDegrees(track: RomanNumeralTrack, tuning: Settings, analyser: RomanNumeralAnalyser): Unit = {
-    val transitions = track
+  def degreeTrack(chords: ChordTrack, defaultMetre: Metre): Track = {
+    Track(
+      Seq(
+        ChordLayer(
+          TemporalInstantMap.fromSequence(Seq(Positioned(Position.ZERO, defaultMetre))),
+          chords
+        )
+      )
+    )
+  }
+
+  def printDegrees(degrees: Seq[Windowed[RNAAnalysedChord]], tuning: Settings, analyser: RomanNumeralAnalyser): Unit = {
+    val transitions = degrees
       .sliding(2, 1)
       .map { case Seq(a, b) => (a, b, analyser.scoreTransition(
         Windowed(a.window, RNANode(a.element.chord, a.element.degree, a.element.relativeKey)),

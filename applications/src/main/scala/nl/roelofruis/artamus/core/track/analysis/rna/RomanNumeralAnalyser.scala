@@ -11,7 +11,7 @@ case class RomanNumeralAnalyser(tuning: Settings, rules: RNARules) extends Tuned
 
   private type WindowedRNANode = Windowed[RNANode]
 
-  def analyse(chordTrack: ChordTrack): RomanNumeralTrack = {
+  def analyse(chordTrack: ChordTrack): Seq[Windowed[RNAAnalysedChord]] = {
     val analysis = GraphSearch.bestFirst(
       rules.maxSolutionsToCheck,
       findPossibleNodes,
