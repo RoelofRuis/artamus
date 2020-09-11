@@ -1,6 +1,6 @@
-package nl.roelofruis.artamus.core.analysis.rna
+package nl.roelofruis.artamus.core.track.analysis.rna
 
-import nl.roelofruis.artamus.core.Pitched._
+import nl.roelofruis.artamus.core.track.Pitched._
 
 object Model {
 

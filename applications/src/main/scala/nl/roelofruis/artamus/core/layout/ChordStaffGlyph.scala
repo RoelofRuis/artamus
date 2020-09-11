@@ -1,6 +1,6 @@
 package nl.roelofruis.artamus.core.layout
 
-import nl.roelofruis.artamus.core.Pitched.{PitchDescriptor, Quality}
+import nl.roelofruis.artamus.core.track.Pitched.{PitchDescriptor, Quality}
 
 sealed trait ChordStaffGlyph
 

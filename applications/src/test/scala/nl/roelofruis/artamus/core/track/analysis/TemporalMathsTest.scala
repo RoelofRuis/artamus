@@ -1,7 +1,7 @@
-package nl.roelofruis.artamus.core.analysis
+package nl.roelofruis.artamus.core.track.analysis
 
-import nl.roelofruis.artamus.core.Temporal.{Metre, PulseGroup}
-import nl.roelofruis.artamus.core.primitives.{Duration, Rational}
+import nl.roelofruis.artamus.core.track.Temporal.{Metre, PulseGroup}
+import nl.roelofruis.artamus.core.common.{Duration, Rational}
 import utest._
 
 object TemporalMathsTest extends TestSuite with TemporalMaths {

@@ -2,8 +2,8 @@ package nl.roelofruis.artamus.application
 
 import nl.roelofruis.artamus.application.Model.{ParseResult, Settings}
 import nl.roelofruis.artamus.application.Parser._
-import nl.roelofruis.artamus.core.Pitched.Key
-import nl.roelofruis.artamus.core.analysis.rna.Model._
+import nl.roelofruis.artamus.core.track.Pitched.Key
+import nl.roelofruis.artamus.core.track.analysis.rna.Model._
 import spray.json._
 
 object RNALoader {

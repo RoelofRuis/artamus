@@ -1,4 +1,4 @@
-package nl.roelofruis.artamus.core
+package nl.roelofruis.artamus.core.common
 
 import scala.math.pow
 

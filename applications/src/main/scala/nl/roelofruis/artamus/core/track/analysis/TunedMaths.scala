@@ -1,7 +1,7 @@
-package nl.roelofruis.artamus.core.analysis
+package nl.roelofruis.artamus.core.track.analysis
 
-import nl.roelofruis.artamus.core.Pitched._
-import nl.roelofruis.artamus.core.analysis.TunedMaths.TuningDefinition
+import nl.roelofruis.artamus.core.track.Pitched._
+import nl.roelofruis.artamus.core.track.analysis.TunedMaths.TuningDefinition
 
 object TunedMaths {
 

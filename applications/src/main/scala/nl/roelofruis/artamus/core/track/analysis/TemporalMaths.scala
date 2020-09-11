@@ -1,8 +1,8 @@
-package nl.roelofruis.artamus.core.analysis
+package nl.roelofruis.artamus.core.track.analysis
 
-import nl.roelofruis.artamus.core.Maths._
-import nl.roelofruis.artamus.core.Temporal.Metre
-import nl.roelofruis.artamus.core.primitives.{Duration, Rational}
+import nl.roelofruis.artamus.core.common.Maths._
+import nl.roelofruis.artamus.core.track.Temporal.Metre
+import nl.roelofruis.artamus.core.common.{Duration, Rational}
 
 trait TemporalMaths {
 

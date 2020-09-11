@@ -1,8 +1,8 @@
 package nl.roelofruis.artamus.core.layout
 
-import nl.roelofruis.artamus.core.Temporal.{Metre, MetreSequence}
-import nl.roelofruis.artamus.core.analysis.TemporalMaths
-import nl.roelofruis.artamus.core.primitives.{Position, Window}
+import nl.roelofruis.artamus.core.track.Temporal.{Metre, MetreSequence}
+import nl.roelofruis.artamus.core.track.analysis.TemporalMaths
+import nl.roelofruis.artamus.core.common.{Position, Window}
 
 final case class PositionedMetre(
   position: Position,

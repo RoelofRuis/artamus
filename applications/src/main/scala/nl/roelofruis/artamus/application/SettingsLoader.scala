@@ -1,6 +1,6 @@
 package nl.roelofruis.artamus.application
 
-import nl.roelofruis.artamus.core.Pitched.{Quality, Scale}
+import nl.roelofruis.artamus.core.track.Pitched.{Quality, Scale}
 import Model.{ParseResult, PitchedPrimitives}
 import nl.roelofruis.artamus.application.Model.Settings
 import spray.json._

@@ -1,8 +1,8 @@
 package nl.roelofruis.artamus.application
 
-import nl.roelofruis.artamus.core.Pitched.{Quality, Scale}
-import nl.roelofruis.artamus.core.Temporal.Metre
-import nl.roelofruis.artamus.core.analysis.TunedMaths.TuningDefinition
+import nl.roelofruis.artamus.core.track.Pitched.{Quality, Scale}
+import nl.roelofruis.artamus.core.track.Temporal.Metre
+import nl.roelofruis.artamus.core.track.analysis.TunedMaths.TuningDefinition
 
 import scala.util.Try
 

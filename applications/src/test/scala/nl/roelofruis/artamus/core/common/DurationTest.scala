@@ -1,4 +1,4 @@
-package nl.roelofruis.artamus.core.primitives
+package nl.roelofruis.artamus.core.common
 
 import utest._
 

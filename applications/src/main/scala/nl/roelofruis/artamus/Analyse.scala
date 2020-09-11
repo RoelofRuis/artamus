@@ -2,10 +2,10 @@ package nl.roelofruis.artamus
 
 import nl.roelofruis.artamus.application.Model.{ParseResult, Settings}
 import nl.roelofruis.artamus.application.{Application, ChordChartParser, RNALoader, SettingsLoader}
-import nl.roelofruis.artamus.core.Containers.Windowed
-import nl.roelofruis.artamus.core.Pitched.{RomanNumeralTrack, ChordTrack}
-import nl.roelofruis.artamus.core.analysis.rna.Model.{RNAAnalysedChord, RNANode}
-import nl.roelofruis.artamus.core.analysis.rna.RomanNumeralAnalyser
+import nl.roelofruis.artamus.core.common.Containers.Windowed
+import nl.roelofruis.artamus.core.track.Pitched.{RomanNumeralTrack, ChordTrack}
+import nl.roelofruis.artamus.core.track.analysis.rna.Model.{RNAAnalysedChord, RNANode}
+import nl.roelofruis.artamus.core.track.analysis.rna.RomanNumeralAnalyser
 
 object Analyse extends App {
 
@@ -50,7 +50,9 @@ object Analyse extends App {
   }
 
   def printChart(chordTrack: ChordTrack, tuning: Settings): String = {
-    chordTrack.map { windowed => s"${tuning.printChord(windowed.element)} - ${windowed.window.duration.v}"}.mkString(", ")
+    chordTrack
+      .map { case (_, windowed) => s"${tuning.printChord(windowed.element)} - ${windowed.window.duration.v}"}
+      .mkString(", ")
   }
 
 }

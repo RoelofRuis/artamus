@@ -1,11 +1,11 @@
-package nl.roelofruis.artamus.core.analysis.rna
+package nl.roelofruis.artamus.core.track.analysis.rna
 
 import nl.roelofruis.artamus.application.Model.Settings
-import nl.roelofruis.artamus.core.Containers.Windowed
-import nl.roelofruis.artamus.core.Pitched._
-import nl.roelofruis.artamus.core.algorithms.GraphSearch
-import nl.roelofruis.artamus.core.analysis.TunedMaths
-import nl.roelofruis.artamus.core.analysis.rna.Model._
+import nl.roelofruis.artamus.core.common.Containers.Windowed
+import nl.roelofruis.artamus.core.track.Pitched._
+import nl.roelofruis.artamus.core.track.algorithms.GraphSearch
+import nl.roelofruis.artamus.core.track.analysis.TunedMaths
+import nl.roelofruis.artamus.core.track.analysis.rna.Model._
 
 case class RomanNumeralAnalyser(tuning: Settings, rules: RNARules) extends TunedMaths {
 
@@ -16,7 +16,7 @@ case class RomanNumeralAnalyser(tuning: Settings, rules: RNARules) extends Tuned
       rules.maxSolutionsToCheck,
       findPossibleNodes,
       scoreTransition
-    )(chordTrack)
+    )(chordTrack.values.toSeq)
 
     analysis match {
       case Some(result) if result.length >= 1 =>

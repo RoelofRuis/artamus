@@ -3,7 +3,7 @@ package nl.roelofruis.artamus.application
 import java.io.FileNotFoundException
 
 import nl.roelofruis.artamus.application.Model.{ParseError, ParseResult, Settings}
-import nl.roelofruis.artamus.core.Pitched.Degree
+import nl.roelofruis.artamus.core.track.Pitched.Degree
 
 import scala.annotation.tailrec
 import scala.io.{Source, StdIn}

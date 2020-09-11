@@ -3,8 +3,8 @@ package nl.roelofruis.artamus.application
 import java.io.{File, PrintWriter}
 
 import nl.roelofruis.artamus.application.Model.Settings
-import nl.roelofruis.artamus.core.Pitched.RomanNumeralTrack
-import nl.roelofruis.artamus.core.primitives.Rational
+import nl.roelofruis.artamus.core.track.Pitched.RomanNumeralTrack
+import nl.roelofruis.artamus.core.common.Rational
 
 object AnalysisCSVWriter {
 

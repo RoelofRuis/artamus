@@ -1,4 +1,4 @@
-package nl.roelofruis.artamus.core.algorithms
+package nl.roelofruis.artamus.core.track.algorithms
 
 import scala.collection.mutable
 import scala.reflect.ClassTag

@@ -1,7 +1,7 @@
 package nl.roelofruis.artamus.application
 
-import nl.roelofruis.artamus.core.Pitched.PitchDescriptor
-import nl.roelofruis.artamus.core.Temporal.{Metre, PulseGroup}
+import nl.roelofruis.artamus.core.track.Pitched.PitchDescriptor
+import nl.roelofruis.artamus.core.track.Temporal.{Metre, PulseGroup}
 import nl.roelofruis.artamus.application.Model.{ParseResult, PitchedPrimitives}
 
 import scala.annotation.tailrec

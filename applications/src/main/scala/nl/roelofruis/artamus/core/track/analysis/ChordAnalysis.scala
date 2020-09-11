@@ -1,7 +1,7 @@
-package nl.roelofruis.artamus.core.analysis
+package nl.roelofruis.artamus.core.track.analysis
 
-import nl.roelofruis.artamus.core.Pitched.{Chord, Degree, PitchDescriptor}
-import nl.roelofruis.artamus.core.analysis.TunedMaths.TuningDefinition
+import nl.roelofruis.artamus.core.track.Pitched.{Chord, Degree, PitchDescriptor}
+import nl.roelofruis.artamus.core.track.analysis.TunedMaths.TuningDefinition
 
 case class ChordAnalysis(tuning: TuningDefinition) extends TunedMaths {
 
