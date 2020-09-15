@@ -36,17 +36,4 @@ object Containers {
     }
   }
 
-  implicit class TemporalInstantMapOps[A](map: TemporalInstantMap[A]) {
-    def iteratePositioned: LazyList[Positioned[A]] = {
-      val (_, active) = map.head
-
-      def loop(searchPos: Position): LazyList[Positioned[A]] = {
-        // TODO: add a duration and make lookup actually work..!
-        Positioned(searchPos, active) #:: loop(searchPos)
-      }
-
-      loop(Position.ZERO)
-    }
-  }
-
 }
