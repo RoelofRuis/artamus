@@ -26,7 +26,7 @@ case class LilypondRenderer(settings: LilypondSettings) {
     // invoke lilypond
     import sys.process._
 
-    val result = s"""lilypond -fpng --output="applications/rendering" -dresolution=300 "${sourceFile.getAbsolutePath}"""".!!
+    val result = s"""lilypond -fpng --output="applications/rendering" -dresolution=${settings.pngResolution} "${sourceFile.getAbsolutePath}"""".!!
 
     println(result)
   }

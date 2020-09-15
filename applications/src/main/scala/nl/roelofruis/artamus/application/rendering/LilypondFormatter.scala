@@ -9,13 +9,13 @@ import nl.roelofruis.artamus.core.layout.Staff.{ChordStaff, StaffGroup}
 import nl.roelofruis.artamus.core.track.Pitched.{PitchDescriptor, Quality}
 import nl.roelofruis.artamus.core.track.analysis.TunedMaths
 
-case class LilypondFormatter(tuning: LilypondSettings) extends TunedMaths {
+case class LilypondFormatter(settings: LilypondSettings) extends TunedMaths {
 
   def write(displayableMusic: DisplayableMusic): String = {
-    s"""|\\version "2.18.1"
+    s"""|\\version "${settings.lilypondVersion}"
         |
         |\\paper {
-        |  #(set-paper-size "a4")
+        |  #(set-paper-size "${settings.paperSize}")
         |}
         |
         |\\header {
@@ -61,24 +61,24 @@ case class LilypondFormatter(tuning: LilypondSettings) extends TunedMaths {
   }
 
   private def writePitchDescriptor(descriptor: PitchDescriptor): String = {
-    val accidentals = descriptor.pitchClass - tuning.pitchClassSequence(descriptor.step)
+    val accidentals = descriptor.pitchClass - settings.pitchClassSequence(descriptor.step)
 
     writeStep(descriptor.step) + writeAccidentals(accidentals, descriptor.step)
   }
 
-  private def writeStep(step: Int): String = tuning.stepNames.lift(step).getOrElse("")
+  private def writeStep(step: Int): String = settings.stepNames.lift(step).getOrElse("")
 
   private def writeAccidentals(i: Int, step: Int): String = {
     i match {
       case -1 if step == 2 || step == 5 => "s"
-      case x if x > 0 => writeAccidentals(i - 1, step) + tuning.sharpSpelling
-      case x if x < 0 => writeAccidentals(i + 1, step) + tuning.flatSpelling
+      case x if x > 0 => writeAccidentals(i - 1, step) + settings.sharpSpelling
+      case x if x < 0 => writeAccidentals(i + 1, step) + settings.flatSpelling
       case 0 => ""
     }
   }
 
-  private def writeDuration(glyphDuration: GlyphDuration): String = s"${2**glyphDuration.n}" + (tuning.dotSpelling * glyphDuration.dots)
+  private def writeDuration(glyphDuration: GlyphDuration): String = s"${2**glyphDuration.n}" + (settings.dotSpelling * glyphDuration.dots)
 
-  private def writeQuality(quality: Quality): String = tuning.qualitySpelling.getOrElse(quality, "")
+  private def writeQuality(quality: Quality): String = settings.qualitySpelling.get(quality).map(":" + _).getOrElse("")
 
 }

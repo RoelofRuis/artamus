@@ -13,11 +13,11 @@ object TunedMaths {
 }
 
 trait TunedMaths {
-  val tuning: TuningDefinition
+  val settings: TuningDefinition
 
-  lazy val numSteps: Int = tuning.pitchClassSequence.size
+  lazy val numSteps: Int = settings.pitchClassSequence.size
 
-  lazy val getAllPitchDescriptors: Seq[PitchDescriptor] = tuning
+  lazy val getAllPitchDescriptors: Seq[PitchDescriptor] = settings
     .pitchClassSequence
     .zipWithIndex
     .flatMap { case (pitchClass, step) =>
@@ -28,8 +28,8 @@ trait TunedMaths {
     var actualStep = step
     while (actualStep < 0) actualStep += numSteps
     var actualPitchClass = pitchClass
-    while (actualPitchClass < 0) actualPitchClass += tuning.numPitchClasses
-    PitchDescriptor(actualStep % numSteps, actualPitchClass % tuning.numPitchClasses)
+    while (actualPitchClass < 0) actualPitchClass += settings.numPitchClasses
+    PitchDescriptor(actualStep % numSteps, actualPitchClass % settings.numPitchClasses)
   }
 
   implicit class PitchDescriptorMath(descr: PitchDescriptor) {
@@ -46,7 +46,7 @@ trait TunedMaths {
         pd(descr.step - 1, descr.pitchClass),
         pd(descr.step + 1, descr.pitchClass)
       ).find { equiv =>
-        val pitchClassDifference = Math.abs(tuning.pitchClassSequence(equiv.step) - descr.pitchClass)
+        val pitchClassDifference = Math.abs(settings.pitchClassSequence(equiv.step) - descr.pitchClass)
         pitchClassDifference <= 1 || pitchClassDifference == 11
       }
     }

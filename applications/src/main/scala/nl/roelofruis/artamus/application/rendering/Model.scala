@@ -6,6 +6,9 @@ import nl.roelofruis.artamus.core.track.analysis.TunedMaths.TuningDefinition
 object Model {
 
   final case class LilypondSettings(
+    pngResolution: Int,
+    lilypondVersion: String,
+    paperSize: String,
     pitchClassSequence: List[Int],
     numPitchClasses: Int,
     stepNames: List[String],

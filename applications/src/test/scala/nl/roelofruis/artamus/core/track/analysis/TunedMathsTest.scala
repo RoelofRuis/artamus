@@ -5,7 +5,7 @@ import nl.roelofruis.artamus.core.track.analysis.TunedMaths.TuningDefinition
 import utest._
 
 object TunedMathsTest extends TestSuite with TunedMaths {
-  val tuning: TuningDefinition = new TuningDefinition {
+  val settings: TuningDefinition = new TuningDefinition {
     override val pitchClassSequence: List[Int] = List(0, 2, 4, 5, 7, 9, 11)
     override val numPitchClasses: Int = 12
   }

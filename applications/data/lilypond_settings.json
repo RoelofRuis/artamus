@@ -1,4 +1,7 @@
 {
+  "pngResolution": 160,
+  "lilypondVersion": "2.18",
+  "paperSize": "a6landscape",
   "pitchClassSequence": [0, 2, 4, 5, 7, 9, 11],
   "numPitchClasses": 12,
   "stepNames": ["c", "d", "e", "f", "g", "a", "b"],
@@ -6,13 +9,14 @@
   "sharpSpelling": "is",
   "dotSpelling": ".",
   "qualitySpelling": [
-    {
-      "symbol": "M",
-      "spelling": ""
-    },
-    {
-      "symbol": "m",
-      "spelling": ":m"
-    }
+    {"symbol": "M", "spelling": ""},
+    {"symbol": "-", "spelling": "m"},
+    {"symbol": "dim", "spelling": "dim"},
+    {"symbol": "+", "spelling": "aug"},
+    {"symbol": "M7", "spelling": "maj7"},
+    {"symbol": "-7", "spelling": "min7"},
+    {"symbol": "7", "spelling": "7"},
+    {"symbol": "dim7", "spelling": "dim7"},
+    {"symbol": "-7b5", "spelling": "3-.5-.7"}
   ]
 }

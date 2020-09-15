@@ -21,6 +21,9 @@ object RenderingLoader {
       qualitySpelling = parseQualitySpelling(textSettings)
     } yield {
       val settings = LilypondSettings(
+        textSettings.pngResolution,
+        textSettings.lilypondVersion,
+        textSettings.paperSize,
         textSettings.pitchClassSequence,
         textSettings.numPitchClasses,
         textSettings.stepNames,
@@ -46,6 +49,9 @@ object RenderingLoader {
     }
 
     final case class TextLilypondSettings(
+      pngResolution: Int,
+      lilypondVersion: String,
+      paperSize: String,
       pitchClassSequence: List[Int],
       numPitchClasses: Int,
       stepNames: List[String],
@@ -56,7 +62,7 @@ object RenderingLoader {
     )
 
     object TextLilypondSettings {
-      implicit val settingsFormat: JsonFormat[TextLilypondSettings] = jsonFormat7(TextLilypondSettings.apply)
+      implicit val settingsFormat: JsonFormat[TextLilypondSettings] = jsonFormat10(TextLilypondSettings.apply)
     }
 
   }

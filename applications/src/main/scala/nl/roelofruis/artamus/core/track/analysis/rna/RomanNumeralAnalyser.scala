@@ -7,7 +7,7 @@ import nl.roelofruis.artamus.core.track.algorithms.GraphSearch
 import nl.roelofruis.artamus.core.track.analysis.TunedMaths
 import nl.roelofruis.artamus.core.track.analysis.rna.Model._
 
-case class RomanNumeralAnalyser(tuning: Settings, rules: RNARules) extends TunedMaths {
+case class RomanNumeralAnalyser(settings: Settings, rules: RNARules) extends TunedMaths {
 
   private type WindowedRNANode = Windowed[RNANode]
 
