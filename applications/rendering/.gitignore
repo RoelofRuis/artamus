@@ -1,0 +1,5 @@
+# lilypond source files
+*.ly
+
+# lilypond produced png files
+*.png

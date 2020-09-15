@@ -1,10 +1,10 @@
 package nl.roelofruis.artamus
 
 import nl.roelofruis.artamus.application.Model.{ParseResult, Settings}
+import nl.roelofruis.artamus.application.rendering.RenderingLoader
 import nl.roelofruis.artamus.application.{Application, ChordChartParser, RNALoader, SettingsLoader}
 import nl.roelofruis.artamus.core.common.Containers.{Positioned, TemporalInstantMap, Windowed}
 import nl.roelofruis.artamus.core.common.Position
-import nl.roelofruis.artamus.core.layout.DisplayableMusic
 import nl.roelofruis.artamus.core.track.Layer.ChordLayer
 import nl.roelofruis.artamus.core.track.Pitched.ChordTrack
 import nl.roelofruis.artamus.core.track.Temporal.Metre
@@ -29,7 +29,8 @@ object Analyse extends App {
     degrees        = rnaAnalyser.analyse(chordTrack)
     _              = tuning.writeCSV(degrees, file)
     _              = printDegrees(degrees, tuning, rnaAnalyser)
-    displayable    = DisplayableMusic.fromTrack(makeTrack(chordTrack, tuning.defaultMetre))
+    renderer       <- RenderingLoader.loadRenderer(tuning)
+    _              = renderer.render(makeTrack(chordTrack, tuning.defaultMetre))
   } yield ()
 
   Application.runRepeated(program)
