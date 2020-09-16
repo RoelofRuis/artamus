@@ -9,9 +9,10 @@ import nl.roelofruis.artamus.core.layout.Staff.{ChordStaff, StaffGroup}
 import nl.roelofruis.artamus.core.track.Pitched.{PitchDescriptor, Quality}
 import nl.roelofruis.artamus.core.track.analysis.TunedMaths
 
-case class LilypondFormatter(settings: LilypondSettings) extends TunedMaths {
+trait LilypondFormatting extends TunedMaths {
+  val settings: LilypondSettings
 
-  def write(displayableMusic: DisplayableMusic): String = {
+  def format(displayableMusic: DisplayableMusic): String = {
     s"""|\\version "${settings.lilypondVersion}"
         |
         |\\paper {

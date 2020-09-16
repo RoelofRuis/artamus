@@ -6,16 +6,14 @@ import nl.roelofruis.artamus.application.rendering.Model.LilypondSettings
 import nl.roelofruis.artamus.core.layout.DisplayableMusic
 import nl.roelofruis.artamus.core.track.Track
 
-case class LilypondRenderer(settings: LilypondSettings) {
-
-  private val formatter = LilypondFormatter(settings)
+case class LilypondRenderer(settings: LilypondSettings) extends LilypondFormatting {
 
   def render(track: Track): Unit = {
     // to displayable music
     val displayableMusic = DisplayableMusic.fromTrack(track)
 
     // to lilypond file
-    val contents = formatter.write(displayableMusic)
+    val contents = format(displayableMusic)
 
     // write to file
     val sourceFile = new File(s"applications/rendering/lily.ly")
