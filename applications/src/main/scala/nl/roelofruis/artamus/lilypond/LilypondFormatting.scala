@@ -8,28 +8,27 @@ import nl.roelofruis.artamus.core.layout.Glyph.{GlyphDuration, SingleGlyph}
 import nl.roelofruis.artamus.core.layout.Staff.{ChordStaff, StaffGroup}
 import nl.roelofruis.artamus.core.track.Pitched.{PitchDescriptor, Quality}
 import nl.roelofruis.artamus.core.track.analysis.TunedMaths
+import nl.roelofruis.artamus.lilypond.Document.DocumentWriter
 
-trait LilypondFormatting extends TunedMaths {
+trait LilypondFormatting extends TunedMaths with DocumentWriter {
   val settings: LilypondSettings
 
-  def format(displayableMusic: DisplayableMusic): String = {
-    s"""|\\version "${settings.lilypondVersion}"
-        |
-        |\\paper {
-        |  #(set-paper-size "${settings.paperSize}")
-        |}
-        |
-        |\\header {
-        |  tagline = ##f
-        |}
-        |
-        |\\score {
-        |${writeStaffGroup(displayableMusic.staffGroup)}
-        |}
-        |""".stripMargin
+  def format(displayableMusic: DisplayableMusic): Document = {
+    flat(
+      s"""\\version "${settings.lilypondVersion}"""",
+      scoped("\\paper {", "}")(
+        s"""#(set-paper-size "${settings.paperSize}")"""
+      ),
+      scoped("\\header {", "}")(
+        "tagline = ##f"
+      ),
+      scoped("\\score {", "}")(
+        writeStaffGroup(displayableMusic.staffGroup)
+      )
+    )
   }
 
-  private def writeStaffGroup(staffGroup: StaffGroup): String = {
+  private def writeStaffGroup(staffGroup: StaffGroup): Document = {
     if (staffGroup.isEmpty) "s"
     else {
       staffGroup.map {

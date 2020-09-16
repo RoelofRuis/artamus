@@ -4,26 +4,6 @@ sealed trait Document
 
 object Document {
 
-  final case class Literal(contents: String) extends Document
-  final case class Node(
-    documentsIndented: Seq[Document],
-    indentation: Int = 0,
-    documentsBefore: Option[Document] = None,
-    documentsAfter: Option[Document] = None,
-  ) extends Document
-
-  object Node {
-    def apply(subdocuments: Document*): Node = new Node(subdocuments)
-    def indented(subdocuments: Document*): Node = new Node(subdocuments, 1)
-    def anonymousScoped(subdocuments: Document*): Node = scoped("{", "}")(subdocuments: _*)
-    def scoped(before: String, after: String)(subdocuments: Document*): Node = new Node(
-      subdocuments,
-      1,
-      Some(Literal(before)),
-      Some(Literal(after)),
-    )
-  }
-
   def write(document: Document): String = {
     val indentation = 2
     def writeIndented(document: Document, level: Int): String = {
@@ -39,5 +19,26 @@ object Document {
     writeIndented(document, 0)
   }
 
+  trait DocumentWriter {
+    def flat(subdocuments: Document*): Document = Node(subdocuments)
+    def indented(subdocuments: Document*): Document = Node(subdocuments, 1)
+    def anonymousScoped(subdocuments: Document*): Document = scoped("{", "}")(subdocuments: _*)
+    def scoped(before: String, after: String)(subdocuments: Document*): Document = new Node(
+      subdocuments,
+      1,
+      Some(Literal(before)),
+      Some(Literal(after)),
+    )
+
+    implicit def stringIsDocument(s: String): Document = Literal(s)
+  }
+
+  private final case class Literal(contents: String) extends Document
+  private final case class Node(
+    documentsIndented: Seq[Document],
+    indentation: Int = 0,
+    before: Option[Literal] = None,
+    after: Option[Literal] = None,
+  ) extends Document
 }
 
