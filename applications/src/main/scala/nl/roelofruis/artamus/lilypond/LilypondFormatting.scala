@@ -1,4 +1,4 @@
-package nl.roelofruis.artamus.application.rendering
+package nl.roelofruis.artamus.lilypond
 
 import nl.roelofruis.artamus.application.rendering.Model.LilypondSettings
 import nl.roelofruis.artamus.core.common.Maths._
