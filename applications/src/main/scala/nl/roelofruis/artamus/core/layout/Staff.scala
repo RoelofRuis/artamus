@@ -10,4 +10,8 @@ object Staff {
     glyphs: Seq[Glyph[ChordStaffGlyph]]
   ) extends Staff
 
+  final case class NoteStaff(
+    glyphs: Seq[Glyph[StaffGlyph]]
+  ) extends Staff
+
 }
