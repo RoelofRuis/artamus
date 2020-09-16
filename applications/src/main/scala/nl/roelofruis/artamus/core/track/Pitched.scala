@@ -35,6 +35,14 @@ object Pitched {
     scale: Scale
   )
 
+  final case class Note(
+    descriptor: PitchDescriptor,
+    octave: Octave,
+  )
+
+  type Octave = Int
+  type NoteGroup = Seq[Note]
+
   type ChordTrack = TemporalMap[Chord]
   type RomanNumeralTrack = Seq[Windowed[RNAAnalysedChord]]
 

@@ -19,6 +19,8 @@ object Containers {
   type TemporalMap[A] = SortedMap[Position, Windowed[A]]
 
   object TemporalMap {
+    def empty[A]: TemporalMap[A] = SortedMap[Position, Windowed[A]]
+
     def fromSequence[A](seq: Seq[Windowed[A]]): TemporalMap[A] = {
       seq.foldLeft(SortedMap[Position, Windowed[A]]()) {
         case (acc, windowed) => acc.updated(windowed.window.start, windowed)

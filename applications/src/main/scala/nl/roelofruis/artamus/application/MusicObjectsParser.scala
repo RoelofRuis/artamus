@@ -41,6 +41,12 @@ trait MusicObjectsParser extends MusicPrimitivesParser {
     quality <- parseQuality
   } yield Chord(pitchDescriptor, quality)
 
+  def parseKey: ParseResult[Key] = for {
+    root  <- parsePitchDescriptor
+    _     <- buffer.skipSpaces
+    scale <- parseScale
+  } yield Key(root, scale)
+
 }
 
 object MusicObjectsParser {

@@ -1,14 +1,14 @@
 package nl.roelofruis.artamus.core.layout
 
 import nl.roelofruis.artamus.core.common.Maths._
-import nl.roelofruis.artamus.core.track.Pitched.{PitchDescriptor, Scale}
+import nl.roelofruis.artamus.core.track.Pitched.{Octave, PitchDescriptor, Scale}
 
 sealed trait StaffGlyph
 
 object StaffGlyph {
 
   final case class NoteGroupGlyph(
-    notes: Seq[PitchDescriptor]
+    notes: Seq[(PitchDescriptor, Octave)]
   ) extends StaffGlyph {
     def isEmpty: Boolean = notes.isEmpty
     def isChord: Boolean = notes.size > 1

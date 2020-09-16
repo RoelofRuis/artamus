@@ -3,9 +3,9 @@ package nl.roelofruis.artamus
 import nl.roelofruis.artamus.application.Model.{ParseResult, Settings}
 import nl.roelofruis.artamus.application.rendering.RenderingLoader
 import nl.roelofruis.artamus.application.{Application, ChordChartParser, RNALoader, SettingsLoader}
-import nl.roelofruis.artamus.core.common.Containers.{TemporalInstantMap, Windowed}
-import nl.roelofruis.artamus.core.track.Layer.ChordLayer
-import nl.roelofruis.artamus.core.track.Pitched.ChordTrack
+import nl.roelofruis.artamus.core.common.Containers.{TemporalInstantMap, TemporalMap, Windowed}
+import nl.roelofruis.artamus.core.track.Layer.{ChordLayer, NoteLayer}
+import nl.roelofruis.artamus.core.track.Pitched.{ChordTrack, Key, PitchDescriptor}
 import nl.roelofruis.artamus.core.track.Temporal.Metre
 import nl.roelofruis.artamus.core.track.Track
 import nl.roelofruis.artamus.core.track.analysis.rna.Model.{RNAAnalysedChord, RNANode}
@@ -29,17 +29,22 @@ object Analyse extends App {
     _              = tuning.writeCSV(degrees, file)
     _              = printDegrees(degrees, tuning, rnaAnalyser)
     renderer       <- RenderingLoader.loadRenderer(tuning)
-    _              = renderer.render(makeTrack(chordTrack, tuning.defaultMetre))
+    _              = renderer.render(makeTrack(chordTrack, tuning.defaultMetre, ???))
   } yield ()
 
   Application.runRepeated(program)
 
-  def makeTrack(chords: ChordTrack, defaultMetre: Metre): Track = {
+  def makeTrack(chords: ChordTrack, defaultMetre: Metre, defaultKey: Key): Track = {
     Track(
       Seq(
         ChordLayer(
           TemporalInstantMap.startingWith(defaultMetre),
           chords
+        ),
+        NoteLayer(
+          TemporalInstantMap.startingWith(defaultMetre),
+          TemporalInstantMap.startingWith(defaultKey),
+          TemporalMap.empty
         )
       )
     )

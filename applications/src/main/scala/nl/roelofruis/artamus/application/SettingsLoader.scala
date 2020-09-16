@@ -14,6 +14,7 @@ object SettingsLoader {
       textTuning <- File.load[TextTuning]("applications/data/music_settings.json")
       qualityMap <- parseQualityMap(textTuning)
       defaultMetre <- textTuning.parser(textTuning.defaultMetre).parseMetre
+      defaultKey <- textTuning.parser(textTuning.defaultKey).parseKey // TODO: how then..?
       scaleMap = buildScaleMap(textTuning)
     } yield Settings(
       textTuning.pitchClassSequence,
@@ -28,6 +29,7 @@ object SettingsLoader {
       scaleMap,
       qualityMap,
       defaultMetre,
+      defaultKey,
     )
   }
 
@@ -70,6 +72,7 @@ object SettingsLoader {
       pitchClassSequence: List[Int],
       numPitchClasses: Int,
       defaultMetre: String,
+      defaultKey: String,
       textNotes: List[String],
       textDegrees: List[String],
       textIntervals: List[String],
@@ -82,7 +85,7 @@ object SettingsLoader {
     ) extends PitchedPrimitives
 
     object TextTuning {
-      implicit val tuningFormat: JsonFormat[TextTuning] = jsonFormat12(TextTuning.apply)
+      implicit val tuningFormat: JsonFormat[TextTuning] = jsonFormat13(TextTuning.apply)
     }
   }
 }
