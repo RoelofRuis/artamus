@@ -29,6 +29,8 @@ object Containers {
   type TemporalInstantMap[A] = SortedMap[Position, A]
 
   object TemporalInstantMap {
+    def startingWith[A](a: A): TemporalInstantMap[A] = fromSequence(Seq(Positioned(Position.ZERO, a)))
+
     def fromSequence[A](seq: Seq[Positioned[A]]): TemporalInstantMap[A] = {
       seq.foldLeft(SortedMap[Position, A]()) {
         case (acc, positioned) => acc.updated(positioned.position, positioned.element)
