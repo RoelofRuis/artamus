@@ -31,14 +31,16 @@ trait LilypondFormatting extends TunedMaths with DocumentWriter {
   private def writeStaffGroup(staffGroup: StaffGroup): Document = {
     if (staffGroup.isEmpty) "s"
     else {
-      staffGroup.map {
-        case s: ChordStaff => writeChordStaff(s)
-        case _ => ""
-      }.mkString("<<", "", "\n>>")
+      scoped("<<", ">>")(
+        staffGroup.map {
+          case s: ChordStaff => writeChordStaff(s)
+          case _ => stringIsDocument("")
+        }: _*
+      )
     }
   }
 
-  private def writeChordStaff(staff: ChordStaff): String = {
+  private def writeChordStaff(staff: ChordStaff): Document = {
     val contents = staff.glyphs.map {
       case SingleGlyph(glyph: ChordNameGlyph, duration) =>
         val spelledRoot = writePitchDescriptor(glyph.root)
@@ -52,12 +54,12 @@ trait LilypondFormatting extends TunedMaths with DocumentWriter {
       case _ => //TODO: write tuplets
     }.mkString("\n")
 
-    s"""\\new ChordNames {
-       |\\chordmode {
-       |\\override ChordName #'font-series = #'medium'
-       |$contents
-       |}
-       |}""".stripMargin
+    scoped("\\new ChordNames {", "}")(
+      scoped("\\chordmode {", "}")(
+        "\\override ChordName #'font-series = #'medium",
+        contents
+      )
+    )
   }
 
   private def writePitchDescriptor(descriptor: PitchDescriptor): String = {
