@@ -28,6 +28,10 @@ object Containers {
     }
   }
 
+  implicit class TemporalMapOps[A](map: TemporalMap[A]) {
+    val duration: Duration = map.values.foldRight(Duration.ZERO) { case (w, acc) => acc + w.window.duration }
+  }
+
   type TemporalInstantMap[A] = SortedMap[Position, A]
 
   object TemporalInstantMap {

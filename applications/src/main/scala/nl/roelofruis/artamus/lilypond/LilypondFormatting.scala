@@ -5,7 +5,8 @@ import nl.roelofruis.artamus.core.common.Maths._
 import nl.roelofruis.artamus.core.layout.ChordStaffGlyph.{ChordNameGlyph, ChordRestGlyph}
 import nl.roelofruis.artamus.core.layout.DisplayableMusic
 import nl.roelofruis.artamus.core.layout.Glyph.{GlyphDuration, SingleGlyph}
-import nl.roelofruis.artamus.core.layout.Staff.{ChordStaff, StaffGroup}
+import nl.roelofruis.artamus.core.layout.Staff.{ChordStaff, NoteStaff, StaffGroup}
+import nl.roelofruis.artamus.core.layout.StaffGlyph.RestGlyph
 import nl.roelofruis.artamus.core.track.Pitched.{PitchDescriptor, Quality}
 import nl.roelofruis.artamus.core.track.analysis.TunedMaths
 import nl.roelofruis.artamus.lilypond.Document.DocumentWriter
@@ -34,10 +35,28 @@ trait LilypondFormatting extends TunedMaths with DocumentWriter {
       scoped("<<", ">>")(
         staffGroup.map {
           case s: ChordStaff => writeChordStaff(s)
+          case s: NoteStaff => writeNoteStaff(s)
           case _ => stringIsDocument("")
         }: _*
       )
     }
+  }
+
+  private def writeNoteStaff(staff: NoteStaff): Document = {
+    val contents = staff.glyphs.map {
+      case SingleGlyph(_: RestGlyph, duration) =>
+        "s" + writeDuration(duration)
+      case _ => // TODO: write other elements
+    }.mkString("\n")
+
+    scoped("\\new Staff {", "}")(
+      "\\numericTimeSignature",
+      "\\override Score.BarNumber.break-visibility = ##(#f #t #f)",
+      "\\set Score.barNumberVisibility = #all-bar-numbers-visible",
+      "\\bar \"\"",
+      contents,
+      "\\bar \"|.\""
+    )
   }
 
   private def writeChordStaff(staff: ChordStaff): Document = {

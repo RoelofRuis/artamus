@@ -3,8 +3,8 @@ package nl.roelofruis.artamus.core.layout.algorithms
 import nl.roelofruis.artamus.core.common.Containers.Positioned
 import nl.roelofruis.artamus.core.common.Maths._
 import nl.roelofruis.artamus.core.common.{Position, Rational, Window}
-import nl.roelofruis.artamus.core.layout.Glyph.{GlyphDuration, SingleGlyph}
 import nl.roelofruis.artamus.core.layout.Glyph
+import nl.roelofruis.artamus.core.layout.Glyph.{GlyphDuration, SingleGlyph}
 import nl.roelofruis.artamus.core.track.Temporal.Metre
 import nl.roelofruis.artamus.core.track.analysis.TemporalMaths
 

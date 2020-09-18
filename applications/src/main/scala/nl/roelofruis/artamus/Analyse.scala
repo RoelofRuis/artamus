@@ -3,13 +3,13 @@ package nl.roelofruis.artamus
 import nl.roelofruis.artamus.application.Model.{ParseResult, Settings}
 import nl.roelofruis.artamus.application.rendering.RenderingLoader
 import nl.roelofruis.artamus.application.{Application, ChordChartParser, RNALoader, SettingsLoader}
-import nl.roelofruis.artamus.core.common.Containers.{TemporalInstantMap, TemporalMap, Windowed}
+import nl.roelofruis.artamus.core.common.Containers.{TemporalInstantMap, Windowed}
 import nl.roelofruis.artamus.core.track.Layer.{ChordLayer, NoteLayer}
-import nl.roelofruis.artamus.core.track.Pitched.{ChordTrack, Key, PitchDescriptor}
+import nl.roelofruis.artamus.core.track.Pitched.{ChordTrack, Key}
 import nl.roelofruis.artamus.core.track.Temporal.Metre
-import nl.roelofruis.artamus.core.track.Track
 import nl.roelofruis.artamus.core.track.analysis.rna.Model.{RNAAnalysedChord, RNANode}
 import nl.roelofruis.artamus.core.track.analysis.rna.RomanNumeralAnalyser
+import nl.roelofruis.artamus.core.track.{Fillers, Track}
 
 object Analyse extends App {
 
@@ -44,7 +44,7 @@ object Analyse extends App {
         NoteLayer(
           TemporalInstantMap.startingWith(defaultMetre),
           TemporalInstantMap.startingWith(defaultKey),
-          TemporalMap.empty
+          Fillers.emptyBars(chords.duration)
         )
       )
     )

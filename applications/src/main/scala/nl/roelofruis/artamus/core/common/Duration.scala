@@ -7,6 +7,7 @@ package nl.roelofruis.artamus.core.common
 final case class Duration private (v: Rational) extends Ordered[Duration] {
   override def compare(o: Duration): Int = v compare o.v
   def *(i: Int): Duration = Duration(v * i)
+  def +(that: Duration): Duration = Duration(v + that.v)
 }
 
 object Duration {
