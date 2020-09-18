@@ -10,7 +10,7 @@ import nl.roelofruis.artamus.core.common.Position
 import scala.util.{Failure, Success}
 
 case class ChordChartParser(
-  tuning: PitchedPrimitives with PitchedObjects with TemporalSettings
+  tuning: PitchedPrimitives with PitchedObjects with TemporalSettings with Defaults
 ) extends TemporalMaths {
 
   def parseChordChart(text: String): ParseResult[ChordTrack] = {

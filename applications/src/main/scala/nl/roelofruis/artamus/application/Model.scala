@@ -29,7 +29,11 @@ object Model {
   trait TemporalSettings {
     val textBarLine: String
     val textRepeatMark: String
+  }
+
+  trait Defaults {
     val defaultMetre: Metre
+    val defaultKey: Key
   }
 
   final case class Settings(
@@ -46,6 +50,6 @@ object Model {
     qualityMap: Map[String, Quality],
     defaultMetre: Metre,
     defaultKey: Key,
-  ) extends PitchedPrimitives with PitchedObjects with TemporalSettings with TuningDefinition
+  ) extends PitchedPrimitives with PitchedObjects with TemporalSettings with TuningDefinition with Defaults
 
 }

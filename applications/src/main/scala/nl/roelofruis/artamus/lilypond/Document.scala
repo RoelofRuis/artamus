@@ -8,7 +8,7 @@ object Document {
     val indentation = 2
     def writeIndented(document: Document, level: Int): String = {
       document match {
-        case Literal(contents) => contents.indent(level * indentation)
+        case Literal(contents) => contents.linesIterator.map(" " * (level * indentation) + _).mkString("", "\n", "\n")
         case Node(indented, indentation, before, after) =>
           val parts = before.map(writeIndented(_, level)) ++
             indented.map(writeIndented(_, level + indentation)) ++

@@ -29,7 +29,7 @@ object Analyse extends App {
     _              = tuning.writeCSV(degrees, file)
     _              = printDegrees(degrees, tuning, rnaAnalyser)
     renderer       <- RenderingLoader.loadRenderer(tuning)
-    _              = renderer.render(makeTrack(chordTrack, tuning.defaultMetre, ???))
+    _              = renderer.render(makeTrack(chordTrack, tuning.defaultMetre, tuning.defaultKey))
   } yield ()
 
   Application.runRepeated(program)
