@@ -27,7 +27,8 @@ trait LilypondFormatting extends TunedMaths with DocumentWriter {
       ),
       scoped("\\score {", "}")(
         writeStaffGroup(displayableMusic.staffGroup)
-      )
+      ),
+      scoped("\\midi {", "}")()
     )
   }
 
@@ -52,10 +53,17 @@ trait LilypondFormatting extends TunedMaths with DocumentWriter {
         "s" + writeDuration(duration)
       case SingleGlyph(NoteGroupGlyph(notes), duration) =>
         val tie = if (duration.tieToNext) "~" else ""
-        val writtenNotes = notes.map { case (descriptor, octave) =>
-          writePitchDescriptor(descriptor) + writeOctave(octave) + tie
+        val writtenDuration = writeDuration(duration)
+        if (notes.length == 1) {
+          val writtenPitch = writePitchDescriptor(notes.head._1)
+          val writtenOctave = writeOctave(notes.head._2)
+          writtenPitch + writtenOctave + writtenDuration + tie
+        } else {
+          val writtenNotes = notes.map { case (descriptor, octave) =>
+            writePitchDescriptor(descriptor) + writeOctave(octave) + tie
+          }.mkString("<", " ", ">")
+          writtenNotes + writtenDuration
         }
-        if (writtenNotes.length == 1) writtenNotes.head else writtenNotes.mkString("<", " ", ">")
     }.mkString("\n")
 
     scoped("\\new Staff {", "}")(
