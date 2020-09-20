@@ -18,6 +18,7 @@
     {"symbol": "-7", "spelling": "min7"},
     {"symbol": "7", "spelling": "7"},
     {"symbol": "dim7", "spelling": "dim7"},
-    {"symbol": "-7b5", "spelling": "3-.5-.7"}
+    {"symbol": "-7b5", "spelling": "3-.5-.7"},
+    {"symbol": "+7", "spelling": "3.5+.7-"}
   ]
 }

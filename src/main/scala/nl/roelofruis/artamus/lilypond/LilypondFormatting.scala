@@ -58,7 +58,7 @@ trait LilypondFormatting extends TunedMaths with DocumentWriter {
       case SingleGlyph(NoteGroupGlyph(Seq()), duration) =>
         "s" + writeDuration(duration)
       case SingleGlyph(NoteGroupGlyph(notes), duration) =>
-        val tie = if (duration.tieToNext) "~" else ""
+        val tie = writeTie(duration)
         val writtenDuration = writeDuration(duration)
         if (notes.length == 1) {
           val writtenPitch = writePitchDescriptor(notes.head._1)
@@ -85,10 +85,11 @@ trait LilypondFormatting extends TunedMaths with DocumentWriter {
   private def writeChordStaff(staff: ChordStaff): Document = {
     val contents = staff.glyphs.map {
       case SingleGlyph(glyph: ChordNameGlyph, duration) =>
+        val tie = writeTie(duration)
         val spelledRoot = writePitchDescriptor(glyph.root)
         val spelledDur = writeDuration(duration)
         val spelledQuality = writeQuality(glyph.quality)
-        spelledRoot + spelledDur + spelledQuality
+        spelledRoot + spelledDur + spelledQuality + tie
 
       case SingleGlyph(_: ChordRestGlyph, duration) =>
         s"s${writeDuration(duration)}"
@@ -98,11 +99,14 @@ trait LilypondFormatting extends TunedMaths with DocumentWriter {
 
     scoped("\\new ChordNames {", "}")(
       scoped("\\chordmode {", "}")(
+        "\\set chordChanges = ##t",
         "\\override ChordName #'font-series = #'medium",
         contents
       )
     )
   }
+
+  private def writeTie(duration: GlyphDuration): String = if (duration.tieToNext) "~" else ""
 
   private def writeOctave(octave: Octave): String = {
     // 3th midi octave is unaltered in lilypond notation
