@@ -20,7 +20,7 @@ object Voice extends App {
     chartParser    = ChordChartParser(tuning)
     chordTrack     <- chartParser.parseChordChart(chords)
     voicer         = ChordVoicer(tuning)
-    voicedChords   = voicer.voicChords(chordTrack)
+    voicedChords   = voicer.voiceChords(chordTrack)
     renderer       <- RenderingLoader.loadRenderer(tuning)
     _              = renderer.render(makeTrack(chordTrack, voicedChords, tuning.defaultMetre, tuning.defaultKey))
   } yield ()

@@ -5,7 +5,7 @@ import nl.roelofruis.artamus.core.track.Pitched._
 
 case class ChordVoicer(settings: Settings) {
 
-  def voicChords(chordTrack: ChordTrack): NoteTrack = {
+  def voiceChords(chordTrack: ChordTrack): NoteTrack = {
     ???
   }
 
