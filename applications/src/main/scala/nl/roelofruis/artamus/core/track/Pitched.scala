@@ -1,7 +1,7 @@
 package nl.roelofruis.artamus.core.track
 
+import nl.roelofruis.artamus.core.common.Containers.{TemporalMap, WindowedSeq}
 import nl.roelofruis.artamus.core.track.analysis.rna.Model.RNAAnalysedChord
-import nl.roelofruis.artamus.core.common.Containers.{TemporalMap, Windowed, WindowedSeq}
 
 object Pitched {
 
@@ -44,6 +44,7 @@ object Pitched {
   type NoteGroup = Seq[Note]
 
   type ChordTrack = TemporalMap[Chord]
+  type NoteTrack = TemporalMap[NoteGroup]
   type RomanNumeralTrack = WindowedSeq[RNAAnalysedChord]
 
 }
