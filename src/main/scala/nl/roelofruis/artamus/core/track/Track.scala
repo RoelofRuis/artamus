@@ -1,9 +1,8 @@
 package nl.roelofruis.artamus.core.track
 
-import nl.roelofruis.artamus.core.common.Containers.TemporalInstantMap
-import nl.roelofruis.artamus.core.track.Temporal.Metre
+import nl.roelofruis.artamus.core.track.Layer.MetreTrack
 
 final case class Track(
-  metres: TemporalInstantMap[Metre],
+  metres: MetreTrack,
   layers: Seq[Layer] = Seq()
 )

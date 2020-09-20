@@ -6,17 +6,17 @@ import nl.roelofruis.artamus.core.layout.ChordStaffGlyph.{ChordNameGlyph, ChordR
 import nl.roelofruis.artamus.core.layout.Staff.{ChordStaff, NoteStaff, StaffGroup}
 import nl.roelofruis.artamus.core.layout.StaffGlyph.{NoteGroupGlyph, RestGlyph}
 import nl.roelofruis.artamus.core.layout.{ChordStaffGlyph, StaffGlyph}
-import nl.roelofruis.artamus.core.track.Layer.{ChordLayer, NoteLayer}
+import nl.roelofruis.artamus.core.track.Layer.{ChordLayer, MetreTrack, NoteLayer}
 import nl.roelofruis.artamus.core.track.Temporal.Metre
 import nl.roelofruis.artamus.core.track.algorithms.TemporalMaths
 
 object DisplayableLayers extends TemporalMaths {
 
-  def displayChordLayer(layer: ChordLayer, metres: TemporalInstantMap[Metre]): StaffGroup = {
+  def displayChordLayer(layer: ChordLayer, metres: MetreTrack): StaffGroup = {
     lazy val elementIterator: WindowedSeq[ChordStaffGlyph] = layer.chords.map {
-      case (_, Windowed(window, chord)) =>
+      case Windowed(window, chord) =>
         Windowed[ChordStaffGlyph](window, ChordNameGlyph(chord.root, chord.quality))
-    }.toSeq
+    }
 
     lazy val layout: LayoutDescription[ChordStaffGlyph] = LayoutDescription(
       iteratePositioned(metres),
@@ -26,12 +26,10 @@ object DisplayableLayers extends TemporalMaths {
     Seq(ChordStaff(Layout.layoutElements(elementIterator, layout)))
   }
 
-  def displayNoteLayer(layer: NoteLayer, metres: TemporalInstantMap[Metre]): StaffGroup = {
+  def displayNoteLayer(layer: NoteLayer, metres: MetreTrack): StaffGroup = {
     def elementIterator: WindowedSeq[StaffGlyph] =
       layer
         .notes
-        .values
-        .toSeq
         .map { case Windowed(window, noteGroup) =>
           Windowed[StaffGlyph](window, NoteGroupGlyph(
             noteGroup.map(note => (note.descriptor, note.octave)))
@@ -47,12 +45,12 @@ object DisplayableLayers extends TemporalMaths {
     Seq(NoteStaff(Layout.layoutElements(elementIterator, layout)))
   }
 
-  private def iteratePositioned(metres: TemporalInstantMap[Metre]): LazyList[Positioned[Metre]] = {
-    val (_, active) = metres.head
+  private def iteratePositioned(metres: MetreTrack): LazyList[Windowed[Metre]] = {
+    val active = metres.head
 
-    def loop(searchPos: Position): LazyList[Positioned[Metre]] = {
+    def loop(searchPos: Position): LazyList[Windowed[Metre]] = {
       // TODO: add a duration and make lookup actually work..!
-      Positioned(searchPos, active) #:: loop(searchPos + active.duration)
+      Windowed(searchPos, active.get.duration, active.get) #:: loop(searchPos + active.get.duration)
     }
 
     loop(Position.ZERO)

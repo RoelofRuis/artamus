@@ -3,9 +3,9 @@ package nl.roelofruis.artamus
 import nl.roelofruis.artamus.application.Model.ParseResult
 import nl.roelofruis.artamus.application.rendering.RenderingLoader
 import nl.roelofruis.artamus.application.{Application, ChordChartParser, SettingsLoader}
-import nl.roelofruis.artamus.core.common.Containers.{TemporalInstantMap, TemporalMap}
-import nl.roelofruis.artamus.core.track.Layer.{ChordLayer, NoteLayer}
-import nl.roelofruis.artamus.core.track.Pitched.{ChordTrack, Key, NoteTrack}
+import nl.roelofruis.artamus.core.common.Containers.WindowedSeq
+import nl.roelofruis.artamus.core.track.Layer.{ChordLayer, ChordTrack, NoteLayer, NoteTrack}
+import nl.roelofruis.artamus.core.track.Pitched.Key
 import nl.roelofruis.artamus.core.track.Temporal.Metre
 import nl.roelofruis.artamus.core.track.Track
 import nl.roelofruis.artamus.core.track.algorithms.voicing.ChordVoicer
@@ -27,10 +27,10 @@ object Voice extends App {
 
   def makeTrack(chords: ChordTrack, notes: NoteTrack, defaultMetre: Metre, defaultKey: Key): Track = {
     Track(
-      TemporalInstantMap.startingWith(defaultMetre),
+      WindowedSeq.startingWithInstant(defaultMetre),
       Seq(
-        ChordLayer(TemporalMap.fromSequence(chords)),
-        NoteLayer(TemporalInstantMap.startingWith(defaultKey), TemporalMap.fromSequence(notes))
+        ChordLayer(chords),
+        NoteLayer(WindowedSeq.startingWithInstant(defaultKey), notes)
       )
     )
   }

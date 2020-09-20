@@ -1,12 +1,11 @@
 package nl.roelofruis.artamus.core.layout.algorithms
 
-import nl.roelofruis.artamus.core.common.Containers.{Positioned, Windowed, WindowedSeq}
+import nl.roelofruis.artamus.core.common.Containers.{Windowed, WindowedSeq}
 import nl.roelofruis.artamus.core.common.Maths._
-import nl.roelofruis.artamus.core.common.{Position, Rational, Window}
+import nl.roelofruis.artamus.core.common.{Position, Rational}
 import nl.roelofruis.artamus.core.layout.Glyph
 import nl.roelofruis.artamus.core.layout.Glyph.{GlyphDuration, SingleGlyph}
 import nl.roelofruis.artamus.core.track.Temporal.Metre
-import nl.roelofruis.artamus.core.track.algorithms.TemporalMaths
 
 import scala.annotation.tailrec
 
@@ -71,7 +70,7 @@ object Layout {
     }
 
     // TODO: this should be improved based on info given in metre!
-    def fitGlyphs(metre: Positioned[Metre], element: Windowed[A], tie: Boolean = false): Seq[Glyph[A]] = {
+    def fitGlyphs(metre: Windowed[Metre], element: Windowed[A], tie: Boolean = false): Seq[Glyph[A]] = {
       metre.window.intersectNonInstant(element.window) match {
         case None => Seq.empty
         case Some(window) =>
@@ -105,13 +104,13 @@ object Layout {
   private case class LayoutState[A](
     position: Position,
     private val elements: WindowedSeq[A],
-    private val metres: LazyList[Positioned[Metre]],
+    private val metres: LazyList[Windowed[Metre]],
     private val restGlyph: A,
     glyphs: List[Glyph[A]]
   ) {
 
     // Derived properties
-    val activeMetre: Positioned[Metre] = metres.head
+    val activeMetre: Windowed[Metre] = metres.head
     val activeElement: Option[Windowed[A]] = elements.headOption
 
     // Helpers
@@ -131,10 +130,6 @@ object Layout {
 
     def toNextElement: LayoutState[A] = copy(elements = elements.tail)
 
-  }
-
-  private implicit class PositionedMetreOps(positionedMetre: Positioned[Metre]) extends TemporalMaths {
-    lazy val window: Window = Window(positionedMetre.position, positionedMetre.element.duration)
   }
 
 }

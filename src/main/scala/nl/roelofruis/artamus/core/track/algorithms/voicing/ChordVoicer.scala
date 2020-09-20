@@ -2,6 +2,7 @@ package nl.roelofruis.artamus.core.track.algorithms.voicing
 
 import nl.roelofruis.artamus.application.Model.Settings
 import nl.roelofruis.artamus.core.common.Containers.Windowed
+import nl.roelofruis.artamus.core.track.Layer.{ChordTrack, NoteTrack}
 import nl.roelofruis.artamus.core.track.Pitched._
 import nl.roelofruis.artamus.core.track.algorithms.TunedMaths
 

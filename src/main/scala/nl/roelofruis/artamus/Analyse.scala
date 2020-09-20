@@ -3,9 +3,9 @@ package nl.roelofruis.artamus
 import nl.roelofruis.artamus.application.Model.{ParseResult, Settings}
 import nl.roelofruis.artamus.application.rendering.RenderingLoader
 import nl.roelofruis.artamus.application.{Application, ChordChartParser, RNALoader, SettingsLoader}
-import nl.roelofruis.artamus.core.common.Containers.{TemporalInstantMap, TemporalMap, Windowed}
-import nl.roelofruis.artamus.core.track.Layer.{ChordLayer, NoteLayer}
-import nl.roelofruis.artamus.core.track.Pitched.{ChordTrack, Key, RomanNumeralTrack}
+import nl.roelofruis.artamus.core.common.Containers.{Windowed, WindowedSeq}
+import nl.roelofruis.artamus.core.track.Layer.{ChordLayer, ChordTrack, NoteLayer, RomanNumeralTrack}
+import nl.roelofruis.artamus.core.track.Pitched.Key
 import nl.roelofruis.artamus.core.track.Temporal.Metre
 import nl.roelofruis.artamus.core.track.algorithms.rna.Model.{RNAAnalysedChord, RNANode}
 import nl.roelofruis.artamus.core.track.algorithms.rna.RomanNumeralAnalyser
@@ -35,12 +35,11 @@ object Analyse extends App {
   Application.runRepeated(program)
 
   def makeTrack(chords: ChordTrack, defaultMetre: Metre, defaultKey: Key): Track = {
-    val chordMap = TemporalMap.fromSequence(chords)
     Track(
-      TemporalInstantMap.startingWith(defaultMetre),
+      WindowedSeq.startingWithInstant(defaultMetre),
       Seq(
-        ChordLayer(chordMap),
-        NoteLayer(TemporalInstantMap.startingWith(defaultKey), Fillers.emptyBars(chordMap.duration))
+        ChordLayer(chords),
+        NoteLayer(WindowedSeq.startingWithInstant(defaultKey), Fillers.emptyBars(chords.duration))
       )
     )
   }

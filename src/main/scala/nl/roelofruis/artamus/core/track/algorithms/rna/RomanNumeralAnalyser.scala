@@ -4,6 +4,7 @@ import nl.roelofruis.artamus.application.Model.Settings
 import nl.roelofruis.artamus.core.common.Containers.Windowed
 import nl.roelofruis.artamus.core.track.Pitched._
 import nl.roelofruis.artamus.core.common.algorithms.GraphSearch
+import nl.roelofruis.artamus.core.track.Layer.{ChordTrack, RomanNumeralTrack}
 import nl.roelofruis.artamus.core.track.algorithms.TunedMaths
 import nl.roelofruis.artamus.core.track.algorithms.rna.Model._
 
