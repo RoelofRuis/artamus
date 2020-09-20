@@ -10,7 +10,7 @@ object SettingsLoader {
 
   def loadTuning: ParseResult[Settings] = {
     for {
-      textTuning <- File.load[TextTuning]("applications/data/music_settings.json")
+      textTuning <- File.load[TextTuning]("src/main/resources/data/music_settings.json")
       qualityMap <- parseQualityMap(textTuning)
       scaleMap = buildScaleMap(textTuning)
       defaultMetre <- textTuning.parser(textTuning.defaultMetre).parseMetre

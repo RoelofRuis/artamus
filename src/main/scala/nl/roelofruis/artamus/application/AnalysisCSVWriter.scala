@@ -13,7 +13,7 @@ object AnalysisCSVWriter {
 
   implicit class SettingsOps(settings: Settings) {
     def writeCSV(analysedTrack: WindowedSeq[RNAAnalysedChord], filename: String): Unit = {
-      val writer = new PrintWriter(new File(s"applications/charts/$filename.csv"))
+      val writer = new PrintWriter(new File(s"src/main/resources/charts/$filename.csv"))
       analysedTrack.foreach { rnaNode =>
         val duration = rnaNode.window.duration
         val timesFit = duration.v % Rational(1, 4)

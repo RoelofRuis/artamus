@@ -13,7 +13,7 @@ object RNALoader {
     def parseRulesFiles(files: List[String]): ParseResult[(Set[RNAInterpretation], Set[RNATransition])] = {
       files.map { file =>
         for {
-          textRules <- File.load[TextRNARules](s"applications/data/rna/$file.json")
+          textRules <- File.load[TextRNARules](s"src/main/resources/data/rna/$file.json")
           interpretations <- parseInterpretations(textRules.interpretations)
           transitions <- parseTransitions(textRules.transitions)
         } yield (interpretations, transitions)
@@ -68,7 +68,7 @@ object RNALoader {
       }.invert
 
     for {
-      textSettings <- File.load[TextRNASettings]("applications/data/rna/settings.json")
+      textSettings <- File.load[TextRNASettings]("src/main/resources/data/rna/settings.json")
       (interpretations, transitions) <- parseRulesFiles(textSettings.rulesFiles)
       keyChanges <- parseKeyChanges(textSettings.keyChanges)
     } yield RNARules(

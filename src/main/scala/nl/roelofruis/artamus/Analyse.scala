@@ -21,7 +21,7 @@ object Analyse extends App {
     tuning         <- SettingsLoader.loadTuning
     rnaRules       <- RNALoader.loadRules(tuning)
     rnaAnalyser    = RomanNumeralAnalyser(tuning, rnaRules)
-    (chords, file) <- readFile("applications/charts/{file}.txt")
+    (chords, file) <- readFile("src/main/resources/charts/{file}.txt")
     chartParser    = ChordChartParser(tuning)
     chordTrack     <- chartParser.parseChordChart(chords)
     _              = println(printChart(chordTrack, tuning))

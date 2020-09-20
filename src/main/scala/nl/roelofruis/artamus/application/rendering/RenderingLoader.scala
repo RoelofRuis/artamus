@@ -17,7 +17,7 @@ object RenderingLoader {
     }
 
     for {
-      textSettings    <- File.load[TextLilypondSettings]("applications/data/lilypond_settings.json")
+      textSettings    <- File.load[TextLilypondSettings]("src/main/resources/data/lilypond_settings.json")
       qualitySpelling = parseQualitySpelling(textSettings)
     } yield {
       val settings = LilypondSettings(

@@ -18,7 +18,7 @@ case class LilypondRenderer(settings: LilypondSettings) extends LilypondFormatti
     val contents = Document.write(document)
 
     // write to file
-    val sourceFile = new File(s"applications/rendering/lily.ly")
+    val sourceFile = new File(s"src/main/resources/rendering/lily.ly")
     val writer = new PrintWriter(sourceFile)
     writer.write(contents)
     writer.close()
@@ -26,7 +26,7 @@ case class LilypondRenderer(settings: LilypondSettings) extends LilypondFormatti
     // invoke lilypond
     import sys.process._
 
-    val result = s"""lilypond -fpng --output="applications/rendering" -dresolution=${settings.pngResolution} "${sourceFile.getAbsolutePath}"""".!!
+    val result = s"""lilypond -fpng --output="src/main/resources/rendering" -dresolution=${settings.pngResolution} "${sourceFile.getAbsolutePath}"""".!!
 
     println(result)
   }

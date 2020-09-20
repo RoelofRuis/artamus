@@ -9,7 +9,7 @@ object Voice extends App {
 
   def program: ParseResult[Unit] = for {
     tuning         <- SettingsLoader.loadTuning
-    (chords, _)    <- readFile("applications/charts/{file}.txt")
+    (chords, _)    <- readFile("src/main/resources/charts/{file}.txt")
     chartParser    = ChordChartParser(tuning)
     chordTrack     <- chartParser.parseChordChart(chords)
   } yield ()
