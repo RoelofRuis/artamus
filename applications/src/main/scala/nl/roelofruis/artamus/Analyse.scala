@@ -36,16 +36,10 @@ object Analyse extends App {
 
   def makeTrack(chords: ChordTrack, defaultMetre: Metre, defaultKey: Key): Track = {
     Track(
+      TemporalInstantMap.startingWith(defaultMetre),
       Seq(
-        ChordLayer(
-          TemporalInstantMap.startingWith(defaultMetre),
-          chords
-        ),
-        NoteLayer(
-          TemporalInstantMap.startingWith(defaultMetre),
-          TemporalInstantMap.startingWith(defaultKey),
-          Fillers.emptyBars(chords.duration)
-        )
+        ChordLayer(chords),
+        NoteLayer(TemporalInstantMap.startingWith(defaultKey), Fillers.emptyBars(chords.duration))
       )
     )
   }

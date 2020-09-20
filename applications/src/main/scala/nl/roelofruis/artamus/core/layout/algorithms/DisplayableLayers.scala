@@ -12,21 +12,21 @@ import nl.roelofruis.artamus.core.track.analysis.TemporalMaths
 
 object DisplayableLayers extends TemporalMaths {
 
-  implicit class DisplayableChordLayer(layer: ChordLayer) {
+  def displayChordLayer(layer: ChordLayer, metres: TemporalInstantMap[Metre]): StaffGroup = {
     lazy val elementIterator: WindowedSeq[ChordStaffGlyph] = layer.chords.map {
       case (_, Windowed(window, chord)) =>
         Windowed[ChordStaffGlyph](window, ChordNameGlyph(chord.root, chord.quality))
     }.toSeq
 
     lazy val layout: LayoutDescription[ChordStaffGlyph] = LayoutDescription(
-      iteratePositioned(layer.metres),
+      iteratePositioned(metres),
       ChordRestGlyph()
     )
 
-    def display: StaffGroup = Seq(ChordStaff(Layout.layoutElements(elementIterator, layout)))
+    Seq(ChordStaff(Layout.layoutElements(elementIterator, layout)))
   }
 
-  implicit class DisplayableNoteLayer(layer: NoteLayer) {
+  def displayNoteLayer(layer: NoteLayer, metres: TemporalInstantMap[Metre]): StaffGroup = {
     def elementIterator: WindowedSeq[StaffGlyph] =
       layer
         .notes
@@ -39,16 +39,16 @@ object DisplayableLayers extends TemporalMaths {
         }
 
     lazy val layout: LayoutDescription[StaffGlyph] = LayoutDescription(
-      iteratePositioned(layer.metres),
+      iteratePositioned(metres),
       RestGlyph(),
       Seq() // TODO: add time signature and metres builder
     )
 
-    def display: StaffGroup = Seq(NoteStaff(Layout.layoutElements(elementIterator, layout)))
+    Seq(NoteStaff(Layout.layoutElements(elementIterator, layout)))
   }
 
-  private def iteratePositioned: TemporalInstantMap[Metre] => LazyList[Positioned[Metre]] = map => {
-    val (_, active) = map.head
+  private def iteratePositioned(metres: TemporalInstantMap[Metre]): LazyList[Positioned[Metre]] = {
+    val (_, active) = metres.head
 
     def loop(searchPos: Position): LazyList[Positioned[Metre]] = {
       // TODO: add a duration and make lookup actually work..!
