@@ -8,7 +8,7 @@ import nl.roelofruis.artamus.core.layout.StaffGlyph.{NoteGroupGlyph, RestGlyph}
 import nl.roelofruis.artamus.core.layout.{ChordStaffGlyph, StaffGlyph}
 import nl.roelofruis.artamus.core.track.Layer.{ChordLayer, NoteLayer}
 import nl.roelofruis.artamus.core.track.Temporal.Metre
-import nl.roelofruis.artamus.core.track.analysis.TemporalMaths
+import nl.roelofruis.artamus.core.track.transform.TemporalMaths
 
 object DisplayableLayers extends TemporalMaths {
 

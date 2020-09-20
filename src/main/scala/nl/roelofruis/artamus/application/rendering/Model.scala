@@ -1,7 +1,7 @@
 package nl.roelofruis.artamus.application.rendering
 
 import nl.roelofruis.artamus.core.track.Pitched.Quality
-import nl.roelofruis.artamus.core.track.analysis.TunedMaths.TuningDefinition
+import nl.roelofruis.artamus.core.track.transform.TunedMaths.TuningDefinition
 
 object Model {
 

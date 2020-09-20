@@ -2,7 +2,7 @@ package nl.roelofruis.artamus.application
 
 import nl.roelofruis.artamus.core.track.Pitched.{Key, Quality, Scale}
 import nl.roelofruis.artamus.core.track.Temporal.Metre
-import nl.roelofruis.artamus.core.track.analysis.TunedMaths.TuningDefinition
+import nl.roelofruis.artamus.core.track.transform.TunedMaths.TuningDefinition
 
 import scala.util.Try
 

@@ -1,4 +1,4 @@
-package nl.roelofruis.artamus.core.track.analysis.rna
+package nl.roelofruis.artamus.core.track.transform.rna
 
 import nl.roelofruis.artamus.core.track.Pitched._
 

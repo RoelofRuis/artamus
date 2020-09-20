@@ -1,4 +1,4 @@
-package nl.roelofruis.artamus.core.track.analysis
+package nl.roelofruis.artamus.core.track.transform
 
 import nl.roelofruis.artamus.core.track.Temporal.{Metre, PulseGroup}
 import nl.roelofruis.artamus.core.common.{Duration, Rational}

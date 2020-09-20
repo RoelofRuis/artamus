@@ -1,11 +1,11 @@
-package nl.roelofruis.artamus.core.track.analysis.rna
+package nl.roelofruis.artamus.core.track.transform.rna
 
 import nl.roelofruis.artamus.application.Model.Settings
 import nl.roelofruis.artamus.core.common.Containers.{Windowed, WindowedSeq}
 import nl.roelofruis.artamus.core.track.Pitched._
 import nl.roelofruis.artamus.core.track.algorithms.GraphSearch
-import nl.roelofruis.artamus.core.track.analysis.TunedMaths
-import nl.roelofruis.artamus.core.track.analysis.rna.Model._
+import nl.roelofruis.artamus.core.track.transform.TunedMaths
+import nl.roelofruis.artamus.core.track.transform.rna.Model._
 
 case class RomanNumeralAnalyser(settings: Settings, rules: RNARules) extends TunedMaths {
 
