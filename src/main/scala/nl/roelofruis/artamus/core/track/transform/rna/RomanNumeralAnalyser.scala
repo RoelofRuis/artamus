@@ -1,7 +1,7 @@
 package nl.roelofruis.artamus.core.track.transform.rna
 
 import nl.roelofruis.artamus.application.Model.Settings
-import nl.roelofruis.artamus.core.common.Containers.{Windowed, WindowedSeq}
+import nl.roelofruis.artamus.core.common.Containers.Windowed
 import nl.roelofruis.artamus.core.track.Pitched._
 import nl.roelofruis.artamus.core.track.algorithms.GraphSearch
 import nl.roelofruis.artamus.core.track.transform.TunedMaths
@@ -11,12 +11,12 @@ case class RomanNumeralAnalyser(settings: Settings, rules: RNARules) extends Tun
 
   private type WindowedRNANode = Windowed[RNANode]
 
-  def analyse(chordTrack: ChordTrack): WindowedSeq[RNAAnalysedChord] = {
+  def analyse(chordTrack: ChordTrack): RomanNumeralTrack = {
     val analysis = GraphSearch.bestFirst(
       rules.maxSolutionsToCheck,
       findPossibleNodes,
       scoreTransition
-    )(chordTrack.values.toSeq)
+    )(chordTrack)
 
     analysis match {
       case Some(result) if result.length >= 1 =>

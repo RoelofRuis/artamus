@@ -2,10 +2,10 @@ package nl.roelofruis.artamus.application
 
 import nl.roelofruis.artamus.application.Model._
 import nl.roelofruis.artamus.application.Parser._
-import nl.roelofruis.artamus.core.common.Containers.{TemporalMap, Windowed, WindowedSeq}
+import nl.roelofruis.artamus.core.common.Containers.{Windowed, WindowedSeq}
+import nl.roelofruis.artamus.core.common.Position
 import nl.roelofruis.artamus.core.track.Pitched.{Chord, ChordTrack}
 import nl.roelofruis.artamus.core.track.transform.TemporalMaths
-import nl.roelofruis.artamus.core.common.Position
 
 import scala.util.{Failure, Success}
 
@@ -61,7 +61,7 @@ case class ChordChartParser(
           val nextSeq = acc :+ Windowed(pos, duration, chord)
           (nextPos, nextSeq)
       }
-    }.map { case (_, chordSequence) => TemporalMap.fromSequence(chordSequence) }
+    }.map(_._2)
   }
 
 }

@@ -3,9 +3,9 @@ package nl.roelofruis.artamus
 import nl.roelofruis.artamus.application.Model.{ParseResult, Settings}
 import nl.roelofruis.artamus.application.rendering.RenderingLoader
 import nl.roelofruis.artamus.application.{Application, ChordChartParser, RNALoader, SettingsLoader}
-import nl.roelofruis.artamus.core.common.Containers.{TemporalInstantMap, Windowed, WindowedSeq}
+import nl.roelofruis.artamus.core.common.Containers.{TemporalInstantMap, TemporalMap, Windowed}
 import nl.roelofruis.artamus.core.track.Layer.{ChordLayer, NoteLayer}
-import nl.roelofruis.artamus.core.track.Pitched.{ChordTrack, Key}
+import nl.roelofruis.artamus.core.track.Pitched.{ChordTrack, Key, RomanNumeralTrack}
 import nl.roelofruis.artamus.core.track.Temporal.Metre
 import nl.roelofruis.artamus.core.track.transform.rna.Model.{RNAAnalysedChord, RNANode}
 import nl.roelofruis.artamus.core.track.transform.rna.RomanNumeralAnalyser
@@ -35,16 +35,17 @@ object Analyse extends App {
   Application.runRepeated(program)
 
   def makeTrack(chords: ChordTrack, defaultMetre: Metre, defaultKey: Key): Track = {
+    val chordMap = TemporalMap.fromSequence(chords)
     Track(
       TemporalInstantMap.startingWith(defaultMetre),
       Seq(
-        ChordLayer(chords),
-        NoteLayer(TemporalInstantMap.startingWith(defaultKey), Fillers.emptyBars(chords.duration))
+        ChordLayer(chordMap),
+        NoteLayer(TemporalInstantMap.startingWith(defaultKey), Fillers.emptyBars(chordMap.duration))
       )
     )
   }
 
-  def printDegrees(degrees: WindowedSeq[RNAAnalysedChord], tuning: Settings, analyser: RomanNumeralAnalyser): Unit = {
+  def printDegrees(degrees: RomanNumeralTrack, tuning: Settings, analyser: RomanNumeralAnalyser): Unit = {
     val transitions = degrees
       .sliding(2, 1)
       .map { case Seq(a, b) => (a, b, analyser.scoreTransition(
@@ -67,7 +68,7 @@ object Analyse extends App {
 
   def printChart(chordTrack: ChordTrack, tuning: Settings): String = {
     chordTrack
-      .map { case (_, windowed) => s"${tuning.printChord(windowed.element)} - ${windowed.window.duration.v}"}
+      .map { windowed => s"${tuning.printChord(windowed.element)} - ${windowed.window.duration.v}"}
       .mkString(", ")
   }
 
