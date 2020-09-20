@@ -55,7 +55,7 @@ trait LilypondFormatting extends TunedMaths with DocumentWriter {
         val writtenNotes = notes.map { case (descriptor, octave) =>
           writePitchDescriptor(descriptor) + writeOctave(octave) + tie
         }
-        if (writtenNotes.length == 1) writtenNotes.head else writtenNotes.mkString("<", "", ">")
+        if (writtenNotes.length == 1) writtenNotes.head else writtenNotes.mkString("<", " ", ">")
     }.mkString("\n")
 
     scoped("\\new Staff {", "}")(
