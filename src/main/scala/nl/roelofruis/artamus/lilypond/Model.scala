@@ -1,4 +1,4 @@
-package nl.roelofruis.artamus.application.rendering
+package nl.roelofruis.artamus.lilypond
 
 import nl.roelofruis.artamus.core.track.Pitched.Quality
 import nl.roelofruis.artamus.core.track.transform.TunedMaths.TuningDefinition
@@ -15,7 +15,8 @@ object Model {
     flatSpelling: String,
     sharpSpelling: String,
     dotSpelling: String,
-    qualitySpelling: Map[Quality, String]
+    qualitySpelling: Map[Quality, String],
+    quarterTempo: Int
   ) extends TuningDefinition
 
 }

@@ -2,7 +2,7 @@ package nl.roelofruis.artamus.application.rendering
 
 import java.io.{File, PrintWriter}
 
-import nl.roelofruis.artamus.application.rendering.Model.LilypondSettings
+import nl.roelofruis.artamus.lilypond.Model.LilypondSettings
 import nl.roelofruis.artamus.core.layout.DisplayableMusic
 import nl.roelofruis.artamus.core.track.Track
 import nl.roelofruis.artamus.lilypond.{Document, LilypondFormatting}

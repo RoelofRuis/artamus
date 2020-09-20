@@ -1,6 +1,5 @@
 package nl.roelofruis.artamus.lilypond
 
-import nl.roelofruis.artamus.application.rendering.Model.LilypondSettings
 import nl.roelofruis.artamus.core.common.Maths._
 import nl.roelofruis.artamus.core.layout.ChordStaffGlyph.{ChordNameGlyph, ChordRestGlyph}
 import nl.roelofruis.artamus.core.layout.DisplayableMusic
@@ -10,6 +9,7 @@ import nl.roelofruis.artamus.core.layout.StaffGlyph.{NoteGroupGlyph, RestGlyph}
 import nl.roelofruis.artamus.core.track.Pitched.{Octave, PitchDescriptor, Quality}
 import nl.roelofruis.artamus.core.track.transform.TunedMaths
 import nl.roelofruis.artamus.lilypond.Document.DocumentWriter
+import nl.roelofruis.artamus.lilypond.Model.LilypondSettings
 
 trait LilypondFormatting extends TunedMaths with DocumentWriter {
   val settings: LilypondSettings
@@ -27,6 +27,7 @@ trait LilypondFormatting extends TunedMaths with DocumentWriter {
       ),
       scoped("\\score {", "}")(
         writeStaffGroup(displayableMusic.staffGroup),
+        scoped("\\layout {", "}")(),
         scoped("\\midi {", "}")()
       )
     )
@@ -70,6 +71,7 @@ trait LilypondFormatting extends TunedMaths with DocumentWriter {
       "\\numericTimeSignature",
       "\\override Score.BarNumber.break-visibility = ##(#f #t #f)",
       "\\set Score.barNumberVisibility = #all-bar-numbers-visible",
+      s"\\tempo 4 = ${settings.quarterTempo}",
       "\\bar \"\"",
       contents,
       "\\bar \"|.\""

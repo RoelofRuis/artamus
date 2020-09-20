@@ -2,7 +2,7 @@ package nl.roelofruis.artamus.application.rendering
 
 import nl.roelofruis.artamus.application.File
 import nl.roelofruis.artamus.application.Model.{ParseResult, Settings}
-import nl.roelofruis.artamus.application.rendering.Model.LilypondSettings
+import nl.roelofruis.artamus.lilypond.Model.LilypondSettings
 import nl.roelofruis.artamus.core.track.Pitched.Quality
 import spray.json.{DefaultJsonProtocol, JsonFormat}
 
@@ -30,7 +30,8 @@ object RenderingLoader {
         textSettings.flatSpelling,
         textSettings.sharpSpelling,
         textSettings.dotSpelling,
-        qualitySpelling
+        qualitySpelling,
+        textSettings.quarterTempo
       )
 
       LilypondRenderer(settings)
@@ -58,11 +59,12 @@ object RenderingLoader {
       flatSpelling: String,
       sharpSpelling: String,
       dotSpelling: String,
-      qualitySpelling: List[TextQualitySpelling]
+      qualitySpelling: List[TextQualitySpelling],
+      quarterTempo: Int,
     )
 
     object TextLilypondSettings {
-      implicit val settingsFormat: JsonFormat[TextLilypondSettings] = jsonFormat10(TextLilypondSettings.apply)
+      implicit val settingsFormat: JsonFormat[TextLilypondSettings] = jsonFormat11(TextLilypondSettings.apply)
     }
 
   }
