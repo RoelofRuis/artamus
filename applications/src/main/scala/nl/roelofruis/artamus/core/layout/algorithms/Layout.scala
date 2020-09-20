@@ -19,10 +19,15 @@ object Layout {
     @tailrec
     def loop(state: LayoutState[A]): List[Glyph[A]] = {
       state.activeElement match {
-        case None => // insert final rest
-          state
-            .withGlyphs(fitGlyphs(state.activeMetre, state.restUntilEndOfBar))
-            .glyphs
+        case None =>
+          if (state.position == state.activeMetre.window.start) { // ended exactly on final bar
+            state.glyphs
+          }
+          else { // insert final rest
+            state
+              .withGlyphs(fitGlyphs(state.activeMetre, state.restUntilEndOfBar))
+              .glyphs
+          }
 
         case Some(element) =>
           val instantGlyphs = layout.instantGlyphs(state.position)
