@@ -7,7 +7,7 @@ import nl.roelofruis.artamus.core.layout.DisplayableMusic
 import nl.roelofruis.artamus.core.layout.Glyph.{GlyphDuration, SingleGlyph}
 import nl.roelofruis.artamus.core.layout.Staff.{ChordStaff, NoteStaff, StaffGroup}
 import nl.roelofruis.artamus.core.layout.StaffGlyph.{NoteGroupGlyph, RestGlyph}
-import nl.roelofruis.artamus.core.track.Pitched.{PitchDescriptor, Quality}
+import nl.roelofruis.artamus.core.track.Pitched.{Octave, PitchDescriptor, Quality}
 import nl.roelofruis.artamus.core.track.analysis.TunedMaths
 import nl.roelofruis.artamus.lilypond.Document.DocumentWriter
 
@@ -50,6 +50,12 @@ trait LilypondFormatting extends TunedMaths with DocumentWriter {
         "r" + writeDuration(duration)
       case SingleGlyph(NoteGroupGlyph(Seq()), duration) =>
         "s" + writeDuration(duration)
+      case SingleGlyph(NoteGroupGlyph(notes), duration) =>
+        val tie = if (duration.tieToNext) "~" else ""
+        val writtenNotes = notes.map { case (descriptor, octave) =>
+          writePitchDescriptor(descriptor) + writeOctave(octave) + tie
+        }
+        if (writtenNotes.length == 1) writtenNotes.head else writtenNotes.mkString("<", "", ">")
     }.mkString("\n")
 
     scoped("\\new Staff {", "}")(
@@ -82,6 +88,15 @@ trait LilypondFormatting extends TunedMaths with DocumentWriter {
         contents
       )
     )
+  }
+
+  private def writeOctave(octave: Octave): String = {
+    // 3th midi octave is unaltered in lilypond notation
+    octave - 3 match {
+      case i if i == 0 => ""
+      case i if i < 0 => "," * i
+      case i if i > 0 => "'" * i
+    }
   }
 
   private def writePitchDescriptor(descriptor: PitchDescriptor): String = {
