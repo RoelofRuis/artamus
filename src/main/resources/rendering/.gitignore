@@ -3,3 +3,6 @@
 
 # lilypond produced png files
 *.png
+
+# lilypond produced midi files
+*.mid

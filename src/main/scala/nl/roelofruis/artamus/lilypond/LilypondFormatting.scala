@@ -26,9 +26,9 @@ trait LilypondFormatting extends TunedMaths with DocumentWriter {
         "tagline = ##f"
       ),
       scoped("\\score {", "}")(
-        writeStaffGroup(displayableMusic.staffGroup)
-      ),
-      scoped("\\midi {", "}")()
+        writeStaffGroup(displayableMusic.staffGroup),
+        scoped("\\midi {", "}")()
+      )
     )
   }
 
