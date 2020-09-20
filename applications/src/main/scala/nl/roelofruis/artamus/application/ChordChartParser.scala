@@ -2,7 +2,7 @@ package nl.roelofruis.artamus.application
 
 import nl.roelofruis.artamus.application.Model._
 import nl.roelofruis.artamus.application.Parser._
-import nl.roelofruis.artamus.core.common.Containers.{TemporalMap, Windowed}
+import nl.roelofruis.artamus.core.common.Containers.{TemporalMap, Windowed, WindowedSeq}
 import nl.roelofruis.artamus.core.track.Pitched.{Chord, ChordTrack}
 import nl.roelofruis.artamus.core.track.analysis.TemporalMaths
 import nl.roelofruis.artamus.core.common.Position
@@ -50,7 +50,7 @@ case class ChordChartParser(
     }
 
     chordsPerBar.map { chords =>
-      chords.foldLeft((Position.ZERO, Seq[Windowed[Chord]]())) {
+      chords.foldLeft((Position.ZERO, WindowedSeq.empty[Chord])) {
         case ((pos, acc), (duration, chord)) if acc.nonEmpty && acc.last.element == chord =>
           val nextPos = pos + duration
           val nextSeq = acc.dropRight(1) :+ acc.last.copy(window=acc.last.window.stretchTo(nextPos))

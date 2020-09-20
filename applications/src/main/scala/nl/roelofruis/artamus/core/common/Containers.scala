@@ -4,7 +4,9 @@ import scala.collection.immutable.SortedMap
 
 object Containers {
 
-  /** Represents an element that has an associated window, meaning it has a finite and positioned duration in time. */
+  /**
+   * Represents an element that has an associated window, meaning it has a finite and positioned duration in time.
+   */
   final case class Windowed[A](window: Window, element: A) {
     val get: A = element
   }
@@ -15,15 +17,28 @@ object Containers {
     }
   }
 
-  /** Represents an element that has an associated position, meaning it is sits at an instant in time. */
+  type WindowedSeq[A] = Seq[Windowed[A]]
+
+  object WindowedSeq {
+    def empty[A]: WindowedSeq[A] = Seq.empty
+  }
+
+  /**
+   *  An element that has an associated position, meaning it is sits at an instant in time.
+   *
+   *  TODO: see if this can be refactored as a special (more restricted) case of Windowed with duration zero.
+   */
   final case class Positioned[A](position: Position, element: A)
 
+  /**
+   * Windowed elements in time, with lookup on position.
+   */
   type TemporalMap[A] = SortedMap[Position, Windowed[A]]
 
   object TemporalMap {
     def empty[A]: TemporalMap[A] = SortedMap[Position, Windowed[A]]()
 
-    def fromSequence[A](seq: Seq[Windowed[A]]): TemporalMap[A] = {
+    def fromSequence[A](seq: WindowedSeq[A]): TemporalMap[A] = {
       seq.foldLeft(SortedMap[Position, Windowed[A]]()) {
         case (acc, windowed) => acc.updated(windowed.window.start, windowed)
       }
@@ -34,6 +49,9 @@ object Containers {
     val duration: Duration = map.values.foldRight(Duration.ZERO) { case (w, acc) => acc + w.window.duration }
   }
 
+  /**
+   * Positioned elements in time, with lookup on position.
+   */
   type TemporalInstantMap[A] = SortedMap[Position, A]
 
   object TemporalInstantMap {

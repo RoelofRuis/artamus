@@ -3,7 +3,7 @@ package nl.roelofruis.artamus.application
 import java.io.{File, PrintWriter}
 
 import nl.roelofruis.artamus.application.Model.Settings
-import nl.roelofruis.artamus.core.common.Containers.Windowed
+import nl.roelofruis.artamus.core.common.Containers.WindowedSeq
 import nl.roelofruis.artamus.core.common.Rational
 import nl.roelofruis.artamus.core.track.analysis.rna.Model.RNAAnalysedChord
 
@@ -12,7 +12,7 @@ object AnalysisCSVWriter {
   import Printer._
 
   implicit class SettingsOps(settings: Settings) {
-    def writeCSV(analysedTrack: Seq[Windowed[RNAAnalysedChord]], filename: String): Unit = {
+    def writeCSV(analysedTrack: WindowedSeq[RNAAnalysedChord], filename: String): Unit = {
       val writer = new PrintWriter(new File(s"applications/charts/$filename.csv"))
       analysedTrack.foreach { rnaNode =>
         val duration = rnaNode.window.duration

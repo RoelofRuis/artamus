@@ -1,6 +1,6 @@
 package nl.roelofruis.artamus.core.layout.algorithms
 
-import nl.roelofruis.artamus.core.common.Containers.{Positioned, Windowed}
+import nl.roelofruis.artamus.core.common.Containers.{Positioned, Windowed, WindowedSeq}
 import nl.roelofruis.artamus.core.common.Maths._
 import nl.roelofruis.artamus.core.common.{Position, Rational, Window}
 import nl.roelofruis.artamus.core.layout.Glyph
@@ -13,7 +13,7 @@ import scala.annotation.tailrec
 object Layout {
 
   def layoutElements[A](
-    elements: Seq[Windowed[A]],
+    elements: WindowedSeq[A],
     layout: LayoutDescription[A]
   ): Seq[Glyph[A]] = {
     @tailrec
@@ -99,7 +99,7 @@ object Layout {
 
   private case class LayoutState[A](
     position: Position,
-    private val elements: Seq[Windowed[A]],
+    private val elements: WindowedSeq[A],
     private val metres: LazyList[Positioned[Metre]],
     private val restGlyph: A,
     glyphs: List[Glyph[A]]

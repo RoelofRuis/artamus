@@ -13,7 +13,7 @@ import nl.roelofruis.artamus.core.track.analysis.TemporalMaths
 object DisplayableLayers extends TemporalMaths {
 
   implicit class DisplayableChordLayer(layer: ChordLayer) {
-    lazy val elementIterator: Seq[Windowed[ChordStaffGlyph]] = layer.chords.map {
+    lazy val elementIterator: WindowedSeq[ChordStaffGlyph] = layer.chords.map {
       case (_, Windowed(window, chord)) =>
         Windowed[ChordStaffGlyph](window, ChordNameGlyph(chord.root, chord.quality))
     }.toSeq
@@ -27,7 +27,7 @@ object DisplayableLayers extends TemporalMaths {
   }
 
   implicit class DisplayableNoteLayer(layer: NoteLayer) {
-    def elementIterator: Seq[Windowed[StaffGlyph]] =
+    def elementIterator: WindowedSeq[StaffGlyph] =
       layer
         .notes
         .values

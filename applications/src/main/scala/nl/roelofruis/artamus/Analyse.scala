@@ -3,7 +3,7 @@ package nl.roelofruis.artamus
 import nl.roelofruis.artamus.application.Model.{ParseResult, Settings}
 import nl.roelofruis.artamus.application.rendering.RenderingLoader
 import nl.roelofruis.artamus.application.{Application, ChordChartParser, RNALoader, SettingsLoader}
-import nl.roelofruis.artamus.core.common.Containers.{TemporalInstantMap, Windowed}
+import nl.roelofruis.artamus.core.common.Containers.{TemporalInstantMap, Windowed, WindowedSeq}
 import nl.roelofruis.artamus.core.track.Layer.{ChordLayer, NoteLayer}
 import nl.roelofruis.artamus.core.track.Pitched.{ChordTrack, Key}
 import nl.roelofruis.artamus.core.track.Temporal.Metre
@@ -50,7 +50,7 @@ object Analyse extends App {
     )
   }
 
-  def printDegrees(degrees: Seq[Windowed[RNAAnalysedChord]], tuning: Settings, analyser: RomanNumeralAnalyser): Unit = {
+  def printDegrees(degrees: WindowedSeq[RNAAnalysedChord], tuning: Settings, analyser: RomanNumeralAnalyser): Unit = {
     val transitions = degrees
       .sliding(2, 1)
       .map { case Seq(a, b) => (a, b, analyser.scoreTransition(
