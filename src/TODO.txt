@@ -1,4 +1,3 @@
-- Bar lines
 - Passing chords
 - Some way of adding information on chord changes/resolutions
 - Absolute & Relative functions towards the root note
