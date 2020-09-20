@@ -20,7 +20,7 @@ object Layer {
   ) extends Layer
 
   final case class NoteLayer(
-    keys: KeyTrack,
+    keys: KeyTrack, // TODO: move key to track, and ensure it is instantiated with its default value!
     notes: NoteTrack
   ) extends Layer
 
