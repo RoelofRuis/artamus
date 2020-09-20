@@ -1,7 +1,7 @@
 package nl.roelofruis.artamus.lilypond
 
 import nl.roelofruis.artamus.core.track.Pitched.Quality
-import nl.roelofruis.artamus.core.track.transform.TunedMaths.TuningDefinition
+import nl.roelofruis.artamus.core.track.algorithms.TunedMaths.TuningDefinition
 
 object Model {
 

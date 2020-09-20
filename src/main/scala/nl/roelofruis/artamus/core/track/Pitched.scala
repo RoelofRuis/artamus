@@ -1,7 +1,7 @@
 package nl.roelofruis.artamus.core.track
 
 import nl.roelofruis.artamus.core.common.Containers.WindowedSeq
-import nl.roelofruis.artamus.core.track.transform.rna.Model.RNAAnalysedChord
+import nl.roelofruis.artamus.core.track.algorithms.rna.Model.RNAAnalysedChord
 
 object Pitched {
 

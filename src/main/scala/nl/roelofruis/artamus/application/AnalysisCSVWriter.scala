@@ -5,7 +5,7 @@ import java.io.{File, PrintWriter}
 import nl.roelofruis.artamus.application.Model.Settings
 import nl.roelofruis.artamus.core.common.Containers.WindowedSeq
 import nl.roelofruis.artamus.core.common.Rational
-import nl.roelofruis.artamus.core.track.transform.rna.Model.RNAAnalysedChord
+import nl.roelofruis.artamus.core.track.algorithms.rna.Model.RNAAnalysedChord
 
 object AnalysisCSVWriter {
 

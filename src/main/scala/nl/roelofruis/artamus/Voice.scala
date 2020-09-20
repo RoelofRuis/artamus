@@ -8,7 +8,7 @@ import nl.roelofruis.artamus.core.track.Layer.{ChordLayer, NoteLayer}
 import nl.roelofruis.artamus.core.track.Pitched.{ChordTrack, Key, NoteTrack}
 import nl.roelofruis.artamus.core.track.Temporal.Metre
 import nl.roelofruis.artamus.core.track.Track
-import nl.roelofruis.artamus.core.track.transform.voicing.ChordVoicer
+import nl.roelofruis.artamus.core.track.algorithms.voicing.ChordVoicer
 
 object Voice extends App {
 

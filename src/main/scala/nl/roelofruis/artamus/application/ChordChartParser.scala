@@ -5,7 +5,7 @@ import nl.roelofruis.artamus.application.Parser._
 import nl.roelofruis.artamus.core.common.Containers.{Windowed, WindowedSeq}
 import nl.roelofruis.artamus.core.common.Position
 import nl.roelofruis.artamus.core.track.Pitched.{Chord, ChordTrack}
-import nl.roelofruis.artamus.core.track.transform.TemporalMaths
+import nl.roelofruis.artamus.core.track.algorithms.TemporalMaths
 
 import scala.util.{Failure, Success}
 

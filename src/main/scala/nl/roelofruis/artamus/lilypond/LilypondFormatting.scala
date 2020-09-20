@@ -7,7 +7,7 @@ import nl.roelofruis.artamus.core.layout.Glyph.{GlyphDuration, SingleGlyph}
 import nl.roelofruis.artamus.core.layout.Staff.{ChordStaff, NoteStaff, StaffGroup}
 import nl.roelofruis.artamus.core.layout.StaffGlyph.{NoteGroupGlyph, RestGlyph}
 import nl.roelofruis.artamus.core.track.Pitched.{Octave, PitchDescriptor, Quality}
-import nl.roelofruis.artamus.core.track.transform.TunedMaths
+import nl.roelofruis.artamus.core.track.algorithms.TunedMaths
 import nl.roelofruis.artamus.lilypond.Document.DocumentWriter
 import nl.roelofruis.artamus.lilypond.Model.LilypondSettings
 

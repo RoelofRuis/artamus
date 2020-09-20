@@ -1,7 +1,7 @@
-package nl.roelofruis.artamus.core.track.transform
+package nl.roelofruis.artamus.core.track.algorithms
 
 import nl.roelofruis.artamus.core.track.Pitched.PitchDescriptor
-import nl.roelofruis.artamus.core.track.transform.TunedMaths.TuningDefinition
+import nl.roelofruis.artamus.core.track.algorithms.TunedMaths.TuningDefinition
 import utest._
 
 object TunedMathsTest extends TestSuite with TunedMaths {

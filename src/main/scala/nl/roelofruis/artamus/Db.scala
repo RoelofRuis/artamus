@@ -2,7 +2,7 @@ package nl.roelofruis.artamus
 
 import nl.roelofruis.artamus.application.Model.{ParseResult, Settings}
 import nl.roelofruis.artamus.application.{Application, RNALoader, SettingsLoader}
-import nl.roelofruis.artamus.core.track.transform.rna.Model.RNATransition
+import nl.roelofruis.artamus.core.track.algorithms.rna.Model.RNATransition
 
 object Db extends App {
 

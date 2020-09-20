@@ -6,7 +6,7 @@ import nl.roelofruis.artamus.core.common.{Position, Rational, Window}
 import nl.roelofruis.artamus.core.layout.Glyph
 import nl.roelofruis.artamus.core.layout.Glyph.{GlyphDuration, SingleGlyph}
 import nl.roelofruis.artamus.core.track.Temporal.Metre
-import nl.roelofruis.artamus.core.track.transform.TemporalMaths
+import nl.roelofruis.artamus.core.track.algorithms.TemporalMaths
 
 import scala.annotation.tailrec
 

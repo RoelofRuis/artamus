@@ -7,8 +7,8 @@ import nl.roelofruis.artamus.core.common.Containers.{TemporalInstantMap, Tempora
 import nl.roelofruis.artamus.core.track.Layer.{ChordLayer, NoteLayer}
 import nl.roelofruis.artamus.core.track.Pitched.{ChordTrack, Key, RomanNumeralTrack}
 import nl.roelofruis.artamus.core.track.Temporal.Metre
-import nl.roelofruis.artamus.core.track.transform.rna.Model.{RNAAnalysedChord, RNANode}
-import nl.roelofruis.artamus.core.track.transform.rna.RomanNumeralAnalyser
+import nl.roelofruis.artamus.core.track.algorithms.rna.Model.{RNAAnalysedChord, RNANode}
+import nl.roelofruis.artamus.core.track.algorithms.rna.RomanNumeralAnalyser
 import nl.roelofruis.artamus.core.track.{Fillers, Track}
 
 object Analyse extends App {

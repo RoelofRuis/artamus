@@ -3,7 +3,7 @@ package nl.roelofruis.artamus.application
 import nl.roelofruis.artamus.application.Model.{ParseResult, Settings}
 import nl.roelofruis.artamus.application.Parser._
 import nl.roelofruis.artamus.core.track.Pitched.Key
-import nl.roelofruis.artamus.core.track.transform.rna.Model._
+import nl.roelofruis.artamus.core.track.algorithms.rna.Model._
 import spray.json._
 
 object RNALoader {
