@@ -5,7 +5,6 @@ import nl.roelofruis.artamus.core.common.Position
 import nl.roelofruis.artamus.core.layout.ChordStaffGlyph.{ChordNameGlyph, ChordRestGlyph}
 import nl.roelofruis.artamus.core.layout.Staff.{ChordStaff, NoteStaff, StaffGroup}
 import nl.roelofruis.artamus.core.layout.StaffGlyph.{NoteGroupGlyph, RestGlyph}
-import nl.roelofruis.artamus.core.layout.algorithms.Layout.Element
 import nl.roelofruis.artamus.core.layout.{ChordStaffGlyph, StaffGlyph}
 import nl.roelofruis.artamus.core.track.Layer.{ChordLayer, NoteLayer}
 import nl.roelofruis.artamus.core.track.Temporal.Metre
@@ -14,9 +13,9 @@ import nl.roelofruis.artamus.core.track.analysis.TemporalMaths
 object DisplayableLayers extends TemporalMaths {
 
   implicit class DisplayableChordLayer(layer: ChordLayer) {
-    lazy val elementIterator: Seq[Element[ChordStaffGlyph]] = layer.chords.map {
+    lazy val elementIterator: Seq[Windowed[ChordStaffGlyph]] = layer.chords.map {
       case (_, Windowed(window, chord)) =>
-        Element[ChordStaffGlyph](window, ChordNameGlyph(chord.root, chord.quality))
+        Windowed[ChordStaffGlyph](window, ChordNameGlyph(chord.root, chord.quality))
     }.toSeq
 
     lazy val layout: LayoutDescription[ChordStaffGlyph] = LayoutDescription(
@@ -28,13 +27,13 @@ object DisplayableLayers extends TemporalMaths {
   }
 
   implicit class DisplayableNoteLayer(layer: NoteLayer) {
-    def elementIterator: Seq[Element[StaffGlyph]] =
+    def elementIterator: Seq[Windowed[StaffGlyph]] =
       layer
         .notes
         .values
         .toSeq
         .map { case Windowed(window, noteGroup) =>
-          Element[StaffGlyph](window, NoteGroupGlyph(
+          Windowed[StaffGlyph](window, NoteGroupGlyph(
             noteGroup.map(note => (note.descriptor, note.octave)))
           )
         }

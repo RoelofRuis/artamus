@@ -1,6 +1,6 @@
 package nl.roelofruis.artamus.core.layout.algorithms
 
-import nl.roelofruis.artamus.core.common.Containers.Positioned
+import nl.roelofruis.artamus.core.common.Containers.{Positioned, Windowed}
 import nl.roelofruis.artamus.core.common.Maths._
 import nl.roelofruis.artamus.core.common.{Position, Rational, Window}
 import nl.roelofruis.artamus.core.layout.Glyph
@@ -12,11 +12,8 @@ import scala.annotation.tailrec
 
 object Layout {
 
-  // TODO: Refactor to use Windowed[A]
-  final case class Element[A](window: Window, glyph: A)
-
   def layoutElements[A](
-    elements: Seq[Element[A]],
+    elements: Seq[Windowed[A]],
     layout: LayoutDescription[A]
   ): Seq[Glyph[A]] = {
     @tailrec
@@ -69,7 +66,7 @@ object Layout {
     }
 
     // TODO: this should be improved based on info given in metre!
-    def fitGlyphs(metre: Positioned[Metre], element: Element[A], tie: Boolean = false): Seq[Glyph[A]] = {
+    def fitGlyphs(metre: Positioned[Metre], element: Windowed[A], tie: Boolean = false): Seq[Glyph[A]] = {
       metre.window.intersectNonInstant(element.window) match {
         case None => Seq.empty
         case Some(window) =>
@@ -78,19 +75,19 @@ object Layout {
               throw new NotImplementedError(s"Cannot fit tuplet [$r]!")
 
             case Rational(1, d) =>
-              Seq(SingleGlyph(element.glyph, GlyphDuration(d.largestPowerOfTwo, 0, tie)))
+              Seq(SingleGlyph(element.get, GlyphDuration(d.largestPowerOfTwo, 0, tie)))
 
             case Rational(3, d) =>
-              Seq(SingleGlyph(element.glyph, GlyphDuration(d.largestPowerOfTwo - 1, 1, tie)))
+              Seq(SingleGlyph(element.get, GlyphDuration(d.largestPowerOfTwo - 1, 1, tie)))
 
             case Rational(5, d) =>
               Seq(
-                SingleGlyph(element.glyph, GlyphDuration(d.largestPowerOfTwo - 2, 0, tieToNext = true)),
-                SingleGlyph(element.glyph, GlyphDuration(d.largestPowerOfTwo, 0))
+                SingleGlyph(element.get, GlyphDuration(d.largestPowerOfTwo - 2, 0, tieToNext = true)),
+                SingleGlyph(element.get, GlyphDuration(d.largestPowerOfTwo, 0))
               )
 
             case Rational(7, d) =>
-              Seq(SingleGlyph(element.glyph, GlyphDuration(d.largestPowerOfTwo - 2, 2)))
+              Seq(SingleGlyph(element.get, GlyphDuration(d.largestPowerOfTwo - 2, 2)))
 
             case r => throw new NotImplementedError(s"Cannot fit length [$r]")
           }
@@ -102,7 +99,7 @@ object Layout {
 
   private case class LayoutState[A](
     position: Position,
-    private val elements: Seq[Element[A]],
+    private val elements: Seq[Windowed[A]],
     private val metres: LazyList[Positioned[Metre]],
     private val restGlyph: A,
     glyphs: List[Glyph[A]]
@@ -110,14 +107,14 @@ object Layout {
 
     // Derived properties
     val activeMetre: Positioned[Metre] = metres.head
-    val activeElement: Option[(Element[A], Window)] = elements.headOption.map(e => (e, e.window))
+    val activeElement: Option[(Windowed[A], Window)] = elements.headOption.map(e => (e, e.window))
 
     // Helpers
     def endOfActiveMeter: Position = activeMetre.window.end
 
-    def restUntilEndOfBar: Element[A] = Element(Window(position, activeMetre.window.end - position), restGlyph)
+    def restUntilEndOfBar: Windowed[A] = Windowed(position, activeMetre.window.end - position, restGlyph)
 
-    def restUntil(until: Position): Element[A] = Element(Window(position, until - position), restGlyph)
+    def restUntil(until: Position): Windowed[A] = Windowed(position, until - position, restGlyph)
 
     // State updates
     def withGlyphs(newGlyphs: Seq[Glyph[A]]): LayoutState[A] = copy(glyphs = glyphs ++ newGlyphs)
