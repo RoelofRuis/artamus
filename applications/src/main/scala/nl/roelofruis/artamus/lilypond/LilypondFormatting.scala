@@ -6,7 +6,7 @@ import nl.roelofruis.artamus.core.layout.ChordStaffGlyph.{ChordNameGlyph, ChordR
 import nl.roelofruis.artamus.core.layout.DisplayableMusic
 import nl.roelofruis.artamus.core.layout.Glyph.{GlyphDuration, SingleGlyph}
 import nl.roelofruis.artamus.core.layout.Staff.{ChordStaff, NoteStaff, StaffGroup}
-import nl.roelofruis.artamus.core.layout.StaffGlyph.RestGlyph
+import nl.roelofruis.artamus.core.layout.StaffGlyph.{NoteGroupGlyph, RestGlyph}
 import nl.roelofruis.artamus.core.track.Pitched.{PitchDescriptor, Quality}
 import nl.roelofruis.artamus.core.track.analysis.TunedMaths
 import nl.roelofruis.artamus.lilypond.Document.DocumentWriter
@@ -18,7 +18,9 @@ trait LilypondFormatting extends TunedMaths with DocumentWriter {
     flat(
       s"""\\version "${settings.lilypondVersion}"""",
       scoped("\\paper {", "}")(
-        s"""#(set-paper-size "${settings.paperSize}")"""
+        s"""#(set-paper-size "${settings.paperSize}")""",
+        "ragged-last-bottom = ##f",
+        "indent = 0.0"
       ),
       scoped("\\header {", "}")(
         "tagline = ##f"
@@ -45,8 +47,9 @@ trait LilypondFormatting extends TunedMaths with DocumentWriter {
   private def writeNoteStaff(staff: NoteStaff): Document = {
     val contents = staff.glyphs.map {
       case SingleGlyph(_: RestGlyph, duration) =>
+        "r" + writeDuration(duration)
+      case SingleGlyph(NoteGroupGlyph(Seq()), duration) =>
         "s" + writeDuration(duration)
-      case _ => // TODO: write other elements
     }.mkString("\n")
 
     scoped("\\new Staff {", "}")(

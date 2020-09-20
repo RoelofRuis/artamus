@@ -1,7 +1,7 @@
 {
   "pngResolution": 160,
   "lilypondVersion": "2.18",
-  "paperSize": "a6landscape",
+  "paperSize": "a4",
   "pitchClassSequence": [0, 2, 4, 5, 7, 9, 11],
   "numPitchClasses": 12,
   "stepNames": ["c", "d", "e", "f", "g", "a", "b"],

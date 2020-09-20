@@ -10,10 +10,8 @@ import scala.collection.immutable.SortedMap
 object Fillers extends TemporalMaths {
 
   def emptyBars(duration: Duration): TemporalMap[NoteGroup] = {
-    val endPosition = Position.ZERO + duration
-
     SortedMap[Position, Windowed[NoteGroup]](
-      (endPosition, Windowed(endPosition, Duration.ZERO, Seq()))
+      (Position.ZERO, Windowed(Position.ZERO, duration, Seq()))
     )
   }
 
