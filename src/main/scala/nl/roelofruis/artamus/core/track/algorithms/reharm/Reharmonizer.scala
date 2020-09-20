@@ -6,8 +6,6 @@ import nl.roelofruis.artamus.core.track.algorithms.TunedMaths
 
 case class Reharmonizer(settings: Settings) extends TunedMaths {
 
-  def reharmonize(rnaTrack: RomanNumeralTrack): RomanNumeralTrack = {
-    ???
-  }
+  def reharmonize(rnaTrack: RomanNumeralTrack): RomanNumeralTrack = ???
 
 }

@@ -2,3 +2,7 @@
 - Passing chords
 - Some way of adding information on chord changes/resolutions
 - Absolute & Relative functions towards the root note
+
+- Implement harmonic analysis (start with old core implementation)
+- Implement reharmonizer
+- Improve chord voicer with directed graph search.
