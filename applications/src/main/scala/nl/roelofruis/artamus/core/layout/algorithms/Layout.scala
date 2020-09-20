@@ -24,10 +24,10 @@ object Layout {
             .withGlyphs(fitGlyphs(state.activeMetre, state.restUntilEndOfBar))
             .glyphs
 
-        case Some((element, elementWindow)) =>
+        case Some(element) =>
           val instantGlyphs = layout.instantGlyphs(state.position)
 
-          if (elementWindow.start >= state.endOfActiveMeter) { // insert rest as long as bar, move to next bar
+          if (element.window.start >= state.endOfActiveMeter) { // insert rest as long as bar, move to next bar
             loop(
               state
                 .withGlyphs(instantGlyphs)
@@ -35,13 +35,13 @@ object Layout {
                 .to(state.endOfActiveMeter)
             )
           }
-          else if (elementWindow.end <= state.endOfActiveMeter) {
-            if (elementWindow.start > state.position) { // insert rest and continue with this bar
+          else if (element.window.end <= state.endOfActiveMeter) {
+            if (element.window.start > state.position) { // insert rest and continue with this bar
               loop(
                 state
                   .withGlyphs(instantGlyphs)
-                  .withGlyphs(fitGlyphs(state.activeMetre, state.restUntil(elementWindow.start)))
-                  .to(elementWindow.start)
+                  .withGlyphs(fitGlyphs(state.activeMetre, state.restUntil(element.window.start)))
+                  .to(element.window.start)
               )
             }
             else { // insert element and if last element move to next bar
@@ -49,7 +49,7 @@ object Layout {
                 state
                   .withGlyphs(instantGlyphs)
                   .withGlyphs(fitGlyphs(state.activeMetre, element))
-                  .to(elementWindow.end)
+                  .to(element.window.end)
                   .toNextElement
               )
             }
@@ -107,7 +107,7 @@ object Layout {
 
     // Derived properties
     val activeMetre: Positioned[Metre] = metres.head
-    val activeElement: Option[(Windowed[A], Window)] = elements.headOption.map(e => (e, e.window))
+    val activeElement: Option[Windowed[A]] = elements.headOption
 
     // Helpers
     def endOfActiveMeter: Position = activeMetre.window.end
