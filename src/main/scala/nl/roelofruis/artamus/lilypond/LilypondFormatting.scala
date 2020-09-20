@@ -100,7 +100,10 @@ trait LilypondFormatting extends TunedMaths with DocumentWriter {
   }
 
   private def writePitchDescriptor(descriptor: PitchDescriptor): String = {
-    val accidentals = descriptor.pitchClass - settings.pitchClassSequence(descriptor.step)
+    val accidentals = Seq(
+      descriptor.pitchClass - settings.pitchClassSequence(descriptor.step),
+      (descriptor.pitchClass - settings.numPitchClasses) - settings.pitchClassSequence(descriptor.step)
+    ).minBy(Math.abs)
 
     writeStep(descriptor.step) + writeAccidentals(accidentals, descriptor.step)
   }
