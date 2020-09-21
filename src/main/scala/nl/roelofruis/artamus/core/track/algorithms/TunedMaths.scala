@@ -32,6 +32,10 @@ trait TunedMaths {
     PitchDescriptor(actualStep % numSteps, actualPitchClass % settings.numPitchClasses)
   }
 
+  implicit class NoteMath(note: Note) {
+    def midiNr: Int = (note.octave + 1) * settings.numPitchClasses + note.descriptor.pitchClass
+  }
+
   implicit class PitchDescriptorMath(descr: PitchDescriptor) {
     def +(that: PitchDescriptor): PitchDescriptor = {
       pd(descr.step + that.step, descr.pitchClass + that.pitchClass)
