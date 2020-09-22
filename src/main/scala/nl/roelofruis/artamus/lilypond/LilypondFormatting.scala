@@ -15,7 +15,7 @@ trait LilypondFormatting extends TunedMaths with DocumentWriter {
   val settings: LilypondSettings
 
   def format(displayableMusic: DisplayableMusic): Document = {
-    flat(
+    val contents: Seq[Document] = Seq(
       s"""\\version "${settings.lilypondVersion}"""",
       scoped("\\paper {", "}")(
         s"""#(set-paper-size "${settings.paperSize}")""",
@@ -36,6 +36,8 @@ trait LilypondFormatting extends TunedMaths with DocumentWriter {
         )
       ),
     )
+
+    flat(contents: _*)
   }
 
   private def writeStaffGroup(staffGroup: StaffGroup): Document = {
