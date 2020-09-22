@@ -5,7 +5,7 @@ import nl.roelofruis.artamus.core.common.Containers.{Windowed, WindowedSeq}
 import nl.roelofruis.artamus.core.common.algorithms.GraphSearch
 import nl.roelofruis.artamus.core.track.Layer.{ChordTrack, NoteTrack}
 import nl.roelofruis.artamus.core.track.Pitched._
-import nl.roelofruis.artamus.core.track.algorithms.{NoteMaths, TunedMaths}
+import nl.roelofruis.artamus.core.track.algorithms.NoteMaths
 
 case class ChordVoicer(settings: Settings) extends NoteMaths {
 
@@ -33,8 +33,11 @@ case class ChordVoicer(settings: Settings) extends NoteMaths {
         chord.map { case (pd, oct) => Note(pd, oct) }
       }
       .filter { notes =>
-        val midiDifferences = notes.midiDifferences
-        midiDifferences.minOption.exists(_ > 2) && midiDifferences.maxOption.exists(_ < 10)
+        val bassInRange = notes.orderedMidiNumbers.headOption.exists(i => i < 50)
+        val nonBassDifferences = notes.orderedMidiDifferences.tail
+        val intervalTooSmall = nonBassDifferences.minOption.exists(_ < 2)
+        val intervalTooLarge = nonBassDifferences.maxOption.exists(_ > 10)
+        bassInRange && ! intervalTooSmall && ! intervalTooLarge
       }
       .map { Windowed(chordWindow.window, _) }
       .toList
