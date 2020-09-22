@@ -79,9 +79,9 @@ trait LilypondFormatting extends TunedMaths with DocumentWriter {
     val contents = staff.glyphs.map {
       case SingleGlyph(DegreeGlyph(degree), _) =>
         val baseName = writeRomanNumeral(degree.root)
-        val relativeName = degree.relativeTo.map(d => "/ " + writeRomanNumeral(d)).getOrElse("")
+        val relativeName = degree.relativeTo.map(d => " / " + writeRomanNumeral(d)).getOrElse("")
 
-        s"\\markup \\rN { $baseName $relativeName }"
+        s"\\markup \\rN { $baseName$relativeName }"
 
       case SingleGlyph(_: RNARestGlyph, duration) =>
         writeSilentRest(duration)
