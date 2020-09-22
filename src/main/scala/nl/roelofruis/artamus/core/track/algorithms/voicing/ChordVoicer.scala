@@ -28,21 +28,16 @@ case class ChordVoicer(settings: Settings) extends TunedMaths {
     val intervals = chordWindow.get.quality.intervals.map { _ + chordWindow.get.root }
     val octaves = Range.inclusive(3, 5)
 
-    combineSequences(intervals, octaves).map { chord =>
-      Windowed(
-        chordWindow.window,
+    combineSequences(intervals, octaves)
+      .map { chord =>
         chord.map { case (pd, oct) => Note(pd, oct) }
-      )
-    }.toList
-  }
-
-  private def combineSequences[A, B](s1: Seq[A], s2: Seq[B]): Iterator[Seq[(A, B)]] = {
-    val n = s1.length
-    Seq.fill(n)(s2)
-      .flatten
-      .combinations(n)
-      .flatMap(_.permutations)
-      .map(s1.zip(_))
+      }
+      .filter { notes =>
+        val midiDifferences = notes.sortBy(_.midiNr).sliding(2).map { case Seq(a, b, _*) => b.midiNr - a.midiNr }.toSeq
+        midiDifferences.minOption.exists(_ > 2) && midiDifferences.maxOption.exists(_ < 10)
+      }
+      .map { Windowed(chordWindow.window, _) }
+      .toList
   }
 
   def scoreTransition: (WindowedNoteGroup, WindowedNoteGroup) => Option[Int] = (currentVoicing, nextVoicing) => {
@@ -56,6 +51,15 @@ case class ChordVoicer(settings: Settings) extends TunedMaths {
     }.sum
 
     Some(score)
+  }
+
+  private def combineSequences[A, B](s1: Seq[A], s2: Seq[B]): Iterator[Seq[(A, B)]] = {
+    val n = s1.length
+    Seq.fill(n)(s2)
+      .flatten
+      .combinations(n)
+      .flatMap(_.permutations)
+      .map(s1.zip(_))
   }
 
 }

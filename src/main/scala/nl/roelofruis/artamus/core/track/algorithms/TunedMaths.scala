@@ -33,7 +33,7 @@ trait TunedMaths {
   }
 
   implicit class NoteMath(note: Note) {
-    def midiNr: Int = (note.octave + 1) * settings.numPitchClasses + note.descriptor.pitchClass
+    val midiNr: Int = (note.octave + 1) * settings.numPitchClasses + note.descriptor.pitchClass
   }
 
   implicit class PitchDescriptorMath(descr: PitchDescriptor) {
