@@ -8,25 +8,26 @@ import nl.roelofruis.artamus.core.layout.StaffGlyph.{NoteGroupGlyph, RestGlyph}
 import nl.roelofruis.artamus.core.layout.{ChordStaffGlyph, StaffGlyph}
 import nl.roelofruis.artamus.core.track.Layer.{ChordLayer, MetreTrack, NoteLayer}
 import nl.roelofruis.artamus.core.track.Temporal.Metre
+import nl.roelofruis.artamus.core.track.Track
 import nl.roelofruis.artamus.core.track.algorithms.TemporalMaths
 
 object DisplayableLayers extends TemporalMaths {
 
-  def displayChordLayer(layer: ChordLayer, metres: MetreTrack): StaffGroup = {
+  def displayChordLayer(track: Track, layer: ChordLayer): StaffGroup = {
     lazy val elementIterator: WindowedSeq[ChordStaffGlyph] = layer.chords.map {
       case Windowed(window, chord) =>
         Windowed[ChordStaffGlyph](window, ChordNameGlyph(chord.root, chord.quality))
     }
 
     lazy val layout: LayoutDescription[ChordStaffGlyph] = LayoutDescription(
-      iteratePositioned(metres),
+      iteratePositioned(track.metres),
       ChordRestGlyph()
     )
 
     Seq(ChordStaff(Layout.layoutElements(elementIterator, layout)))
   }
 
-  def displayNoteLayer(layer: NoteLayer, metres: MetreTrack): StaffGroup = {
+  def displayNoteLayer(track: Track, layer: NoteLayer): StaffGroup = {
     def elementIterator: WindowedSeq[StaffGlyph] =
       layer
         .notes
@@ -37,7 +38,7 @@ object DisplayableLayers extends TemporalMaths {
         }
 
     lazy val layout: LayoutDescription[StaffGlyph] = LayoutDescription(
-      iteratePositioned(metres),
+      iteratePositioned(track.metres),
       RestGlyph(),
       Seq() // TODO: add time signature and metres builder
     )

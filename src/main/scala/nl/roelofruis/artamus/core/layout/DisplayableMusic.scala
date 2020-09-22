@@ -12,8 +12,8 @@ object DisplayableMusic {
   def fromTrack(track: Track): DisplayableMusic = {
     val staffGroup = track.layers
       .map {
-        case l: ChordLayer => DisplayableLayers.displayChordLayer(l, track.metres)
-        case l: NoteLayer => DisplayableLayers.displayNoteLayer(l, track.metres)
+        case l: ChordLayer => DisplayableLayers.displayChordLayer(track, l)
+        case l: NoteLayer => DisplayableLayers.displayNoteLayer(track, l)
       }
       .foldRight(Seq[Staff]())(_ ++ _)
 

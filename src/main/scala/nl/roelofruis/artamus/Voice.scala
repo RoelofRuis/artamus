@@ -28,9 +28,10 @@ object Voice extends App {
   def makeTrack(chords: ChordTrack, notes: NoteTrack, defaultMetre: Metre, defaultKey: Key): Track = {
     Track(
       WindowedSeq.startingWithInstant(defaultMetre),
+      WindowedSeq.startingWithInstant(defaultKey),
       Seq(
         ChordLayer(chords),
-        NoteLayer(WindowedSeq.startingWithInstant(defaultKey), notes)
+        NoteLayer(notes),
       )
     )
   }

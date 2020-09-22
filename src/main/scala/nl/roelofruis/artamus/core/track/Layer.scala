@@ -15,13 +15,7 @@ object Layer {
   type KeyTrack = WindowedSeq[Key]
   type MetreTrack = WindowedSeq[Metre]
 
-  final case class ChordLayer(
-    chords: ChordTrack
-  ) extends Layer
-
-  final case class NoteLayer(
-    keys: KeyTrack, // TODO: move key to track, and ensure it is instantiated with its default value!
-    notes: NoteTrack
-  ) extends Layer
+  final case class ChordLayer(chords: ChordTrack) extends Layer
+  final case class NoteLayer(notes: NoteTrack) extends Layer
 
 }
