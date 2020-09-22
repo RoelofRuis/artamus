@@ -4,7 +4,8 @@ import nl.roelofruis.artamus.core.common.Maths._
 import nl.roelofruis.artamus.core.layout.ChordStaffGlyph.{ChordNameGlyph, ChordRestGlyph}
 import nl.roelofruis.artamus.core.layout.DisplayableMusic
 import nl.roelofruis.artamus.core.layout.Glyph.{GlyphDuration, SingleGlyph}
-import nl.roelofruis.artamus.core.layout.Staff.{ChordStaff, NoteStaff, StaffGroup}
+import nl.roelofruis.artamus.core.layout.RNAStaffGlyph.{DegreeGlyph, RNARestGlyph}
+import nl.roelofruis.artamus.core.layout.Staff.{ChordStaff, NoteStaff, RNAStaff, StaffGroup}
 import nl.roelofruis.artamus.core.layout.StaffGlyph.{NoteGroupGlyph, RestGlyph}
 import nl.roelofruis.artamus.core.track.Pitched.{Octave, PitchDescriptor, Quality}
 import nl.roelofruis.artamus.core.track.algorithms.TunedMaths
@@ -15,8 +16,15 @@ trait LilypondFormatting extends TunedMaths with DocumentWriter {
   val settings: LilypondSettings
 
   def format(displayableMusic: DisplayableMusic): Document = {
-    val contents: Seq[Document] = Seq(
+    var contents: Seq[Document] = Seq(
       s"""\\version "${settings.lilypondVersion}"""",
+    )
+
+    if (displayableMusic.staffGroup.collectFirst { case _: RNAStaff => () }.isDefined) {
+      contents ++= Seq("\\include \"../templates/roman_numerals.ly\"")
+    }
+
+    contents ++= Seq(
       scoped("\\paper {", "}")(
         s"""#(set-paper-size "${settings.paperSize}")""",
         "ragged-last-bottom = ##f",
@@ -27,7 +35,12 @@ trait LilypondFormatting extends TunedMaths with DocumentWriter {
       ),
       scoped("\\score {", "}")(
         writeStaffGroup(displayableMusic.staffGroup),
-        scoped("\\layout {", "}")(),
+        scoped("\\layout {", "}")(
+          scoped("\\context {", "}")(
+            "\\Staff \\RemoveEmptyStaves",
+            "\\override VerticalAxisGroup.remove-first = ##t"
+          )
+        ),
         scoped("\\midi {", "}")(
           s"\\tempo 4 = ${settings.quarterTempo}",
           scoped("\\context {", "}")(
@@ -47,18 +60,65 @@ trait LilypondFormatting extends TunedMaths with DocumentWriter {
         staffGroup.map {
           case s: ChordStaff => writeChordStaff(s)
           case s: NoteStaff => writeNoteStaff(s)
+          case s: RNAStaff => writeRNAStaff(s)
           case _ => stringIsDocument("")
         }: _*
       )
     }
   }
 
+  private def writeRNAStaff(staff: RNAStaff): Document = {
+    val aligner = staff.glyphs.map {
+      case SingleGlyph(DegreeGlyph(_), duration) =>
+        "c" + writeDuration(duration)
+      case SingleGlyph(_: RNARestGlyph, duration) =>
+        writeSilentRest(duration)
+      case _ =>
+    }.mkString("\n")
+
+    val contents = staff.glyphs.map {
+      case SingleGlyph(DegreeGlyph(degree), _) =>
+        val baseName = writeRomanNumeral(degree.root)
+        val relativeName = degree.relativeTo.map(d => "/ " + writeRomanNumeral(d)).getOrElse("")
+
+        s"\\markup \\rN { $baseName $relativeName }"
+
+      case SingleGlyph(_: RNARestGlyph, duration) =>
+        writeSilentRest(duration)
+
+      case _ =>
+    }.mkString("\n")
+
+    flat(
+      scoped("\\new NullVoice = \"rna-aligner\" {", "}")(
+        aligner
+      ),
+      scoped("\\new Lyrics \\lyricsto \"rna-aligner\" {", "}")(
+        scoped("\\lyricmode {", "}")(
+          contents
+        )
+      )
+    )
+  }
+
+  private def writeRomanNumeral(descriptor: PitchDescriptor): String = {
+    val baseName = settings.degreeNames(descriptor.step)
+    val accidental = descriptor.accidentalValue match {
+      case i if i < 1 => "f" * -i
+      case i if i > 1 => "s" * i
+      case _ => ""
+    }
+    s"$accidental$baseName"
+  }
+
   private def writeNoteStaff(staff: NoteStaff): Document = {
     val contents = staff.glyphs.map {
       case SingleGlyph(_: RestGlyph, duration) =>
-        "r" + writeDuration(duration)
+        writeRest(duration)
+
       case SingleGlyph(NoteGroupGlyph(Seq()), duration) =>
-        "s" + writeDuration(duration)
+        writeSilentRest(duration)
+
       case SingleGlyph(NoteGroupGlyph(notes), duration) =>
         val tie = writeTie(duration)
         val writtenDuration = writeDuration(duration)
@@ -94,7 +154,7 @@ trait LilypondFormatting extends TunedMaths with DocumentWriter {
         spelledRoot + spelledDur + spelledQuality + tie
 
       case SingleGlyph(_: ChordRestGlyph, duration) =>
-        s"s${writeDuration(duration)}"
+        writeSilentRest(duration)
 
       case _ => //TODO: write tuplets
     }.mkString("\n")
@@ -108,6 +168,10 @@ trait LilypondFormatting extends TunedMaths with DocumentWriter {
     )
   }
 
+  private def writeRest(duration: GlyphDuration): String = "r" + writeDuration(duration)
+
+  private def writeSilentRest(duration: GlyphDuration): String = "s" + writeDuration(duration)
+
   private def writeTie(duration: GlyphDuration): String = if (duration.tieToNext) "~" else ""
 
   private def writeOctave(octave: Octave): String = {
@@ -120,12 +184,7 @@ trait LilypondFormatting extends TunedMaths with DocumentWriter {
   }
 
   private def writePitchDescriptor(descriptor: PitchDescriptor): String = {
-    val accidentals = Seq(
-      descriptor.pitchClass - settings.pitchClassSequence(descriptor.step),
-      (descriptor.pitchClass - settings.numPitchClasses) - settings.pitchClassSequence(descriptor.step)
-    ).minBy(Math.abs)
-
-    writeStep(descriptor.step) + writeAccidentals(accidentals, descriptor.step)
+    writeStep(descriptor.step) + writeAccidentals(descriptor.accidentalValue, descriptor.step)
   }
 
   private def writeStep(step: Int): String = settings.stepNames.lift(step).getOrElse("")

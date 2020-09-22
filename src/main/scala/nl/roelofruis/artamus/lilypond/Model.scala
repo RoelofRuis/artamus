@@ -12,6 +12,7 @@ object Model {
     pitchClassSequence: List[Int],
     numPitchClasses: Int,
     stepNames: List[String],
+    degreeNames: List[String],
     flatSpelling: String,
     sharpSpelling: String,
     dotSpelling: String,

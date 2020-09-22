@@ -17,5 +17,6 @@ object Layer {
 
   final case class ChordLayer(chords: ChordTrack) extends Layer
   final case class NoteLayer(notes: NoteTrack) extends Layer
+  final case class RNALayer(analysis: RomanNumeralTrack) extends Layer
 
 }

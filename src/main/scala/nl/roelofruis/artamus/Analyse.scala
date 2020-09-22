@@ -4,12 +4,12 @@ import nl.roelofruis.artamus.application.Model.{ParseResult, Settings}
 import nl.roelofruis.artamus.application.rendering.RenderingLoader
 import nl.roelofruis.artamus.application.{Application, ChordChartParser, RNALoader, SettingsLoader}
 import nl.roelofruis.artamus.core.common.Containers.{Windowed, WindowedSeq}
-import nl.roelofruis.artamus.core.track.Layer.{ChordLayer, ChordTrack, NoteLayer, RomanNumeralTrack}
+import nl.roelofruis.artamus.core.track.Layer.{ChordLayer, ChordTrack, RNALayer, RomanNumeralTrack}
 import nl.roelofruis.artamus.core.track.Pitched.Key
 import nl.roelofruis.artamus.core.track.Temporal.Metre
+import nl.roelofruis.artamus.core.track.Track
 import nl.roelofruis.artamus.core.track.algorithms.rna.Model.{RNAAnalysedChord, RNANode}
 import nl.roelofruis.artamus.core.track.algorithms.rna.RomanNumeralAnalyser
-import nl.roelofruis.artamus.core.track.{Fillers, Track}
 
 object Analyse extends App {
 
@@ -29,18 +29,18 @@ object Analyse extends App {
     _              = tuning.writeCSV(degrees, file)
     _              = printDegrees(degrees, tuning, rnaAnalyser)
     renderer       <- RenderingLoader.loadRenderer(tuning)
-    _              = renderer.render(makeTrack(chordTrack, tuning.defaultMetre, tuning.defaultKey))
+    _              = renderer.render(makeTrack(chordTrack, degrees, tuning.defaultMetre, tuning.defaultKey))
   } yield ()
 
   Application.runRepeated(program)
 
-  def makeTrack(chords: ChordTrack, defaultMetre: Metre, defaultKey: Key): Track = {
+  def makeTrack(chords: ChordTrack, degrees: RomanNumeralTrack, defaultMetre: Metre, defaultKey: Key): Track = {
     Track(
       WindowedSeq.startingWithInstant(defaultMetre),
       WindowedSeq.startingWithInstant(defaultKey),
       Seq(
         ChordLayer(chords),
-        NoteLayer(Fillers.emptyBars(chords.duration)),
+        RNALayer(degrees),
       )
     )
   }

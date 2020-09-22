@@ -14,4 +14,8 @@ object Staff {
     glyphs: Seq[Glyph[StaffGlyph]]
   ) extends Staff
 
+  final case class RNAStaff(
+    glyphs: Seq[Glyph[RNAStaffGlyph]]
+  ) extends Staff
+
 }

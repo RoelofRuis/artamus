@@ -27,6 +27,7 @@ object RenderingLoader {
         textSettings.pitchClassSequence,
         textSettings.numPitchClasses,
         textSettings.stepNames,
+        textSettings.degreeNames,
         textSettings.flatSpelling,
         textSettings.sharpSpelling,
         textSettings.dotSpelling,
@@ -56,6 +57,7 @@ object RenderingLoader {
       pitchClassSequence: List[Int],
       numPitchClasses: Int,
       stepNames: List[String],
+      degreeNames: List[String],
       flatSpelling: String,
       sharpSpelling: String,
       dotSpelling: String,
@@ -64,7 +66,7 @@ object RenderingLoader {
     )
 
     object TextLilypondSettings {
-      implicit val settingsFormat: JsonFormat[TextLilypondSettings] = jsonFormat11(TextLilypondSettings.apply)
+      implicit val settingsFormat: JsonFormat[TextLilypondSettings] = jsonFormat12(TextLilypondSettings.apply)
     }
 
   }

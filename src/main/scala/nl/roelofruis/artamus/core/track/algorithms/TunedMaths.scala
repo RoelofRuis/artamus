@@ -41,6 +41,13 @@ trait TunedMaths {
       pd(descr.step - that.step, descr.pitchClass - that.pitchClass)
     }
 
+    val accidentalValue: Int = {
+      Seq(
+        descr.pitchClass - settings.pitchClassSequence(descr.step),
+        (descr.pitchClass - settings.numPitchClasses) - settings.pitchClassSequence(descr.step)
+      ).minBy(Math.abs)
+    }
+
     def enharmonicEquivalent: Option[PitchDescriptor] = {
       Seq(
         pd(descr.step - 1, descr.pitchClass),
