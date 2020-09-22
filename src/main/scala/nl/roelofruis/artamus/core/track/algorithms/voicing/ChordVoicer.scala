@@ -5,9 +5,9 @@ import nl.roelofruis.artamus.core.common.Containers.{Windowed, WindowedSeq}
 import nl.roelofruis.artamus.core.common.algorithms.GraphSearch
 import nl.roelofruis.artamus.core.track.Layer.{ChordTrack, NoteTrack}
 import nl.roelofruis.artamus.core.track.Pitched._
-import nl.roelofruis.artamus.core.track.algorithms.TunedMaths
+import nl.roelofruis.artamus.core.track.algorithms.{NoteMaths, TunedMaths}
 
-case class ChordVoicer(settings: Settings) extends TunedMaths {
+case class ChordVoicer(settings: Settings) extends NoteMaths {
 
   type WindowedNoteGroup = Windowed[NoteGroup]
 
@@ -33,7 +33,7 @@ case class ChordVoicer(settings: Settings) extends TunedMaths {
         chord.map { case (pd, oct) => Note(pd, oct) }
       }
       .filter { notes =>
-        val midiDifferences = notes.sortBy(_.midiNr).sliding(2).map { case Seq(a, b, _*) => b.midiNr - a.midiNr }.toSeq
+        val midiDifferences = notes.midiDifferences
         midiDifferences.minOption.exists(_ > 2) && midiDifferences.maxOption.exists(_ < 10)
       }
       .map { Windowed(chordWindow.window, _) }
@@ -41,8 +41,8 @@ case class ChordVoicer(settings: Settings) extends TunedMaths {
   }
 
   def scoreTransition: (WindowedNoteGroup, WindowedNoteGroup) => Option[Int] = (currentVoicing, nextVoicing) => {
-    val group1 = currentVoicing.get.map { _.midiNr }
-    val group2 = nextVoicing.get.map { _.midiNr }
+    val group1 = currentVoicing.get.orderedMidiNumbers
+    val group2 = nextVoicing.get.orderedMidiNumbers
 
     val score = group1.map { nr =>
       if (group2.contains(nr)) 2
