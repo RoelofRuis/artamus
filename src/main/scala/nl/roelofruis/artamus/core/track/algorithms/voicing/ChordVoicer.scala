@@ -3,7 +3,7 @@ package nl.roelofruis.artamus.core.track.algorithms.voicing
 import nl.roelofruis.artamus.application.Model.Settings
 import nl.roelofruis.artamus.core.common.Containers.{Windowed, WindowedSeq}
 import nl.roelofruis.artamus.core.common.algorithms.GraphSearch
-import nl.roelofruis.artamus.core.track.Layer.{ChordTrack, NoteTrack}
+import nl.roelofruis.artamus.core.track.Layer.{ChordSeq, NoteSeq}
 import nl.roelofruis.artamus.core.track.Pitched._
 import nl.roelofruis.artamus.core.track.algorithms.NoteMaths
 
@@ -11,7 +11,7 @@ case class ChordVoicer(settings: Settings) extends NoteMaths {
 
   type WindowedNoteGroup = Windowed[NoteGroup]
 
-  def voiceChords(chordTrack: ChordTrack): NoteTrack = {
+  def voiceChords(chordTrack: ChordSeq): NoteSeq = {
     val analysis = GraphSearch.bestFirst(
       1,
       findPossibleNodes,

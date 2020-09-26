@@ -9,14 +9,14 @@ sealed trait Layer
 
 object Layer {
 
-  type ChordTrack = WindowedSeq[Chord]
-  type NoteTrack = WindowedSeq[NoteGroup]
-  type RomanNumeralTrack = WindowedSeq[RNAAnalysedChord]
-  type KeyTrack = WindowedSeq[Key]
-  type MetreTrack = WindowedSeq[Metre]
+  type ChordSeq = WindowedSeq[Chord]
+  type NoteSeq = WindowedSeq[NoteGroup]
+  type RomanNumeralSeq = WindowedSeq[RNAAnalysedChord]
+  type KeySeq = WindowedSeq[Key]
+  type MetreSeq = WindowedSeq[Metre]
 
-  final case class ChordLayer(chords: ChordTrack) extends Layer
-  final case class NoteLayer(notes: NoteTrack) extends Layer
-  final case class RNALayer(analysis: RomanNumeralTrack) extends Layer
+  final case class ChordLayer(chords: ChordSeq) extends Layer
+  final case class NoteLayer(notes: NoteSeq) extends Layer
+  final case class RNALayer(analysis: RomanNumeralSeq) extends Layer
 
 }

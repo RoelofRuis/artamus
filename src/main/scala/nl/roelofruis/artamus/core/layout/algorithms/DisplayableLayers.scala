@@ -7,7 +7,7 @@ import nl.roelofruis.artamus.core.layout.RNAStaffGlyph.{DegreeGlyph, RNARestGlyp
 import nl.roelofruis.artamus.core.layout.Staff.{ChordStaff, NoteStaff, RNAStaff, StaffGroup}
 import nl.roelofruis.artamus.core.layout.StaffGlyph.{NoteGroupGlyph, RestGlyph}
 import nl.roelofruis.artamus.core.layout.{ChordStaffGlyph, RNAStaffGlyph, StaffGlyph}
-import nl.roelofruis.artamus.core.track.Layer.{ChordLayer, MetreTrack, NoteLayer, RNALayer}
+import nl.roelofruis.artamus.core.track.Layer.{ChordLayer, MetreSeq, NoteLayer, RNALayer}
 import nl.roelofruis.artamus.core.track.Temporal.Metre
 import nl.roelofruis.artamus.core.track.Track
 import nl.roelofruis.artamus.core.track.algorithms.TemporalMaths
@@ -61,7 +61,7 @@ object DisplayableLayers extends TemporalMaths {
     Seq(NoteStaff(Layout.layoutElements(elementIterator, layout)))
   }
 
-  private def iteratePositioned(metres: MetreTrack): LazyList[Windowed[Metre]] = {
+  private def iteratePositioned(metres: MetreSeq): LazyList[Windowed[Metre]] = {
     val active = metres.head
 
     def loop(searchPos: Position): LazyList[Windowed[Metre]] = {

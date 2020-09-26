@@ -20,8 +20,4 @@ object Containers {
     def startingWithInstant[A](a: A): WindowedSeq[A] = Seq(Windowed(Position.ZERO, Duration.ZERO, a))
   }
 
-  implicit class WindowedSeqOps[A](seq: WindowedSeq[A]) {
-    val duration: Duration = seq.foldRight(Duration.ZERO) { case (w, acc) => acc + w.window.duration }
-  }
-
 }
