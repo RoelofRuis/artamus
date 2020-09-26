@@ -1,18 +1,17 @@
 package nl.roelofruis.artamus.core.layout.algorithms
 
-import nl.roelofruis.artamus.core.common.Temporal.{Windowed, _}
+import nl.roelofruis.artamus.core.common.Maths._
 import nl.roelofruis.artamus.core.common.Position
+import nl.roelofruis.artamus.core.common.Temporal.{Windowed, _}
 import nl.roelofruis.artamus.core.layout.ChordStaffGlyph.{ChordNameGlyph, ChordRestGlyph}
 import nl.roelofruis.artamus.core.layout.Glyph.InstantGlyph
 import nl.roelofruis.artamus.core.layout.RNAStaffGlyph.{DegreeGlyph, RNARestGlyph}
 import nl.roelofruis.artamus.core.layout.Staff.{ChordStaff, NoteStaff, RNAStaff, StaffGroup}
 import nl.roelofruis.artamus.core.layout.StaffGlyph.{KeyGlyph, NoteGroupGlyph, RestGlyph, TimeSignatureGlyph}
 import nl.roelofruis.artamus.core.layout.{ChordStaffGlyph, Glyph, RNAStaffGlyph, StaffGlyph}
-import nl.roelofruis.artamus.core.track.Layer.{ChordLayer, KeySeq, MetreSeq, NoteLayer, RNALayer}
-import nl.roelofruis.artamus.core.track.Temporal.Metre
+import nl.roelofruis.artamus.core.track.Layer._
 import nl.roelofruis.artamus.core.track.Track
 import nl.roelofruis.artamus.core.track.algorithms.TemporalMaths
-import nl.roelofruis.artamus.core.common.Maths._
 
 object DisplayableLayers extends TemporalMaths {
 
@@ -23,7 +22,7 @@ object DisplayableLayers extends TemporalMaths {
     }
 
     lazy val layout: LayoutDescription[RNAStaffGlyph] = LayoutDescription(
-      iteratePositioned(track.metres),
+      track.metres.iterateWindowed,
       RNARestGlyph()
     )
 
@@ -37,7 +36,7 @@ object DisplayableLayers extends TemporalMaths {
     }
 
     lazy val layout: LayoutDescription[ChordStaffGlyph] = LayoutDescription(
-      iteratePositioned(track.metres),
+      track.metres.iterateWindowed,
       ChordRestGlyph()
     )
 
@@ -55,7 +54,7 @@ object DisplayableLayers extends TemporalMaths {
         }
 
     lazy val layout: LayoutDescription[StaffGlyph] = LayoutDescription(
-      iteratePositioned(track.metres),
+      track.metres.iterateWindowed,
       RestGlyph(),
       Seq(
         timeSignatureBuilder(track.metres),
@@ -79,18 +78,6 @@ object DisplayableLayers extends TemporalMaths {
       .map { key =>
         InstantGlyph(KeyGlyph(key.get.root, key.get.scale))
       }
-  }
-
-  // TODO: this can be generalized to work on any inner type that has a duration.
-  private def iteratePositioned(metres: MetreSeq): LazyList[Windowed[Metre]] = {
-    val active = metres.head
-
-    def loop(searchPos: Position): LazyList[Windowed[Metre]] = {
-      // TODO: add a duration and make lookup actually work..!
-      Windowed(searchPos, active.get.duration, active.get) #:: loop(searchPos + active.get.duration)
-    }
-
-    loop(Position.ZERO)
   }
 
 }

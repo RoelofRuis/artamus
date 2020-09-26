@@ -2,6 +2,10 @@ package nl.roelofruis.artamus.core.common
 
 object Temporal {
 
+  trait ProvidesDuration[A] {
+    def duration(a: A): Duration
+  }
+
   final case class Windowed[A](window: Window, element: A) {
     val get: A = element
   }
@@ -24,6 +28,20 @@ object Temporal {
 
   final case class TemporalVal[A](head: Positioned[A], tail: Seq[Positioned[A]]) {
     def asSeq: Seq[Positioned[A]] = head +: tail
+  }
+
+  implicit class TemporalValWithDurationOps[A](value: TemporalVal[A])(implicit val durationProvider: ProvidesDuration[A]) {
+    def iterateWindowed: LazyList[Windowed[A]] = {
+      val active = value.head.get
+
+      def loop(searchPos: Position): LazyList[Windowed[A]] = {
+        // TODO: make lookup actually work..!
+        val duration = durationProvider.duration(active)
+        Windowed(searchPos, duration, active) #:: loop(searchPos + duration)
+      }
+
+      loop(Position.ZERO)
+    }
   }
 
   object TemporalVal {
