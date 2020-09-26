@@ -29,15 +29,16 @@ object Analyse extends App {
     _              = tuning.writeCSV(degrees, file)
     _              = printDegrees(degrees, tuning, rnaAnalyser)
     renderer       <- RenderingLoader.loadRenderer(tuning)
-    _              = renderer.render(makeTrack(chordTrack, degrees, tuning.defaultMetre, tuning.defaultKey))
+    key            = degrees.headOption.map(_.get.absoluteKey).getOrElse(tuning.defaultKey)
+    _              = renderer.render(makeTrack(chordTrack, degrees, tuning.defaultMetre, key))
   } yield ()
 
   Application.runRepeated(program)
 
-  def makeTrack(chords: ChordSeq, degrees: RomanNumeralSeq, defaultMetre: Metre, defaultKey: Key): Track = {
+  def makeTrack(chords: ChordSeq, degrees: RomanNumeralSeq, defaultMetre: Metre, key: Key): Track = {
     Track(
       WindowedSeq.startingWithInstant(defaultMetre),
-      WindowedSeq.startingWithInstant(defaultKey),
+      WindowedSeq.startingWithInstant(key),
       Seq(
         ChordLayer(chords),
         RNALayer(degrees),

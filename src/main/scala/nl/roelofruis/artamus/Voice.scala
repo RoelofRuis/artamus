@@ -25,10 +25,10 @@ object Voice extends App {
     _              = renderer.render(makeTrack(chordTrack, voicedChords, tuning.defaultMetre, tuning.defaultKey))
   } yield ()
 
-  def makeTrack(chords: ChordSeq, notes: NoteSeq, defaultMetre: Metre, defaultKey: Key): Track = {
+  def makeTrack(chords: ChordSeq, notes: NoteSeq, defaultMetre: Metre, key: Key): Track = {
     Track(
       WindowedSeq.startingWithInstant(defaultMetre),
-      WindowedSeq.startingWithInstant(defaultKey),
+      WindowedSeq.startingWithInstant(key),
       Seq(
         ChordLayer(chords),
         NoteLayer(notes),

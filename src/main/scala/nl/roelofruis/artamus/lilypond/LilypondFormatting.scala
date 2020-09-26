@@ -37,7 +37,9 @@ trait LilypondFormatting extends TunedMaths with DocumentWriter {
         writeStaffGroup(displayableMusic.staffGroup),
         scoped("\\layout {", "}")(
           scoped("\\context {", "}")(
-            "\\Staff \\RemoveEmptyStaves",
+            "\\Staff",
+            "\\RemoveEmptyStaves",
+            "\\numericTimeSignature",
             "\\override VerticalAxisGroup.remove-first = ##t"
           )
         ),
@@ -140,7 +142,6 @@ trait LilypondFormatting extends TunedMaths with DocumentWriter {
     }.mkString("\n")
 
     scoped("\\new Staff {", "}")(
-      "\\numericTimeSignature",
       "\\override Score.BarNumber.break-visibility = ##(#f #t #f)",
       "\\set Score.barNumberVisibility = #all-bar-numbers-visible",
       "\\bar \"\"",
