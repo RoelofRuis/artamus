@@ -16,8 +16,16 @@ object Containers {
 
   object WindowedSeq {
     def empty[A]: WindowedSeq[A] = Seq.empty
+  }
 
-    def startingWithInstant[A](a: A): WindowedSeq[A] = Seq(Windowed(Position.ZERO, Duration.ZERO, a))
+  final case class Positioned[A](position: Position, element: A) {
+    val get: A = element
+  }
+
+  type PositionedSeq[A] = Seq[Positioned[A]]
+
+  object PositionedSeq {
+    def startingWith[A](a: A): PositionedSeq[A] = Seq(Positioned(Position.ZERO, a))
   }
 
 }

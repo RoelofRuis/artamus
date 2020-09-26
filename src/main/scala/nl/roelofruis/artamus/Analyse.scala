@@ -3,7 +3,7 @@ package nl.roelofruis.artamus
 import nl.roelofruis.artamus.application.Model.{ParseResult, Settings}
 import nl.roelofruis.artamus.application.rendering.RenderingLoader
 import nl.roelofruis.artamus.application.{Application, ChordChartParser, RNALoader, SettingsLoader}
-import nl.roelofruis.artamus.core.common.Containers.{Windowed, WindowedSeq}
+import nl.roelofruis.artamus.core.common.Containers.{PositionedSeq, Windowed}
 import nl.roelofruis.artamus.core.track.Layer.{ChordLayer, ChordSeq, RNALayer, RomanNumeralSeq}
 import nl.roelofruis.artamus.core.track.Pitched.Key
 import nl.roelofruis.artamus.core.track.Temporal.Metre
@@ -37,8 +37,8 @@ object Analyse extends App {
 
   def makeTrack(chords: ChordSeq, degrees: RomanNumeralSeq, defaultMetre: Metre, key: Key): Track = {
     Track(
-      WindowedSeq.startingWithInstant(defaultMetre),
-      WindowedSeq.startingWithInstant(key),
+      PositionedSeq.startingWith(defaultMetre),
+      PositionedSeq.startingWith(key),
       Seq(
         ChordLayer(chords),
         RNALayer(degrees),
