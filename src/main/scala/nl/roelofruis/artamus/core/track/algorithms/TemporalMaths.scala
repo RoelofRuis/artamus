@@ -23,6 +23,13 @@ trait TemporalMaths {
           acc + Rational(pulseGroup.numberOfBeats, 2**pulseGroup.baseDuration)
         }
     )
+
+    // TODO: improve to deal with groups with different fractions
+    lazy val timeSignatureFraction: (Int, FractionalPowerOfTwo) = {
+      val pulses = metre.pulseGroups.map(_.numberOfBeats).sum
+      val fraction = metre.pulseGroups.map(_.baseDuration).head
+      (pulses, fraction)
+    }
   }
 
 }

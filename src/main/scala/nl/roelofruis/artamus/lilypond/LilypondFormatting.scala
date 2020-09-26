@@ -3,11 +3,11 @@ package nl.roelofruis.artamus.lilypond
 import nl.roelofruis.artamus.core.common.Maths._
 import nl.roelofruis.artamus.core.layout.ChordStaffGlyph.{ChordNameGlyph, ChordRestGlyph}
 import nl.roelofruis.artamus.core.layout.DisplayableMusic
-import nl.roelofruis.artamus.core.layout.Glyph.{GlyphDuration, SingleGlyph}
+import nl.roelofruis.artamus.core.layout.Glyph.{GlyphDuration, InstantGlyph, SingleGlyph}
 import nl.roelofruis.artamus.core.layout.RNAStaffGlyph.{DegreeGlyph, RNARestGlyph}
 import nl.roelofruis.artamus.core.layout.Staff.{ChordStaff, NoteStaff, RNAStaff, StaffGroup}
-import nl.roelofruis.artamus.core.layout.StaffGlyph.{NoteGroupGlyph, RestGlyph}
-import nl.roelofruis.artamus.core.track.Pitched.{Octave, PitchDescriptor, Quality}
+import nl.roelofruis.artamus.core.layout.StaffGlyph.{KeyGlyph, NoteGroupGlyph, RestGlyph, TimeSignatureGlyph}
+import nl.roelofruis.artamus.core.track.Pitched.{Octave, PitchDescriptor, Quality, Scale}
 import nl.roelofruis.artamus.core.track.algorithms.TunedMaths
 import nl.roelofruis.artamus.lilypond.Document.DocumentWriter
 import nl.roelofruis.artamus.lilypond.Model.LilypondSettings
@@ -132,6 +132,10 @@ trait LilypondFormatting extends TunedMaths with DocumentWriter {
           }.mkString("<", " ", ">")
           writtenNotes + writtenDuration
         }
+      case InstantGlyph(TimeSignatureGlyph(num, denom)) =>
+        writeTimeSignature(num, denom)
+      case InstantGlyph(KeyGlyph(root, scale)) =>
+        writeKey(root, scale)
     }.mkString("\n")
 
     scoped("\\new Staff {", "}")(
@@ -167,6 +171,14 @@ trait LilypondFormatting extends TunedMaths with DocumentWriter {
       )
     )
   }
+
+  // TODO: load scales from config
+  private def writeKey(root: PitchDescriptor, scale: Scale): String = {
+    // TODO: implement http://lilypond.org/doc/v2.18/Documentation/notation/displaying-pitches#key-signature
+    ""
+  }
+
+  private def writeTimeSignature(num: Int, denom: FractionalPowerOfTwo): String = s"\\time $num/$denom"
 
   private def writeRest(duration: GlyphDuration): String = "r" + writeDuration(duration)
 

@@ -3,14 +3,16 @@ package nl.roelofruis.artamus.core.layout.algorithms
 import nl.roelofruis.artamus.core.common.Containers.{Windowed, _}
 import nl.roelofruis.artamus.core.common.Position
 import nl.roelofruis.artamus.core.layout.ChordStaffGlyph.{ChordNameGlyph, ChordRestGlyph}
+import nl.roelofruis.artamus.core.layout.Glyph.InstantGlyph
 import nl.roelofruis.artamus.core.layout.RNAStaffGlyph.{DegreeGlyph, RNARestGlyph}
 import nl.roelofruis.artamus.core.layout.Staff.{ChordStaff, NoteStaff, RNAStaff, StaffGroup}
-import nl.roelofruis.artamus.core.layout.StaffGlyph.{NoteGroupGlyph, RestGlyph}
-import nl.roelofruis.artamus.core.layout.{ChordStaffGlyph, RNAStaffGlyph, StaffGlyph}
-import nl.roelofruis.artamus.core.track.Layer.{ChordLayer, MetreSeq, NoteLayer, RNALayer}
+import nl.roelofruis.artamus.core.layout.StaffGlyph.{KeyGlyph, NoteGroupGlyph, RestGlyph, TimeSignatureGlyph}
+import nl.roelofruis.artamus.core.layout.{ChordStaffGlyph, Glyph, RNAStaffGlyph, StaffGlyph}
+import nl.roelofruis.artamus.core.track.Layer.{ChordLayer, KeySeq, MetreSeq, NoteLayer, RNALayer}
 import nl.roelofruis.artamus.core.track.Temporal.Metre
 import nl.roelofruis.artamus.core.track.Track
 import nl.roelofruis.artamus.core.track.algorithms.TemporalMaths
+import nl.roelofruis.artamus.core.common.Maths._
 
 object DisplayableLayers extends TemporalMaths {
 
@@ -55,12 +57,31 @@ object DisplayableLayers extends TemporalMaths {
     lazy val layout: LayoutDescription[StaffGlyph] = LayoutDescription(
       iteratePositioned(track.metres),
       RestGlyph(),
-      Seq() // TODO: add time signature and metres builder
+      Seq(
+        timeSignatureBuilder(track.metres),
+        keyBuilder(track.keys)
+      )
     )
 
     Seq(NoteStaff(Layout.layoutElements(elementIterator, layout)))
   }
 
+  private def timeSignatureBuilder(metres: MetreSeq): Position => Option[Glyph[StaffGlyph]] = pos => {
+    metres.find(_.window.start == pos)
+      .map { metre =>
+        val (num, denom) = metre.get.timeSignatureFraction
+        InstantGlyph(TimeSignatureGlyph(num, 2**denom))
+      }
+  }
+
+  private def keyBuilder(keys: KeySeq): Position => Option[Glyph[StaffGlyph]] = pos => {
+    keys.find(_.window.start == pos)
+      .map { key =>
+        InstantGlyph(KeyGlyph(key.get.root, key.get.scale))
+      }
+  }
+
+  // TODO: this can be generalized to work on any inner type that has a duration.
   private def iteratePositioned(metres: MetreSeq): LazyList[Windowed[Metre]] = {
     val active = metres.head
 

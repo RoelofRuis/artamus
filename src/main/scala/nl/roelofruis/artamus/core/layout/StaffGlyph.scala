@@ -23,7 +23,7 @@ object StaffGlyph {
 
   final case class TimeSignatureGlyph(
     num: Int,
-    denum: FractionalPowerOfTwo
+    denom: FractionalPowerOfTwo
   ) extends StaffGlyph
 
 }
