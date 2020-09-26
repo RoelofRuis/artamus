@@ -2,23 +2,30 @@ package nl.roelofruis.artamus.application.rendering
 
 import nl.roelofruis.artamus.application.File
 import nl.roelofruis.artamus.application.Model.{ParseResult, Settings}
-import nl.roelofruis.artamus.lilypond.Model.LilypondSettings
 import nl.roelofruis.artamus.core.track.Pitched.Quality
+import nl.roelofruis.artamus.lilypond.Model.LilypondSettings
 import spray.json.{DefaultJsonProtocol, JsonFormat}
 
 object RenderingLoader {
   import nl.roelofruis.artamus.application.rendering.RenderingLoader.FileModel.{TextLilypondSettings, TextQualitySpelling}
 
   def loadRenderer(tuning: Settings): ParseResult[LilypondRenderer] = {
-    def parseQualitySpelling(settings: TextLilypondSettings): Map[Quality, String] = {
-      settings.qualitySpelling.flatMap { case TextQualitySpelling(symbol, spelling) =>
+    def parseChordQualitySpelling(settings: TextLilypondSettings): Map[Quality, String] = {
+      settings.qualitySpelling.flatMap { case TextQualitySpelling(symbol, spelling, _) =>
+        tuning.qualityMap.get(symbol).map { quality => (quality, spelling) }
+      }.toMap
+    }
+
+    def parseDegreeQualitySpelling(settings: TextLilypondSettings): Map[Quality, String] = {
+      settings.qualitySpelling.flatMap { case TextQualitySpelling(symbol, _, spelling) =>
         tuning.qualityMap.get(symbol).map { quality => (quality, spelling) }
       }.toMap
     }
 
     for {
       textSettings    <- File.load[TextLilypondSettings]("src/main/resources/data/lilypond_settings.json")
-      qualitySpelling = parseQualitySpelling(textSettings)
+      chordQualitySpelling = parseChordQualitySpelling(textSettings)
+      degreeQualitySpelling = parseDegreeQualitySpelling(textSettings)
     } yield {
       val settings = LilypondSettings(
         textSettings.pngResolution,
@@ -31,7 +38,8 @@ object RenderingLoader {
         textSettings.flatSpelling,
         textSettings.sharpSpelling,
         textSettings.dotSpelling,
-        qualitySpelling,
+        chordQualitySpelling,
+        degreeQualitySpelling,
         textSettings.quarterTempo
       )
 
@@ -43,11 +51,12 @@ object RenderingLoader {
 
     final case class TextQualitySpelling(
       symbol: String,
-      spelling: String
+      chordNotation: String,
+      degreeNotation: String,
     )
 
     object TextQualitySpelling {
-      implicit val qualitySpellingFormat: JsonFormat[TextQualitySpelling] = jsonFormat2(TextQualitySpelling.apply)
+      implicit val qualitySpellingFormat: JsonFormat[TextQualitySpelling] = jsonFormat3(TextQualitySpelling.apply)
     }
 
     final case class TextLilypondSettings(

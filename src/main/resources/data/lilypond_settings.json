@@ -11,15 +11,15 @@
   "sharpSpelling": "is",
   "dotSpelling": ".",
   "qualitySpelling": [
-    {"symbol": "M", "spelling": ""},
-    {"symbol": "-", "spelling": "m"},
-    {"symbol": "dim", "spelling": "dim"},
-    {"symbol": "+", "spelling": "aug"},
-    {"symbol": "M7", "spelling": "maj7"},
-    {"symbol": "-7", "spelling": "min7"},
-    {"symbol": "7", "spelling": "7"},
-    {"symbol": "dim7", "spelling": "dim7"},
-    {"symbol": "-7b5", "spelling": "3-.5-.7"},
-    {"symbol": "+7", "spelling": "3.5+.7-"}
+    {"symbol": "M", "chordNotation": "", "degreeNotation": ""},
+    {"symbol": "-", "chordNotation": "m", "degreeNotation": "-"},
+    {"symbol": "dim", "chordNotation": "dim", "degreeNotation": "b5"},
+    {"symbol": "+", "chordNotation": "aug", "degreeNotation": "+"},
+    {"symbol": "M7", "chordNotation": "maj7", "degreeNotation": "Δ"},
+    {"symbol": "-7", "chordNotation": "min7", "degreeNotation": "-7"},
+    {"symbol": "7", "chordNotation": "7", "degreeNotation": "7"},
+    {"symbol": "dim7", "chordNotation": "dim7", "degreeNotation": "o"},
+    {"symbol": "-7b5", "chordNotation": "3-.5-.7", "degreeNotation": "ø"},
+    {"symbol": "+7", "chordNotation": "3.5+.7-", "degreeNotation": "+7"}
   ]
 }

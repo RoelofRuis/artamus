@@ -80,8 +80,9 @@ trait LilypondFormatting extends TunedMaths with DocumentWriter {
       case SingleGlyph(DegreeGlyph(degree), _) =>
         val baseName = writeRomanNumeral(degree.root)
         val relativeName = degree.relativeTo.map(d => " / " + writeRomanNumeral(d)).getOrElse("")
+        val qualityName = settings.degreeQualitySpelling.getOrElse(degree.quality, "")
 
-        s"\\markup \\rN { $baseName$relativeName }"
+        s"\\markup \\rN { $baseName $qualityName$relativeName }"
 
       case SingleGlyph(_: RNARestGlyph, duration) =>
         writeSilentRest(duration)
@@ -212,6 +213,6 @@ trait LilypondFormatting extends TunedMaths with DocumentWriter {
 
   private def writeDuration(glyphDuration: GlyphDuration): String = s"${2**glyphDuration.n}" + (settings.dotSpelling * glyphDuration.dots)
 
-  private def writeQuality(quality: Quality): String = settings.qualitySpelling.get(quality).map(":" + _).getOrElse("")
+  private def writeQuality(quality: Quality): String = settings.chordQualitySpelling.get(quality).map(":" + _).getOrElse("")
 
 }

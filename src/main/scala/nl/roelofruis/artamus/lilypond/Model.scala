@@ -16,7 +16,8 @@ object Model {
     flatSpelling: String,
     sharpSpelling: String,
     dotSpelling: String,
-    qualitySpelling: Map[Quality, String],
+    chordQualitySpelling: Map[Quality, String],
+    degreeQualitySpelling: Map[Quality, String],
     quarterTempo: Int
   ) extends TuningDefinition
 
