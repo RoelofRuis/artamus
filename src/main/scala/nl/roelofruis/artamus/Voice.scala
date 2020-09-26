@@ -3,7 +3,7 @@ package nl.roelofruis.artamus
 import nl.roelofruis.artamus.application.Model.ParseResult
 import nl.roelofruis.artamus.application.rendering.RenderingLoader
 import nl.roelofruis.artamus.application.{Application, ChordChartParser, SettingsLoader}
-import nl.roelofruis.artamus.core.common.Containers.PositionedSeq
+import nl.roelofruis.artamus.core.common.Temporal.TemporalVal
 import nl.roelofruis.artamus.core.track.Layer.{ChordLayer, ChordSeq, NoteLayer, NoteSeq}
 import nl.roelofruis.artamus.core.track.Pitched.Key
 import nl.roelofruis.artamus.core.track.Temporal.Metre
@@ -27,8 +27,8 @@ object Voice extends App {
 
   def makeTrack(chords: ChordSeq, notes: NoteSeq, defaultMetre: Metre, key: Key): Track = {
     Track(
-      PositionedSeq.startingWith(defaultMetre),
-      PositionedSeq.startingWith(key),
+      TemporalVal(defaultMetre),
+      TemporalVal(key),
       Seq(
         ChordLayer(chords),
         NoteLayer(notes),

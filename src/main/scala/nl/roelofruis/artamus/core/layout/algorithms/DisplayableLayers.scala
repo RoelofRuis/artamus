@@ -1,6 +1,6 @@
 package nl.roelofruis.artamus.core.layout.algorithms
 
-import nl.roelofruis.artamus.core.common.Containers.{Windowed, _}
+import nl.roelofruis.artamus.core.common.Temporal.{Windowed, _}
 import nl.roelofruis.artamus.core.common.Position
 import nl.roelofruis.artamus.core.layout.ChordStaffGlyph.{ChordNameGlyph, ChordRestGlyph}
 import nl.roelofruis.artamus.core.layout.Glyph.InstantGlyph
@@ -67,7 +67,7 @@ object DisplayableLayers extends TemporalMaths {
   }
 
   private def timeSignatureBuilder(metres: MetreSeq): Position => Option[Glyph[StaffGlyph]] = pos => {
-    metres.find(_.position == pos)
+    metres.asSeq.find(_.position == pos)
       .map { metre =>
         val (num, denom) = metre.get.timeSignatureFraction
         InstantGlyph(TimeSignatureGlyph(num, 2**denom))
@@ -75,7 +75,7 @@ object DisplayableLayers extends TemporalMaths {
   }
 
   private def keyBuilder(keys: KeySeq): Position => Option[Glyph[StaffGlyph]] = pos => {
-    keys.find(_.position == pos)
+    keys.asSeq.find(_.position == pos)
       .map { key =>
         InstantGlyph(KeyGlyph(key.get.root, key.get.scale))
       }

@@ -1,6 +1,6 @@
 package nl.roelofruis.artamus.core.layout.algorithms
 
-import nl.roelofruis.artamus.core.common.Containers.{Windowed, WindowedSeq}
+import nl.roelofruis.artamus.core.common.Temporal.{Windowed, WindowedSeq}
 import nl.roelofruis.artamus.core.common.Maths._
 import nl.roelofruis.artamus.core.common.{Position, Rational}
 import nl.roelofruis.artamus.core.layout.Glyph

@@ -1,6 +1,6 @@
 package nl.roelofruis.artamus.core.layout.algorithms
 
-import nl.roelofruis.artamus.core.common.Containers.Windowed
+import nl.roelofruis.artamus.core.common.Temporal.Windowed
 import nl.roelofruis.artamus.core.common.Position
 import nl.roelofruis.artamus.core.layout.Glyph
 import nl.roelofruis.artamus.core.track.Temporal.Metre

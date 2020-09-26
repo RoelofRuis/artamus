@@ -2,7 +2,7 @@ package nl.roelofruis.artamus.application
 
 import nl.roelofruis.artamus.application.Model._
 import nl.roelofruis.artamus.application.Parser._
-import nl.roelofruis.artamus.core.common.Containers.{Windowed, WindowedSeq}
+import nl.roelofruis.artamus.core.common.Temporal.{Windowed, WindowedSeq}
 import nl.roelofruis.artamus.core.common.Position
 import nl.roelofruis.artamus.core.track.Layer.ChordSeq
 import nl.roelofruis.artamus.core.track.Pitched.Chord
