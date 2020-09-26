@@ -173,10 +173,14 @@ trait LilypondFormatting extends TunedMaths with DocumentWriter {
     )
   }
 
-  // TODO: load scales from config
   private def writeKey(root: PitchDescriptor, scale: Scale): String = {
     // TODO: implement http://lilypond.org/doc/v2.18/Documentation/notation/displaying-pitches#key-signature
-    ""
+    settings.scaleSpelling
+      .get(scale)
+      .map { scaleName =>
+        val rootName = writePitchDescriptor(root)
+        s"$rootName $scaleName"
+      }.getOrElse("")
   }
 
   private def writeTimeSignature(num: Int, denom: FractionalPowerOfTwo): String = s"\\time $num/$denom"

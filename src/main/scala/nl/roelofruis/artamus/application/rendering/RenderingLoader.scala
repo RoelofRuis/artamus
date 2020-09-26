@@ -40,6 +40,7 @@ object RenderingLoader {
         textSettings.dotSpelling,
         chordQualitySpelling,
         degreeQualitySpelling,
+        tuning.scaleMap.map(_.swap),
         textSettings.quarterTempo
       )
 
