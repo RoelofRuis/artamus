@@ -8,6 +8,7 @@ Eventually these might be included in some sort of knowledge base
 #### Music Theory sites
 - http://openmusictheory.com/
 - http://www.thejazzpianosite.com/
+- https://tobyrush.com/theorypages/
 
 #### Roman Numeral Analysis
 - https://www.franksinger.com/Amusic/rom_num_ana.htm
