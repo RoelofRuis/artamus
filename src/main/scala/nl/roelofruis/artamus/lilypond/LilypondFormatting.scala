@@ -180,7 +180,7 @@ trait LilypondFormatting extends TunedMaths with DocumentWriter {
       .get(scale)
       .map { scaleName =>
         val rootName = writePitchDescriptor(root)
-        s"$rootName $scaleName"
+        s"\\key $rootName \\$scaleName"
       }.getOrElse("")
   }
 
