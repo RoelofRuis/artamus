@@ -6,6 +6,6 @@ import nl.roelofruis.artamus.core.track.algorithms.TunedMaths
 
 case class HarmonicAnalyser(settings: Settings) extends TunedMaths {
 
-  def analyiseHarmony(notes: NoteTrack): ChordTrack = ???
+  def analyseHarmony(notes: NoteTrack): ChordTrack = ???
 
 }
