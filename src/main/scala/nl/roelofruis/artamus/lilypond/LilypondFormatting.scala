@@ -24,28 +24,29 @@ trait LilypondFormatting extends TunedMaths {
     }
 
     contents ++= Seq(
-      scoped("\\paper {", "}")(
+      block("paper")(
         s"""#(set-paper-size "${settings.paperSize}")""",
         "ragged-last-bottom = ##f",
         "indent = 0.0"
       ),
-      scoped("\\header {", "}")(
+      block("header")(
         "tagline = ##f"
       ),
-      scoped("\\score {", "}")(
+      block("score")(
         writeStaffGroup(displayableMusic.staffGroup),
-        scoped("\\layout {", "}")(
-          scoped("\\context {", "}")(
+        block("layout")(
+          block("context")(
             "\\Staff",
             "\\RemoveEmptyStaves",
             "\\numericTimeSignature",
             "\\override VerticalAxisGroup.remove-first = ##t"
           )
         ),
-        scoped("\\midi {", "}")(
+        block("midi")(
           s"\\tempo 4 = ${settings.quarterTempo}",
-          scoped("\\context {", "}")(
-            "\\ChordNames \\remove Note_performer"
+          block("context")(
+            "\\ChordNames",
+            "\\remove Note_performer"
           )
         )
       ),
@@ -97,7 +98,7 @@ trait LilypondFormatting extends TunedMaths {
         aligner
       ),
       scoped("\\new Lyrics \\lyricsto \"rna-aligner\" {", "}")(
-        scoped("\\lyricmode {", "}")(
+        block("lyricmode")(
           contents
         )
       )
@@ -135,10 +136,13 @@ trait LilypondFormatting extends TunedMaths {
           }.mkString("<", " ", ">")
           writtenNotes + writtenDuration
         }
+
       case InstantGlyph(TimeSignatureGlyph(num, denom)) =>
         writeTimeSignature(num, denom)
+
       case InstantGlyph(KeyGlyph(root, scale)) =>
         writeKey(root, scale)
+
     }.mkString("\n")
 
     scoped("\\new Staff {", "}")(
@@ -166,7 +170,7 @@ trait LilypondFormatting extends TunedMaths {
     }.mkString("\n")
 
     scoped("\\new ChordNames {", "}")(
-      scoped("\\chordmode {", "}")(
+      block("chordmode")(
         "\\set chordChanges = ##t",
         "\\override ChordName #'font-series = #'medium",
         contents
@@ -219,5 +223,7 @@ trait LilypondFormatting extends TunedMaths {
   private def writeDuration(glyphDuration: GlyphDuration): String = s"${2**glyphDuration.n}" + (settings.dotSpelling * glyphDuration.dots)
 
   private def writeQuality(quality: Quality): String = settings.chordQualitySpelling.get(quality).map(":" + _).getOrElse("")
+
+  private def block(name: String)(subdocuments: Document*): Document = scoped(s"\\$name {", "}")(subdocuments: _*)
 
 }
