@@ -2,11 +2,10 @@ package nl.roelofruis.artamus.application.rendering
 
 import java.io.{File, PrintWriter}
 
-import nl.roelofruis.artamus.lilypond.Model.LilypondSettings
 import nl.roelofruis.artamus.core.layout.DisplayableMusic
 import nl.roelofruis.artamus.core.track.Track
 import nl.roelofruis.artamus.document.writeDocument
-import nl.roelofruis.artamus.lilypond.LilypondFormatting
+import nl.roelofruis.artamus.lilypond.{LilypondFormatting, LilypondSettings}
 
 case class LilypondRenderer(settings: LilypondSettings) extends LilypondFormatting {
 

@@ -3,7 +3,7 @@ package nl.roelofruis.artamus.application.rendering
 import nl.roelofruis.artamus.application.File
 import nl.roelofruis.artamus.application.Model.{ParseResult, Settings}
 import nl.roelofruis.artamus.core.track.Pitched.Quality
-import nl.roelofruis.artamus.lilypond.Model.LilypondSettings
+import nl.roelofruis.artamus.lilypond.LilypondSettings
 import spray.json.{DefaultJsonProtocol, JsonFormat}
 
 object RenderingLoader {
