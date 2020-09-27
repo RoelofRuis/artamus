@@ -9,19 +9,18 @@ object GraphSearch {
     override def compare(that: Solution): Int = score.compare(that.score)
   }
 
-  type Index = Int
   type Score = Option[Int]
 
   def bestFirst[S, N : ClassTag](
     maxSolutionsToCheck: Int,
-    findNodes: (Index, S) => Seq[N],
+    findNodes: S => Seq[N],
     scoreTransition: (N, N) => Score
   )(stateSequence: Seq[S]): Option[Array[N]] = {
     var best: Option[Solution] = None
     var checkedSolutions: Int = 0
 
     val inputStates = new mutable.PriorityQueue[Solution]()
-    val hypotheses: Array[Array[(N, Int)]] = stateSequence.zipWithIndex.map { case (state, i) => findNodes(i, state).zipWithIndex.toArray }.toArray
+    val hypotheses: Array[Array[(N, Int)]] = stateSequence.map { state => findNodes(state).zipWithIndex.toArray }.toArray
 
     hypotheses(0).foreach { case (_, i) => inputStates.enqueue(Solution(Array(i), 0)) }
 

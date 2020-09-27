@@ -37,7 +37,7 @@ case class RomanNumeralAnalyser(settings: Settings, rules: RNARules) extends Tun
     }
   }
 
-  def findPossibleNodes: (Int, Windowed[Chord]) => List[WindowedRNANode] = (_, chord) => {
+  def findPossibleNodes: Windowed[Chord] => List[WindowedRNANode] = chord => {
     rules
       .interpretations
       .filter(_.quality == chord.element.quality)
