@@ -5,7 +5,8 @@ import java.io.{File, PrintWriter}
 import nl.roelofruis.artamus.lilypond.Model.LilypondSettings
 import nl.roelofruis.artamus.core.layout.DisplayableMusic
 import nl.roelofruis.artamus.core.track.Track
-import nl.roelofruis.artamus.lilypond.{Document, LilypondFormatting}
+import nl.roelofruis.artamus.document.writeDocument
+import nl.roelofruis.artamus.lilypond.LilypondFormatting
 
 case class LilypondRenderer(settings: LilypondSettings) extends LilypondFormatting {
 
@@ -15,7 +16,7 @@ case class LilypondRenderer(settings: LilypondSettings) extends LilypondFormatti
 
     // to lilypond file
     val document = format(displayableMusic)
-    val contents = Document.write(document)
+    val contents = writeDocument(document)
 
     // write to file
     val sourceFile = new File(s"src/main/resources/rendering/output/lily.ly")
