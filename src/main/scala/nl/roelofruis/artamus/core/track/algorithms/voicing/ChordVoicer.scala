@@ -24,7 +24,7 @@ case class ChordVoicer(settings: Settings) extends NoteMaths {
     }
   }
 
-  def findPossibleNodes: Windowed[Chord] => List[WindowedNoteGroup] = chordWindow => {
+  def findPossibleNodes: (Int, Windowed[Chord]) => List[WindowedNoteGroup] = (_, chordWindow) => {
     val intervals = chordWindow.get.quality.intervals.map { _ + chordWindow.get.root }
     val octaves = Range.inclusive(2, 5)
 
