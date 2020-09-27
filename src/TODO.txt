@@ -5,3 +5,7 @@
 - Implement harmonic analysis (start with old core implementation)
 - Implement reharmonizer
 - Improve chord voicer with directed graph search.
+- Improve RNA with better theoretical basis for search.
+
+- Add printing of tonal centres to Roman Numerals in Lilypond output
+- Improve layout options (for instance 4 bars per line)
