@@ -18,6 +18,6 @@ object Layer {
 
   final case class ChordLayer(chords: ChordSeq) extends Layer
   final case class NoteLayer(notes: NoteSeq) extends Layer
-  final case class RNALayer(analysis: RomanNumeralSeq) extends Layer
+  final case class RNALayer(analysis: RomanNumeralSeq, keys: KeySeq) extends Layer
 
 }

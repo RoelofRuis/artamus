@@ -28,6 +28,8 @@ object Temporal {
 
   final case class TemporalVal[A](head: Positioned[A], tail: Seq[Positioned[A]]) {
     def asSeq: Seq[Positioned[A]] = head +: tail
+    def last: Positioned[A] = if (tail.isEmpty) head else tail.last
+    def :+(elem: Positioned[A]): TemporalVal[A] = TemporalVal(head, tail :+ elem)
   }
 
   implicit class TemporalValWithDurationOps[A](value: TemporalVal[A])(implicit val durationProvider: ProvidesDuration[A]) {

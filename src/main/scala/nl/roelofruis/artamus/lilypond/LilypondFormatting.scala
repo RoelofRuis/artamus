@@ -4,10 +4,10 @@ import nl.roelofruis.artamus.core.common.Maths._
 import nl.roelofruis.artamus.core.layout.ChordStaffGlyph.{ChordNameGlyph, ChordRestGlyph}
 import nl.roelofruis.artamus.core.layout.DisplayableMusic
 import nl.roelofruis.artamus.core.layout.Glyph.{GlyphDuration, InstantGlyph, SingleGlyph}
-import nl.roelofruis.artamus.core.layout.RNAStaffGlyph.{DegreeGlyph, RNARestGlyph}
+import nl.roelofruis.artamus.core.layout.RNAStaffGlyph.{DegreeGlyph, KeyIndicatorGlyph, RNARestGlyph}
 import nl.roelofruis.artamus.core.layout.Staff.{ChordStaff, NoteStaff, RNAStaff, StaffGroup}
 import nl.roelofruis.artamus.core.layout.StaffGlyph.{KeyGlyph, NoteGroupGlyph, RestGlyph, TimeSignatureGlyph}
-import nl.roelofruis.artamus.core.track.Pitched.{Octave, PitchDescriptor, Quality, Scale}
+import nl.roelofruis.artamus.core.track.Pitched.{Key, Octave, PitchDescriptor, Quality}
 import nl.roelofruis.artamus.core.track.algorithms.TunedMaths
 import nl.roelofruis.artamus.document._
 
@@ -75,7 +75,7 @@ trait LilypondFormatting extends TunedMaths {
         "c" + writeDuration(duration)
       case SingleGlyph(_: RNARestGlyph, duration) =>
         writeSilentRest(duration)
-      case _ =>
+      case _ => ""
     }.mkString("\n")
 
     val contents = staff.glyphs.map {
@@ -89,6 +89,11 @@ trait LilypondFormatting extends TunedMaths {
 
       case SingleGlyph(_: RNARestGlyph, duration) =>
         writeSilentRest(duration)
+
+      case InstantGlyph(KeyIndicatorGlyph(key)) =>
+        val root = settings.stepNames.lift(key.root.step).map(_.toUpperCase).getOrElse("")
+        val accidental = writeRomanNumeralAccidental(key.root)
+        s"\\set stanza = \\markup { \\concat { \\rN { $root$accidental } \\hspace #0.2 : } }"
 
       case _ =>
     }.mkString("\n")
@@ -107,12 +112,16 @@ trait LilypondFormatting extends TunedMaths {
 
   private def writeRomanNumeral(descriptor: PitchDescriptor): String = {
     val baseName = settings.degreeNames(descriptor.step)
-    val accidental = descriptor.accidentalValue match {
+    val accidental = writeRomanNumeralAccidental(descriptor)
+    s"$accidental$baseName"
+  }
+
+  private def writeRomanNumeralAccidental(descriptor: PitchDescriptor): String = {
+    descriptor.accidentalValue match {
       case i if i < 1 => "f" * -i
       case i if i > 1 => "s" * i
       case _ => ""
     }
-    s"$accidental$baseName"
   }
 
   private def writeNoteStaff(staff: NoteStaff): Document = {
@@ -140,8 +149,8 @@ trait LilypondFormatting extends TunedMaths {
       case InstantGlyph(TimeSignatureGlyph(num, denom)) =>
         writeTimeSignature(num, denom)
 
-      case InstantGlyph(KeyGlyph(root, scale)) =>
-        writeKey(root, scale)
+      case InstantGlyph(KeyGlyph(key)) =>
+        writeKey(key)
 
     }.mkString("\n")
 
@@ -178,12 +187,12 @@ trait LilypondFormatting extends TunedMaths {
     )
   }
 
-  private def writeKey(root: PitchDescriptor, scale: Scale): String = {
+  private def writeKey(key: Key): String = {
     // TODO: implement http://lilypond.org/doc/v2.18/Documentation/notation/displaying-pitches#key-signature
     settings.scaleSpelling
-      .get(scale)
+      .get(key.scale)
       .map { scaleName =>
-        val rootName = writePitchDescriptor(root)
+        val rootName = writePitchDescriptor(key.root)
         s"\\key $rootName \\$scaleName"
       }.getOrElse("")
   }

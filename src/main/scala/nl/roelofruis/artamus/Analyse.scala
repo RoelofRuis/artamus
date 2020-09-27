@@ -9,7 +9,7 @@ import nl.roelofruis.artamus.core.track.Pitched.Key
 import nl.roelofruis.artamus.core.track.Temporal.Metre
 import nl.roelofruis.artamus.core.track.Track
 import nl.roelofruis.artamus.core.track.algorithms.rna.Model.{RNAAnalysedChord, RNANode}
-import nl.roelofruis.artamus.core.track.algorithms.rna.RomanNumeralAnalyser
+import nl.roelofruis.artamus.core.track.algorithms.rna.{RNAOperations, RomanNumeralAnalyser}
 
 object Analyse extends App {
 
@@ -41,7 +41,7 @@ object Analyse extends App {
       TemporalVal(key),
       Seq(
         ChordLayer(chords),
-        RNALayer(degrees),
+        RNALayer(degrees, RNAOperations.getKeyIndicators(degrees, key)),
       )
     )
   }

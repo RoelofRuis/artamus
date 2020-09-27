@@ -5,7 +5,7 @@ import nl.roelofruis.artamus.core.common.Position
 import nl.roelofruis.artamus.core.common.Temporal.{Windowed, _}
 import nl.roelofruis.artamus.core.layout.ChordStaffGlyph.{ChordNameGlyph, ChordRestGlyph}
 import nl.roelofruis.artamus.core.layout.Glyph.InstantGlyph
-import nl.roelofruis.artamus.core.layout.RNAStaffGlyph.{DegreeGlyph, RNARestGlyph}
+import nl.roelofruis.artamus.core.layout.RNAStaffGlyph.{DegreeGlyph, KeyIndicatorGlyph, RNARestGlyph}
 import nl.roelofruis.artamus.core.layout.Staff.{ChordStaff, NoteStaff, RNAStaff, StaffGroup}
 import nl.roelofruis.artamus.core.layout.StaffGlyph.{KeyGlyph, NoteGroupGlyph, RestGlyph, TimeSignatureGlyph}
 import nl.roelofruis.artamus.core.layout.{ChordStaffGlyph, Glyph, RNAStaffGlyph, StaffGlyph}
@@ -23,7 +23,10 @@ object DisplayableLayers extends TemporalMaths {
 
     lazy val layout: LayoutDescription[RNAStaffGlyph] = LayoutDescription(
       track.metres.iterateWindowed,
-      RNARestGlyph()
+      RNARestGlyph(),
+      Seq(
+        keyIndicatorBuilder(layer.keys)
+      )
     )
 
     Seq(RNAStaff(Layout.layoutElements(elementIterator, layout)))
@@ -65,6 +68,11 @@ object DisplayableLayers extends TemporalMaths {
     Seq(NoteStaff(Layout.layoutElements(elementIterator, layout)))
   }
 
+  private def keyIndicatorBuilder(keys: KeySeq): Position => Option[Glyph[RNAStaffGlyph]] = pos => {
+    keys.asSeq.find(_.position == pos)
+      .map { key => InstantGlyph(KeyIndicatorGlyph(key.get)) }
+  }
+
   private def timeSignatureBuilder(metres: MetreSeq): Position => Option[Glyph[StaffGlyph]] = pos => {
     metres.asSeq.find(_.position == pos)
       .map { metre =>
@@ -75,9 +83,7 @@ object DisplayableLayers extends TemporalMaths {
 
   private def keyBuilder(keys: KeySeq): Position => Option[Glyph[StaffGlyph]] = pos => {
     keys.asSeq.find(_.position == pos)
-      .map { key =>
-        InstantGlyph(KeyGlyph(key.get.root, key.get.scale))
-      }
+      .map { key => InstantGlyph(KeyGlyph(key.get)) }
   }
 
 }
