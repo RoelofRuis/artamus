@@ -6,3 +6,4 @@
 
 # lilypond produced midi files
 *.mid
+*.midi
