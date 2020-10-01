@@ -73,6 +73,8 @@ private [application] class ParseBuffer private (
     } else false
   }
 
+  def hasResult(target: String): ParseResult[Boolean] = Success(has(target))
+
   def skipSpaces: ParseResult[Unit] = skip(" ")
   def skip(target: String): ParseResult[Unit] = {
     while (state.startsWith(target)) advanceOver(target)
