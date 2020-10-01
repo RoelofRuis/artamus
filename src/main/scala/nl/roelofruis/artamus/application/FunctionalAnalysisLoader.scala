@@ -2,7 +2,7 @@ package nl.roelofruis.artamus.application
 
 import nl.roelofruis.artamus.application.Model.{ParseResult, Settings}
 import nl.roelofruis.artamus.application.Parser._
-import nl.roelofruis.artamus.core.track.algorithms.functional.Model.{FunctionalAnalysisRules, IntervalDescription, QualityTag, TagReduction}
+import nl.roelofruis.artamus.core.track.algorithms.functional.Model.{AnyIntervalOnStep, ExactInterval, FunctionalAnalysisRules, IntervalDescription, QualityTag, TagReduction}
 import spray.json._
 
 object FunctionalAnalysisLoader {
@@ -26,8 +26,15 @@ object FunctionalAnalysisLoader {
         val parser = tuning.parser(s)
         for {
           shouldNotContain <- parser.buffer.hasResult("!")
+          shouldMatchAny   <- parser.buffer.hasResult("?")
           interval <- parser.parseInterval
-        } yield IntervalDescription(!shouldNotContain, interval)
+        } yield {
+          val matchInterval = {
+            if (shouldMatchAny) AnyIntervalOnStep(interval.step)
+            else ExactInterval(interval)
+          }
+          IntervalDescription(!shouldNotContain, matchInterval)
+        }
       }.invert
     }
 

@@ -15,8 +15,12 @@ object Model {
 
   final case class IntervalDescription(
     shouldContain: Boolean,
-    interval: PitchDescriptor
+    interval: MatchableInterval
   )
+
+  trait MatchableInterval
+  final case class ExactInterval(interval: PitchDescriptor) extends MatchableInterval
+  final case class AnyIntervalOnStep(step: Int) extends MatchableInterval
 
   final case class QualityTag(
     name: String
