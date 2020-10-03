@@ -26,10 +26,10 @@ object RNALoader {
       transitions.map { textTransition =>
         for {
           from <- tuning.parser(textTransition.from).parseDegree
-          to <- tuning.parser(textTransition.to).parseDegree
+          to <- textTransition.to.map(tuning.parser(_).parseDegree).toList.invert
           weight = textTransition.weight.getOrElse(1)
-        } yield RNATransition(from, to, weight)
-      }.invert
+        } yield to.map(RNATransition(from, _, weight))
+      }.invert.map(_.flatten)
     }
 
     def parseInterpretations(interpretations: List[TextRNAInterpretation]): ParseResult[List[RNAInterpretation]] = {
@@ -54,11 +54,11 @@ object RNALoader {
       }.invert
     }
 
-    def parseTagReductions(reduction: Seq[TextTagReduction]): ParseResult[List[TagReduction]] = {
+    def parseTagReductions(reduction: Seq[TextTagReduction]): ParseResult[List[QualityReduction]] = {
       reduction.toList.map { reduction =>
         for {
           intervals <- parseIntervalDescription(reduction.intervals)
-        } yield TagReduction(
+        } yield QualityReduction(
           intervals,
           reduction.tags
         )
@@ -164,7 +164,7 @@ object RNALoader {
 
     final case class TextRNATransition(
       from: String,
-      to: String,
+      to: Seq[String],
       weight: Option[Int]
     )
 

@@ -65,8 +65,8 @@ case class RomanNumeralAnalyser(settings: Settings, rules: RNARules) extends Tun
       }
   }
 
-  private def matchingTags(quality: Quality): Seq[QualityTag] = {
-    rules.tagReductions.map { reduction =>
+  private def matchingTags(quality: Quality): Seq[DegreeQuality] = {
+    rules.qualityReductions.map { reduction =>
       val score = reduction.intervals.foldLeft(0) { case (acc, descr) =>
         if (acc == -1) acc
         else {
@@ -82,7 +82,7 @@ case class RomanNumeralAnalyser(settings: Settings, rules: RNARules) extends Tun
           }
         }
       }
-      (score, reduction.possibleTags)
+      (score, reduction.possibleQualities)
     }
       .filter { case (score, _) => score >= 0 }
       .maxByOption { case (score, _) => score }

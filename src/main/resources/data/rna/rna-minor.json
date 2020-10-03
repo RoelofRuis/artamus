@@ -2,7 +2,7 @@
   "interpretations": [
     {
       "qualityTag": "M",
-      "options": ["3:minor:IIIM7", "6:minor:VIM7"]
+      "options": ["3:minor:IIIM", "6:minor:VIM"]
     },
     {
       "qualityTag": "7",
@@ -10,7 +10,7 @@
     },
     {
       "qualityTag": "m",
-      "options": ["1:minor:I-7", "4:minor:IV-7", "5:minor:V-7"]
+      "options": ["1:minor:I-", "4:minor:IV-", "5:minor:V-"]
     },
     {
       "qualityTag": "mb5",
@@ -18,11 +18,8 @@
     }
   ],
   "transitions": [
-    {"from": "I-7", "to": "V-7"},
-    {"from": "I-7", "to": "V7"},
-    {"from": "I-7", "to": "IV-7"},
-    {"from": "I-7", "to": "VII7"},
-    {"from": "II-7b5", "to": "V7", "weight": 2},
-    {"from": "V7", "to": "I-7", "weight": 3}
+    {"from": "I-7", "to": ["V-7", "V7", "IV-7", "VII7"]},
+    {"from": "II-7b5", "to": ["V7"], "weight": 2},
+    {"from": "V7", "to": ["I-7"], "weight": 3}
   ]
 }

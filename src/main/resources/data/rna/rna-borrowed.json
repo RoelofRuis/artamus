@@ -6,24 +6,19 @@
     },
     {
       "qualityTag": "m",
-      "options": ["4:major:IV-7"]
+      "options": ["4:major:IV-"]
     },
     {
       "qualityTag": "-",
-      "options": ["1:major:I-7"],
+      "options": ["1:major:I-"],
       "allowEnharmonicEquivalents": true
     }
   ],
   "transitions": [
-    {"from": "IVM7", "to": "bVII7"},
-    {"from": "IVM7", "to": "IV-7"},
-    {"from": "IV-7", "to": "III-7"},
-    {"from": "IV-7", "to": "IM7"},
-    {"from": "II7", "to": "II-7"},
-    {"from": "bVI7", "to": "V7"},
-    {"from": "bVI7", "to": "bVII7"},
-    {"from": "bVII7", "to": "VI-7"},
-    {"from": "bVII7", "to": "IM7"},
-    {"from": "bVII7", "to": "III-7"}
+    {"from": "II7", "to": ["II-"]},
+    {"from": "IVM", "to": ["bVII7", "IV-"]},
+    {"from": "IV-", "to": ["III-", "IM"]},
+    {"from": "bVI7", "to": ["V7", "bVII7"]},
+    {"from": "bVII7", "to": ["VI-", "IM", "III-"]}
   ]
 }

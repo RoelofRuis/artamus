@@ -6,23 +6,18 @@
     }
   ],
   "transitions": [
-    {"from": "IM7", "to": "V7/IV"},
-    {"from": "I-7", "to": "V7/IV"},
-    {"from": "IM7", "to": "V7/V"},
-    {"from": "I-7", "to": "V7/V"},
-    {"from": "IM7", "to": "V7/VI"},
-    {"from": "I-7", "to": "V7/VI"},
-    {"from": "II-7", "to": "V7/VI"},
-    {"from": "III-7", "to": "V7/II"},
-    {"from": "V7/II", "to": "II-7", "weight": 2},
-    {"from": "V7/II", "to": "V7/V"},
-    {"from": "V7/III", "to": "III-7", "weight": 2},
-    {"from": "V7/III", "to": "V7/VI"},
-    {"from": "V7/IV", "to": "IVM7", "weight": 2},
-    {"from": "V7/V", "to": "V7", "weight": 2},
-    {"from": "V7/VI", "to": "VI-7", "weight": 2},
-    {"from": "V7/VI", "to": "VIM7", "weight": 2},
-    {"from": "V7/VI", "to": "V7/II"},
-    {"from": "VI-7", "to": "V7/V"}
+    {"from": "IM", "to": ["V7/IV", "V7/V", "V7/VI"]},
+    {"from": "I-", "to": ["V7/IV", "V7/V", "V7/VI"]},
+    {"from": "II-", "to": ["V7/VI"]},
+    {"from": "III-", "to": ["V7/II"]},
+    {"from": "V7/II", "to": ["II-"], "weight": 2},
+    {"from": "V7/II", "to": ["V7/V"]},
+    {"from": "V7/III", "to": ["III-"], "weight": 2},
+    {"from": "V7/III", "to": ["V7/VI"]},
+    {"from": "V7/IV", "to": ["IVM"], "weight": 2},
+    {"from": "V7/V", "to": ["V7"], "weight": 2},
+    {"from": "V7/VI", "to": ["VI-", "VIM"], "weight": 2},
+    {"from": "V7/VI", "to": ["V7/II"]},
+    {"from": "VI-", "to": ["V7/V"]}
   ]
 }
