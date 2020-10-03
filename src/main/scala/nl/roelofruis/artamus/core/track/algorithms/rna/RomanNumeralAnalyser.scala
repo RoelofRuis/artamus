@@ -38,9 +38,10 @@ case class RomanNumeralAnalyser(settings: Settings, rules: RNARules) extends Tun
   }
 
   def findPossibleNodes: Windowed[Chord] => List[WindowedRNANode] = chord => {
+    val qualityTags = matchingTags(chord.element.quality)
     rules
       .interpretations
-      .filter(_.quality == chord.element.quality)
+      .filter(i => qualityTags.contains(i.qualityTag))
       .flatMap { function =>
         function.options.flatMap { option =>
           val degreeRoot = chord.element.root - option.keyInterval
@@ -62,6 +63,30 @@ case class RomanNumeralAnalyser(settings: Settings, rules: RNARules) extends Tun
           } else Seq(Windowed(chord.window, hypothesis))
         }
       }
+  }
+
+  private def matchingTags(quality: Quality): Seq[QualityTag] = {
+    rules.tagReductions.map { reduction =>
+      val score = reduction.intervals.foldLeft(0) { case (acc, descr) =>
+        if (acc == -1) acc
+        else {
+          val contains = {
+            descr.interval match {
+              case AnyIntervalOnStep(step) => quality.intervals.map(_.step).contains(step)
+              case ExactInterval(interval) => quality.intervals.contains(interval)
+            }
+          }
+          if (! descr.shouldContain && contains) -1
+          else {
+            if (contains) acc + 1 else acc
+          }
+        }
+      }
+      (score, reduction.possibleTags)
+    }
+      .filter { case (score, _) => score >= 0 }
+      .maxByOption { case (score, _) => score }
+      .map(_._2).getOrElse(Seq())
   }
 
   def scoreTransition: (WindowedRNANode, WindowedRNANode) => Option[Int] = (currentWindow, nextWindow) => {

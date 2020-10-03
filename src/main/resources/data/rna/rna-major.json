@@ -1,29 +1,21 @@
 {
   "interpretations": [
     {
-      "quality": "M7",
-      "options": ["1:major:IM7", "4:major:IVM7"]
+      "qualityTag": "M",
+      "options": ["1:major:IM", "4:major:IVM"]
     },
     {
-      "quality": "7",
+      "qualityTag": "7",
       "options": ["4:major:IV7", "5:major:V7", "5:minor:V7"]
     },
     {
-      "quality": "-7",
-      "options": ["2:major:II-7", "3:major:III-7", "4:major:IV-7", "6:major:VI-7"]
+      "qualityTag": "m",
+      "options": ["2:major:II-", "3:major:III-", "4:major:IV-", "6:major:VI-"]
     },
     {
-      "quality": "dim7",
+      "qualityTag": "o",
       "options": ["7:major:VIIdim7", "b3:major:bIIIdim7", "b2:major:bIIdim7"],
       "allowEnharmonicEquivalents": true
-    },
-    {
-      "quality": "+7",
-      "options": ["5:major:V7"]
-    },
-    {
-      "quality": "6",
-      "options": ["1:major:I6"]
     }
   ],
   "transitions": [

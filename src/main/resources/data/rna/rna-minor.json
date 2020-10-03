@@ -1,24 +1,20 @@
 {
   "interpretations": [
     {
-      "quality": "M7",
+      "qualityTag": "M",
       "options": ["3:minor:IIIM7", "6:minor:VIM7"]
     },
     {
-      "quality": "7",
+      "qualityTag": "7",
       "options": ["5:minor:V7", "7:minor:VII7"]
     },
     {
-      "quality": "-7",
+      "qualityTag": "m",
       "options": ["1:minor:I-7", "4:minor:IV-7", "5:minor:V-7"]
     },
     {
-      "quality": "-7b5",
+      "qualityTag": "mb5",
       "options": ["2:minor:II-7b5"]
-    },
-    {
-      "quality": "+7",
-      "options": ["5:minor:V7"]
     }
   ],
   "transitions": [

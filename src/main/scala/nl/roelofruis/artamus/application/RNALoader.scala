@@ -7,7 +7,7 @@ import nl.roelofruis.artamus.core.track.algorithms.rna.Model._
 import spray.json._
 
 object RNALoader {
-  import RNALoader.FileModel.{TextRNAInterpretation, TextRNAKeyChange, TextRNARules, TextRNASettings, TextRNATransition}
+  import RNALoader.FileModel.{TextRNAInterpretation, TextRNAKeyChange, TextRNARules, TextRNASettings, TextRNATransition, TextTagReduction}
 
   def loadRules(tuning: Settings): ParseResult[RNARules] = {
     def parseRulesFiles(files: List[String]): ParseResult[(Set[RNAInterpretation], Set[RNATransition])] = {
@@ -35,10 +35,9 @@ object RNALoader {
     def parseInterpretations(interpretations: List[TextRNAInterpretation]): ParseResult[List[RNAInterpretation]] = {
       interpretations.map { textInterpretation =>
         for {
-          quality <- tuning.parser(textInterpretation.quality).parseQuality
           options <- parseOptions(textInterpretation.options)
           allowEnharmonicEquivalents = textInterpretation.allowEnharmonicEquivalents.getOrElse(false)
-        } yield RNAInterpretation(quality, options, allowEnharmonicEquivalents)
+        } yield RNAInterpretation(textInterpretation.qualityTag, options, allowEnharmonicEquivalents)
       }.invert
     }
 
@@ -52,6 +51,34 @@ object RNALoader {
           _ <- keyParser.buffer.expectOne(":")
           scale <- keyParser.parseScale
         } yield RNAKeyChange(scaleFrom, Key(interval, scale), keyChange.weight)
+      }.invert
+    }
+
+    def parseTagReductions(reduction: Seq[TextTagReduction]): ParseResult[List[TagReduction]] = {
+      reduction.toList.map { reduction =>
+        for {
+          intervals <- parseIntervalDescription(reduction.intervals)
+        } yield TagReduction(
+          intervals,
+          reduction.tags
+        )
+      }.invert
+    }
+
+    def parseIntervalDescription(intervals: String): ParseResult[List[IntervalDescription]] = {
+      intervals.split(" ").toList.map{ s =>
+        val parser = tuning.parser(s)
+        for {
+          shouldNotContain <- parser.buffer.hasResult("!")
+          shouldMatchAny   <- parser.buffer.hasResult("?")
+          interval <- parser.parseInterval
+        } yield {
+          val matchInterval = {
+            if (shouldMatchAny) AnyIntervalOnStep(interval.step)
+            else ExactInterval(interval)
+          }
+          IntervalDescription(!shouldNotContain, matchInterval)
+        }
       }.invert
     }
 
@@ -71,13 +98,15 @@ object RNALoader {
       textSettings <- File.load[TextRNASettings]("src/main/resources/data/rna/settings.json")
       (interpretations, transitions) <- parseRulesFiles(textSettings.rulesFiles)
       keyChanges <- parseKeyChanges(textSettings.keyChanges)
+      tagReductions <- parseTagReductions(textSettings.tagReductions)
     } yield RNARules(
       textSettings.maxSolutionsToCheck,
       textSettings.unknownTransitionPenalty,
       textSettings.unknownKeyChangePenalty,
       keyChanges,
       interpretations.toList,
-      transitions.toList
+      transitions.toList,
+      tagReductions
     )
   }
 
@@ -87,11 +116,21 @@ object RNALoader {
       unknownKeyChangePenalty: Int,
       unknownTransitionPenalty: Int,
       keyChanges: List[TextRNAKeyChange],
-      rulesFiles: List[String]
+      rulesFiles: List[String],
+      tagReductions: List[TextTagReduction],
     )
 
     object TextRNASettings {
-      implicit val rnaSettingsFormat: JsonFormat[TextRNASettings] = jsonFormat5(TextRNASettings.apply)
+      implicit val rnaSettingsFormat: JsonFormat[TextRNASettings] = jsonFormat6(TextRNASettings.apply)
+    }
+
+    final case class TextTagReduction(
+      intervals: String,
+      tags: Seq[String]
+    )
+
+    object TextTagReduction {
+      implicit val tagReductionFormat: JsonFormat[TextTagReduction] = jsonFormat2(TextTagReduction.apply)
     }
 
     final case class TextRNAKeyChange(
@@ -114,7 +153,7 @@ object RNALoader {
     }
 
     final case class TextRNAInterpretation(
-      quality: String,
+      qualityTag: String,
       options: List[String],
       allowEnharmonicEquivalents: Option[Boolean]
     )

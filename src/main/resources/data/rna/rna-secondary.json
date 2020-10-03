@@ -1,12 +1,8 @@
 {
   "interpretations": [
     {
-      "quality": "7",
+      "qualityTag": "7",
       "options": ["1:major:V7/IV", "2:major:V7/V", "3:major:V7/VI", "#4:major:V7/VII", "6:major:V7/II", "7:major:V7/III"]
-    },
-    {
-      "quality": "+7",
-      "options": ["3:minor:V7/VI", "3:major:V7/VI"]
     }
   ],
   "transitions": [

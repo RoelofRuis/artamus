@@ -18,11 +18,23 @@
     {"from": "minor", "to": "1:major", "weight": -4},
     {"from": "minor", "to": "b6:major", "weight": -5}
   ],
+  "tagReductions": [
+    {"intervals": "3 5 !?7", "tags": ["M", "7"]},
+    {"intervals": "b3 5 !?7", "tags": ["m", "Mm"]},
+    {"intervals": "b3 b5 !?7", "tags": ["oM", "mb5", "o"]},
+    {"intervals": "3 #5 !?7", "tags": ["M", "7"]},
+    {"intervals": "3 ?5 7", "tags": ["M"]},
+    {"intervals": "b3 ?5 b7", "tags": ["m"]},
+    {"intervals": "b3 ?5 7", "tags": ["Mm"]},
+    {"intervals": "3 ?5 b7", "tags": ["7"]},
+    {"intervals": "b3 b5 b7", "tags": ["mb5"]},
+    {"intervals": "b3 b5 bb7", "tags": ["o"]}
+  ],
   "rulesFiles": [
-    "rna-major_4_voices",
-    "rna-minor_4_voices",
-    "rna-secondary_4_voices",
-    "rna-borrowed_4_voices",
-    "rna-tritone_4_voices"
+    "rna-major",
+    "rna-minor",
+    "rna-secondary",
+    "rna-borrowed",
+    "rna-substitute"
   ]
 }

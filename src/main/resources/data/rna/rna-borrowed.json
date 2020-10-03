@@ -1,15 +1,15 @@
 {
   "interpretations": [
     {
-      "quality": "7",
+      "qualityTag": "7",
       "options": ["2:major:II7", "b7:major:bVII7", "b6:major:bVI7"]
     },
     {
-      "quality": "-7",
+      "qualityTag": "m",
       "options": ["4:major:IV-7"]
     },
     {
-      "quality": "-7",
+      "qualityTag": "-",
       "options": ["1:major:I-7"],
       "allowEnharmonicEquivalents": true
     }
