@@ -14,12 +14,12 @@
     },
     {
       "qualityTag": "mb5",
-      "options": ["2:minor:II-7b5"]
+      "options": ["2:minor:II-"]
     }
   ],
   "transitions": [
-    {"from": "I-7", "to": ["V-7", "V7", "IV-7", "VII7"]},
-    {"from": "II-7b5", "to": ["V7"], "weight": 2},
-    {"from": "V7", "to": ["I-7"], "weight": 3}
+    {"from": "I-", "to": ["V-", "V7", "IV-", "VII7"]},
+    {"from": "II-", "to": ["V7"], "weight": 2},
+    {"from": "V7", "to": ["I-"], "weight": 3}
   ]
 }
