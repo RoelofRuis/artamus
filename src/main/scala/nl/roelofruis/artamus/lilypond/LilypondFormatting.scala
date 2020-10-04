@@ -83,7 +83,7 @@ trait LilypondFormatting extends TunedMaths {
         val baseName = writeRomanNumeral(degree.root)
         val relativeName = degree.relativeTo.map(d => " / " + writeRomanNumeral(d)).getOrElse("")
         val tritoneSub   = if (degree.tritoneSub) "T" else ""
-        val qualityName  = settings.degreeQualitySpelling.getOrElse(degree.quality.qualities.head, "") // TODO: fix properly!
+        val qualityName  = settings.qualityGroupSpelling.getOrElse(degree.quality, "")
 
         s"\\markup \\rN { $baseName $tritoneSub$qualityName$relativeName }"
 
@@ -231,7 +231,7 @@ trait LilypondFormatting extends TunedMaths {
 
   private def writeDuration(glyphDuration: GlyphDuration): String = s"${2**glyphDuration.n}" + (settings.dotSpelling * glyphDuration.dots)
 
-  private def writeQuality(quality: Quality): String = settings.chordQualitySpelling.get(quality).map(":" + _).getOrElse("")
+  private def writeQuality(quality: Quality): String = settings.qualitySpelling.get(quality).map(":" + _).getOrElse("")
 
   private def block(name: String)(subdocuments: Document*): Document = scoped(s"\\$name {", "}")(subdocuments: _*)
 

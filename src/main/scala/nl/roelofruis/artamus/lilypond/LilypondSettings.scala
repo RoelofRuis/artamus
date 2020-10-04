@@ -1,6 +1,6 @@
 package nl.roelofruis.artamus.lilypond
 
-import nl.roelofruis.artamus.core.track.Pitched.{Quality, Scale}
+import nl.roelofruis.artamus.core.track.Pitched.{Quality, QualityGroup, Scale}
 import nl.roelofruis.artamus.core.track.algorithms.TunedMaths.TuningDefinition
 
 final case class LilypondSettings(
@@ -14,8 +14,8 @@ final case class LilypondSettings(
   flatSpelling: String,
   sharpSpelling: String,
   dotSpelling: String,
-  chordQualitySpelling: Map[Quality, String],
-  degreeQualitySpelling: Map[Quality, String],
+  qualitySpelling: Map[Quality, String],
+  qualityGroupSpelling: Map[QualityGroup, String],
   scaleSpelling: Map[Scale, String],
   quarterTempo: Int
 ) extends TuningDefinition
