@@ -28,5 +28,9 @@
     {"symbol": "7", "degreeNotation": "7"},
     {"symbol": "-b5", "degreeNotation": "ø"},
     {"symbol": "o", "degreeNotation": "o"}
+  ],
+  "scaleSymbolSpelling": [
+    {"name": "major", "symbol": ""},
+    {"name": "minor", "symbol": "-"}
   ]
 }

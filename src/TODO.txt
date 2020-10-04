@@ -1,6 +1,6 @@
 - Passing chords
 - Some way of adding information on chord changes/resolutions
-- Absolute & Relative functions towards the root note
+- Absolute & Relative functions towards the root note (?)
 
 - Implement harmonic analysis (start with old core implementation)
 - Implement reharmonizer
@@ -9,3 +9,5 @@
 
 - Improve layout options (for instance 4 bars per line)
 - Do not print duplicate Roman Numerals in Lilypond output
+
+- Ensure QualityGroups are correctly calculated

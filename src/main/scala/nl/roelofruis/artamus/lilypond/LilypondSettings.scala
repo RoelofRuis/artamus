@@ -17,5 +17,6 @@ final case class LilypondSettings(
   qualitySpelling: Map[Quality, String],
   qualityGroupSpelling: Map[QualityGroup, String],
   scaleSpelling: Map[Scale, String],
+  scaleSymbolSpelling: Map[Scale, String],
   quarterTempo: Int
 ) extends TuningDefinition
