@@ -16,7 +16,7 @@ object RNALoader {
   def loadRules(tuning: Settings): ParseResult[RNARules] = {
     def parseRulesFiles(
       files: List[String],
-      degreeMap: Map[DegreeQualitySymbol, DegreeQuality2]
+      degreeMap: Map[DegreeQualitySymbol, DegreeQuality]
     ): ParseResult[(Set[RNAInterpretation], Set[RNATransition])] = {
       files.map { file =>
         for {
@@ -41,7 +41,7 @@ object RNALoader {
 
     def parseInterpretations(
       interpretations: List[TextRNAInterpretation],
-      degreeMap: Map[DegreeQualitySymbol, DegreeQuality2]
+      degreeMap: Map[DegreeQualitySymbol, DegreeQuality]
     ): ParseResult[List[RNAInterpretation]] = {
       interpretations.map { textInterpretation =>
         for {
@@ -68,7 +68,7 @@ object RNALoader {
       }.invert
     }
 
-    def parseDegreeQualities(degreeQualities: Seq[TextDegreeQuality]): ParseResult[Map[DegreeQualitySymbol, DegreeQuality2]] = {
+    def parseDegreeQualities(degreeQualities: Seq[TextDegreeQuality]): ParseResult[Map[DegreeQualitySymbol, DegreeQuality]] = {
       degreeQualities.toList.map { quality =>
         for {
           intervals <- parseIntervalDescription(quality.intervals)
@@ -76,7 +76,7 @@ object RNALoader {
       }.invert.map(_.toMap)
     }
 
-    def parseIntervalDescription(intervals: String): ParseResult[DegreeQuality2] = {
+    def parseIntervalDescription(intervals: String): ParseResult[DegreeQuality] = {
       val descriptors = intervals.split(" ").toList.map{ s =>
         val parser = tuning.parser(s)
         for {
@@ -84,11 +84,11 @@ object RNALoader {
           shouldMatchAny <- parser.buffer.hasResult("?")
           interval <- parser.parseInterval
         } yield {
-          if (shouldMatchAny) AnyIntervalOnStep2(isOptional, interval.step)
-          else ExactInterval2(isOptional, interval)
+          if (shouldMatchAny) AnyIntervalOnStep(isOptional, interval.step)
+          else ExactInterval(isOptional, interval)
         }
       }.invert
-      descriptors.map(DegreeQuality2)
+      descriptors.map(DegreeQuality)
     }
 
     def parseOptions(options: List[String]): ParseResult[List[RNAInterpretationOption]] =

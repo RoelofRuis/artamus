@@ -65,12 +65,12 @@ case class RomanNumeralAnalyser(settings: Settings, rules: RNARules) extends Tun
       }
   }
 
-  private def matchingQualities(quality: Quality): Seq[DegreeQuality2] = {
+  private def matchingQualities(quality: Quality): Seq[DegreeQuality] = {
     val matches = rules.degreeQualities.map { degreeQuality =>
       val score = degreeQuality.intervals.foldLeft(0) { case (acc, descr) =>
         val (optional, contains) = descr match {
-          case AnyIntervalOnStep2(optional, step) => (optional, quality.intervals.map(_.step).contains(step))
-          case ExactInterval2(optional, interval) => (optional, quality.intervals.contains(interval))
+          case AnyIntervalOnStep(optional, step) => (optional, quality.intervals.map(_.step).contains(step))
+          case ExactInterval(optional, interval) => (optional, quality.intervals.contains(interval))
         }
         if (contains) acc + 1
         else if (optional) acc
