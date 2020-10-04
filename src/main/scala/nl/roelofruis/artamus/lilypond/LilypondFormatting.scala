@@ -72,14 +72,14 @@ trait LilypondFormatting extends TunedMaths {
   private def writeRNAStaff(staff: RNAStaff): Document = {
     val aligner = staff.glyphs.map {
       case SingleGlyph(DegreeGlyph(_), duration) =>
-        "c" + writeDuration(duration)
+        "c" + writeDuration(duration) + writeTie(duration)
       case SingleGlyph(_: RNARestGlyph, duration) =>
         writeSilentRest(duration)
       case _ => ""
     }.mkString("\n")
 
     val contents = staff.glyphs.map {
-      case SingleGlyph(DegreeGlyph(degree), _) =>
+      case SingleGlyph(DegreeGlyph(degree), duration) if ! duration.tieToNext =>
         val baseName = writeRomanNumeral(degree.root)
         val relativeName = degree.relativeTo.map(d => " / " + writeRomanNumeral(d)).getOrElse("")
         val tritoneSub   = if (degree.tritoneSub) "T" else ""
@@ -96,7 +96,7 @@ trait LilypondFormatting extends TunedMaths {
         val scaleSymbol = settings.scaleSymbolSpelling.getOrElse(key.scale, "?")
         s"\\set stanza = \\markup { \\concat { \\rN { $root$accidental$scaleSymbol } \\hspace #0.2 : } }"
 
-      case _ =>
+      case _ => ""
     }.mkString("\n")
 
     flat(
