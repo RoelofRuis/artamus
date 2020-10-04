@@ -11,24 +11,17 @@ object Model {
     keyChanges: List[RNAKeyChange],
     interpretations: List[RNAInterpretation],
     transitions: List[RNATransition],
-    qualityReductions: Seq[QualityReduction]
+    degreeQualities: List[DegreeQuality2]
   )
 
-  final case class QualityReduction(
-    intervals: Seq[IntervalDescription],
-    possibleQualities: Seq[DegreeQuality]
+
+  final case class DegreeQuality2(
+    intervals: Seq[IntervalDescription2]
   )
 
-  final case class IntervalDescription(
-    shouldContain: Boolean,
-    interval: MatchableInterval
-  )
-
-  trait MatchableInterval
-  final case class ExactInterval(interval: PitchDescriptor) extends MatchableInterval
-  final case class AnyIntervalOnStep(step: Int) extends MatchableInterval
-
-  type DegreeQuality = String
+  trait IntervalDescription2
+  final case class ExactInterval2(optional: Boolean, interval: PitchDescriptor) extends IntervalDescription2
+  final case class AnyIntervalOnStep2(optional: Boolean, step: Int) extends IntervalDescription2
 
   final case class RNAKeyChange(
     scaleFrom: Scale,
@@ -48,7 +41,7 @@ object Model {
   )
 
   final case class RNAInterpretation(
-    qualityTag: DegreeQuality,
+    degreeQuality: DegreeQuality2,
     options: List[RNAInterpretationOption],
     allowEnharmonicEquivalents: Boolean
   )

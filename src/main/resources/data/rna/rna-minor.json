@@ -1,19 +1,19 @@
 {
   "interpretations": [
     {
-      "qualityTag": "M",
+      "degreeQuality": "maj",
       "options": ["3:minor:IIIM", "6:minor:VIM"]
     },
     {
-      "qualityTag": "7",
+      "degreeQuality": "dom",
       "options": ["5:minor:V7", "7:minor:VII7"]
     },
     {
-      "qualityTag": "m",
+      "degreeQuality": "min",
       "options": ["1:minor:I-", "4:minor:IV-", "5:minor:V-"]
     },
     {
-      "qualityTag": "mb5",
+      "degreeQuality": "hdi",
       "options": ["2:minor:II-"]
     }
   ],

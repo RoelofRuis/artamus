@@ -1,19 +1,19 @@
 {
   "interpretations": [
     {
-      "qualityTag": "M",
+      "degreeQuality": "maj",
       "options": ["1:major:IM", "4:major:IVM"]
     },
     {
-      "qualityTag": "7",
+      "degreeQuality": "dom",
       "options": ["4:major:IV7", "5:major:V7", "5:minor:V7"]
     },
     {
-      "qualityTag": "m",
+      "degreeQuality": "min",
       "options": ["2:major:II-", "3:major:III-", "4:major:IV-", "6:major:VI-"]
     },
     {
-      "qualityTag": "o",
+      "degreeQuality": "dim",
       "options": ["7:major:VIIdim7", "b3:major:bIIIdim7", "b2:major:bIIdim7"],
       "allowEnharmonicEquivalents": true
     }

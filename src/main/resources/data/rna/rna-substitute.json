@@ -1,7 +1,7 @@
 {
   "interpretations": [
     {
-      "qualityTag": "7",
+      "degreeQuality": "dom",
       "options": ["b2:major:V7T", "b2:minor:V7T", "b3:major:V7T/II"]
     }
   ],

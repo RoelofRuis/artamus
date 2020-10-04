@@ -38,10 +38,10 @@ case class RomanNumeralAnalyser(settings: Settings, rules: RNARules) extends Tun
   }
 
   def findPossibleNodes: Windowed[Chord] => List[WindowedRNANode] = chord => {
-    val qualityTags = matchingTags(chord.element.quality)
+    val degreeQualities = matchingQualities(chord.element.quality)
     rules
       .interpretations
-      .filter(i => qualityTags.contains(i.qualityTag))
+      .filter(i => degreeQualities.contains(i.degreeQuality))
       .flatMap { function =>
         function.options.flatMap { option =>
           val degreeRoot = chord.element.root - option.keyInterval
@@ -65,28 +65,23 @@ case class RomanNumeralAnalyser(settings: Settings, rules: RNARules) extends Tun
       }
   }
 
-  private def matchingTags(quality: Quality): Seq[DegreeQuality] = {
-    rules.qualityReductions.map { reduction =>
-      val score = reduction.intervals.foldLeft(0) { case (acc, descr) =>
-        if (acc == -1) acc
-        else {
-          val contains = {
-            descr.interval match {
-              case AnyIntervalOnStep(step) => quality.intervals.map(_.step).contains(step)
-              case ExactInterval(interval) => quality.intervals.contains(interval)
-            }
-          }
-          if (! descr.shouldContain && contains) -1
-          else {
-            if (contains) acc + 1 else acc
-          }
+  private def matchingQualities(quality: Quality): Seq[DegreeQuality2] = {
+    val matches = rules.degreeQualities.map { degreeQuality =>
+      val score = degreeQuality.intervals.foldLeft(0) { case (acc, descr) =>
+        val (optional, contains) = descr match {
+          case AnyIntervalOnStep2(optional, step) => (optional, quality.intervals.map(_.step).contains(step))
+          case ExactInterval2(optional, interval) => (optional, quality.intervals.contains(interval))
         }
+        if (contains) acc + 1
+        else if (optional) acc
+        else -1
       }
-      (score, reduction.possibleQualities)
+      (score, degreeQuality)
     }
       .filter { case (score, _) => score >= 0 }
-      .maxByOption { case (score, _) => score }
-      .map(_._2).getOrElse(Seq())
+
+    val maxScore = matches.maxBy { case (score, _) => score }._1
+    matches.filter { case (score, _) => score == maxScore }.map { case (_, degreeQuality) => degreeQuality }
   }
 
   def scoreTransition: (WindowedRNANode, WindowedRNANode) => Option[Int] = (currentWindow, nextWindow) => {

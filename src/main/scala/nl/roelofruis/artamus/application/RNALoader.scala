@@ -6,15 +6,22 @@ import nl.roelofruis.artamus.core.track.Pitched.Key
 import nl.roelofruis.artamus.core.track.algorithms.rna.Model._
 import spray.json._
 
+import scala.util.Try
+
 object RNALoader {
-  import RNALoader.FileModel.{TextRNAInterpretation, TextRNAKeyChange, TextRNARules, TextRNASettings, TextRNATransition, TextTagReduction}
+  import RNALoader.FileModel.{TextRNAInterpretation, TextRNAKeyChange, TextRNARules, TextRNASettings, TextRNATransition, TextDegreeQuality}
+
+  type DegreeQualitySymbol = String
 
   def loadRules(tuning: Settings): ParseResult[RNARules] = {
-    def parseRulesFiles(files: List[String]): ParseResult[(Set[RNAInterpretation], Set[RNATransition])] = {
+    def parseRulesFiles(
+      files: List[String],
+      degreeMap: Map[DegreeQualitySymbol, DegreeQuality2]
+    ): ParseResult[(Set[RNAInterpretation], Set[RNATransition])] = {
       files.map { file =>
         for {
           textRules <- File.load[TextRNARules](s"src/main/resources/data/rna/$file.json")
-          interpretations <- parseInterpretations(textRules.interpretations)
+          interpretations <- parseInterpretations(textRules.interpretations, degreeMap)
           transitions <- parseTransitions(textRules.transitions)
         } yield (interpretations, transitions)
       }.invert.map(_.foldLeft((Set[RNAInterpretation](), Set[RNATransition]())) {
@@ -32,12 +39,19 @@ object RNALoader {
       }.invert.map(_.flatten)
     }
 
-    def parseInterpretations(interpretations: List[TextRNAInterpretation]): ParseResult[List[RNAInterpretation]] = {
+    def parseInterpretations(
+      interpretations: List[TextRNAInterpretation],
+      degreeMap: Map[DegreeQualitySymbol, DegreeQuality2]
+    ): ParseResult[List[RNAInterpretation]] = {
       interpretations.map { textInterpretation =>
         for {
           options <- parseOptions(textInterpretation.options)
+          degree  <- {
+            println(degreeMap)
+            Try { degreeMap(textInterpretation.degreeQuality) }
+          }
           allowEnharmonicEquivalents = textInterpretation.allowEnharmonicEquivalents.getOrElse(false)
-        } yield RNAInterpretation(textInterpretation.qualityTag, options, allowEnharmonicEquivalents)
+        } yield RNAInterpretation(degree, options, allowEnharmonicEquivalents)
       }.invert
     }
 
@@ -54,32 +68,27 @@ object RNALoader {
       }.invert
     }
 
-    def parseTagReductions(reduction: Seq[TextTagReduction]): ParseResult[List[QualityReduction]] = {
-      reduction.toList.map { reduction =>
+    def parseDegreeQualities(degreeQualities: Seq[TextDegreeQuality]): ParseResult[Map[DegreeQualitySymbol, DegreeQuality2]] = {
+      degreeQualities.toList.map { quality =>
         for {
-          intervals <- parseIntervalDescription(reduction.intervals)
-        } yield QualityReduction(
-          intervals,
-          reduction.tags
-        )
-      }.invert
+          intervals <- parseIntervalDescription(quality.intervals)
+        } yield quality.symbol -> intervals
+      }.invert.map(_.toMap)
     }
 
-    def parseIntervalDescription(intervals: String): ParseResult[List[IntervalDescription]] = {
-      intervals.split(" ").toList.map{ s =>
+    def parseIntervalDescription(intervals: String): ParseResult[DegreeQuality2] = {
+      val descriptors = intervals.split(" ").toList.map{ s =>
         val parser = tuning.parser(s)
         for {
-          shouldNotContain <- parser.buffer.hasResult("!")
-          shouldMatchAny   <- parser.buffer.hasResult("?")
+          isOptional     <- parser.buffer.hasResult("~")
+          shouldMatchAny <- parser.buffer.hasResult("?")
           interval <- parser.parseInterval
         } yield {
-          val matchInterval = {
-            if (shouldMatchAny) AnyIntervalOnStep(interval.step)
-            else ExactInterval(interval)
-          }
-          IntervalDescription(!shouldNotContain, matchInterval)
+          if (shouldMatchAny) AnyIntervalOnStep2(isOptional, interval.step)
+          else ExactInterval2(isOptional, interval)
         }
       }.invert
+      descriptors.map(DegreeQuality2)
     }
 
     def parseOptions(options: List[String]): ParseResult[List[RNAInterpretationOption]] =
@@ -96,9 +105,9 @@ object RNALoader {
 
     for {
       textSettings <- File.load[TextRNASettings]("src/main/resources/data/rna/settings.json")
-      (interpretations, transitions) <- parseRulesFiles(textSettings.rulesFiles)
+      degreeQualities <- parseDegreeQualities(textSettings.degreeQualities)
+      (interpretations, transitions) <- parseRulesFiles(textSettings.rulesFiles, degreeQualities)
       keyChanges <- parseKeyChanges(textSettings.keyChanges)
-      tagReductions <- parseTagReductions(textSettings.tagReductions)
     } yield RNARules(
       textSettings.maxSolutionsToCheck,
       textSettings.unknownTransitionPenalty,
@@ -106,7 +115,7 @@ object RNALoader {
       keyChanges,
       interpretations.toList,
       transitions.toList,
-      tagReductions
+      degreeQualities.values.toList
     )
   }
 
@@ -116,21 +125,22 @@ object RNALoader {
       unknownKeyChangePenalty: Int,
       unknownTransitionPenalty: Int,
       keyChanges: List[TextRNAKeyChange],
+      degreeQualities: List[TextDegreeQuality],
       rulesFiles: List[String],
-      tagReductions: List[TextTagReduction],
     )
 
     object TextRNASettings {
       implicit val rnaSettingsFormat: JsonFormat[TextRNASettings] = jsonFormat6(TextRNASettings.apply)
     }
 
-    final case class TextTagReduction(
+    final case class TextDegreeQuality(
+      name: String,
+      symbol: String,
       intervals: String,
-      tags: Seq[String]
     )
 
-    object TextTagReduction {
-      implicit val tagReductionFormat: JsonFormat[TextTagReduction] = jsonFormat2(TextTagReduction.apply)
+    object TextDegreeQuality {
+      implicit val degreeQualityFormat: JsonFormat[TextDegreeQuality] = jsonFormat3(TextDegreeQuality.apply)
     }
 
     final case class TextRNAKeyChange(
@@ -153,7 +163,7 @@ object RNALoader {
     }
 
     final case class TextRNAInterpretation(
-      qualityTag: String,
+      degreeQuality: String,
       options: List[String],
       allowEnharmonicEquivalents: Option[Boolean]
     )
