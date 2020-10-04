@@ -1,25 +1,25 @@
 {
   "interpretations": [
     {
-      "degreeQuality": "maj",
+      "degreeQuality": "M",
       "options": ["3:minor:IIIM", "6:minor:VIM"]
     },
     {
-      "degreeQuality": "dom",
+      "degreeQuality": "7",
       "options": ["5:minor:V7", "7:minor:VII7"]
     },
     {
-      "degreeQuality": "min",
+      "degreeQuality": "-",
       "options": ["1:minor:I-", "4:minor:IV-", "5:minor:V-"]
     },
     {
-      "degreeQuality": "hdi",
-      "options": ["2:minor:II-"]
+      "degreeQuality": "-b5",
+      "options": ["2:minor:II-b5"]
     }
   ],
   "transitions": [
     {"from": "I-", "to": ["V-", "V7", "IV-", "VII7"]},
-    {"from": "II-", "to": ["V7"], "weight": 2},
+    {"from": "II-b5", "to": ["V7"], "weight": 2},
     {"from": "V7", "to": ["I-"], "weight": 3}
   ]
 }

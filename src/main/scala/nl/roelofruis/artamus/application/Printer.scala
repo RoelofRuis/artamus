@@ -13,13 +13,15 @@ object Printer {
     def printDegrees(degrees: Seq[Degree]): String = degrees.map(printDegree).mkString(" ")
 
     def printDegree(degree: Degree): String = {
-      val descriptor = printDegreeDescriptor(degree.root) + printQuality(degree.quality)
+      val descriptor = printDegreeDescriptor(degree.root) + printQualityGroup(degree.quality)
       val tritoneSub = if (degree.tritoneSub) "T" else ""
       degree.relativeTo match {
         case None => s"$descriptor$tritoneSub"
         case Some(relative) => s"$descriptor$tritoneSub/${printDegreeDescriptor(relative)}"
       }
     }
+
+    def printQualityGroup(qualityGroup: QualityGroup): String = settings.qualityGroupMap.map(_.swap).getOrElse(qualityGroup, "?")
 
     def printQuality(quality: Quality): String = settings.qualityMap.map(_.swap).getOrElse(quality, "?")
 

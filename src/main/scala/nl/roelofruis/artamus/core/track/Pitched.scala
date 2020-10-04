@@ -9,13 +9,17 @@ object Pitched {
 
   final case class Degree(
     root: PitchDescriptor,
-    quality: Quality,
+    quality: QualityGroup,
     relativeTo: Option[PitchDescriptor] = None,
     tritoneSub: Boolean = false
   )
 
   final case class Quality(
     intervals: Seq[PitchDescriptor]
+  )
+
+  final case class QualityGroup(
+    qualities: Seq[Quality]
   )
 
   final case class Chord(

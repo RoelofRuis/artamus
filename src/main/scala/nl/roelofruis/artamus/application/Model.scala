@@ -1,6 +1,6 @@
 package nl.roelofruis.artamus.application
 
-import nl.roelofruis.artamus.core.track.Pitched.{Key, Quality, Scale}
+import nl.roelofruis.artamus.core.track.Pitched.{Key, Quality, QualityGroup, Scale}
 import nl.roelofruis.artamus.core.track.Temporal.Metre
 import nl.roelofruis.artamus.core.track.algorithms.TunedMaths.TuningDefinition
 
@@ -24,6 +24,7 @@ object Model {
   trait PitchedObjects {
     val scaleMap: Map[String, Scale]
     val qualityMap: Map[String, Quality]
+    val qualityGroupMap: Map[String, QualityGroup]
   }
 
   trait TemporalSettings {
@@ -48,6 +49,7 @@ object Model {
     textDegrees: List[String],
     scaleMap: Map[String, Scale],
     qualityMap: Map[String, Quality],
+    qualityGroupMap: Map[String, QualityGroup],
     defaultMetre: Metre,
     defaultKey: Key,
   ) extends PitchedPrimitives with PitchedObjects with TemporalSettings with TuningDefinition with Defaults

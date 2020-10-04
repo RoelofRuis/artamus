@@ -18,33 +18,6 @@
     {"from": "minor", "to": "1:major", "weight": -4},
     {"from": "minor", "to": "b6:major", "weight": -5}
   ],
-  "degreeQualities": [
-    {
-      "name": "major",
-      "symbol": "maj",
-      "intervals": "3 ?5 ~7"
-    },
-    {
-      "name": "minor",
-      "symbol": "min",
-      "intervals": "b3 ?5 ~b7"
-    },
-    {
-      "name": "dominant",
-      "symbol": "dom",
-      "intervals": "3 ?5 ~b7"
-    },
-    {
-      "name": "half diminished",
-      "symbol": "hdi",
-      "intervals": "b3 b5 ~b7"
-    },
-    {
-      "name": "diminished",
-      "symbol": "dim",
-      "intervals": "b3 b5 bb7"
-    }
-  ],
   "rulesFiles": [
     "rna-major",
     "rna-minor",

@@ -1,36 +1,36 @@
 {
   "interpretations": [
     {
-      "degreeQuality": "maj",
+      "degreeQuality": "M",
       "options": ["1:major:IM", "4:major:IVM"]
     },
     {
-      "degreeQuality": "dom",
+      "degreeQuality": "7",
       "options": ["4:major:IV7", "5:major:V7", "5:minor:V7"]
     },
     {
-      "degreeQuality": "min",
+      "degreeQuality": "-",
       "options": ["2:major:II-", "3:major:III-", "4:major:IV-", "6:major:VI-"]
     },
     {
-      "degreeQuality": "dim",
-      "options": ["7:major:VIIdim7", "b3:major:bIIIdim7", "b2:major:bIIdim7"],
+      "degreeQuality": "o",
+      "options": ["7:major:VIIo", "b3:major:bIIIo", "b2:major:bIIo"],
       "allowEnharmonicEquivalents": true
     }
   ],
   "transitions": [
-    {"from": "IM", "to": ["II-", "III-", "IVM", "IV7", "V7", "VI-", "VIIdim7"]},
-    {"from": "bIIdim7", "to": ["IM"]},
+    {"from": "IM", "to": ["II-", "III-", "IVM", "IV7", "V7", "VI-", "VIIo"]},
+    {"from": "bIIo", "to": ["IM"]},
     {"from": "II-", "to": ["V7"], "weight": 2},
-    {"from": "II-", "to": ["bIIdim7", "III-", "IVM"]},
-    {"from": "III-", "to": ["IVM", "VI-", "bIIIdim7"]},
+    {"from": "II-", "to": ["bIIo", "III-", "IVM"]},
+    {"from": "III-", "to": ["IVM", "VI-", "bIIIo"]},
     {"from": "IVM", "to": ["IM", "II-", "III-", "V7"]},
     {"from": "IV7", "to": ["IM"]},
     {"from": "V7", "to": ["IM"], "weight": 3},
     {"from": "V7", "to": ["IVM"]},
     {"from": "VI-", "to": ["IVM", "II-"]},
-    {"from": "VIIdim7", "to": ["IM"], "weight": 3},
-    {"from": "VIIdim7", "to": ["III-", "VI-"]},
-    {"from": "bIIIdim7", "to": ["II-"]}
+    {"from": "VIIo", "to": ["IM"], "weight": 3},
+    {"from": "VIIo", "to": ["III-", "VI-"]},
+    {"from": "bIIIo", "to": ["II-"]}
   ]
 }

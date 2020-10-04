@@ -83,7 +83,7 @@ trait LilypondFormatting extends TunedMaths {
         val baseName = writeRomanNumeral(degree.root)
         val relativeName = degree.relativeTo.map(d => " / " + writeRomanNumeral(d)).getOrElse("")
         val tritoneSub   = if (degree.tritoneSub) "T" else ""
-        val qualityName  = settings.degreeQualitySpelling.getOrElse(degree.quality, "")
+        val qualityName  = settings.degreeQualitySpelling.getOrElse(degree.quality.qualities.head, "") // TODO: fix properly!
 
         s"\\markup \\rN { $baseName $tritoneSub$qualityName$relativeName }"
 

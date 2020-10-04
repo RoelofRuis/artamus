@@ -21,10 +21,14 @@ trait MusicObjectsParser extends MusicPrimitivesParser {
     quality <- buffer.find(symbols.qualityMap)
   } yield quality
 
+  def parseQualityGroup: ParseResult[QualityGroup] = for {
+    qualityGroup <- buffer.find(symbols.qualityGroupMap)
+  } yield qualityGroup
+
   def parseDegree: ParseResult[Degree] = {
     val degree = for {
       descriptor <- parseDegreeDescriptor
-      quality <- parseQuality
+      quality <- parseQualityGroup
       isTritoneSub = buffer.has("T")
     } yield Degree(descriptor, quality, None, isTritoneSub)
 

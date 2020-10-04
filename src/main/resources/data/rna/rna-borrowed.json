@@ -1,15 +1,15 @@
 {
   "interpretations": [
     {
-      "degreeQuality": "dom",
+      "degreeQuality": "7",
       "options": ["2:major:II7", "b7:major:bVII7", "b6:major:bVI7"]
     },
     {
-      "degreeQuality": "min",
+      "degreeQuality": "-",
       "options": ["4:major:IV-"]
     },
     {
-      "degreeQuality": "min",
+      "degreeQuality": "-",
       "options": ["1:major:I-"],
       "allowEnharmonicEquivalents": true
     }

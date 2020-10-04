@@ -1,7 +1,7 @@
 {
   "interpretations": [
     {
-      "degreeQuality": "dom",
+      "degreeQuality": "7",
       "options": ["1:major:V7/IV", "2:major:V7/V", "3:major:V7/VI", "#4:major:V7/VII", "6:major:V7/II", "7:major:V7/III"]
     }
   ],

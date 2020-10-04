@@ -6,22 +6,17 @@ import nl.roelofruis.artamus.core.track.Pitched.Key
 import nl.roelofruis.artamus.core.track.algorithms.rna.Model._
 import spray.json._
 
-import scala.util.Try
-
 object RNALoader {
-  import RNALoader.FileModel.{TextRNAInterpretation, TextRNAKeyChange, TextRNARules, TextRNASettings, TextRNATransition, TextDegreeQuality}
+  import RNALoader.FileModel.{TextRNAInterpretation, TextRNAKeyChange, TextRNARules, TextRNASettings, TextRNATransition}
 
   type DegreeQualitySymbol = String
 
   def loadRules(tuning: Settings): ParseResult[RNARules] = {
-    def parseRulesFiles(
-      files: List[String],
-      degreeMap: Map[DegreeQualitySymbol, DegreeQuality]
-    ): ParseResult[(Set[RNAInterpretation], Set[RNATransition])] = {
+    def parseRulesFiles(files: List[String]): ParseResult[(Set[RNAInterpretation], Set[RNATransition])] = {
       files.map { file =>
         for {
           textRules <- File.load[TextRNARules](s"src/main/resources/data/rna/$file.json")
-          interpretations <- parseInterpretations(textRules.interpretations, degreeMap)
+          interpretations <- parseInterpretations(textRules.interpretations)
           transitions <- parseTransitions(textRules.transitions)
         } yield (interpretations, transitions)
       }.invert.map(_.foldLeft((Set[RNAInterpretation](), Set[RNATransition]())) {
@@ -39,19 +34,13 @@ object RNALoader {
       }.invert.map(_.flatten)
     }
 
-    def parseInterpretations(
-      interpretations: List[TextRNAInterpretation],
-      degreeMap: Map[DegreeQualitySymbol, DegreeQuality]
-    ): ParseResult[List[RNAInterpretation]] = {
+    def parseInterpretations(interpretations: List[TextRNAInterpretation]): ParseResult[List[RNAInterpretation]] = {
       interpretations.map { textInterpretation =>
         for {
-          options <- parseOptions(textInterpretation.options)
-          degree  <- {
-            println(degreeMap)
-            Try { degreeMap(textInterpretation.degreeQuality) }
-          }
+          qualityGroup  <- tuning.parser(textInterpretation.degreeQuality).parseQualityGroup
+          options       <- parseOptions(textInterpretation.options)
           allowEnharmonicEquivalents = textInterpretation.allowEnharmonicEquivalents.getOrElse(false)
-        } yield RNAInterpretation(degree, options, allowEnharmonicEquivalents)
+        } yield RNAInterpretation(qualityGroup, options, allowEnharmonicEquivalents)
       }.invert
     }
 
@@ -68,29 +57,6 @@ object RNALoader {
       }.invert
     }
 
-    def parseDegreeQualities(degreeQualities: Seq[TextDegreeQuality]): ParseResult[Map[DegreeQualitySymbol, DegreeQuality]] = {
-      degreeQualities.toList.map { quality =>
-        for {
-          intervals <- parseIntervalDescription(quality.intervals)
-        } yield quality.symbol -> intervals
-      }.invert.map(_.toMap)
-    }
-
-    def parseIntervalDescription(intervals: String): ParseResult[DegreeQuality] = {
-      val descriptors = intervals.split(" ").toList.map{ s =>
-        val parser = tuning.parser(s)
-        for {
-          isOptional     <- parser.buffer.hasResult("~")
-          shouldMatchAny <- parser.buffer.hasResult("?")
-          interval <- parser.parseInterval
-        } yield {
-          if (shouldMatchAny) AnyIntervalOnStep(isOptional, interval.step)
-          else ExactInterval(isOptional, interval)
-        }
-      }.invert
-      descriptors.map(DegreeQuality)
-    }
-
     def parseOptions(options: List[String]): ParseResult[List[RNAInterpretationOption]] =
       options.map { option =>
         val parser = tuning.parser(option)
@@ -105,8 +71,7 @@ object RNALoader {
 
     for {
       textSettings <- File.load[TextRNASettings]("src/main/resources/data/rna/settings.json")
-      degreeQualities <- parseDegreeQualities(textSettings.degreeQualities)
-      (interpretations, transitions) <- parseRulesFiles(textSettings.rulesFiles, degreeQualities)
+      (interpretations, transitions) <- parseRulesFiles(textSettings.rulesFiles)
       keyChanges <- parseKeyChanges(textSettings.keyChanges)
     } yield RNARules(
       textSettings.maxSolutionsToCheck,
@@ -115,7 +80,6 @@ object RNALoader {
       keyChanges,
       interpretations.toList,
       transitions.toList,
-      degreeQualities.values.toList
     )
   }
 
@@ -125,22 +89,11 @@ object RNALoader {
       unknownKeyChangePenalty: Int,
       unknownTransitionPenalty: Int,
       keyChanges: List[TextRNAKeyChange],
-      degreeQualities: List[TextDegreeQuality],
       rulesFiles: List[String],
     )
 
     object TextRNASettings {
-      implicit val rnaSettingsFormat: JsonFormat[TextRNASettings] = jsonFormat6(TextRNASettings.apply)
-    }
-
-    final case class TextDegreeQuality(
-      name: String,
-      symbol: String,
-      intervals: String,
-    )
-
-    object TextDegreeQuality {
-      implicit val degreeQualityFormat: JsonFormat[TextDegreeQuality] = jsonFormat3(TextDegreeQuality.apply)
+      implicit val rnaSettingsFormat: JsonFormat[TextRNASettings] = jsonFormat5(TextRNASettings.apply)
     }
 
     final case class TextRNAKeyChange(
