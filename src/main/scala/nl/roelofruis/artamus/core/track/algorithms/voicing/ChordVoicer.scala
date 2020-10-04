@@ -1,13 +1,13 @@
 package nl.roelofruis.artamus.core.track.algorithms.voicing
 
-import nl.roelofruis.artamus.application.Model.Settings
 import nl.roelofruis.artamus.core.common.Temporal.{Windowed, WindowedSeq}
 import nl.roelofruis.artamus.core.common.algorithms.GraphSearch
 import nl.roelofruis.artamus.core.track.Layer.{ChordSeq, NoteSeq}
 import nl.roelofruis.artamus.core.track.Pitched._
 import nl.roelofruis.artamus.core.track.algorithms.NoteMaths
+import nl.roelofruis.artamus.core.track.algorithms.TunedMaths.TuningDefinition
 
-case class ChordVoicer(settings: Settings) extends NoteMaths {
+case class ChordVoicer(settings: TuningDefinition) extends NoteMaths {
 
   type WindowedNoteGroup = Windowed[NoteGroup]
 

@@ -1,14 +1,14 @@
 package nl.roelofruis.artamus.core.track.algorithms.rna
 
-import nl.roelofruis.artamus.application.Model.Settings
 import nl.roelofruis.artamus.core.common.Temporal.Windowed
-import nl.roelofruis.artamus.core.track.Pitched._
 import nl.roelofruis.artamus.core.common.algorithms.GraphSearch
 import nl.roelofruis.artamus.core.track.Layer.{ChordSeq, RomanNumeralSeq}
+import nl.roelofruis.artamus.core.track.Pitched._
 import nl.roelofruis.artamus.core.track.algorithms.TunedMaths
+import nl.roelofruis.artamus.core.track.algorithms.TunedMaths.TuningDefinition
 import nl.roelofruis.artamus.core.track.algorithms.rna.Model._
 
-case class RomanNumeralAnalyser(settings: Settings, rules: RNARules) extends TunedMaths {
+case class RomanNumeralAnalyser(settings: TuningDefinition, rules: RNARules) extends TunedMaths {
 
   private type WindowedRNANode = Windowed[RNANode]
 
