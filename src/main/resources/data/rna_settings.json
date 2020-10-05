@@ -26,7 +26,8 @@
           {"option": "1:major:IM", "rule": "diatonic"},
           {"option": "4:major:IVM", "rule": "diatonic"},
           {"option": "3:minor:IIIM", "rule": "diatonic"},
-          {"option": "6:minor:VIM", "rule": "diatonic"}
+          {"option": "6:minor:VIM", "rule": "diatonic"},
+          {"option": "b3:major:bIIIM", "rule": "borrowed"}
         ]
       },
       {

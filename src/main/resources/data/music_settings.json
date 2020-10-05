@@ -52,6 +52,11 @@
       "intervals": "1 b3 b5 b7"
     },
     {
+      "name": "dominant flat 5",
+      "symbol": "7b5",
+      "intervals": "1 3 b5 7"
+    },
+    {
       "name": "diminished seven",
       "symbol": "dim7",
       "intervals": "1 b3 b5 bb7"
