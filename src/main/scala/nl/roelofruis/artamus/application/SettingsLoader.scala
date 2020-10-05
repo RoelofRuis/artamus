@@ -92,22 +92,24 @@ object SettingsLoader {
   }
 
   private def groupQualities(matchers: List[IntervalMatcher], qualities: Map[String, Quality]): QualityGroup = {
-    val matches = qualities.values.toList.map { quality =>
-      val score = matchers.foldLeft(0) { case (acc, descr) =>
-        val (optional, contains) = descr match {
-          case AnyIntervalOnStep(optional, step) => (optional, quality.intervals.map(_.step).contains(step))
-          case ExactInterval(optional, interval) => (optional, quality.intervals.contains(interval))
+    val matches = qualities.values.toList.flatMap { quality =>
+      val valid = matchers.foldLeft(true) { case (acc, descr) =>
+        val stepMap = quality.intervals.map(pd => pd.step -> pd).toMap
+        val valid = descr match {
+          case AnyIntervalOnStep(optional, step) =>
+            if (optional) true
+            else stepMap.isDefinedAt(step)
+          case ExactInterval(optional, interval) =>
+            if (optional) ! stepMap.isDefinedAt(interval.step) || quality.intervals.contains(interval)
+            else quality.intervals.contains(interval)
         }
-        if (contains) acc + 1
-        else if (optional) acc
-        else -1
+        acc && valid
       }
-      (score, quality)
+      if (valid) Some(quality)
+      else None
     }
-      .filter { case (score, _) => score >= 0 }
 
-    val maxScore = matches.maxBy { case (score, _) => score }._1
-    QualityGroup(matches.filter { case (score, _) => score == maxScore }.map { case (_, quality) => quality })
+    QualityGroup(matches)
   }
 
   trait IntervalMatcher

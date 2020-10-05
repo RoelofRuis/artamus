@@ -76,7 +76,7 @@
     {
       "name": "minor",
       "symbol": "-",
-      "intervalMatchers": "b3 ?5 ~b7"
+      "intervalMatchers": "b3 5 ~b7"
     },
     {
       "name": "dominant",
@@ -91,7 +91,7 @@
     {
       "name": "diminished",
       "symbol": "o",
-      "intervalMatchers": "b3 b5 bb7"
+      "intervalMatchers": "b3 b5 ~bb7"
     }
   ],
   "scales": [
