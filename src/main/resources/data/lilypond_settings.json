@@ -20,7 +20,8 @@
     {"symbol": "7", "chordNotation": "7"},
     {"symbol": "dim7", "chordNotation": "dim7"},
     {"symbol": "-7b5", "chordNotation": "3-.5-.7"},
-    {"symbol": "+7", "chordNotation": "3.5+.7-"}
+    {"symbol": "+7", "chordNotation": "3.5+.7-"},
+    {"symbol": "6", "chordNotation": "6"}
   ],
   "qualityGroupSpelling": [
     {"symbol": "M", "degreeNotation": ""},
@@ -31,6 +32,6 @@
   ],
   "scaleSymbolSpelling": [
     {"name": "major", "symbol": ""},
-    {"name": "minor", "symbol": "m"}
+    {"name": "minor", "symbol": "-"}
   ]
 }

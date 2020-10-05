@@ -94,7 +94,7 @@ trait LilypondFormatting extends TunedMaths {
         val root = settings.stepNames.lift(key.root.step).map(_.toUpperCase).getOrElse("")
         val accidental = writeRomanNumeralAccidental(key.root)
         val scaleSymbol = settings.scaleSymbolSpelling.getOrElse(key.scale, "?")
-        s"\\set stanza = \\markup { \\concat { \\rN { $root$accidental$scaleSymbol } \\hspace #0.2 : } }"
+        s"\\set stanza = \\markup { \\concat { \\rN { $root$accidental $scaleSymbol } \\hspace #0.2 : } }"
 
       case _ => ""
     }.mkString("\n")
