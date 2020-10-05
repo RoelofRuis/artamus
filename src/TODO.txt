@@ -8,5 +8,3 @@
 - Improve RNA with better theoretical basis for search.
 
 - Improve layout options (for instance 4 bars per line)
-
-- Ensure QualityGroups are correctly calculated (6 chord does not get processed!)
