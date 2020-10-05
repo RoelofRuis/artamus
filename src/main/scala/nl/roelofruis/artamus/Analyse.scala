@@ -63,7 +63,8 @@ object Analyse extends App {
         val textChord2 = tuning.printChord(chord2)
         val textDegree2 = tuning.printDegree(degree2)
         val textKey2 = tuning.printKey(key2)
-        val warn = if (score.get < 0) " !! " else ""
+        val scoreSubZero = score.get < 0
+        val warn = if (key1 == key2 && scoreSubZero) " !!UNEXPLAINED!! " else ""
         s"$warn$textChord1: $textDegree1 in $textKey1 -> $textChord2: $textDegree2 in $textKey2 [${score.get}]"
       }.foreach(println)
   }
