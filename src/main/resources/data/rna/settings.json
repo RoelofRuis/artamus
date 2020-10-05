@@ -18,11 +18,104 @@
     {"from": "minor", "to": "1:major", "weight": -4},
     {"from": "minor", "to": "b6:major", "weight": -5}
   ],
-  "rulesFiles": [
-    "rna-major",
-    "rna-minor",
-    "rna-secondary",
-    "rna-borrowed",
-    "rna-substitute"
-  ]
+  "rules": {
+    "interpretations": [
+      {
+        "degreeQuality": "M",
+        "options": [
+          {"option": "1:major:IM", "rule": "diatonic"},
+          {"option": "4:major:IVM", "rule": "diatonic"},
+          {"option": "3:minor:IIIM", "rule": "diatonic"},
+          {"option": "6:minor:VIM", "rule": "diatonic"}
+        ]
+      },
+      {
+        "degreeQuality": "7",
+        "options": [
+          {"option": "4:major:IV7", "rule": "diatonic"},
+          {"option": "5:major:V7", "rule": "diatonic"},
+          {"option": "5:minor:V7", "rule": "diatonic"},
+          {"option": "2:major:II7", "rule": "borrowed"},
+          {"option": "b7:major:bVII7", "rule": "borrowed"},
+          {"option": "b6:major:bVI7", "rule": "borrowed"},
+          {"option": "b2:major:V7T", "rule": "substitute"},
+          {"option": "b2:minor:V7T", "rule": "substitute"},
+          {"option": "b3:major:V7T/II", "rule": "substitute"},
+          {"option": "1:major:V7/IV", "rule": "secondary"},
+          {"option": "2:major:V7/V", "rule": "secondary"},
+          {"option": "3:major:V7/VI", "rule": "secondary"},
+          {"option": "#4:major:V7/VII", "rule": "secondary"},
+          {"option": "6:major:V7/II", "rule": "secondary"},
+          {"option": "7:major:V7/III", "rule": "secondary"},
+          {"option": "5:minor:V7", "rule": "diatonic"}
+        ]
+      },
+      {
+        "degreeQuality": "-",
+        "options": [
+          {"option": "2:major:II-", "rule": "diatonic"},
+          {"option": "3:major:III-", "rule": "diatonic"},
+          {"option": "4:major:IV-", "rule": "diatonic"},
+          {"option": "6:major:VI-", "rule": "diatonic"},
+          {"option": "4:major:IV-", "rule": "borrowed"},
+          {"option": "1:minor:I-", "rule": "diatonic"},
+          {"option": "4:minor:IV-", "rule": "diatonic"},
+          {"option": "5:minor:V-", "rule": "diatonic"}
+        ]
+      },
+      {
+        "degreeQuality": "-",
+        "options": [
+          {"option": "1:major:I-", "rule": "borrowed"}
+        ],
+        "allowEnharmonicEquivalents": true
+      },
+      {
+        "degreeQuality": "-b5",
+        "options": [
+          {"option": "2:minor:II-b5", "rule": "diatonic"}
+        ]
+      },
+      {
+        "degreeQuality": "o",
+        "options": [
+          {"option": "7:major:VIIo", "rule": "diatonic"},
+          {"option": "b3:major:bIIIo", "rule": "diatonic"},
+          {"option": "b2:major:bIIo", "rule": "diatonic"}
+        ],
+        "allowEnharmonicEquivalents": true
+      }
+    ],
+    "transitions": [
+      {"from": "IM", "to": ["II-", "III-", "IVM", "IV7", "V7", "VI-", "VIIo", "V7T", "V7T/II", "V7/IV", "V7/V", "V7/VI"]},
+      {"from": "I-", "to": ["V-", "V7", "V7/IV", "V7/V", "V7/VI", "VI-"]},
+      {"from": "bIIo", "to": ["IM"]},
+      {"from": "II-", "to": ["V7", "V7T", "V7/VI"], "weight": 2},
+      {"from": "II-", "to": ["bIIo", "III-", "IVM"]},
+      {"from": "II-b5", "to": ["V7", "V7T"], "weight": 2},
+      {"from": "II7", "to": ["II-"]},
+      {"from": "bIIIo", "to": ["II-"]},
+      {"from": "III-", "to": ["IVM", "VI-", "bIIIo", "V7/II"]},
+      {"from": "IVM", "to": ["IM", "II-", "III-", "IV-", "V7", "bVII7"]},
+      {"from": "IV7", "to": ["IM"]},
+      {"from": "IV-", "to": ["III-", "IM"]},
+      {"from": "V7", "to": ["IM", "I-"], "weight": 3},
+      {"from": "V7", "to": ["IVM"]},
+      {"from": "V7T", "to": ["IM", "I-"], "weight": 3},
+      {"from": "V7T/II", "to": ["II-"]},
+      {"from": "V7/II", "to": ["II-"], "weight": 2},
+      {"from": "V7/II", "to": ["V7/V"]},
+      {"from": "V7/III", "to": ["III-"], "weight": 2},
+      {"from": "V7/III", "to": ["V7/VI"]},
+      {"from": "V7/IV", "to": ["IVM"], "weight": 2},
+      {"from": "V7/V", "to": ["V7"], "weight": 2},
+      {"from": "V7/VI", "to": ["VI-", "VIM"], "weight": 2},
+      {"from": "V7/VI", "to": ["V7/II"]},
+      {"from": "bVI7", "to": ["V7", "bVII7"]},
+      {"from": "VI-", "to": ["IVM", "II-", "II7", "V7/V"]},
+      {"from": "VIIo", "to": ["IM"], "weight": 3},
+      {"from": "VIIo", "to": ["III-", "VI-"]},
+      {"from": "bVII7", "to": ["VI-", "IM", "III-"]}
+    ]
+  }
 }
