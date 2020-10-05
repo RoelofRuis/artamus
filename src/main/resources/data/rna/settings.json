@@ -73,7 +73,8 @@
       {
         "degreeQuality": "-b5",
         "options": [
-          {"option": "2:minor:II-b5", "rule": "diatonic"}
+          {"option": "2:minor:II-b5", "rule": "diatonic"},
+          {"option": "2:major:II-b5", "rule": "borrowed"}
         ]
       },
       {
