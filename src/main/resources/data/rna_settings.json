@@ -88,7 +88,7 @@
       }
     ],
     "transitions": [
-      {"from": "IM", "to": ["II-", "III-", "IVM", "IV7", "V7", "VI-", "VIIo", "V7T", "V7T/II", "V7/IV", "V7/V", "V7/VI"]},
+      {"from": "IM", "to": ["II-", "II7", "III-", "IVM", "IV7", "V7", "VI-", "VIIo", "V7T", "V7T/II", "V7/IV", "V7/V", "V7/VI"]},
       {"from": "I-", "to": ["V-", "V7", "V7/IV", "V7/V", "V7/VI", "VI-"]},
       {"from": "bIIo", "to": ["IM"]},
       {"from": "II-", "to": ["V7", "V7T", "V7/VI"], "weight": 2},
