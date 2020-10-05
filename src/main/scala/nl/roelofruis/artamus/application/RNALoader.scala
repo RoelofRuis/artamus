@@ -9,8 +9,6 @@ import spray.json._
 object RNALoader {
   import RNALoader.FileModel.{TextRNAInterpretation, TextRNAKeyChange, TextRNARules, TextRNASettings, TextRNATransition, TextRNAInterpretationOption}
 
-  type DegreeQualitySymbol = String
-
   def loadRules(tuning: Settings): ParseResult[RNARules] = {
     def parseRules(textRules: TextRNARules): ParseResult[(List[RNAInterpretation], List[RNATransition])] = {
       for {
@@ -32,7 +30,7 @@ object RNALoader {
     def parseInterpretations(interpretations: List[TextRNAInterpretation]): ParseResult[List[RNAInterpretation]] = {
       interpretations.map { textInterpretation =>
         for {
-          qualityGroup  <- tuning.parser(textInterpretation.degreeQuality).parseQualityGroup
+          qualityGroup  <- tuning.parser(textInterpretation.qualityGroup).parseQualityGroup
           options       <- parseOptions(textInterpretation.options)
           allowEnharmonicEquivalents = textInterpretation.allowEnharmonicEquivalents.getOrElse(false)
         } yield RNAInterpretation(qualityGroup, options, allowEnharmonicEquivalents)
@@ -111,7 +109,7 @@ object RNALoader {
     }
 
     final case class TextRNAInterpretation(
-      degreeQuality: String,
+      qualityGroup: String,
       options: List[TextRNAInterpretationOption],
       allowEnharmonicEquivalents: Option[Boolean]
     )

@@ -21,7 +21,7 @@
   "rules": {
     "interpretations": [
       {
-        "degreeQuality": "M",
+        "qualityGroup": "M",
         "options": [
           {"option": "1:major:IM", "rule": "diatonic"},
           {"option": "4:major:IVM", "rule": "diatonic"},
@@ -30,7 +30,7 @@
         ]
       },
       {
-        "degreeQuality": "7",
+        "qualityGroup": "7",
         "options": [
           {"option": "4:major:IV7", "rule": "diatonic"},
           {"option": "5:major:V7", "rule": "diatonic"},
@@ -51,7 +51,7 @@
         ]
       },
       {
-        "degreeQuality": "-",
+        "qualityGroup": "-",
         "options": [
           {"option": "2:major:II-", "rule": "diatonic"},
           {"option": "3:major:III-", "rule": "diatonic"},
@@ -64,21 +64,21 @@
         ]
       },
       {
-        "degreeQuality": "-",
+        "qualityGroup": "-",
         "options": [
           {"option": "1:major:I-", "rule": "borrowed"}
         ],
         "allowEnharmonicEquivalents": true
       },
       {
-        "degreeQuality": "-b5",
+        "qualityGroup": "-b5",
         "options": [
           {"option": "2:minor:II-b5", "rule": "diatonic"},
           {"option": "2:major:II-b5", "rule": "borrowed"}
         ]
       },
       {
-        "degreeQuality": "o",
+        "qualityGroup": "o",
         "options": [
           {"option": "7:major:VIIo", "rule": "diatonic"},
           {"option": "b3:major:bIIIo", "rule": "diatonic"},
