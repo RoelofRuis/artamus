@@ -8,3 +8,5 @@
 - Improve RNA with better theoretical basis for search.
 
 - Improve layout options (for instance 4 bars per line)
+
+- Allow loading lilypond snippets (melody)
