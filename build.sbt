@@ -16,6 +16,7 @@ lazy val artamus = (project in file("."))
     libraryDependencies ++= Seq(
       dependencies.javaxInject,
       dependencies.sprayJson,
+      dependencies.fastparse,
       dependencies.microtest % Test
     )
   )
