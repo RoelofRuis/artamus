@@ -6,13 +6,21 @@ object Grammar {
   type CompoundMusicExpression = Seq[MusicExpression]
   implicit def musicExpressionIsCompound(m: MusicExpression): CompoundMusicExpression = Seq(m)
 
-  final case class RelativeMarker(contents: CompoundMusicExpression) extends MusicExpression
+  final case class Relative(
+    to: Pitch,
+    contents: CompoundMusicExpression
+  ) extends MusicExpression
 
   final case class Note(
-    step: Int,
-    accidentals: Int,
+    pitch: Pitch,
     duration: Duration
   ) extends MusicExpression
+
+  final case class Pitch(
+    step: Int,
+    accidentals: Int,
+    octave: Int
+  )
 
   sealed trait Duration
   final case class EqualToPrevious() extends Duration

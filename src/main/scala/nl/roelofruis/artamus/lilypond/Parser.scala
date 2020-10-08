@@ -20,6 +20,14 @@ object Parser extends App {
   def sharps[_ : P]: P[Int] = P("is".rep(1).!.map(_.count(_ == 's')))
   def accidentals[_ : P]: P[Int] = P(flats | sharps | "".!.map(_ => 0))
 
+  def octaveUp[_ : P]: P[Int] = P("'".rep(1).!.map(_.length))
+  def octaveDown[_ : P]: P[Int] = P(",".rep(1).!.map(- _.length))
+  def octave[_ : P]: P[Int] = P(octaveUp | octaveDown | "".!.map(_ => 0))
+
+  def pitch[_ : P]: P[Pitch] = P((step ~ accidentals ~ octave).map {
+    case (step, accidentals, octave) => Pitch(step, accidentals, octave)
+  })
+
   def durationPower[_ : P]: P[Int] = P(StringIn("1", "2", "4", "8", "16", "32", "64").!.map{
     case "1" => 0
     case "2" => 1
@@ -38,15 +46,15 @@ object Parser extends App {
 
   def duration[_ : P]: P[Duration] = P(explicitDuration | implicitDuration)
 
-  def note[_ : P]: P[Note] = P((step ~ accidentals ~ duration).map {
-    case (step, accidentals, duration) => Note(step, accidentals, duration)
+  def note[_ : P]: P[Note] = P((pitch ~ duration).map {
+    case (pitch, duration) => Note(pitch, duration)
   })
 
   def musicExpression[_ : P]: P[CompoundMusicExpression] = P(note.rep(1))
 
   def anonymousScope[_: P]: P[CompoundMusicExpression] = P("{" ~ compoundMusicExpression ~ "}")
-  def relativeScope[_ : P]: P[CompoundMusicExpression] = P(("\\relative {" ~ compoundMusicExpression ~ "}").map { cme =>
-    RelativeMarker(cme)
+  def relativeScope[_ : P]: P[CompoundMusicExpression] = P(("\\relative" ~ pitch ~ "{" ~ compoundMusicExpression ~ "}").map {
+    case (pitch, cme) => Relative(pitch, cme)
   })
 
   def compoundMusicExpression[_ : P]: P[CompoundMusicExpression] = P(
@@ -54,9 +62,5 @@ object Parser extends App {
   )
 
   def lilypond[_ : P]: P[CompoundMusicExpression] = P(compoundMusicExpression ~ End)
-
-  val res = parse("{ \\relative { c8 d8 } fis }", lilypond(_))
-
-  println(res)
 
 }
