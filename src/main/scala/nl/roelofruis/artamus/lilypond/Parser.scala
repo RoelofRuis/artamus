@@ -1,12 +1,12 @@
 package nl.roelofruis.artamus.lilypond
 
+import fastparse.SingleLineWhitespace._
 import fastparse._
-import SingleLineWhitespace._
-import nl.roelofruis.artamus.lilypond.Grammar.{CompoundMusicExpression, EqualToPrevious, Note, PowerOfTwoWithDots}
+import nl.roelofruis.artamus.lilypond.Grammar._
 
 object Parser extends App {
 
-  def parseStep[_ : P] = P(("a" | "b" | "c" | "d" | "e" | "f" | "g").!.map {
+  def step[_ : P]: P[Int] = P(StringIn("a", "b", "c", "d", "e", "f", "g").!.map {
     case "a" => 5
     case "b" => 6
     case "c" => 0
@@ -16,11 +16,11 @@ object Parser extends App {
     case "g" => 4
   })
 
-  def parseFlat[_ : P] = P(("e".? ~ "s").rep(1).!.map(- _.count(_ == 's')))
-  def parseSharp[_ : P] = P("is".rep(1).!.map(_.count(_ == 's')))
-  def parseAccidental[_ : P] = P(parseFlat | parseSharp | "".!.map(_ => 0))
+  def flats[_ : P]: P[Int] = P(("e".? ~ "s").rep(1).!.map(- _.count(_ == 's')))
+  def sharps[_ : P]: P[Int] = P("is".rep(1).!.map(_.count(_ == 's')))
+  def accidentals[_ : P]: P[Int] = P(flats | sharps | "".!.map(_ => 0))
 
-  def parseDurationPower[_ : P] = P(("1" | "2" | "4" | "8" | "16" | "32" | "64").!.map{
+  def durationPower[_ : P]: P[Int] = P(StringIn("1", "2", "4", "8", "16", "32", "64").!.map{
     case "1" => 0
     case "2" => 1
     case "4" => 2
@@ -29,22 +29,33 @@ object Parser extends App {
     case "32" => 5
     case "64" => 6
   })
-  def parseDurationDots[_ : P] = P(".".rep.!.map(_.length))
+  def durationDots[_ : P]: P[Int] = P(".".rep.!.map(_.length))
 
-  def parseImplicitDuration[_ : P] = P("".!.map { _ => EqualToPrevious()})
-  def parseExplicitDuration[_ : P] = P((parseDurationPower ~ parseDurationDots).map {
+  def implicitDuration[_ : P]: P[EqualToPrevious] = P("".!.map { _ => EqualToPrevious()})
+  def explicitDuration[_ : P]: P[PowerOfTwoWithDots] = P((durationPower ~ durationDots).map {
     case (pow, dots) => PowerOfTwoWithDots(pow, dots)
   })
 
-  def parseDuration[_ : P] = P(parseExplicitDuration | parseImplicitDuration)
+  def duration[_ : P]: P[Duration] = P(explicitDuration | implicitDuration)
 
-  def parseNote[_ : P] = P((parseStep ~ parseAccidental ~ parseDuration).map {
+  def note[_ : P]: P[Note] = P((step ~ accidentals ~ duration).map {
     case (step, accidentals, duration) => Note(step, accidentals, duration)
   })
 
-  def parseMusic[_ : P] = P(parseNote.rep.map{ seq => CompoundMusicExpression(seq) })
+  def musicExpression[_ : P]: P[CompoundMusicExpression] = P(note.rep(1))
 
-  val res = parse("c8 d8 fis", parseMusic(_))
+  def anonymousScope[_: P]: P[CompoundMusicExpression] = P("{" ~ compoundMusicExpression ~ "}")
+  def relativeScope[_ : P]: P[CompoundMusicExpression] = P(("\\relative {" ~ compoundMusicExpression ~ "}").map { cme =>
+    RelativeMarker(cme)
+  })
+
+  def compoundMusicExpression[_ : P]: P[CompoundMusicExpression] = P(
+    (musicExpression | anonymousScope | relativeScope).rep.map{ _.flatten }
+  )
+
+  def lilypond[_ : P]: P[CompoundMusicExpression] = P(compoundMusicExpression ~ End)
+
+  val res = parse("{ \\relative { c8 d8 } fis }", lilypond(_))
 
   println(res)
 

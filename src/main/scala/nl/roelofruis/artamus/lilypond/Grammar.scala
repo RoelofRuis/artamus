@@ -2,11 +2,11 @@ package nl.roelofruis.artamus.lilypond
 
 object Grammar {
 
-  final case class CompoundMusicExpression(
-    expressions: Seq[MusicExpression]
-  )
-
   sealed trait MusicExpression
+  type CompoundMusicExpression = Seq[MusicExpression]
+  implicit def musicExpressionIsCompound(m: MusicExpression): CompoundMusicExpression = Seq(m)
+
+  final case class RelativeMarker(contents: CompoundMusicExpression) extends MusicExpression
 
   final case class Note(
     step: Int,
