@@ -24,6 +24,10 @@ trait TunedMaths {
       Seq(-1, 0, 1).map { accidental => pd(step, pitchClass + accidental) }
     }
 
+  def pdFromAccidental(step: Int, accidental: Int): PitchDescriptor = {
+    pd(step, settings.pitchClassSequence(step) + accidental)
+  }
+
   def pd(step: Int, pitchClass: Int): PitchDescriptor = {
     var actualStep = step
     while (actualStep < 0) actualStep += numSteps

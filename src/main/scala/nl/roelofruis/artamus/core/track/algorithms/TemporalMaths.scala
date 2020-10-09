@@ -7,6 +7,10 @@ import nl.roelofruis.artamus.core.track.Temporal.Metre
 
 trait TemporalMaths {
 
+  def makeDuration(power: FractionalPowerOfTwo, dots: Int): Duration = {
+    Duration(Rational(1, 2**power) * (Rational(1) + Rational(2**dots-1, 2**dots)))
+  }
+
   implicit val metreHasDuration: ProvidesDuration[Metre] = (metre: Metre) => {
     Duration(
       metre

@@ -1,7 +1,7 @@
 package nl.roelofruis.artamus.lilypond
 
-import Parser.lilypond
-import nl.roelofruis.artamus.lilypond.Grammar.{BarLineCheck, CompoundMusicExpression, EqualToPrevious, Note, Pitch, PowerOfTwoWithDots, Relative, Rest}
+import nl.roelofruis.artamus.lilypond.Grammar.{BarLineCheck, CompoundMusicExpression, Note, Pitch, PowerOfTwoWithDots, Relative, Rest}
+import nl.roelofruis.artamus.lilypond.Parser.lilypond
 import utest._
 
 object ParserTest extends TestSuite {
