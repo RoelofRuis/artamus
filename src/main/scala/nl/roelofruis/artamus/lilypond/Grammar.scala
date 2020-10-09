@@ -13,12 +13,15 @@ object Grammar {
 
   final case class Note(
     pitch: Pitch,
-    duration: Duration
+    duration: Duration = EqualToPrevious(),
+    tie: Boolean = false
   ) extends MusicExpression
 
   final case class Rest(
-    duration: Duration
+    duration: Duration = EqualToPrevious()
   ) extends MusicExpression
+
+  final case class BarLineCheck() extends MusicExpression
 
   final case class Pitch(
     step: Int,

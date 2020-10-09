@@ -44,15 +44,19 @@ object Parser extends App {
     case (pow, dots) => PowerOfTwoWithDots(pow, dots)
   })
 
+  def tie[_ : P]: P[Boolean] = P("~".?.!.map{_.length == 1})
+
   def duration[_ : P]: P[Duration] = P(explicitDuration | implicitDuration)
 
   def rest[_ : P]: P[Rest] = P("r" ~ duration.map(Rest))
 
-  def note[_ : P]: P[Note] = P((pitch ~ duration).map {
-    case (pitch, duration) => Note(pitch, duration)
+  def note[_ : P]: P[Note] = P((pitch ~ duration ~ tie).map {
+    case (pitch, duration, tie) => Note(pitch, duration, tie)
   })
 
-  def musicExpression[_ : P]: P[CompoundMusicExpression] = P((note | rest).rep(1))
+  def barLineCheck[_ : P]: P[BarLineCheck] = P("|".!.map(_ => BarLineCheck()))
+
+  def musicExpression[_ : P]: P[CompoundMusicExpression] = P((note | rest | barLineCheck).rep(1))
 
   def anonymousScope[_: P]: P[CompoundMusicExpression] = P("{" ~ compoundMusicExpression ~ "}")
   def relativeScope[_ : P]: P[CompoundMusicExpression] = P(("\\relative" ~ pitch ~ "{" ~ compoundMusicExpression ~ "}").map {
@@ -64,5 +68,7 @@ object Parser extends App {
   )
 
   def lilypond[_ : P]: P[CompoundMusicExpression] = P(compoundMusicExpression ~ End)
+
+  def parseLilypond(input: String): Parsed[CompoundMusicExpression] = parse(input, lilypond(_))
 
 }
