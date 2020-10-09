@@ -28,6 +28,7 @@ object Parser extends App {
     case (step, accidentals, octave) => Pitch(step, accidentals, octave)
   })
 
+  def durationDots[_ : P]: P[Int] = P(".".rep.!.map(_.length))
   def durationPower[_ : P]: P[Int] = P(StringIn("1", "2", "4", "8", "16", "32", "64").!.map{
     case "1" => 0
     case "2" => 1
@@ -37,7 +38,6 @@ object Parser extends App {
     case "32" => 5
     case "64" => 6
   })
-  def durationDots[_ : P]: P[Int] = P(".".rep.!.map(_.length))
 
   def implicitDuration[_ : P]: P[EqualToPrevious] = P("".!.map { _ => EqualToPrevious()})
   def explicitDuration[_ : P]: P[PowerOfTwoWithDots] = P((durationPower ~ durationDots).map {
