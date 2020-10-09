@@ -16,6 +16,10 @@ object Grammar {
     duration: Duration
   ) extends MusicExpression
 
+  final case class Rest(
+    duration: Duration
+  ) extends MusicExpression
+
   final case class Pitch(
     step: Int,
     accidentals: Int,

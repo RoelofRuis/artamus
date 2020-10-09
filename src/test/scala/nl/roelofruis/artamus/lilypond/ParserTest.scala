@@ -1,7 +1,7 @@
 package nl.roelofruis.artamus.lilypond
 
 import Parser.lilypond
-import nl.roelofruis.artamus.lilypond.Grammar.{CompoundMusicExpression, EqualToPrevious, Note, Pitch, PowerOfTwoWithDots, Relative}
+import nl.roelofruis.artamus.lilypond.Grammar.{CompoundMusicExpression, EqualToPrevious, Note, Pitch, PowerOfTwoWithDots, Relative, Rest}
 import utest._
 
 object ParserTest extends TestSuite {
@@ -31,6 +31,13 @@ object ParserTest extends TestSuite {
             Note(Pitch(3, 0, 0), EqualToPrevious())
           )
         )
+      ))
+    }
+    test("parse rests") {
+      assertMatches("r4 r8. r", List(
+        Rest(PowerOfTwoWithDots(2, 0)),
+        Rest(PowerOfTwoWithDots(3, 1)),
+        Rest(EqualToPrevious()),
       ))
     }
   }

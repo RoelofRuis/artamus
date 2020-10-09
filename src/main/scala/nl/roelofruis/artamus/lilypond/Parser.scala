@@ -46,11 +46,13 @@ object Parser extends App {
 
   def duration[_ : P]: P[Duration] = P(explicitDuration | implicitDuration)
 
+  def rest[_ : P]: P[Rest] = P("r" ~ duration.map(Rest))
+
   def note[_ : P]: P[Note] = P((pitch ~ duration).map {
     case (pitch, duration) => Note(pitch, duration)
   })
 
-  def musicExpression[_ : P]: P[CompoundMusicExpression] = P(note.rep(1))
+  def musicExpression[_ : P]: P[CompoundMusicExpression] = P((note | rest).rep(1))
 
   def anonymousScope[_: P]: P[CompoundMusicExpression] = P("{" ~ compoundMusicExpression ~ "}")
   def relativeScope[_ : P]: P[CompoundMusicExpression] = P(("\\relative" ~ pitch ~ "{" ~ compoundMusicExpression ~ "}").map {
