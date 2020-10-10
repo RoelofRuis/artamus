@@ -20,12 +20,13 @@ object Parser extends App {
   def sharps[_ : P]: P[Int] = P("is".rep(1).!.map(_.count(_ == 's')))
   def accidentals[_ : P]: P[Int] = P(flats | sharps | "".!.map(_ => 0))
 
+
   def octaveUp[_ : P]: P[Int] = P("'".rep(1).!.map(_.length))
   def octaveDown[_ : P]: P[Int] = P(",".rep(1).!.map(- _.length))
   def octave[_ : P]: P[Int] = P(octaveUp | octaveDown | "".!.map(_ => 0))
 
   def pitch[_ : P]: P[Pitch] = P((step ~ accidentals ~ octave).map {
-    case (step, accidentals, octave) => Pitch(step, accidentals, octave)
+    case (step, accidentals, octave) => Pitch(step, accidentals, octave + Constants.BASE_OCTAVE)
   })
 
   def durationDots[_ : P]: P[Int] = P(".".rep.!.map(_.length))
