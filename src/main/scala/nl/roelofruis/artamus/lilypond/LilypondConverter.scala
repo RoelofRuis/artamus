@@ -6,7 +6,7 @@ import nl.roelofruis.artamus.core.track.Layer.NoteSeq
 import nl.roelofruis.artamus.core.track.Pitched.{Note, NoteGroup}
 import nl.roelofruis.artamus.core.track.algorithms.TunedMaths.TuningDefinition
 import nl.roelofruis.artamus.core.track.algorithms.{TemporalMaths, TunedMaths}
-import nl.roelofruis.artamus.lilypond.Grammar.{CompoundMusicExpression, EqualToPrevious, PowerOfTwoWithDots, Note => LilyNote, Pitch => LilyPitch, Rest => LilyRest}
+import nl.roelofruis.artamus.lilypond.Grammar.{CompoundMusicExpression, EqualToPrevious, PowerOfTwoWithDots, Duration => LilyDuration, Note => LilyNote, Rest => LilyRest}
 
 case class LilypondConverter(settings: TuningDefinition) extends TunedMaths with TemporalMaths {
 
@@ -21,19 +21,8 @@ case class LilypondConverter(settings: TuningDefinition) extends TunedMaths with
         if (state.error.isDefined) state
         else {
           expression match {
-            case LilyNote(LilyPitch(step, accidentals, octave), PowerOfTwoWithDots(power, dots), tie) =>
-              val noteGroup = Seq(Note(pdFromAccidental(step, accidentals), octave + 3))
-              state.addElement(Some(makeDuration(power, dots)), noteGroup)
-
-            case LilyNote(LilyPitch(step, accidentals, octave), EqualToPrevious(), tie) =>
-              val noteGroup = Seq(Note(pdFromAccidental(step, accidentals), octave + 3))
-              state.addElement(None, noteGroup)
-
-            case LilyRest(PowerOfTwoWithDots(power, dots)) =>
-              state.skipDuration(Some(makeDuration(power, dots)))
-
-            case LilyRest(EqualToPrevious()) =>
-              state.skipDuration(None)
+            case note: LilyNote => state.addNote(note)
+            case rest: LilyRest => state.addRest(rest)
           }
         }
       }
@@ -41,9 +30,10 @@ case class LilypondConverter(settings: TuningDefinition) extends TunedMaths with
   }
 
   private case class MusicState(
-    noteSeq: NoteSeq = Seq(),
-    lastDuration: Option[Duration] = None,
-    position: Position = Position.ZERO,
+    private val noteSeq: NoteSeq = Seq(),
+    private val untiedNotes: Seq[LilyNote] = Seq(),
+    private val lastDuration: Option[Duration] = None,
+    private val position: Position = Position.ZERO,
     error: Option[Throwable] = None
   ) {
     def get: Either[Throwable, NoteSeq] = {
@@ -53,25 +43,48 @@ case class LilypondConverter(settings: TuningDefinition) extends TunedMaths with
       }
     }
 
-    def addElement(duration: Option[Duration], noteGroup: NoteGroup): MusicState = {
-      duration orElse lastDuration match {
+    def addNote(note: LilyNote): MusicState = {
+      val dur = convertDuration(note.duration) orElse lastDuration
+
+      if (note.tie) copy(untiedNotes = untiedNotes :+ note)
+      else if (untiedNotes.isEmpty) insertLilyNote(dur, note)
+      else {
+        val previousNote = untiedNotes.head
+        if (previousNote.pitch != note.pitch) copy(error = Some(new Throwable("cannot tie notes with different pitch")))
+        else {
+          val totalDur = convertDuration(previousNote.duration).flatMap(x => dur.map(_ + x))
+          insertLilyNote(totalDur, note)
+        }
+      }
+    }
+
+    private def insertLilyNote(duration: Option[Duration], note: LilyNote): MusicState = {
+      duration match {
         case None => copy(error = Some(new Throwable("initial duration missing")))
-        case Some(dur) => copy(
+        case Some(dur) =>
+          val noteGroup = Seq(Note(pdFromAccidental(note.pitch.step, note.pitch.accidentals), note.pitch.octave + 3))
+          copy(
             noteSeq = noteSeq :+ Windowed(position, dur, noteGroup),
+            untiedNotes = Seq(),
             lastDuration = Some(dur),
             position = position + dur
           )
       }
     }
 
-    def skipDuration(duration: Option[Duration]): MusicState = {
-      duration orElse lastDuration match {
+    def addRest(rest: LilyRest): MusicState = {
+      convertDuration(rest.duration) orElse lastDuration match {
         case None => copy(error = Some(new Throwable("initial duration missing")))
         case Some(dur) => copy(
           lastDuration = Some(dur),
           position = position + dur
         )
       }
+    }
+
+    private def convertDuration(duration: LilyDuration): Option[Duration] = duration match {
+      case EqualToPrevious() => None
+      case PowerOfTwoWithDots(power, dots) => Some(makeDuration(power, dots))
     }
   }
 
