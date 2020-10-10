@@ -207,11 +207,10 @@ trait LilypondFormatting extends TunedMaths {
   private def writeTie(duration: GlyphDuration): String = if (duration.tieToNext) "~" else ""
 
   private def writeOctave(octave: Octave): String = {
-    // 3th midi octave is unaltered in lilypond notation
-    octave - 3 match {
-      case i if i == 0 => ""
-      case i if i < 0 => "," * i
+    octave - Constants.BASE_OCTAVE match {
+      case i if i < 0 => "," * -i
       case i if i > 0 => "'" * i
+      case _ => ""
     }
   }
 
