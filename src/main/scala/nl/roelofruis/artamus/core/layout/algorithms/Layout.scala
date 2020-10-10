@@ -87,11 +87,11 @@ object Layout {
             case Rational(5, d) =>
               Seq(
                 SingleGlyph(element.get, GlyphDuration(d.largestPowerOfTwo - 2, 0, tieToNext = true)),
-                SingleGlyph(element.get, GlyphDuration(d.largestPowerOfTwo, 0))
+                SingleGlyph(element.get, GlyphDuration(d.largestPowerOfTwo, 0, tie))
               )
 
             case Rational(7, d) =>
-              Seq(SingleGlyph(element.get, GlyphDuration(d.largestPowerOfTwo - 2, 2)))
+              Seq(SingleGlyph(element.get, GlyphDuration(d.largestPowerOfTwo - 2, 2, tie)))
 
             case r => throw new NotImplementedError(s"Cannot fit length [$r]")
           }
