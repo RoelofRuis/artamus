@@ -49,18 +49,20 @@ case class LilypondConverter(settings: TuningDefinition) extends TunedMaths with
       if (note.tie) copy(untiedNotes = untiedNotes :+ note)
       else if (untiedNotes.isEmpty) insertLilyNote(dur, note)
       else {
-        val previousNote = untiedNotes.head
-        if (previousNote.pitch != note.pitch) copy(error = Some(new Throwable("cannot tie notes with different pitch")))
-        else {
-          val totalDur = convertDuration(previousNote.duration).flatMap(x => dur.map(_ + x))
-          insertLilyNote(totalDur, note)
+        val (totalDur, _) = untiedNotes.foldLeft((dur, note.pitch)) { case ((totalDuration, pitch), note) =>
+          if (totalDuration.isEmpty || note.pitch != pitch) (None, pitch)
+          else (totalDuration.flatMap(d => convertDuration(note.duration).map(_ + d)), pitch)
+        }
+        totalDur match {
+          case None => setError("cannot tie notes with different pitch")
+          case Some(dur) => insertLilyNote(Some(dur), note)
         }
       }
     }
 
     private def insertLilyNote(duration: Option[Duration], note: LilyNote): MusicState = {
       duration match {
-        case None => copy(error = Some(new Throwable("initial duration missing")))
+        case None => setError("initial duration missing")
         case Some(dur) =>
           val noteGroup = Seq(Note(pdFromAccidental(note.pitch.step, note.pitch.accidentals), note.pitch.octave + 3))
           copy(
@@ -72,9 +74,11 @@ case class LilypondConverter(settings: TuningDefinition) extends TunedMaths with
       }
     }
 
+    private def setError(msg: String): MusicState = copy(error = Some(new Throwable(msg)))
+
     def addRest(rest: LilyRest): MusicState = {
       convertDuration(rest.duration) orElse lastDuration match {
-        case None => copy(error = Some(new Throwable("initial duration missing")))
+        case None => setError("initial duration missing")
         case Some(dur) => copy(
           lastDuration = Some(dur),
           position = position + dur
