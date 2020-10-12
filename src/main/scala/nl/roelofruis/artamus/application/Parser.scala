@@ -7,10 +7,6 @@ import scala.util.Try
 @deprecated("", "")
 object Parser {
 
-  implicit class Primitives(symbols: PitchedPrimitives) {
-    def parser(text: String): MusicPrimitivesParser = MusicPrimitivesParser(text, symbols)
-  }
-
   implicit class Objects(symbols: PitchedPrimitives with PitchedObjects with TemporalSettings) {
     def parser(text: String): MusicObjectsParser = MusicObjectsParser(text, symbols)
   }

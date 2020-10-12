@@ -1,8 +1,11 @@
 package nl.roelofruis.artamus.application
 
-import nl.roelofruis.artamus.application.Model.{ParseResult, Settings}
+import nl.roelofruis.artamus.application.Model.{ParseResult, PitchedObjects, PitchedPrimitives, Settings}
 import nl.roelofruis.artamus.application.Parser._
-import nl.roelofruis.artamus.core.track.Pitched.Key
+import ObjectParsers._
+import fastparse._
+import fastparse.SingleLineWhitespace._
+import nl.roelofruis.artamus.core.track.Pitched.{Degree, Key, PitchDescriptor, Scale}
 import nl.roelofruis.artamus.core.track.algorithms.rna.Model._
 import spray.json._
 
@@ -20,8 +23,8 @@ object RNALoader {
     def parseTransitions(transitions: List[TextRNATransition]): ParseResult[List[RNATransition]] = {
       transitions.map { textTransition =>
         for {
-          from <- tuning.parser(textTransition.from).parseDegree
-          to <- textTransition.to.map(tuning.parser(_).parseDegree).toList.invert
+          from <- doParse(textTransition.from, tuning.degree(_))
+          to <- textTransition.to.map(doParse(_, tuning.degree(_))).toList.invert
           weight = textTransition.weight.getOrElse(1)
         } yield to.map(RNATransition(from, _, weight))
       }.invert.map(_.flatten)
@@ -30,7 +33,7 @@ object RNALoader {
     def parseInterpretations(interpretations: List[TextRNAInterpretation]): ParseResult[List[RNAInterpretation]] = {
       interpretations.map { textInterpretation =>
         for {
-          qualityGroup  <- tuning.parser(textInterpretation.qualityGroup).parseQualityGroup
+          qualityGroup  <- doParse(textInterpretation.qualityGroup, tuning.qualityGroup(_))
           options       <- parseOptions(textInterpretation.options)
           allowEnharmonicEquivalents = textInterpretation.allowEnharmonicEquivalents.getOrElse(false)
         } yield RNAInterpretation(qualityGroup, options, allowEnharmonicEquivalents)
@@ -39,27 +42,17 @@ object RNALoader {
 
     def parseKeyChanges(keyChanges: List[TextRNAKeyChange]): ParseResult[List[RNAKeyChange]] = {
       keyChanges.map { keyChange =>
-        val scaleParser = tuning.parser(keyChange.from)
-        val keyParser = tuning.parser(keyChange.to)
         for {
-          scaleFrom <- scaleParser.parseScale
-          interval <- keyParser.parseInterval
-          _ <- keyParser.buffer.expectOne(":")
-          scale <- keyParser.parseScale
+          scaleFrom         <- doParse(keyChange.from, tuning.scale(_))
+          (interval, scale) <- doParse(keyChange.to, tuning.intervalAndScale(_))
         } yield RNAKeyChange(scaleFrom, Key(interval, scale), keyChange.weight)
       }.invert
     }
 
     def parseOptions(options: List[TextRNAInterpretationOption]): ParseResult[List[RNAInterpretationOption]] =
       options.map { option =>
-        val parser = tuning.parser(option.option)
-        for {
-          interval <- parser.parseInterval
-          _ <- parser.buffer.expectOne(":")
-          scale <- parser.parseScale
-          _ <- parser.buffer.expectOne(":")
-          degree <- parser.parseDegree
-        } yield RNAInterpretationOption(interval, scale, degree)
+        doParse(option.option, tuning.intervalScaleDegree(_))
+          .map{ case (interval, scale, degree) => RNAInterpretationOption(interval, scale, degree) }
       }.invert
 
     for {
@@ -73,6 +66,13 @@ object RNALoader {
       keyChanges,
       interpretations,
       transitions,
+    )
+  }
+
+  private implicit class FromPitchedObjectsAdvanced(pp: PitchedPrimitives with PitchedObjects) {
+    def intervalAndScale[_ : P]: P[(PitchDescriptor, Scale)] = P(pp.interval ~ ":" ~ pp.scale)
+    def intervalScaleDegree[_ : P]: P[(PitchDescriptor, Scale, Degree)] = P(
+      pp.interval ~ ":" ~ pp.scale ~ ":" ~ pp.degree
     )
   }
 

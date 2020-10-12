@@ -1,8 +1,10 @@
 package nl.roelofruis.artamus.application
 
+import fastparse.SingleLineWhitespace._
+import fastparse._
 import nl.roelofruis.artamus.application.Model._
+import nl.roelofruis.artamus.application.ObjectParsers._
 import nl.roelofruis.artamus.application.Parser._
-import ObjectParsers._
 import nl.roelofruis.artamus.core.track.Pitched.{PitchDescriptor, Quality, QualityGroup, Scale}
 import spray.json._
 
@@ -15,9 +17,9 @@ object SettingsLoader {
       qualityMap <- parseQualityMap(textTuning)
       qualityGroupMap <- parseQualityGroupMap(textTuning, qualityMap)
       scaleMap = buildScaleMap(textTuning)
-      defaultMetre <- parse(textTuning.defaultMetre, textTuning.metre(_))
+      defaultMetre <- doParse(textTuning.defaultMetre, textTuning.metre(_))
       partialSettings = buildPartialSettings(textTuning, scaleMap, qualityMap, qualityGroupMap)
-      defaultKey <- parse(textTuning.defaultKey, partialSettings.key(_))
+      defaultKey <- doParse(textTuning.defaultKey, partialSettings.key(_))
     } yield Settings(
       textTuning.pitchClassSequence,
       textTuning.numPitchClasses,
@@ -36,20 +38,21 @@ object SettingsLoader {
     )
   }
 
+  private implicit class FromPitchedPrimitivesAdvanced(pp: PitchedPrimitives) {
+    def intervalMatcher[_: P]: P[IntervalMatcher] = P((exists("~") ~ exists("?") ~ pp.interval).map {
+      case (isOptional, shouldMatchAny, interval) =>
+        if (shouldMatchAny) AnyIntervalOnStep(isOptional, interval.step)
+        else ExactInterval(isOptional, interval)
+    })
+
+    def intervalMatchers[_ : P]: P[Seq[IntervalMatcher]] = P(intervalMatcher.rep(1))
+
+    def intervals[_ : P]: P[Seq[PitchDescriptor]] = P(pp.interval.rep(1))
+  }
+
   private def parseQualityGroupMap(textTuning: TextTuning, qualityMap: Map[String, Quality]): ParseResult[Map[String, QualityGroup]] = {
     textTuning.qualityGroups.map { qualityGroup =>
-      qualityGroup.intervalMatchers.split(" ").toList.map { s =>
-        val parser = textTuning.parser(s)
-        for {
-          isOptional     <- parser.buffer.hasResult("~")
-          shouldMatchAny <- parser.buffer.hasResult("?")
-          interval       <- parser.parseInterval
-        } yield {
-          if (shouldMatchAny) AnyIntervalOnStep(isOptional, interval.step)
-          else ExactInterval(isOptional, interval)
-        }
-      }
-        .invert
+      doParse(qualityGroup.intervalMatchers, textTuning.intervalMatchers(_))
         .map(qualityGroup.symbol -> groupQualities(_, qualityMap))
     }
       .invert
@@ -58,10 +61,8 @@ object SettingsLoader {
 
   private def parseQualityMap(textTuning: TextTuning): ParseResult[Map[String, Quality]] =
     textTuning.qualities.map { quality =>
-      val parser = textTuning.parser(quality.intervals)
-      parser.parseList(parser.parseInterval, " ").map { intervals =>
-        (quality.symbol, Quality(intervals))
-      }
+      doParse(quality.intervals, textTuning.intervals(_))
+        .map(quality.symbol -> Quality(_))
     }
       .invert
       .map(_.toMap)
@@ -92,7 +93,7 @@ object SettingsLoader {
     )
   }
 
-  private def groupQualities(matchers: List[IntervalMatcher], qualities: Map[String, Quality]): QualityGroup = {
+  private def groupQualities(matchers: Seq[IntervalMatcher], qualities: Map[String, Quality]): QualityGroup = {
     val matches = qualities.values.toList.flatMap { quality =>
       val valid = matchers.foldLeft(true) { case (acc, descr) =>
         val stepMap = quality.intervals.map(pd => pd.step -> pd).toMap

@@ -13,8 +13,9 @@ object ObjectParsers {
 
   def oneOf[_: P](options: Seq[String]): P[String] = options.foldLeft(P[Unit](Fail))(_ | _).!
   def fromMap[_ : P, A](map: Map[String, A])(s: String): P[A] = map.get(s).map(Pass(_)).getOrElse(Fail)
+  def exists[_ : P](s: String): P[Boolean] = P(s.?.!.map(_.length == 1))
 
-  def parse[T](input: String, parser: P[_] => P[T]): ParseResult[T] = {
+  def doParse[T](input: String, parser: P[_] => P[T]): ParseResult[T] = {
     fastparse.parse(input, parser(_)) match {
       case FastparseSuccess(t, _) => Success(t)
       case FastparseFailure(label, index, extra) => Failure(ParseError(s"$label at [$index] $extra"))

@@ -16,7 +16,7 @@ object Reader {
 
     def readDegree: ParseResult[Degree] = retry {
       for {
-        degree <- parse(StdIn.readLine("Degree\n > "), tuning.degree(_))
+        degree <- doParse(StdIn.readLine("Degree\n > "), tuning.degree(_))
       } yield degree
     }
 

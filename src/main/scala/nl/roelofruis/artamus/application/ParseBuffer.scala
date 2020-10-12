@@ -75,30 +75,11 @@ private [application] class ParseBuffer private (
     } else false
   }
 
-  def hasResult(target: String): ParseResult[Boolean] = Success(has(target))
-
   def skipSpaces: ParseResult[Unit] = skip(" ")
   def skip(target: String): ParseResult[Unit] = {
     while (state.startsWith(target)) advanceOver(target)
     Success(())
   }
 
-  def expectOne(target: String): ParseResult[Unit] = expectExactly(target, 1)
-  def expectExactly(target: String, num: Int): ParseResult[Unit] = expect(target, Some(num), Some(num))
-  def expect(target: String, atLeast: Option[Int] = None, atMost: Option[Int] = None): ParseResult[Unit] = {
-    count(target) match {
-      case Failure(ex) => Failure(ex)
-      case Success(v) =>
-        (atLeast, atMost) match {
-          case (None, None) => Success(())
-          case (None, Some(upper)) =>
-            if (v <= upper) Success(()) else error(s"Expected `$target` at most $upper times")
-          case (Some(lower), None) =>
-            if (v >= lower) Success(()) else error(s"Expected `$target` at least $lower times")
-          case (Some(lower), Some(upper)) =>
-            if (v >= lower && v <= upper) Success(()) else error(s"Expected `$target` between $lower and $upper times")
-        }
-    }
-  }
 
 }
