@@ -3,6 +3,7 @@ package nl.roelofruis.artamus.application
 import nl.roelofruis.artamus.application.Model.{ParseResult, PitchedObjects, PitchedPrimitives}
 import nl.roelofruis.artamus.core.track.Pitched._
 
+/** @deprecated */
 trait MusicObjectsParser extends MusicPrimitivesParser {
   val symbols: PitchedPrimitives with PitchedObjects
   val buffer: ParseBuffer

@@ -7,6 +7,7 @@ import nl.roelofruis.artamus.core.track.Temporal.{Metre, PulseGroup}
 import scala.annotation.tailrec
 import scala.util.{Failure, Success}
 
+/** @deprecated */
 trait MusicPrimitivesParser {
   val symbols: PitchedPrimitives
   val buffer: ParseBuffer
