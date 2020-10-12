@@ -46,7 +46,7 @@ case class ChordChartParser(
           .divide(bar.size)
           .map { dur => bar.map { chord => (dur, chord) }}
       }
-      if ( ! chordsWithDuration.forall(_.isDefined)) Failure(ParseError("Unable to determine chord length", text))
+      if ( ! chordsWithDuration.forall(_.isDefined)) Failure(ParseError("Unable to determine chord length"))
       else Success(chordsWithDuration.collect { case Some(x) => x }.flatten)
     }
 

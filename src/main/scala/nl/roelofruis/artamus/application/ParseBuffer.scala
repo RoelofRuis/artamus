@@ -23,7 +23,7 @@ private [application] class ParseBuffer private (
     var errorIndication = text.patch(position, "<", 0).patch(position + 2, ">", 0)
     if (position > 10) errorIndication = errorIndication.patch(0, "... ", position - 10)
     if (position + 12 < text.length) errorIndication = errorIndication.patch(position + 12, " ...", errorIndication.length)
-    Failure(ParseError(msg, errorIndication))
+    Failure(ParseError(msg))
   }
 
   def isExhausted: Boolean = position >= text.length

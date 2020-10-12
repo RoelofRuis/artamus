@@ -1,15 +1,25 @@
 package nl.roelofruis.artamus.application
 
-import fastparse._
+import fastparse.Parsed.{Failure => FastparseFailure, Success => FastparseSuccess}
 import fastparse.SingleLineWhitespace._
-import nl.roelofruis.artamus.application.Model.{PitchedObjects, PitchedPrimitives}
-import nl.roelofruis.artamus.core.track.Pitched.{Chord, Degree, Key, PitchDescriptor, Quality, QualityGroup, Scale}
+import fastparse._
+import nl.roelofruis.artamus.application.Model.{ParseError, ParseResult, PitchedObjects, PitchedPrimitives}
+import nl.roelofruis.artamus.core.track.Pitched._
 import nl.roelofruis.artamus.core.track.Temporal.{Metre, PulseGroup}
+
+import scala.util.{Failure, Success}
 
 object ObjectParsers {
 
-  private def oneOf[_: P](options: Seq[String]): P[String] = options.foldLeft(P[Unit](Fail))(_ | _).!
-  private def fromMap[_ : P, A](map: Map[String, A])(s: String): P[A] = map.get(s).map(Pass).getOrElse(Fail)
+  def oneOf[_: P](options: Seq[String]): P[String] = options.foldLeft(P[Unit](Fail))(_ | _).!
+  def fromMap[_ : P, A](map: Map[String, A])(s: String): P[A] = map.get(s).map(Pass(_)).getOrElse(Fail)
+
+  def parse[T](input: String, parser: P[_] => P[T]): ParseResult[T] = {
+    fastparse.parse(input, parser(_)) match {
+      case FastparseSuccess(t, _) => Success(t)
+      case FastparseFailure(label, index, extra) => Failure(ParseError(s"$label at [$index] $extra"))
+    }
+  }
 
   implicit class FromPitchedPrimitives(pp: PitchedPrimitives) {
     def step[_ : P](options: Seq[String]): P[Int] = P(oneOf(options).map{pp.textNotes.indexOf(_)})

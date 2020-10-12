@@ -10,7 +10,7 @@ object Model {
 
   type ParseResult[A] = Try[A]
 
-  final case class ParseError(message: String, input: String) extends Exception
+  final case class ParseError(message: String) extends Exception
 
   trait PitchedPrimitives {
     val pitchClassSequence: List[Int]

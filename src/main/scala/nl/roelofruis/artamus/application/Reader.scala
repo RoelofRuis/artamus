@@ -3,6 +3,7 @@ package nl.roelofruis.artamus.application
 import java.io.FileNotFoundException
 
 import nl.roelofruis.artamus.application.Model.{ParseError, ParseResult, Settings}
+import nl.roelofruis.artamus.application.ObjectParsers._
 import nl.roelofruis.artamus.core.track.Pitched.Degree
 
 import scala.annotation.tailrec
@@ -13,11 +14,9 @@ object Reader {
 
   implicit class Readers(tuning: Settings) {
 
-    import nl.roelofruis.artamus.application.Parser._
-
     def readDegree: ParseResult[Degree] = retry {
       for {
-        degree <- tuning.parser(StdIn.readLine("Degree\n > ")).parseDegree
+        degree <- parse(StdIn.readLine("Degree\n > "), tuning.degree(_))
       } yield degree
     }
 
@@ -32,14 +31,14 @@ object Reader {
       source.close()
       (contents, fileName)
     }.recoverWith {
-      case _: FileNotFoundException => Failure(ParseError(s"File cannot be found", path))
+      case _: FileNotFoundException => Failure(ParseError(s"File [$path] cannot be found"))
     }
   }
 
   @tailrec def retry[A](prog: => ParseResult[A]): Try[A] = {
     prog match {
-      case Failure(ParseError(message, input)) =>
-        println(s"$message in [$input]")
+      case Failure(ParseError(message)) =>
+        println(message)
         retry(prog)
       case x => x
     }

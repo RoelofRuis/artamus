@@ -2,6 +2,7 @@ package nl.roelofruis.artamus.application
 
 import nl.roelofruis.artamus.application.Model._
 import nl.roelofruis.artamus.application.Parser._
+import ObjectParsers._
 import nl.roelofruis.artamus.core.track.Pitched.{PitchDescriptor, Quality, QualityGroup, Scale}
 import spray.json._
 
@@ -14,9 +15,9 @@ object SettingsLoader {
       qualityMap <- parseQualityMap(textTuning)
       qualityGroupMap <- parseQualityGroupMap(textTuning, qualityMap)
       scaleMap = buildScaleMap(textTuning)
-      defaultMetre <- textTuning.parser(textTuning.defaultMetre).parseMetre
+      defaultMetre <- parse(textTuning.defaultMetre, textTuning.metre(_))
       partialSettings = buildPartialSettings(textTuning, scaleMap, qualityMap, qualityGroupMap)
-      defaultKey <- partialSettings.parser(textTuning.defaultKey).parseKey
+      defaultKey <- parse(textTuning.defaultKey, partialSettings.key(_))
     } yield Settings(
       textTuning.pitchClassSequence,
       textTuning.numPitchClasses,

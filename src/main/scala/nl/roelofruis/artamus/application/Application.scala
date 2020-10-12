@@ -15,8 +15,8 @@ object Application {
           case "q" | "y" => Success(())
           case _ => runRepeated(program)
       }
-      case Failure(ParseError(message, input)) =>
-        println(s"$message in [$input]")
+      case Failure(ParseError(message)) =>
+        println(message)
       case Failure(ex) =>
         println("Program error")
         println(ex.getMessage)
