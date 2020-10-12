@@ -18,13 +18,6 @@ case class LilypondConverter(settings: TuningDefinition) extends TunedMaths with
     relativePitch: Option[Note]
   ): MusicState = {
     music
-      .filter {
-        case _: CME => true
-        case _: Relative => true
-        case _: LilyNote => true
-        case _: LilyRest => true
-        case _ => false
-      }
       .foldLeft(MusicState(relativePitch, position)) { case (state, expression) =>
         if (state.error.isDefined) state
         else {
@@ -33,6 +26,7 @@ case class LilypondConverter(settings: TuningDefinition) extends TunedMaths with
             case relative: Relative => state.append(convertInternal(relative.contents.contents, state.position, Some(pitchToNote(relative.to))))
             case note: LilyNote => state.addNote(note)
             case rest: LilyRest => state.addRest(rest)
+            case _ => state
           }
         }
       }
