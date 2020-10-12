@@ -23,12 +23,12 @@ object Reader {
 
   }
 
-  def readFile(placeholderPath: String): ParseResult[(String, String)] = retry {
+  def readFile(placeholderPath: String, lineConcat: String = " "): ParseResult[(String, String)] = retry {
     val fileName = StdIn.readLine("Input file\n > ")
     val path = placeholderPath.replace("{file}", fileName)
     Try {
       val source = Source.fromFile(path)
-      val contents = source.getLines().mkString(" ")
+      val contents = source.getLines().mkString(lineConcat)
       source.close()
       (contents, fileName)
     }.recoverWith {

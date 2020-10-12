@@ -18,7 +18,7 @@ object Load extends App {
 
   def program: ParseResult[Unit] = for {
     tuning     <- SettingsLoader.loadTuning
-    (piece, _) <- readFile("src/main/resources/melody/{file}.ly")
+    (piece, _) <- readFile("src/main/resources/melody/{file}.ly", "\n")
     expr       <- Try { Parser.parseLilypond(piece).get.value }
     converter  = LilypondConverter(tuning)
     noteTrack  <- converter.convert(expr).toTry

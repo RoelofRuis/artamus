@@ -77,7 +77,7 @@ object Parser extends App {
     }
   )
 
-  def comment[_ : P]: P[Comment] = P("%" ~ CharsWhile(c => c.isLetterOrDigit || c.isSpaceChar).!.map(Comment) ~~ "\n")
+  def comment[_ : P]: P[Comment] = P("%" ~ CharsWhile(c => c != '\n' && c != '\r').!.map(Comment))
 
   def lilypond[_ : P]: P[LilypondDocument] = P((comment | compoundMusicExpression).rep ~ End)
 
