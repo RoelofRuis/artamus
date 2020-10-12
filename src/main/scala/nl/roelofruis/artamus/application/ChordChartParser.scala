@@ -1,7 +1,9 @@
 package nl.roelofruis.artamus.application
 
+import fastparse._
+import fastparse.MultiLineWhitespace._
 import nl.roelofruis.artamus.application.Model._
-import nl.roelofruis.artamus.application.Parser._
+import ObjectParsers._
 import nl.roelofruis.artamus.core.common.Temporal.{Windowed, WindowedSeq}
 import nl.roelofruis.artamus.core.common.Position
 import nl.roelofruis.artamus.core.track.Layer.ChordSeq
@@ -14,55 +16,55 @@ case class ChordChartParser(
   tuning: PitchedPrimitives with PitchedObjects with TemporalSettings with Defaults
 ) extends TemporalMaths {
 
+  type ChordChart = Seq[ChartElement]
+
+  sealed trait ChartElement
+  final case class Barline() extends ChartElement
+  final case class ChartedChord(chord: Chord) extends ChartElement
+  final case class Repeat() extends ChartElement
+
+  def barline[_ : P]: P[Barline] = P(tuning.textBarLine).map(_ => Barline())
+  def repeat[_ : P]: P[Repeat] = P(tuning.textRepeatMark).map(_ => Repeat())
+  def chord[_ : P]: P[ChartedChord] = tuning.chord.map(ChartedChord)
+
+  def chordChart[_ : P]: P[ChordChart] = P((barline | repeat | chord).rep)
+
   def parseChordChart(text: String): ParseResult[ChordSeq] = {
-    val parser = tuning.parser(text)
+    doParse(text, chordChart(_))
+      .map { chart =>
+        chart.foldLeft(Seq(Seq[Chord]())) { case (bars, elem) =>
+          val Seq(previousBar, bar) = bars.takeRight(2)
+          elem match {
+            case _: Barline => bars :+ Seq()
+            case _: Repeat if bar.isEmpty => bars.dropRight(1) :+ previousBar
+            case _: Repeat => bars.dropRight(1) :+ (bar :+ bar.last)
+            case ChartedChord(chord) => bars.dropRight(1) :+ (previousBar :+ chord)
 
-    def parseBars(barList: Seq[Seq[Chord]]): ParseResult[Seq[Seq[Chord]]] = {
-      if (parser.buffer.has(tuning.textBarLine)) {
-        parser.buffer.skipSpaces
-        if (parser.buffer.isExhausted) Success(barList) // All done
-        else parseBars(barList :+ Seq()) // Insert next bar
-      } else if (parser.buffer.has(tuning.textRepeatMark)) {
-        parser.buffer.skipSpaces
-        val Seq(previousBar, bar) = barList.takeRight(2)
-        if (bar.isEmpty) {
-          // in new bar: repeat whole previous bar
-          parseBars(barList.dropRight(1) :+ previousBar)
-        } else {
-          // in existing bar: repeat previous chord
-          parseBars(barList.dropRight(1) :+ (bar :+ bar.last))
+          }
         }
-      } else for {
-        _ <- parser.buffer.skipSpaces
-        chord <- parser.parseChord
-        _ <- parser.buffer.skipSpaces
-        bars <- parseBars(barList.dropRight(1) :+ (barList.last :+ chord))
-      } yield bars
-    }
-
-    val chordsPerBar = parseBars(Seq(Seq())).flatMap { bars =>
-      val chordsWithDuration = bars.map { bar =>
-        tuning.defaultMetre
-          .divide(bar.size)
-          .map { dur => bar.map { chord => (dur, chord) }}
       }
-      if ( ! chordsWithDuration.forall(_.isDefined)) Failure(ParseError("Unable to determine chord length"))
-      else Success(chordsWithDuration.collect { case Some(x) => x }.flatten)
-    }
-
-    chordsPerBar.map { chords =>
-      chords.foldLeft((Position.ZERO, WindowedSeq.empty[Chord])) {
-        case ((pos, acc), (duration, chord)) if acc.nonEmpty && acc.last.element == chord =>
-          val nextPos = pos + duration
-          val nextSeq = acc.dropRight(1) :+ acc.last.copy(window=acc.last.window.stretchTo(nextPos))
-          (nextPos, nextSeq)
-
-        case ((pos, acc), (duration, chord)) =>
-          val nextPos = pos + duration
-          val nextSeq = acc :+ Windowed(pos, duration, chord)
-          (nextPos, nextSeq)
+      .flatMap { bars =>
+        val chordsWithDuration = bars.map { bar =>
+          tuning.defaultMetre
+            .divide(bar.size)
+            .map { dur => bar.map { chord => (dur, chord) }}
+        }
+        if ( ! chordsWithDuration.forall(_.isDefined)) Failure(ParseError("Unable to determine chord length"))
+        else Success(chordsWithDuration.collect { case Some(x) => x }.flatten)
       }
-    }.map(_._2)
+      .map { chords =>
+        chords.foldLeft((Position.ZERO, WindowedSeq.empty[Chord])) {
+          case ((pos, acc), (duration, chord)) if acc.nonEmpty && acc.last.element == chord =>
+            val nextPos = pos + duration
+            val nextSeq = acc.dropRight(1) :+ acc.last.copy(window=acc.last.window.stretchTo(nextPos))
+            (nextPos, nextSeq)
+
+          case ((pos, acc), (duration, chord)) =>
+            val nextPos = pos + duration
+            val nextSeq = acc :+ Windowed(pos, duration, chord)
+            (nextPos, nextSeq)
+        }
+      }.map(_._2)
   }
 
 }

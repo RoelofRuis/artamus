@@ -18,7 +18,7 @@ object ObjectParsers {
   def doParse[T](input: String, parser: P[_] => P[T]): ParseResult[T] = {
     fastparse.parse(input, parser(_)) match {
       case FastparseSuccess(t, _) => Success(t)
-      case FastparseFailure(label, index, extra) => Failure(ParseError(s"$label at [$index] $extra"))
+      case f: FastparseFailure => Failure(ParseError(f.msg))
     }
   }
 
@@ -30,15 +30,15 @@ object ObjectParsers {
     def accidentals[_ : P]: P[Int] = P(flats | sharps | "".!.map(_ => 0))
 
     def pitchDescriptor[_ : P]: P[PitchDescriptor] = P((step(pp.textNotes) ~ accidentals).map { case (step, accidentals) =>
-      PitchDescriptor(step, pp.pitchClassSequence(step) + accidentals)
+      PitchDescriptor(step, pp.pitchClassSequence.indexOf(step) + accidentals)
     })
 
     def degreeDescriptor[_ : P]: P[PitchDescriptor] = P((accidentals ~ step(pp.textDegrees)).map { case (accidentals, step) =>
-      PitchDescriptor(step, pp.pitchClassSequence(step) + accidentals)
+      PitchDescriptor(step, pp.pitchClassSequence.indexOf(step) + accidentals)
     })
 
-    def interval[_ : P]: P[PitchDescriptor] = P((accidentals ~ step(pp.textDegrees)).map { case (accidentals, step) =>
-      PitchDescriptor(step, pp.pitchClassSequence(step) + accidentals)
+    def interval[_ : P]: P[PitchDescriptor] = P((accidentals ~ step(pp.textIntervals)).map { case (accidentals, step) =>
+      PitchDescriptor(step, pp.pitchClassSequence.indexOf(step) + accidentals)
     })
 
     val powers = Seq("1", "2", "4", "8", "16", "32")
@@ -52,14 +52,14 @@ object ObjectParsers {
 
     def key[_ : P]: P[Key] = P((pp.pitchDescriptor ~ scale).map { case (pd, scale) => Key(pd, scale) })
 
-    def quality[_ : P]: P[Quality] = P(CharIn("a-z").rep(1).!.flatMap(fromMap(pp.qualityMap)))
+    def quality[_ : P]: P[Quality] = P(CharIn("a-zA-Z0-9 ").rep(1).!.flatMap(fromMap(pp.qualityMap)))
 
-    def qualityGroup[_ : P]: P[QualityGroup] = P(CharIn("a-z").rep(1).!.flatMap(fromMap(pp.qualityGroupMap)))
+    def qualityGroup[_ : P]: P[QualityGroup] = P(CharIn("a-zA-Z0-9\\-").rep(1).!.flatMap(fromMap(pp.qualityGroupMap)))
 
     def chord[_ : P]: P[Chord] = P((pp.pitchDescriptor ~ quality).map { case (pd, quality) => Chord(pd, quality) })
 
     def degree[_ : P]: P[Degree] = P(
-      (pp.degreeDescriptor ~ qualityGroup ~ "T".?.!.map(_.length == 1) ~ ("/" ~ pp.degreeDescriptor).?).map{
+      (pp.degreeDescriptor ~~ qualityGroup ~~ exists("T") ~~ ("/" ~ pp.degreeDescriptor).?).map{
         case (root, quality, isTritoneSub, relativeTo) => Degree(root, quality, relativeTo, isTritoneSub)
       })
   }

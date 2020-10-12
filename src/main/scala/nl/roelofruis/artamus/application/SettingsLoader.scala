@@ -4,7 +4,7 @@ import fastparse.SingleLineWhitespace._
 import fastparse._
 import nl.roelofruis.artamus.application.Model._
 import nl.roelofruis.artamus.application.ObjectParsers._
-import nl.roelofruis.artamus.application.Parser._
+import nl.roelofruis.artamus.application.Utils._
 import nl.roelofruis.artamus.core.track.Pitched.{PitchDescriptor, Quality, QualityGroup, Scale}
 import spray.json._
 
@@ -59,13 +59,14 @@ object SettingsLoader {
       .map(_.toMap)
   }
 
-  private def parseQualityMap(textTuning: TextTuning): ParseResult[Map[String, Quality]] =
+  private def parseQualityMap(textTuning: TextTuning): ParseResult[Map[String, Quality]] = {
     textTuning.qualities.map { quality =>
       doParse(quality.intervals, textTuning.intervals(_))
         .map(quality.symbol -> Quality(_))
     }
       .invert
       .map(_.toMap)
+  }
 
   private def buildScaleMap(textTuning: TextTuning): Map[String, Scale] = {
     textTuning.scales.map { scale => (scale.name, Scale(scale.pitchClassSequence)) }.toMap

@@ -1,7 +1,7 @@
 package nl.roelofruis.artamus.application
 
 import nl.roelofruis.artamus.application.Model.{ParseResult, PitchedObjects, PitchedPrimitives, Settings}
-import nl.roelofruis.artamus.application.Parser._
+import nl.roelofruis.artamus.application.Utils._
 import ObjectParsers._
 import fastparse._
 import fastparse.SingleLineWhitespace._
@@ -72,7 +72,7 @@ object RNALoader {
   private implicit class FromPitchedObjectsAdvanced(pp: PitchedPrimitives with PitchedObjects) {
     def intervalAndScale[_ : P]: P[(PitchDescriptor, Scale)] = P(pp.interval ~ ":" ~ pp.scale)
     def intervalScaleDegree[_ : P]: P[(PitchDescriptor, Scale, Degree)] = P(
-      pp.interval ~ ":" ~ pp.scale ~ ":" ~ pp.degree
+      pp.interval ~~ ":" ~~ pp.scale ~~ ":" ~~ pp.degree ~~ End
     )
   }
 
