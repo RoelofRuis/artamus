@@ -4,13 +4,14 @@ import nl.roelofruis.artamus.application.Model.{ParseError, ParseResult}
 
 import scala.util.{Failure, Success}
 
-/** @deprecated */
+@deprecated("", "")
 private[application] object ParseBuffer {
 
   def apply(text: String): ParseBuffer = new ParseBuffer(text, 0)
 
 }
 
+@deprecated("", "")
 private [application] class ParseBuffer private (
   private val text: String,
   private var position: Int = 0

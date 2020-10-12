@@ -4,6 +4,7 @@ import nl.roelofruis.artamus.application.Model.{ParseResult, PitchedObjects, Pit
 
 import scala.util.Try
 
+@deprecated("", "")
 object Parser {
 
   implicit class Primitives(symbols: PitchedPrimitives) {
