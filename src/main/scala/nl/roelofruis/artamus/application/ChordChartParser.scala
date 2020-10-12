@@ -33,15 +33,15 @@ case class ChordChartParser(
     doParse(text, chordChart(_))
       .map { chart =>
         chart.foldLeft(Seq(Seq[Chord]())) { case (bars, elem) =>
-          val Seq(previousBar, bar) = bars.takeRight(2)
+          val Seq(previousBar, bar) = if (bars.size > 1) bars.takeRight(2) else Seq(Seq[Chord]()) ++ bars.takeRight(1)
           elem match {
             case _: Barline => bars :+ Seq()
             case _: Repeat if bar.isEmpty => bars.dropRight(1) :+ previousBar
             case _: Repeat => bars.dropRight(1) :+ (bar :+ bar.last)
-            case ChartedChord(chord) => bars.dropRight(1) :+ (previousBar :+ chord)
-
+            case ChartedChord(chord) => bars.dropRight(1) :+ (bar :+ chord)
           }
         }
+          .filter(_.nonEmpty)
       }
       .flatMap { bars =>
         val chordsWithDuration = bars.map { bar =>
@@ -68,7 +68,3 @@ case class ChordChartParser(
   }
 
 }
-
-
-
-

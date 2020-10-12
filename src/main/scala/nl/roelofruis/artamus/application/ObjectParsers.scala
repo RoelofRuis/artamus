@@ -11,14 +11,14 @@ import scala.util.{Failure, Success}
 
 object ObjectParsers {
 
-  def oneOf[_: P](options: Seq[String]): P[String] = options.foldLeft(P[Unit](Fail))(_ | _).!
-  def fromMap[_ : P, A](map: Map[String, A])(s: String): P[A] = map.get(s).map(Pass(_)).getOrElse(Fail)
+  def oneOf[_: P](options: Seq[String]): P[String] = options.sortBy(-_.length).foldLeft(P[Unit](Fail))(_ | _).!
+  def fromMap[_ : P, A](map: Map[String, A]): P[A] = oneOf(map.keys.toSeq).map(map(_))
   def exists[_ : P](s: String): P[Boolean] = P(s.?.!.map(_.length == 1))
 
-  def doParse[T](input: String, parser: P[_] => P[T]): ParseResult[T] = {
-    fastparse.parse(input, parser(_)) match {
+  def doParse[T](input: String, parser: P[_] => P[T], verbose: Boolean = false): ParseResult[T] = {
+    fastparse.parse(input, parser(_), verbose) match {
       case FastparseSuccess(t, _) => Success(t)
-      case f: FastparseFailure => Failure(ParseError(f.msg))
+      case f: FastparseFailure => Failure(ParseError(if (! verbose) f.msg else f.longMsg))
     }
   }
 
@@ -48,13 +48,13 @@ object ObjectParsers {
   }
 
   implicit class FromPitchedObjects(pp: PitchedPrimitives with PitchedObjects) {
-    def scale[_ : P]: P[Scale] = P(CharIn("a-z").rep(1).!.flatMap(fromMap(pp.scaleMap)))
+    def scale[_ : P]: P[Scale] = fromMap(pp.scaleMap)
 
     def key[_ : P]: P[Key] = P((pp.pitchDescriptor ~ scale).map { case (pd, scale) => Key(pd, scale) })
 
-    def quality[_ : P]: P[Quality] = P(CharIn("a-zA-Z0-9 ").rep(1).!.flatMap(fromMap(pp.qualityMap)))
+    def quality[_ : P]: P[Quality] = fromMap(pp.qualityMap)
 
-    def qualityGroup[_ : P]: P[QualityGroup] = P(CharIn("a-zA-Z0-9\\-").rep(1).!.flatMap(fromMap(pp.qualityGroupMap)))
+    def qualityGroup[_ : P]: P[QualityGroup] = fromMap(pp.qualityGroupMap)
 
     def chord[_ : P]: P[Chord] = P((pp.pitchDescriptor ~ quality).map { case (pd, quality) => Chord(pd, quality) })
 

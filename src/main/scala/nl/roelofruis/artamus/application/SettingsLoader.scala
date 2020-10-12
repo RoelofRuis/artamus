@@ -19,7 +19,7 @@ object SettingsLoader {
       scaleMap = buildScaleMap(textTuning)
       defaultMetre <- doParse(textTuning.defaultMetre, textTuning.metre(_))
       partialSettings = buildPartialSettings(textTuning, scaleMap, qualityMap, qualityGroupMap)
-      defaultKey <- doParse(textTuning.defaultKey, partialSettings.key(_))
+      defaultKey <- doParse(textTuning.defaultKey, partialSettings.key(_), true)
     } yield Settings(
       textTuning.pitchClassSequence,
       textTuning.numPitchClasses,
