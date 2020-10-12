@@ -23,22 +23,22 @@ object ObjectParsers {
   }
 
   implicit class FromPitchedPrimitives(pp: PitchedPrimitives) {
-    def step[_ : P](options: Seq[String]): P[Int] = P(oneOf(options).map{pp.textNotes.indexOf(_)})
+    def step[_ : P](options: Seq[String]): P[Int] = P(oneOf(options).map{options.indexOf(_)})
 
     def flats[_ : P]: P[Int] = P(pp.textFlat.rep(1).!.map(- _.length))
     def sharps[_ : P]: P[Int] = P(pp.textSharp.rep(1).!.map(_.length))
     def accidentals[_ : P]: P[Int] = P(flats | sharps | "".!.map(_ => 0))
 
     def pitchDescriptor[_ : P]: P[PitchDescriptor] = P((step(pp.textNotes) ~ accidentals).map { case (step, accidentals) =>
-      PitchDescriptor(step, pp.pitchClassSequence.indexOf(step) + accidentals)
+      PitchDescriptor(step, pp.pitchClassSequence(step) + accidentals)
     })
 
     def degreeDescriptor[_ : P]: P[PitchDescriptor] = P((accidentals ~ step(pp.textDegrees)).map { case (accidentals, step) =>
-      PitchDescriptor(step, pp.pitchClassSequence.indexOf(step) + accidentals)
+      PitchDescriptor(step, pp.pitchClassSequence(step) + accidentals)
     })
 
     def interval[_ : P]: P[PitchDescriptor] = P((accidentals ~ step(pp.textIntervals)).map { case (accidentals, step) =>
-      PitchDescriptor(step, pp.pitchClassSequence.indexOf(step) + accidentals)
+      PitchDescriptor(step, pp.pitchClassSequence(step) + accidentals)
     })
 
     val powers = Seq("1", "2", "4", "8", "16", "32")
