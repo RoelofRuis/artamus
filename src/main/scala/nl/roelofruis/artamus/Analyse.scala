@@ -13,7 +13,6 @@ import nl.roelofruis.artamus.core.track.algorithms.rna.{RNAOperations, RomanNume
 
 object Analyse extends App {
 
-  import nl.roelofruis.artamus.application.AnalysisCSVWriter._
   import nl.roelofruis.artamus.application.Printer._
   import nl.roelofruis.artamus.application.Reader._
 
@@ -26,7 +25,6 @@ object Analyse extends App {
     chordTrack     <- chartParser.parseChordChart(chords)
     _              = println(printChart(chordTrack, tuning))
     degrees        = rnaAnalyser.analyse(chordTrack)
-    _              = tuning.writeCSV(degrees, file)
     _              = printDegrees(degrees, tuning, rnaAnalyser)
     renderer       <- RenderingLoader.loadRenderer(tuning)
     key            = degrees.headOption.map(_.get.absoluteKey).getOrElse(tuning.defaultKey)
