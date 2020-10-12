@@ -2,26 +2,38 @@ package nl.roelofruis.artamus.lilypond
 
 object Grammar {
 
-  sealed trait MusicExpression
-  type CompoundMusicExpression = Seq[MusicExpression]
-  implicit def musicExpressionIsCompound(m: MusicExpression): CompoundMusicExpression = Seq(m)
+  type LilypondDocument = Seq[TLE]
+
+  /** TopLevelExpression */
+  sealed trait TLE
+
+  final case class Comment(
+    message: String
+  ) extends TLE with ME
+
+  /** MusicExpression */
+  sealed trait ME extends TLE
+  /** CompoundMusicExpression */
+  final case class CME(contents: Seq[ME]) extends TLE
+
+  implicit def musicExpressionIsCompound(m: ME): CME = CME(Seq(m))
 
   final case class Relative(
     to: Pitch,
-    contents: CompoundMusicExpression
-  ) extends MusicExpression
+    contents: CME
+  ) extends ME
 
   final case class Note(
     pitch: Pitch,
     duration: Duration = EqualToPrevious(),
     tie: Boolean = false
-  ) extends MusicExpression
+  ) extends ME
 
   final case class Rest(
     duration: Duration = EqualToPrevious()
-  ) extends MusicExpression
+  ) extends ME
 
-  final case class BarLineCheck() extends MusicExpression
+  final case class BarLineCheck() extends ME
 
   final case class Pitch(
     step: Int,

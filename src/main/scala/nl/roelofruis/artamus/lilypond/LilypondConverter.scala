@@ -6,19 +6,20 @@ import nl.roelofruis.artamus.core.track.Layer.NoteSeq
 import nl.roelofruis.artamus.core.track.Pitched.Note
 import nl.roelofruis.artamus.core.track.algorithms.TunedMaths.TuningDefinition
 import nl.roelofruis.artamus.core.track.algorithms.{TemporalMaths, TunedMaths}
-import nl.roelofruis.artamus.lilypond.Grammar.{CompoundMusicExpression, EqualToPrevious, PowerOfTwoWithDots, Relative, Duration => LilyDuration, Note => LilyNote, Pitch => LilyPitch, Rest => LilyRest}
+import nl.roelofruis.artamus.lilypond.Grammar.{CME, EqualToPrevious, LilypondDocument, PowerOfTwoWithDots, Relative, TLE, Duration => LilyDuration, Note => LilyNote, Pitch => LilyPitch, Rest => LilyRest}
 
 case class LilypondConverter(settings: TuningDefinition) extends TunedMaths with TemporalMaths {
 
-  def convert(music: CompoundMusicExpression): Either[Throwable, NoteSeq] = convertInternal(music, Position.ZERO, None).get
+  def convert(music: LilypondDocument): Either[Throwable, NoteSeq] = convertInternal(music, Position.ZERO, None).get
 
   private def convertInternal(
-    music: CompoundMusicExpression,
+    music: LilypondDocument,
     position: Position,
     relativePitch: Option[Note]
   ): MusicState = {
     music
       .filter {
+        case _: CME => true
         case _: Relative => true
         case _: LilyNote => true
         case _: LilyRest => true
@@ -28,7 +29,8 @@ case class LilypondConverter(settings: TuningDefinition) extends TunedMaths with
         if (state.error.isDefined) state
         else {
           expression match {
-            case relative: Relative => state.append(convertInternal(relative.contents, state.position, Some(pitchToNote(relative.to))))
+            case cme: CME => state.append(convertInternal(cme.contents, state.position, relativePitch))
+            case relative: Relative => state.append(convertInternal(relative.contents.contents, state.position, Some(pitchToNote(relative.to))))
             case note: LilyNote => state.addNote(note)
             case rest: LilyRest => state.addRest(rest)
           }

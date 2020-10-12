@@ -1,6 +1,6 @@
 package nl.roelofruis.artamus.lilypond
 
-import fastparse.SingleLineWhitespace._
+import fastparse.MultiLineWhitespace._
 import fastparse._
 import nl.roelofruis.artamus.lilypond.Grammar._
 
@@ -57,19 +57,30 @@ object Parser extends App {
 
   def barLineCheck[_ : P]: P[BarLineCheck] = P("|".!.map(_ => BarLineCheck()))
 
-  def musicExpression[_ : P]: P[CompoundMusicExpression] = P((note | rest | barLineCheck).rep(1))
+  def musicExpression[_ : P]: P[CME] = P((note | rest | barLineCheck).rep(1).map(CME))
 
-  def anonymousScope[_: P]: P[CompoundMusicExpression] = P("{" ~ compoundMusicExpression ~ "}")
-  def relativeScope[_ : P]: P[CompoundMusicExpression] = P(("\\relative" ~ pitch ~ "{" ~ compoundMusicExpression ~ "}").map {
+  def anonymousScope[_: P]: P[CME] = P("{" ~ compoundMusicExpression ~ "}")
+  def relativeScope[_ : P]: P[CME] = P(("\\relative" ~ pitch ~ "{" ~ compoundMusicExpression ~ "}").map {
     case (pitch, cme) => Relative(pitch, cme)
   })
 
-  def compoundMusicExpression[_ : P]: P[CompoundMusicExpression] = P(
-    (musicExpression | anonymousScope | relativeScope).rep.map{ _.flatten }
+  def compoundMusicExpression[_ : P]: P[CME] = P(
+    (musicExpression | anonymousScope | relativeScope | comment).rep(1).map{ expressions =>
+      val seq = expressions.foldLeft(Seq[ME]()) { case (acc, expr) =>
+        expr match {
+          case c: Comment => acc :+ c
+          case expr: CME => acc ++ expr.contents
+          case _ => acc
+        }
+      }
+      CME(seq)
+    }
   )
 
-  def lilypond[_ : P]: P[CompoundMusicExpression] = P(compoundMusicExpression ~ End)
+  def comment[_ : P]: P[Comment] = P("%" ~ CharsWhile(c => c.isLetterOrDigit || c.isSpaceChar).!.map(Comment) ~~ "\n")
 
-  def parseLilypond(input: String): Parsed[CompoundMusicExpression] = parse(input, lilypond(_))
+  def lilypond[_ : P]: P[LilypondDocument] = P((comment | compoundMusicExpression).rep ~ End)
+
+  def parseLilypond(input: String): Parsed[LilypondDocument] = parse(input, lilypond(_))
 
 }
