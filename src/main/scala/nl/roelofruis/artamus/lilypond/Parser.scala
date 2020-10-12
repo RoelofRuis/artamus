@@ -20,7 +20,6 @@ object Parser extends App {
   def sharps[_ : P]: P[Int] = P("is".rep(1).!.map(_.count(_ == 's')))
   def accidentals[_ : P]: P[Int] = P(flats | sharps | "".!.map(_ => 0))
 
-
   def octaveUp[_ : P]: P[Int] = P("'".rep(1).!.map(_.length))
   def octaveDown[_ : P]: P[Int] = P(",".rep(1).!.map(- _.length))
   def octave[_ : P]: P[Int] = P(octaveUp | octaveDown | "".!.map(_ => 0))
