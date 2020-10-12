@@ -2,7 +2,7 @@ package nl.roelofruis.artamus.core.track.algorithms
 
 import nl.roelofruis.artamus.core.track.Pitched.{Note, NoteGroup, Octave}
 
-trait NoteMaths extends TunedMaths {
+trait NoteMaths extends PitchedMaths {
 
   implicit class OctaveMath(octave: Octave) {
     val midiNr: Int = (octave + 1) * settings.numPitchClasses

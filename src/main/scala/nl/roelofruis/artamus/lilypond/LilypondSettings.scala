@@ -1,7 +1,7 @@
 package nl.roelofruis.artamus.lilypond
 
 import nl.roelofruis.artamus.core.track.Pitched.{Quality, QualityGroup, Scale}
-import nl.roelofruis.artamus.core.track.algorithms.TunedMaths.TuningDefinition
+import nl.roelofruis.artamus.core.track.algorithms.PitchedMaths.TuningDefinition
 
 final case class LilypondSettings(
   pngResolution: Int,

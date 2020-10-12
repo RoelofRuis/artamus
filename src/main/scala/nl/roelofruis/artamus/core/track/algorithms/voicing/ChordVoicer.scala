@@ -5,7 +5,7 @@ import nl.roelofruis.artamus.core.common.algorithms.GraphSearch
 import nl.roelofruis.artamus.core.track.Layer.{ChordSeq, NoteSeq}
 import nl.roelofruis.artamus.core.track.Pitched._
 import nl.roelofruis.artamus.core.track.algorithms.NoteMaths
-import nl.roelofruis.artamus.core.track.algorithms.TunedMaths.TuningDefinition
+import nl.roelofruis.artamus.core.track.algorithms.PitchedMaths.TuningDefinition
 
 case class ChordVoicer(settings: TuningDefinition) extends NoteMaths {
 

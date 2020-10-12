@@ -8,10 +8,10 @@ import nl.roelofruis.artamus.core.layout.RNAStaffGlyph.{DegreeGlyph, KeyIndicato
 import nl.roelofruis.artamus.core.layout.Staff.{ChordStaff, NoteStaff, RNAStaff, StaffGroup}
 import nl.roelofruis.artamus.core.layout.StaffGlyph.{KeyGlyph, NoteGroupGlyph, RestGlyph, TimeSignatureGlyph}
 import nl.roelofruis.artamus.core.track.Pitched.{Key, Octave, PitchDescriptor, Quality}
-import nl.roelofruis.artamus.core.track.algorithms.TunedMaths
+import nl.roelofruis.artamus.core.track.algorithms.PitchedMaths
 import nl.roelofruis.artamus.document._
 
-trait LilypondFormatting extends TunedMaths {
+trait LilypondFormatting extends PitchedMaths {
   val settings: LilypondSettings
 
   def format(displayableMusic: DisplayableMusic): Document = {

@@ -1,9 +1,9 @@
 package nl.roelofruis.artamus.core.track.algorithms
 
 import nl.roelofruis.artamus.core.track.Pitched._
-import nl.roelofruis.artamus.core.track.algorithms.TunedMaths.TuningDefinition
+import nl.roelofruis.artamus.core.track.algorithms.PitchedMaths.TuningDefinition
 
-object TunedMaths {
+object PitchedMaths {
 
   trait TuningDefinition {
     val pitchClassSequence: List[Int]
@@ -12,7 +12,7 @@ object TunedMaths {
 
 }
 
-trait TunedMaths {
+trait PitchedMaths {
   val settings: TuningDefinition
 
   lazy val numSteps: Int = settings.pitchClassSequence.size

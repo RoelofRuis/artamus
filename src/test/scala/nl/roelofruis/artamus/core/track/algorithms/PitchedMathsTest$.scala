@@ -1,10 +1,10 @@
 package nl.roelofruis.artamus.core.track.algorithms
 
 import nl.roelofruis.artamus.core.track.Pitched.PitchDescriptor
-import nl.roelofruis.artamus.core.track.algorithms.TunedMaths.TuningDefinition
+import nl.roelofruis.artamus.core.track.algorithms.PitchedMaths.TuningDefinition
 import utest._
 
-object TunedMathsTest extends TestSuite with TunedMaths {
+object PitchedMathsTest$ extends TestSuite with PitchedMaths {
   val settings: TuningDefinition = new TuningDefinition {
     override val pitchClassSequence: List[Int] = List(0, 2, 4, 5, 7, 9, 11)
     override val numPitchClasses: Int = 12

@@ -4,11 +4,11 @@ import nl.roelofruis.artamus.core.common.Temporal.Windowed
 import nl.roelofruis.artamus.core.common.{Duration, Position}
 import nl.roelofruis.artamus.core.track.Layer.NoteSeq
 import nl.roelofruis.artamus.core.track.Pitched.Note
-import nl.roelofruis.artamus.core.track.algorithms.TunedMaths.TuningDefinition
-import nl.roelofruis.artamus.core.track.algorithms.{TemporalMaths, TunedMaths}
+import nl.roelofruis.artamus.core.track.algorithms.PitchedMaths.TuningDefinition
+import nl.roelofruis.artamus.core.track.algorithms.{TemporalMaths, PitchedMaths}
 import nl.roelofruis.artamus.lilypond.Grammar.{CME, EqualToPrevious, LilypondDocument, PowerOfTwoWithDots, Relative, TLE, Duration => LilyDuration, Note => LilyNote, Pitch => LilyPitch, Rest => LilyRest}
 
-case class LilypondConverter(settings: TuningDefinition) extends TunedMaths with TemporalMaths {
+case class LilypondConverter(settings: TuningDefinition) extends PitchedMaths with TemporalMaths {
 
   def convert(music: LilypondDocument): Either[Throwable, NoteSeq] = convertInternal(music, Position.ZERO, None).get
 
