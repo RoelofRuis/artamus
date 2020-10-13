@@ -119,8 +119,8 @@ trait LilypondFormatting extends PitchedMaths {
 
   private def writeRomanNumeralAccidental(descriptor: PitchDescriptor): String = {
     descriptor.accidentalValue match {
-      case i if i < 1 => "f" * -i
-      case i if i > 1 => "s" * i
+      case i if i < 0 => "f" * -i
+      case i if i > 0 => "s" * i
       case _ => ""
     }
   }
