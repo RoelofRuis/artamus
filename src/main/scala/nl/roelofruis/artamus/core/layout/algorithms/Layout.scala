@@ -6,10 +6,11 @@ import nl.roelofruis.artamus.core.common.{Position, Rational}
 import nl.roelofruis.artamus.core.layout.Glyph
 import nl.roelofruis.artamus.core.layout.Glyph.{GlyphDuration, SingleGlyph}
 import nl.roelofruis.artamus.core.track.Temporal.Metre
+import nl.roelofruis.artamus.core.track.algorithms.TemporalMaths
 
 import scala.annotation.tailrec
 
-object Layout {
+object Layout extends TemporalMaths {
 
   def layoutElements[A](
     elements: WindowedSeq[A],
@@ -24,7 +25,7 @@ object Layout {
           }
           else { // insert final rest
             state
-              .withGlyphs(fitGlyphs(state.activeMetre, state.restUntilEndOfBar))
+              .withGlyphs(fitElement(state.activeMetre, state.restUntilEndOfBar))
               .glyphs
           }
 
@@ -35,7 +36,7 @@ object Layout {
             loop(
               state
                 .withGlyphs(instantGlyphs)
-                .withGlyphs(fitGlyphs(state.activeMetre, state.restUntilEndOfBar))
+                .withGlyphs(fitElement(state.activeMetre, state.restUntilEndOfBar))
                 .to(state.endOfActiveMeter)
             )
           }
@@ -44,7 +45,7 @@ object Layout {
               loop(
                 state
                   .withGlyphs(instantGlyphs)
-                  .withGlyphs(fitGlyphs(state.activeMetre, state.restUntil(element.window.start)))
+                  .withGlyphs(fitElement(state.activeMetre, state.restUntil(element.window.start)))
                   .to(element.window.start)
               )
             }
@@ -52,7 +53,7 @@ object Layout {
               loop(
                 state
                   .withGlyphs(instantGlyphs)
-                  .withGlyphs(fitGlyphs(state.activeMetre, element))
+                  .withGlyphs(fitElement(state.activeMetre, element))
                   .to(element.window.end)
                   .toNextElement
               )
@@ -62,39 +63,44 @@ object Layout {
             loop(
               state
                 .withGlyphs(instantGlyphs)
-                .withGlyphs(fitGlyphs(state.activeMetre, element, tie=true))
+                .withGlyphs(fitElement(state.activeMetre, element, tie=true))
                 .to(state.endOfActiveMeter)
             )
           }
       }
     }
 
-    // TODO: this should be improved based on info given in metre!
-    def fitGlyphs(metre: Windowed[Metre], element: Windowed[A], tie: Boolean = false): Seq[Glyph[A]] = {
-      metre.window.intersectNonInstant(element.window) match {
-        case None => Seq.empty
-        case Some(window) =>
-          window.duration.v match {
-            case r @ Rational(_, d) if ! d.isPowerOfTwo =>
-              throw new NotImplementedError(s"Cannot fit tuplet [$r]!")
+    def fitElement(metre: Windowed[Metre], element: Windowed[A], tie: Boolean = false): Seq[Glyph[A]] = {
+      if (metre.get.hasMultiplePulseGroups) {
+        val subdivisions = subdivide(metre).filter(_.window.intersectNonInstant(element.window).nonEmpty)
+        subdivisions.init.foldLeft(Seq[Glyph[A]]()) {
+          case (acc, subMetre) => acc ++ fitElement(subMetre, element, true)
+        } ++ fitElement(subdivisions.last, element, tie)
+      } else {
+        metre.window.intersectNonInstant(element.window) match {
+          case None => Seq.empty
+          case Some(window) =>
+            window.duration.v match {
+              case r @ Rational(_, d) if ! d.isPowerOfTwo =>
+                throw new NotImplementedError(s"Cannot fit tuplet [$r]!")
 
-            case Rational(1, d) =>
-              Seq(SingleGlyph(element.get, GlyphDuration(d.largestPowerOfTwo, 0, tie)))
+              case Rational(1, d) =>
+                Seq(SingleGlyph(element.get, GlyphDuration(d.largestPowerOfTwo, 0, tie)))
 
-            case Rational(3, d) =>
-              Seq(SingleGlyph(element.get, GlyphDuration(d.largestPowerOfTwo - 1, 1, tie)))
+              case Rational(n, d) =>
+                if ((n + 1).isPowerOfTwo) { // Can be written with dots
+                  val numDots = (n + 1).largestPowerOfTwo - 1
+                  Seq(SingleGlyph(element.get, GlyphDuration(d.largestPowerOfTwo - numDots, n.largestPowerOfTwo, tie)))
+                } else { // Let subdivisions figure it out
+                  val subdivisions = subdivide(metre).filter(_.window.intersectNonInstant(element.window).nonEmpty)
+                  subdivisions.init.foldLeft(Seq[Glyph[A]]()) {
+                    case (acc, subMetre) => acc ++ fitElement(subMetre, element, true)
+                  } ++ fitElement(subdivisions.last, element, tie)
+                }
 
-            case Rational(5, d) =>
-              Seq(
-                SingleGlyph(element.get, GlyphDuration(d.largestPowerOfTwo - 2, 0, tieToNext = true)),
-                SingleGlyph(element.get, GlyphDuration(d.largestPowerOfTwo, 0, tie))
-              )
-
-            case Rational(7, d) =>
-              Seq(SingleGlyph(element.get, GlyphDuration(d.largestPowerOfTwo - 2, 2, tie)))
-
-            case r => throw new NotImplementedError(s"Cannot fit length [$r]")
-          }
+              case r => throw new NotImplementedError(s"Cannot fit length [$r]")
+            }
+        }
       }
     }
 

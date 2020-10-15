@@ -1,7 +1,7 @@
 {
   "pitchClassSequence": [0, 2, 4, 5, 7, 9, 11],
   "numPitchClasses": 12,
-  "defaultMetre": "4/4",
+  "defaultMetre": "2/4 + 2/4",
   "defaultKey": "C major",
   "textNotes": ["C", "D", "E", "F", "G", "A", "B"],
   "textDegrees": ["I", "II", "III", "IV", "V", "VI", "VII"],

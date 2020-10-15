@@ -42,8 +42,12 @@ object ObjectParsers {
     })
 
     val powers = Seq("1", "2", "4", "8", "16", "32")
-    def metre[_ : P]: P[Metre] = P((CharIn("0-9").rep(1).!.map(_.toInt) ~ "/" ~ oneOf(powers).map(powers.indexOf)).map { case (pulses, base) =>
-      Metre(Seq(PulseGroup(base, pulses)))
+    def metre[_ : P]: P[Metre] = P((pulseGroup ~ ("+" ~ pulseGroup).rep).map { case (pulseGroup, pulseGroupList) =>
+      Metre(pulseGroup +: pulseGroupList)
+    })
+
+    def pulseGroup[_ : P]: P[PulseGroup] = P((CharIn("0-9").rep(1).!.map(_.toInt) ~ "/" ~ oneOf(powers).map(powers.indexOf)).map {
+      case (pulses, base) => PulseGroup(base, pulses)
     })
   }
 
