@@ -6,16 +6,37 @@ import utest._
 
 object TemporalMathsTest extends TestSuite with TemporalMaths {
 
-  val metre: Metre = Metre(Seq(PulseGroup(2, 4))) // represents 4/4th metre
+  // 4/4 in two major groups
+  val metre1: Metre = Metre(Seq(PulseGroup(2, 2), PulseGroup(2, 2)))
+
+  // 4/4 without splits
+  val metre2: Metre = Metre(Seq(PulseGroup(2, 4)))
 
   val tests: Tests = Tests {
     test("divide the metre if possible") {
       assert(
-        metre.divide(1).contains(Duration(Rational(1, 1))),
-        metre.divide(2).contains(Duration(Rational(1, 2))),
-        metre.divide(3).isEmpty,
-        metre.divide(4).contains(Duration(Rational(1, 4))),
-        metre.divide(8).contains(Duration(Rational(1, 8)))
+        metre1.divide(1).contains(Duration(Rational(1, 1))),
+        metre2.divide(1).contains(Duration(Rational(1, 1))),
+        metre1.divide(2).contains(Duration(Rational(1, 2))),
+        metre2.divide(2).contains(Duration(Rational(1, 2))),
+        metre1.divide(3).isEmpty,
+        metre2.divide(3).isEmpty,
+        metre1.divide(4).contains(Duration(Rational(1, 4))),
+        metre2.divide(4).contains(Duration(Rational(1, 4))),
+        metre1.divide(8).contains(Duration(Rational(1, 8))),
+        metre2.divide(8).contains(Duration(Rational(1, 8))),
+      )
+    }
+    test("detect multiple pulse groups") {
+      assert(
+        metre1.hasMultiplePulseGroups,
+        ! metre2.hasMultiplePulseGroups,
+      )
+    }
+    test("time signature fraction") {
+      assert(
+        metre1.timeSignatureFraction == (4, 2),
+        metre2.timeSignatureFraction == (4, 2),
       )
     }
   }
