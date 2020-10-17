@@ -29,7 +29,7 @@ object MathsTest extends TestSuite {
       assert(-2**2 == 4)
       assert(-2**3 == -8)
     }
-    test("finding most significant bit") {
+    test("finding largest power of two") {
       assert(1.largestPowerOfTwo == 0)
       assert(2.largestPowerOfTwo == 1)
       assert(3.largestPowerOfTwo == 1)
