@@ -1,8 +1,9 @@
 package nl.roelofruis.artamus
 
+import nl.roelofruis.artamus.application.ChordChartParsing._
 import nl.roelofruis.artamus.application.Model.{ParseResult, Settings}
 import nl.roelofruis.artamus.application.rendering.RenderingLoader
-import nl.roelofruis.artamus.application.{Application, ChordChartParser, RNALoader, SettingsLoader}
+import nl.roelofruis.artamus.application.{Application, RNALoader, SettingsLoader}
 import nl.roelofruis.artamus.core.common.Temporal.{TemporalVal, Windowed}
 import nl.roelofruis.artamus.core.track.Layer.{ChordLayer, ChordSeq, RNALayer, RomanNumeralSeq}
 import nl.roelofruis.artamus.core.track.Pitched.Key
@@ -20,9 +21,8 @@ object Analyse extends App {
     tuning         <- SettingsLoader.loadTuning
     rnaRules       <- RNALoader.loadRules(tuning)
     rnaAnalyser    = RomanNumeralAnalyser(tuning, rnaRules)
-    (chords, file) <- readFile("src/main/resources/charts/{file}.txt")
-    chartParser    = ChordChartParser(tuning)
-    chordTrack     <- chartParser.parseChordChart(chords)
+    (chords, _) <- readFile("src/main/resources/charts/{file}.txt")
+    chordTrack     <- tuning.parseChordChart(chords)
     _              = println(printChart(chordTrack, tuning))
     degrees        = rnaAnalyser.analyse(chordTrack)
     _              = printDegrees(degrees, tuning, rnaAnalyser)

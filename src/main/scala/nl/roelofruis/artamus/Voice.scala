@@ -1,8 +1,9 @@
 package nl.roelofruis.artamus
 
+import nl.roelofruis.artamus.application.ChordChartParsing._
 import nl.roelofruis.artamus.application.Model.ParseResult
 import nl.roelofruis.artamus.application.rendering.RenderingLoader
-import nl.roelofruis.artamus.application.{Application, ChordChartParser, SettingsLoader}
+import nl.roelofruis.artamus.application.{Application, SettingsLoader}
 import nl.roelofruis.artamus.core.common.Temporal.TemporalVal
 import nl.roelofruis.artamus.core.track.Layer.{ChordLayer, ChordSeq, NoteLayer, NoteSeq}
 import nl.roelofruis.artamus.core.track.Pitched.Key
@@ -17,8 +18,7 @@ object Voice extends App {
   def program: ParseResult[Unit] = for {
     tuning         <- SettingsLoader.loadTuning
     (chords, _)    <- readFile("src/main/resources/charts/{file}.txt")
-    chartParser    = ChordChartParser(tuning)
-    chordTrack     <- chartParser.parseChordChart(chords)
+    chordTrack     <- tuning.parseChordChart(chords)
     voicer         = ChordVoicer(tuning)
     voicedChords   = voicer.voiceChords(chordTrack)
     renderer       <- RenderingLoader.loadRenderer(tuning)
