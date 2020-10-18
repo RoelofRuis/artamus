@@ -5,7 +5,8 @@ import fastparse.SingleLineWhitespace._
 import fastparse._
 import nl.roelofruis.artamus.application.Model.{ParseError, ParseResult, PitchedObjects, PitchedPrimitives}
 import nl.roelofruis.artamus.core.track.Pitched._
-import nl.roelofruis.artamus.core.track.Temporal.{Metre, PulseGroup}
+import nl.roelofruis.artamus.core.track.Temporal.{BeatGroup, Metre, PulseGroup}
+import nl.roelofruis.artamus.core.common.Maths._
 
 import scala.util.{Failure, Success}
 
@@ -41,14 +42,19 @@ object ObjectParsers {
       PitchDescriptor(step, pp.pitchClassSequence(step) + accidentals)
     })
 
-    val powers = Seq("1", "2", "4", "8", "16", "32")
     def metre[_ : P]: P[Metre] = P((pulseGroup ~ ("+" ~ pulseGroup).rep).map { case (pulseGroup, pulseGroupList) =>
       Metre(pulseGroup +: pulseGroupList)
     })
 
-    def pulseGroup[_ : P]: P[PulseGroup] = P((CharIn("0-9").rep(1).!.map(_.toInt) ~ "/" ~ oneOf(powers).map(powers.indexOf)).map {
-      case (pulses, base) => PulseGroup(base, pulses)
-    })
+    def pulseGroup[_ : P]: P[PulseGroup] = P((CharIn("123").!.map {
+      case "1" => BeatGroup.Single
+      case "2" => BeatGroup.Double
+      case "3" => BeatGroup.Triple
+    } ~ "/" ~ CharIn("0-9").rep(1).!.flatMap { s =>
+      val intVal = s.toInt
+      if (intVal.isPowerOfTwo) Pass(intVal.largestPowerOfTwo)
+      else Fail
+    }).map { case (pulses, base) => PulseGroup(base, pulses) })
   }
 
   implicit class FromPitchedObjects(pp: PitchedPrimitives with PitchedObjects) {

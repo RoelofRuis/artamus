@@ -8,9 +8,16 @@ object Temporal {
     pulseGroups: Seq[PulseGroup]
   )
 
+  type BeatGroup = Int
+  object BeatGroup {
+    val Single: BeatGroup = 1
+    val Double: BeatGroup = 2
+    val Triple: BeatGroup = 3
+  }
+
   final case class PulseGroup(
     baseDuration: FractionalPowerOfTwo,
-    numberOfBeats: Int
+    numberOfBeats: BeatGroup
   )
 
 }
