@@ -1,8 +1,8 @@
 package nl.roelofruis.artamus.core.track.algorithms.voicing
 
-import nl.roelofruis.artamus.core.common.Temporal.{Windowed, WindowedSeq}
+import nl.roelofruis.artamus.core.common.Temporal.{Windowed, Timeline}
 import nl.roelofruis.artamus.core.common.algorithms.GraphSearch
-import nl.roelofruis.artamus.core.track.Layer.{ChordSeq, NoteSeq}
+import nl.roelofruis.artamus.core.track.Layer.{ChordTimeline, NoteTimeline}
 import nl.roelofruis.artamus.core.track.Pitched._
 import nl.roelofruis.artamus.core.track.algorithms.NoteMaths
 import nl.roelofruis.artamus.core.track.algorithms.PitchedMaths.TuningDefinition
@@ -11,7 +11,7 @@ case class ChordVoicer(settings: TuningDefinition) extends NoteMaths {
 
   type WindowedNoteGroup = Windowed[NoteGroup]
 
-  def voiceChords(chordTrack: ChordSeq): NoteSeq = {
+  def voiceChords(chordTrack: ChordTimeline): NoteTimeline = {
     val analysis = GraphSearch.bestFirst(
       1,
       findPossibleNodes,
@@ -20,7 +20,7 @@ case class ChordVoicer(settings: TuningDefinition) extends NoteMaths {
 
     analysis match {
       case Some(result) if result.length >= 1 => result.toSeq
-      case _ => WindowedSeq.empty
+      case _ => Timeline.empty
     }
   }
 

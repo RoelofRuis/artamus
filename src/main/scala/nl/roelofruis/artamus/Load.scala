@@ -4,7 +4,7 @@ import nl.roelofruis.artamus.application.Model.ParseResult
 import nl.roelofruis.artamus.application.rendering.RenderingLoader
 import nl.roelofruis.artamus.application.{Application, SettingsLoader}
 import nl.roelofruis.artamus.core.common.Temporal.TemporalVal
-import nl.roelofruis.artamus.core.track.Layer.{NoteLayer, NoteSeq}
+import nl.roelofruis.artamus.core.track.Layer.{NoteLayer, NoteTimeline}
 import nl.roelofruis.artamus.core.track.Pitched.Key
 import nl.roelofruis.artamus.core.track.Temporal.Metre
 import nl.roelofruis.artamus.core.track.Track
@@ -26,7 +26,7 @@ object Load extends App {
     _          = renderer.render(makeTrack(noteTrack, tuning.defaultMetre, tuning.defaultKey))
   } yield ()
 
-  def makeTrack(notes: NoteSeq, defaultMetre: Metre, key: Key): Track = {
+  def makeTrack(notes: NoteTimeline, defaultMetre: Metre, key: Key): Track = {
     Track(
       TemporalVal(defaultMetre),
       TemporalVal(key),

@@ -16,14 +16,14 @@ object Temporal {
     }
   }
 
-  type WindowedSeq[A] = Seq[Windowed[A]]
+  type Timeline[A] = Seq[Windowed[A]]
 
-  object WindowedSeq {
-    def empty[A]: WindowedSeq[A] = Seq.empty
+  object Timeline {
+    def empty[A]: Timeline[A] = Seq.empty
   }
 
-  implicit class WindowedSeqOps[A](seq: WindowedSeq[A]) {
-    def mapVal[B](f: A => B): WindowedSeq[B] = seq.map(w => w.copy(element=f(w.get)))
+  implicit class TimelineOps[A](seq: Timeline[A]) {
+    def mapVal[B](f: A => B): Timeline[B] = seq.map(w => w.copy(element=f(w.get)))
   }
 
   final case class Positioned[A](position: Position, element: A) {

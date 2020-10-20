@@ -2,7 +2,7 @@ package nl.roelofruis.artamus.lilypond
 
 import nl.roelofruis.artamus.core.common.Temporal.Windowed
 import nl.roelofruis.artamus.core.common.{Duration, Position}
-import nl.roelofruis.artamus.core.track.Layer.NoteSeq
+import nl.roelofruis.artamus.core.track.Layer.NoteTimeline
 import nl.roelofruis.artamus.core.track.Pitched.Note
 import nl.roelofruis.artamus.core.track.algorithms.PitchedMaths.TuningDefinition
 import nl.roelofruis.artamus.core.track.algorithms.{PitchedMaths, TemporalMaths}
@@ -10,7 +10,7 @@ import nl.roelofruis.artamus.lilypond.Grammar.{CME, EqualToPrevious, LilypondDoc
 
 case class LilypondConverter(settings: TuningDefinition) extends PitchedMaths with TemporalMaths {
 
-  def convert(music: LilypondDocument): Either[Throwable, NoteSeq] = convertInternal(music, Position.ZERO, None).get
+  def convert(music: LilypondDocument): Either[Throwable, NoteTimeline] = convertInternal(music, Position.ZERO, None).get
 
   private def convertInternal(
     music: LilypondDocument,
@@ -39,7 +39,7 @@ case class LilypondConverter(settings: TuningDefinition) extends PitchedMaths wi
   private case class MusicState(
     relativePitch: Option[Note],
     position: Position,
-    private val noteSeq: NoteSeq = Seq(),
+    private val noteSeq: NoteTimeline = Seq(),
     private val untiedNotes: Seq[LilyNote] = Seq(),
     private val lastDuration: Option[Duration] = None,
     error: Option[Throwable] = None
@@ -52,7 +52,7 @@ case class LilypondConverter(settings: TuningDefinition) extends PitchedMaths wi
       error = that.error orElse error
     )
 
-    def get: Either[Throwable, NoteSeq] = {
+    def get: Either[Throwable, NoteTimeline] = {
       error match {
         case None => Right(noteSeq)
         case Some(msg) => Left(msg)

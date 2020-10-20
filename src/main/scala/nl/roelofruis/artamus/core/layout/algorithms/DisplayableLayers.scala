@@ -16,7 +16,7 @@ import nl.roelofruis.artamus.core.track.algorithms.TemporalMaths
 object DisplayableLayers extends TemporalMaths {
 
   def displayRNALayer(track: Track, layer: RNALayer): StaffGroup = {
-    lazy val elementIterator: WindowedSeq[RNAStaffGlyph] = layer.analysis.map {
+    lazy val elementIterator: Timeline[RNAStaffGlyph] = layer.analysis.map {
       case Windowed(window, analysedChord) =>
         Windowed[RNAStaffGlyph](window, DegreeGlyph(analysedChord.degree))
     }
@@ -33,7 +33,7 @@ object DisplayableLayers extends TemporalMaths {
   }
 
   def displayChordLayer(track: Track, layer: ChordLayer): StaffGroup = {
-    lazy val elementIterator: WindowedSeq[ChordStaffGlyph] = layer.chords.map {
+    lazy val elementIterator: Timeline[ChordStaffGlyph] = layer.chords.map {
       case Windowed(window, chord) =>
         Windowed[ChordStaffGlyph](window, ChordNameGlyph(chord.root, chord.quality))
     }
@@ -47,7 +47,7 @@ object DisplayableLayers extends TemporalMaths {
   }
 
   def displayNoteLayer(track: Track, layer: NoteLayer): StaffGroup = {
-    def elementIterator: WindowedSeq[StaffGlyph] =
+    def elementIterator: Timeline[StaffGlyph] =
       layer
         .notes
         .map { case Windowed(window, noteGroup) =>

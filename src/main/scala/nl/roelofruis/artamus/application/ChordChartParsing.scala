@@ -5,8 +5,8 @@ import fastparse._
 import nl.roelofruis.artamus.application.Model._
 import nl.roelofruis.artamus.application.ObjectParsers._
 import nl.roelofruis.artamus.core.common.Position
-import nl.roelofruis.artamus.core.common.Temporal.{Windowed, WindowedSeq}
-import nl.roelofruis.artamus.core.track.Layer.ChordSeq
+import nl.roelofruis.artamus.core.common.Temporal.{Windowed, Timeline}
+import nl.roelofruis.artamus.core.track.Layer.ChordTimeline
 import nl.roelofruis.artamus.core.track.Pitched.Chord
 import nl.roelofruis.artamus.core.track.algorithms.TemporalMaths
 
@@ -31,7 +31,7 @@ object ChordChartParsing extends TemporalMaths {
   }
 
   implicit class ChordChartOps(tuning: PitchedPrimitives with PitchedObjects with TemporalSettings with Defaults) {
-    def parseChordChart(text: String): ParseResult[ChordSeq] = {
+    def parseChordChart(text: String): ParseResult[ChordTimeline] = {
       doParse(text, tuning.chordChart(_))
         .map { chart =>
           chart.foldLeft(Seq(Seq[Chord]())) { case (bars, elem) =>
@@ -55,7 +55,7 @@ object ChordChartParsing extends TemporalMaths {
           else Success(chordsWithDuration.collect { case Some(x) => x }.flatten)
         }
         .map { chords =>
-          chords.foldLeft((Position.ZERO, WindowedSeq.empty[Chord])) {
+          chords.foldLeft((Position.ZERO, Timeline.empty[Chord])) {
             case ((pos, acc), (duration, chord)) if acc.nonEmpty && acc.last.element == chord =>
               val nextPos = pos + duration
               val nextSeq = acc.dropRight(1) :+ acc.last.copy(window=acc.last.window.stretchTo(nextPos))

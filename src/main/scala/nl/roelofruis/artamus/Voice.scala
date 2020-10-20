@@ -5,7 +5,7 @@ import nl.roelofruis.artamus.application.Model.ParseResult
 import nl.roelofruis.artamus.application.rendering.RenderingLoader
 import nl.roelofruis.artamus.application.{Application, SettingsLoader}
 import nl.roelofruis.artamus.core.common.Temporal.TemporalVal
-import nl.roelofruis.artamus.core.track.Layer.{ChordLayer, ChordSeq, NoteLayer, NoteSeq}
+import nl.roelofruis.artamus.core.track.Layer.{ChordLayer, ChordTimeline, NoteLayer, NoteTimeline}
 import nl.roelofruis.artamus.core.track.Pitched.Key
 import nl.roelofruis.artamus.core.track.Temporal.Metre
 import nl.roelofruis.artamus.core.track.Track
@@ -25,7 +25,7 @@ object Voice extends App {
     _              = renderer.render(makeTrack(chordTrack, voicedChords, tuning.defaultMetre, tuning.defaultKey))
   } yield ()
 
-  def makeTrack(chords: ChordSeq, notes: NoteSeq, defaultMetre: Metre, key: Key): Track = {
+  def makeTrack(chords: ChordTimeline, notes: NoteTimeline, defaultMetre: Metre, key: Key): Track = {
     Track(
       TemporalVal(defaultMetre),
       TemporalVal(key),

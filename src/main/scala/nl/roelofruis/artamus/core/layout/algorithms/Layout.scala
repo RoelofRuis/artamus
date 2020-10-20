@@ -1,7 +1,7 @@
 package nl.roelofruis.artamus.core.layout.algorithms
 
 import nl.roelofruis.artamus.core.common.Position
-import nl.roelofruis.artamus.core.common.Temporal.{Windowed, WindowedSeq}
+import nl.roelofruis.artamus.core.common.Temporal.{Windowed, Timeline}
 import nl.roelofruis.artamus.core.layout.Glyph
 import nl.roelofruis.artamus.core.layout.Glyph.SingleGlyph
 import nl.roelofruis.artamus.core.track.Temporal.Metre
@@ -11,7 +11,7 @@ import scala.annotation.tailrec
 object Layout {
 
   def layoutElements[A](
-    elements: WindowedSeq[A],
+    elements: Timeline[A],
     layout: LayoutDescription[A]
   ): Seq[Glyph[A]] = {
     @tailrec
@@ -77,7 +77,7 @@ object Layout {
 
   private case class LayoutState[A](
     position: Position,
-    private val elements: WindowedSeq[A],
+    private val elements: Timeline[A],
     private val metres: LazyList[Windowed[Metre]],
     private val restGlyph: A,
     glyphs: List[Glyph[A]]

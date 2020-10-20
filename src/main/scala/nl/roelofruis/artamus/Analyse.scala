@@ -5,7 +5,7 @@ import nl.roelofruis.artamus.application.Model.{ParseResult, Settings}
 import nl.roelofruis.artamus.application.rendering.RenderingLoader
 import nl.roelofruis.artamus.application.{Application, RNALoader, SettingsLoader}
 import nl.roelofruis.artamus.core.common.Temporal.{TemporalVal, Windowed}
-import nl.roelofruis.artamus.core.track.Layer.{ChordLayer, ChordSeq, RNALayer, RomanNumeralSeq}
+import nl.roelofruis.artamus.core.track.Layer.{ChordLayer, ChordTimeline, RNALayer, RomanNumeralTimeline}
 import nl.roelofruis.artamus.core.track.Pitched.Key
 import nl.roelofruis.artamus.core.track.Temporal.Metre
 import nl.roelofruis.artamus.core.track.Track
@@ -33,7 +33,7 @@ object Analyse extends App {
 
   Application.runRepeated(program)
 
-  def makeTrack(chords: ChordSeq, degrees: RomanNumeralSeq, defaultMetre: Metre, key: Key): Track = {
+  def makeTrack(chords: ChordTimeline, degrees: RomanNumeralTimeline, defaultMetre: Metre, key: Key): Track = {
     Track(
       TemporalVal(defaultMetre),
       TemporalVal(key),
@@ -44,7 +44,7 @@ object Analyse extends App {
     )
   }
 
-  def printDegrees(degrees: RomanNumeralSeq, tuning: Settings, analyser: RomanNumeralAnalyser): Unit = {
+  def printDegrees(degrees: RomanNumeralTimeline, tuning: Settings, analyser: RomanNumeralAnalyser): Unit = {
     val transitions = degrees
       .sliding(2, 1)
       .map { case Seq(a, b) => (a, b, analyser.scoreTransition(
@@ -67,7 +67,7 @@ object Analyse extends App {
       }.foreach(println)
   }
 
-  def printChart(chordTrack: ChordSeq, tuning: Settings): String = {
+  def printChart(chordTrack: ChordTimeline, tuning: Settings): String = {
     chordTrack
       .map { windowed => s"${tuning.printChord(windowed.element)} - ${windowed.window.duration.v}"}
       .mkString(", ")

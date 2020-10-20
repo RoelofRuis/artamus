@@ -2,7 +2,7 @@ package nl.roelofruis.artamus.core.track.algorithms.rna
 
 import nl.roelofruis.artamus.core.common.Temporal.Windowed
 import nl.roelofruis.artamus.core.common.algorithms.GraphSearch
-import nl.roelofruis.artamus.core.track.Layer.{ChordSeq, RomanNumeralSeq}
+import nl.roelofruis.artamus.core.track.Layer.{ChordTimeline, RomanNumeralTimeline}
 import nl.roelofruis.artamus.core.track.Pitched._
 import nl.roelofruis.artamus.core.track.algorithms.PitchedMaths
 import nl.roelofruis.artamus.core.track.algorithms.PitchedMaths.TuningDefinition
@@ -12,7 +12,7 @@ case class RomanNumeralAnalyser(settings: TuningDefinition, rules: RNARules) ext
 
   private type WindowedRNANode = Windowed[RNANode]
 
-  def analyse(chordTrack: ChordSeq): RomanNumeralSeq = {
+  def analyse(chordTrack: ChordTimeline): RomanNumeralTimeline = {
     val analysis = GraphSearch.bestFirst(
       rules.maxSolutionsToCheck,
       findPossibleNodes,
