@@ -26,14 +26,14 @@ case class ChordVoicer(settings: TuningDefinition) extends NoteMaths {
 
   def findPossibleNodes: Windowed[Chord] => List[WindowedNoteGroup] = chordWindow => {
     val intervals = chordWindow.get.quality.intervals.map { _ + chordWindow.get.root }
-    val octaves = Range.inclusive(2, 5)
+    val octaves = Range.inclusive(3, 5)
 
     combineSequences(intervals, octaves)
       .map { chord =>
         chord.map { case (pd, oct) => Note(pd, oct) }
       }
       .filter { notes =>
-        val bassInRange = notes.orderedMidiNumbers.headOption.exists(i => i < 50)
+        val bassInRange = notes.orderedMidiNumbers.headOption.exists(i => i < 64)
         val nonBassDifferences = notes.orderedMidiDifferences.tail
         val intervalTooSmall = nonBassDifferences.minOption.exists(_ < 2)
         val intervalTooLarge = nonBassDifferences.maxOption.exists(_ > 10)
