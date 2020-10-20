@@ -4,7 +4,7 @@ import nl.roelofruis.artamus.application.ChordChartParsing._
 import nl.roelofruis.artamus.application.Model.{ParseResult, Settings}
 import nl.roelofruis.artamus.application.rendering.RenderingLoader
 import nl.roelofruis.artamus.application.{Application, RNALoader, SettingsLoader}
-import nl.roelofruis.artamus.core.common.Temporal.{TemporalVal, Windowed}
+import nl.roelofruis.artamus.core.common.Temporal.{TemporalValue, Windowed}
 import nl.roelofruis.artamus.core.track.Layer.{ChordLayer, ChordTimeline, RNALayer, RomanNumeralTimeline}
 import nl.roelofruis.artamus.core.track.Pitched.Key
 import nl.roelofruis.artamus.core.track.Temporal.Metre
@@ -35,8 +35,8 @@ object Analyse extends App {
 
   def makeTrack(chords: ChordTimeline, degrees: RomanNumeralTimeline, defaultMetre: Metre, key: Key): Track = {
     Track(
-      TemporalVal(defaultMetre),
-      TemporalVal(key),
+      TemporalValue(defaultMetre),
+      TemporalValue(key),
       Seq(
         ChordLayer(chords),
         RNALayer(degrees, RNAOperations.getKeyIndicators(degrees, key)),

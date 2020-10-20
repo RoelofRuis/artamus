@@ -68,12 +68,12 @@ object DisplayableLayers extends TemporalMaths {
     Seq(NoteStaff(Layout.layoutElements(elementIterator, layout)))
   }
 
-  private def keyIndicatorBuilder(keys: KeySeq): Position => Option[Glyph[RNAStaffGlyph]] = pos => {
+  private def keyIndicatorBuilder(keys: KeyChanges): Position => Option[Glyph[RNAStaffGlyph]] = pos => {
     keys.asSeq.find(_.position == pos)
       .map { key => InstantGlyph(KeyIndicatorGlyph(key.get)) }
   }
 
-  private def timeSignatureBuilder(metres: MetreSeq): Position => Option[Glyph[StaffGlyph]] = pos => {
+  private def timeSignatureBuilder(metres: MetreChanges): Position => Option[Glyph[StaffGlyph]] = pos => {
     metres.asSeq.find(_.position == pos)
       .map { metre =>
         val (num, denom) = metre.get.timeSignatureFraction
@@ -81,7 +81,7 @@ object DisplayableLayers extends TemporalMaths {
       }
   }
 
-  private def keyBuilder(keys: KeySeq): Position => Option[Glyph[StaffGlyph]] = pos => {
+  private def keyBuilder(keys: KeyChanges): Position => Option[Glyph[StaffGlyph]] = pos => {
     keys.asSeq.find(_.position == pos)
       .map { key => InstantGlyph(KeyGlyph(key.get)) }
   }

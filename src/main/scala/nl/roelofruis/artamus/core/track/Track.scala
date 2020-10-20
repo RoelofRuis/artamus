@@ -1,9 +1,9 @@
 package nl.roelofruis.artamus.core.track
 
-import nl.roelofruis.artamus.core.track.Layer.{KeySeq, MetreSeq}
+import nl.roelofruis.artamus.core.track.Layer.{KeyChanges, MetreChanges}
 
 final case class Track(
-  metres: MetreSeq,
-  keys: KeySeq,
+  metres: MetreChanges,
+  keys: KeyChanges,
   layers: Seq[Layer] = Seq()
 )

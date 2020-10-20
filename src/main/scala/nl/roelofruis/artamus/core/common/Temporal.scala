@@ -2,10 +2,6 @@ package nl.roelofruis.artamus.core.common
 
 object Temporal {
 
-  trait ProvidesDuration[A] {
-    def duration(a: A): Duration
-  }
-
   final case class Windowed[A](window: Window, element: A) {
     val get: A = element
   }
@@ -30,13 +26,21 @@ object Temporal {
     val get: A = element
   }
 
-  final case class TemporalVal[A](head: Positioned[A], tail: Seq[Positioned[A]]) {
+  final case class TemporalValue[A](head: Positioned[A], tail: Seq[Positioned[A]]) {
     def asSeq: Seq[Positioned[A]] = head +: tail
     def last: Positioned[A] = if (tail.isEmpty) head else tail.last
-    def :+(elem: Positioned[A]): TemporalVal[A] = TemporalVal(head, tail :+ elem)
+    def :+(elem: Positioned[A]): TemporalValue[A] = TemporalValue(head, tail :+ elem)
   }
 
-  implicit class TemporalValWithDurationOps[A](value: TemporalVal[A])(implicit val durationProvider: ProvidesDuration[A]) {
+  object TemporalValue {
+    def apply[A](a: A): TemporalValue[A] = TemporalValue(Positioned(Position.ZERO, a), Seq.empty)
+  }
+
+  trait ProvidesDuration[A] {
+    def duration(a: A): Duration
+  }
+
+  implicit class TemporalValWithDurationOps[A](value: TemporalValue[A])(implicit val durationProvider: ProvidesDuration[A]) {
     def iterateWindowed: LazyList[Windowed[A]] = {
       val active = value.head.get
 
@@ -48,10 +52,6 @@ object Temporal {
 
       loop(Position.ZERO)
     }
-  }
-
-  object TemporalVal {
-    def apply[A](a: A): TemporalVal[A] = TemporalVal(Positioned(Position.ZERO, a), Seq.empty)
   }
 
 }
