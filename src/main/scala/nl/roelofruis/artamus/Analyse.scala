@@ -5,7 +5,7 @@ import nl.roelofruis.artamus.application.Model.{ParseResult, Settings}
 import nl.roelofruis.artamus.application.rendering.RenderingLoader
 import nl.roelofruis.artamus.application.{Application, RNALoader, SettingsLoader}
 import nl.roelofruis.artamus.core.common.Temporal.{TemporalValue, Windowed}
-import nl.roelofruis.artamus.core.track.Layer.{ChordLayer, ChordTimeline, RNALayer, RomanNumeralTimeline}
+import nl.roelofruis.artamus.core.track.Track.{ChordLayer, ChordTimeline, RNALayer, RomanNumeralTimeline}
 import nl.roelofruis.artamus.core.track.Pitched.{Chord, Key, RomanNumeral}
 import nl.roelofruis.artamus.core.track.Temporal.Metre
 import nl.roelofruis.artamus.core.track.Track

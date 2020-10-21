@@ -2,8 +2,8 @@ package nl.roelofruis.artamus.lilypond
 
 import nl.roelofruis.artamus.core.common.Temporal.Windowed
 import nl.roelofruis.artamus.core.common.{Duration, Position}
-import nl.roelofruis.artamus.core.track.Layer.NoteTimeline
 import nl.roelofruis.artamus.core.track.Pitched.Note
+import nl.roelofruis.artamus.core.track.Track.NoteTimeline
 import nl.roelofruis.artamus.core.track.algorithms.PitchedMaths.TuningDefinition
 import nl.roelofruis.artamus.core.track.algorithms.{PitchedMaths, TemporalMaths}
 import nl.roelofruis.artamus.lilypond.Grammar.{CME, EqualToPrevious, LilypondDocument, PowerOfTwoWithDots, Relative, Duration => LilyDuration, Note => LilyNote, Pitch => LilyPitch, Rest => LilyRest}

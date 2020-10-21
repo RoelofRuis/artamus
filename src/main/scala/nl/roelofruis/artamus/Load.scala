@@ -4,7 +4,7 @@ import nl.roelofruis.artamus.application.Model.ParseResult
 import nl.roelofruis.artamus.application.rendering.RenderingLoader
 import nl.roelofruis.artamus.application.{Application, SettingsLoader}
 import nl.roelofruis.artamus.core.common.Temporal.TemporalValue
-import nl.roelofruis.artamus.core.track.Layer.{NoteLayer, NoteTimeline}
+import nl.roelofruis.artamus.core.track.Track.{NoteLayer, NoteTimeline}
 import nl.roelofruis.artamus.core.track.Pitched.Key
 import nl.roelofruis.artamus.core.track.Temporal.Metre
 import nl.roelofruis.artamus.core.track.Track

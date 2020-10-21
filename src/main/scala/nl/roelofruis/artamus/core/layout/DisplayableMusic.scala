@@ -2,8 +2,8 @@ package nl.roelofruis.artamus.core.layout
 
 import nl.roelofruis.artamus.core.layout.Staff.StaffGroup
 import nl.roelofruis.artamus.core.layout.algorithms.DisplayableLayers
-import nl.roelofruis.artamus.core.track.Layer.{ChordLayer, NoteLayer, RNALayer}
 import nl.roelofruis.artamus.core.track.Track
+import nl.roelofruis.artamus.core.track.Track.{ChordLayer, NoteLayer, RNALayer}
 
 final case class DisplayableMusic(staffGroup: StaffGroup)
 

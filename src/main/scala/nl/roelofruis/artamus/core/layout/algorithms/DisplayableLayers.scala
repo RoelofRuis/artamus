@@ -9,8 +9,8 @@ import nl.roelofruis.artamus.core.layout.RNAStaffGlyph.{DegreeGlyph, KeyIndicato
 import nl.roelofruis.artamus.core.layout.Staff.{ChordStaff, NoteStaff, RNAStaff, StaffGroup}
 import nl.roelofruis.artamus.core.layout.StaffGlyph.{KeyGlyph, NoteGroupGlyph, RestGlyph, TimeSignatureGlyph}
 import nl.roelofruis.artamus.core.layout.{ChordStaffGlyph, Glyph, RNAStaffGlyph, StaffGlyph}
-import nl.roelofruis.artamus.core.track.Layer._
 import nl.roelofruis.artamus.core.track.Track
+import nl.roelofruis.artamus.core.track.Track._
 import nl.roelofruis.artamus.core.track.algorithms.TemporalMaths
 
 object DisplayableLayers extends TemporalMaths {

@@ -2,8 +2,8 @@ package nl.roelofruis.artamus.core.track.algorithms.rna
 
 import nl.roelofruis.artamus.core.common.Position
 import nl.roelofruis.artamus.core.common.Temporal.{Positioned, TemporalValue}
-import nl.roelofruis.artamus.core.track.Layer.{KeyChanges, RomanNumeralTimeline}
 import nl.roelofruis.artamus.core.track.Pitched.Key
+import nl.roelofruis.artamus.core.track.Track.{KeyChanges, RomanNumeralTimeline}
 
 object RNAOperations {
 

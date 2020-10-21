@@ -2,7 +2,7 @@ package nl.roelofruis.artamus.core.track.algorithms.rna
 
 import nl.roelofruis.artamus.core.common.Temporal.Windowed
 import nl.roelofruis.artamus.core.common.algorithms.GraphSearch
-import nl.roelofruis.artamus.core.track.Layer.{ChordTimeline, RomanNumeralTimeline}
+import nl.roelofruis.artamus.core.track.Track.{ChordTimeline, RomanNumeralTimeline}
 import nl.roelofruis.artamus.core.track.Pitched._
 import nl.roelofruis.artamus.core.track.algorithms.PitchedMaths
 import nl.roelofruis.artamus.core.track.algorithms.PitchedMaths.TuningDefinition

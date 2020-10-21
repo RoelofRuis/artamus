@@ -6,8 +6,8 @@ import nl.roelofruis.artamus.application.Model._
 import nl.roelofruis.artamus.application.ObjectParsers._
 import nl.roelofruis.artamus.core.common.Position
 import nl.roelofruis.artamus.core.common.Temporal.{Timeline, Windowed}
-import nl.roelofruis.artamus.core.track.Layer.ChordTimeline
 import nl.roelofruis.artamus.core.track.Pitched.Chord
+import nl.roelofruis.artamus.core.track.Track.ChordTimeline
 import nl.roelofruis.artamus.core.track.algorithms.PitchedMaths.TuningDefinition
 import nl.roelofruis.artamus.core.track.algorithms.TemporalMaths
 

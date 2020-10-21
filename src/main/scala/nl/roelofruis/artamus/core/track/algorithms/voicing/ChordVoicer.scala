@@ -1,9 +1,9 @@
 package nl.roelofruis.artamus.core.track.algorithms.voicing
 
-import nl.roelofruis.artamus.core.common.Temporal.{Windowed, Timeline}
+import nl.roelofruis.artamus.core.common.Temporal.{Timeline, Windowed}
 import nl.roelofruis.artamus.core.common.algorithms.GraphSearch
-import nl.roelofruis.artamus.core.track.Layer.{ChordTimeline, NoteTimeline}
 import nl.roelofruis.artamus.core.track.Pitched._
+import nl.roelofruis.artamus.core.track.Track.{ChordTimeline, NoteTimeline}
 import nl.roelofruis.artamus.core.track.algorithms.NoteMaths
 import nl.roelofruis.artamus.core.track.algorithms.PitchedMaths.TuningDefinition
 

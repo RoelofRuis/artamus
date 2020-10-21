@@ -1,6 +1,6 @@
 package nl.roelofruis.artamus.core.track.algorithms.reharm
 
-import nl.roelofruis.artamus.core.track.Layer.RomanNumeralTimeline
+import nl.roelofruis.artamus.core.track.Track.RomanNumeralTimeline
 import nl.roelofruis.artamus.core.track.algorithms.PitchedMaths
 import nl.roelofruis.artamus.core.track.algorithms.PitchedMaths.TuningDefinition
 
