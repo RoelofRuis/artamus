@@ -5,11 +5,6 @@
   "quarterTempo": 140,
   "pitchClassSequence": [0, 2, 4, 5, 7, 9, 11],
   "numPitchClasses": 12,
-  "stepNames": ["c", "d", "e", "f", "g", "a", "b"],
-  "degreeNames": ["I", "II", "III", "IV", "V", "VI", "VII"],
-  "flatSpelling": "es",
-  "sharpSpelling": "is",
-  "dotSpelling": ".",
   "qualitySpelling": [
     {"symbol": "M", "chordNotation": ""},
     {"symbol": "-", "chordNotation": "m"},

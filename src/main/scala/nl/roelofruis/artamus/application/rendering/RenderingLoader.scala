@@ -40,11 +40,6 @@ object RenderingLoader {
         textSettings.paperSize,
         textSettings.pitchClassSequence,
         textSettings.numPitchClasses,
-        textSettings.stepNames,
-        textSettings.degreeNames,
-        textSettings.flatSpelling,
-        textSettings.sharpSpelling,
-        textSettings.dotSpelling,
         qualitySpelling,
         qualityGroupSpelling,
         tuning.scaleMap.map(_.swap),
@@ -91,11 +86,6 @@ object RenderingLoader {
       paperSize: String,
       pitchClassSequence: List[Int],
       numPitchClasses: Int,
-      stepNames: List[String],
-      degreeNames: List[String],
-      flatSpelling: String,
-      sharpSpelling: String,
-      dotSpelling: String,
       qualitySpelling: List[TextQualitySpelling],
       qualityGroupSpelling: List[TextQualityGroupSpelling],
       scaleSymbolSpelling: List[TextScaleSymbolSpelling],
@@ -103,7 +93,7 @@ object RenderingLoader {
     )
 
     object TextLilypondSettings {
-      implicit val settingsFormat: JsonFormat[TextLilypondSettings] = jsonFormat14(TextLilypondSettings.apply)
+      implicit val settingsFormat: JsonFormat[TextLilypondSettings] = jsonFormat9(TextLilypondSettings.apply)
     }
 
   }

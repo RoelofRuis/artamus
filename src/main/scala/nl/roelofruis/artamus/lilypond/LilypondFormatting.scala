@@ -14,6 +14,12 @@ import nl.roelofruis.artamus.document._
 trait LilypondFormatting extends PitchedMaths {
   val settings: LilypondSettings
 
+  val STEP_NAMES = Seq("c", "d", "e", "f", "g", "a")
+  val DEGREE_NAMES = Seq("I", "II", "III", "IV", "V", "VI", "VII")
+  val FLAT = "es"
+  val SHARP = "is"
+  val DOT = "."
+
   def format(displayableMusic: DisplayableMusic): Document = {
     var contents: Seq[Document] = Seq(
       s"""\\version "${settings.lilypondVersion}"""",
@@ -91,7 +97,7 @@ trait LilypondFormatting extends PitchedMaths {
         writeSilentRest(duration)
 
       case InstantGlyph(KeyIndicatorGlyph(key)) =>
-        val root = settings.stepNames.lift(key.root.step).map(_.toUpperCase).getOrElse("")
+        val root = STEP_NAMES.lift(key.root.step).map(_.toUpperCase).getOrElse("")
         val accidental = writeRomanNumeralAccidental(key.root)
         val scaleSymbol = settings.scaleSymbolSpelling.getOrElse(key.scale, "?")
         s"\\set stanza = \\markup { \\concat { \\rN { $root$accidental $scaleSymbol } \\hspace #0.2 : } }"
@@ -112,7 +118,7 @@ trait LilypondFormatting extends PitchedMaths {
   }
 
   private def writeRomanNumeral(descriptor: PitchDescriptor): String = {
-    val baseName = settings.degreeNames(descriptor.step)
+    val baseName = DEGREE_NAMES(descriptor.step)
     val accidental = writeRomanNumeralAccidental(descriptor)
     s"$accidental$baseName"
   }
@@ -218,18 +224,18 @@ trait LilypondFormatting extends PitchedMaths {
     writeStep(descriptor.step) + writeAccidentals(descriptor.accidentalValue, descriptor.step)
   }
 
-  private def writeStep(step: Int): String = settings.stepNames.lift(step).getOrElse("")
+  private def writeStep(step: Int): String = STEP_NAMES.lift(step).getOrElse("")
 
   private def writeAccidentals(i: Int, step: Int): String = {
     i match {
       case -1 if step == 2 || step == 5 => "s"
-      case x if x > 0 => writeAccidentals(i - 1, step) + settings.sharpSpelling
-      case x if x < 0 => writeAccidentals(i + 1, step) + settings.flatSpelling
+      case x if x > 0 => writeAccidentals(i - 1, step) + SHARP
+      case x if x < 0 => writeAccidentals(i + 1, step) + FLAT
       case 0 => ""
     }
   }
 
-  private def writeDuration(glyphDuration: GlyphDuration): String = s"${2**glyphDuration.n}" + (settings.dotSpelling * glyphDuration.dots)
+  private def writeDuration(glyphDuration: GlyphDuration): String = s"${2**glyphDuration.n}" + (DOT * glyphDuration.dots)
 
   private def writeQuality(quality: Quality): String = settings.qualitySpelling.get(quality).map(":" + _).getOrElse("")
 
