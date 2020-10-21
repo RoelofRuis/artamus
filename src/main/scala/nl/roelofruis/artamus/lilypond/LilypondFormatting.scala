@@ -14,7 +14,7 @@ import nl.roelofruis.artamus.document._
 trait LilypondFormatting extends PitchedMaths {
   val settings: LilypondSettings
 
-  val STEP_NAMES = Seq("c", "d", "e", "f", "g", "a")
+  val STEP_NAMES = Seq("c", "d", "e", "f", "g", "a", "b")
   val DEGREE_NAMES = Seq("I", "II", "III", "IV", "V", "VI", "VII")
   val FLAT = "es"
   val SHARP = "is"
