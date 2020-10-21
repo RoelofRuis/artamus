@@ -25,8 +25,8 @@ case class RomanNumeralAnalyser(settings: TuningDefinition, rules: RNARules) ext
         result.map { node =>
           Windowed(
             node.window,
-            RNAAnalysedChord(
-              node.element.chord,
+            RomanNumeral(
+              node.element.quality,
               node.element.key,
               node.element.degree,
               node.element.key.copy(root = node.element.key.root - firstRoot)
@@ -40,13 +40,13 @@ case class RomanNumeralAnalyser(settings: TuningDefinition, rules: RNARules) ext
   def findPossibleNodes: Windowed[Chord] => List[WindowedRNANode] = chord => {
     rules
       .interpretations
-      .filter(i => i.degreeQuality.qualities.contains(chord.get.quality))
+      .filter(i => i.qualityGroup.qualities.contains(chord.get.quality))
       .flatMap { function =>
         function.options.flatMap { option =>
           val degreeRoot = chord.element.root - option.keyInterval
 
           val hypothesis = RNANode(
-            chord.element,
+            chord.get.quality,
             option.explainedAs,
             Key(degreeRoot, option.scale)
           )

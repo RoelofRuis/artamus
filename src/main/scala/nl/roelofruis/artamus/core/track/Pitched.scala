@@ -41,6 +41,13 @@ object Pitched {
     octave: Octave,
   )
 
+  final case class RomanNumeral(
+    quality: Quality,
+    relativeKey: Key,
+    degree: Degree,
+    absoluteKey: Key,
+  )
+
   type Octave = Int
   type NoteGroup = Seq[Note]
 

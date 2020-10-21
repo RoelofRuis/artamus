@@ -19,11 +19,6 @@ object Model {
     weight: Int
   )
 
-  final case class RNAPenalties(
-    keyChange: Int,
-    unknownTransition: Int
-  )
-
   final case class RNATransition(
     from: Degree,
     to: Degree,
@@ -31,7 +26,7 @@ object Model {
   )
 
   final case class RNAInterpretation(
-    degreeQuality: QualityGroup,
+    qualityGroup: QualityGroup,
     options: List[RNAInterpretationOption],
     allowEnharmonicEquivalents: Boolean
   )
@@ -43,16 +38,9 @@ object Model {
   )
 
   final case class RNANode(
-    chord: Chord,
+    quality: Quality,
     degree: Degree,
     key: Key
-  )
-
-  final case class RNAAnalysedChord(
-    chord: Chord,
-    relativeKey: Key,
-    degree: Degree,
-    absoluteKey: Key,
   )
 
 }
