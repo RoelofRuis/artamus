@@ -6,6 +6,7 @@ import nl.roelofruis.artamus.application.Model._
 import nl.roelofruis.artamus.application.ObjectParsers._
 import nl.roelofruis.artamus.application.Utils._
 import nl.roelofruis.artamus.core.track.Pitched.{PitchDescriptor, Quality, QualityGroup, Scale}
+import nl.roelofruis.artamus.core.track.algorithms.PitchedMaths.TuningDefinition
 import spray.json._
 
 object SettingsLoader {
@@ -23,13 +24,6 @@ object SettingsLoader {
     } yield Settings(
       textTuning.pitchClassSequence,
       textTuning.numPitchClasses,
-      textTuning.textNotes,
-      textTuning.textIntervals,
-      textTuning.textSharp,
-      textTuning.textFlat,
-      textTuning.textBarLine,
-      textTuning.textRepeatMark,
-      textTuning.textDegrees,
       scaleMap,
       qualityMap,
       qualityGroupMap,
@@ -38,8 +32,8 @@ object SettingsLoader {
     )
   }
 
-  private implicit class FromPitchedPrimitivesAdvanced(pp: PitchedPrimitives) {
-    def intervalMatcher[_: P]: P[IntervalMatcher] = P((exists("~") ~ exists("?") ~ pp.interval).map {
+  private implicit class FromPitchedPrimitivesAdvanced(tuning: TuningDefinition) {
+    def intervalMatcher[_: P]: P[IntervalMatcher] = P((exists("~") ~ exists("?") ~ tuning.interval).map {
       case (isOptional, shouldMatchAny, interval) =>
         if (shouldMatchAny) AnyIntervalOnStep(isOptional, interval.step)
         else ExactInterval(isOptional, interval)
@@ -47,7 +41,7 @@ object SettingsLoader {
 
     def intervalMatchers[_ : P]: P[Seq[IntervalMatcher]] = P(intervalMatcher.rep(1))
 
-    def intervals[_ : P]: P[Seq[PitchDescriptor]] = P(pp.interval.rep(1))
+    def intervals[_ : P]: P[Seq[PitchDescriptor]] = P(tuning.interval.rep(1))
   }
 
   private def parseQualityGroupMap(textTuning: TextTuning, qualityMap: Map[String, Quality]): ParseResult[Map[String, QualityGroup]] = {
@@ -81,13 +75,6 @@ object SettingsLoader {
     PartialSettings(
       textTuning.pitchClassSequence,
       textTuning.numPitchClasses,
-      textTuning.textNotes,
-      textTuning.textIntervals,
-      textTuning.textSharp,
-      textTuning.textFlat,
-      textTuning.textBarLine,
-      textTuning.textRepeatMark,
-      textTuning.textDegrees,
       scaleMap,
       qualityMap,
       qualityGroupMap
@@ -122,17 +109,10 @@ object SettingsLoader {
   private final case class PartialSettings(
     pitchClassSequence: List[Int],
     numPitchClasses: Int,
-    textNotes: List[String],
-    textIntervals: List[String],
-    textSharp: String,
-    textFlat: String,
-    textBarLine: String,
-    textRepeatMark: String,
-    textDegrees: List[String],
     scaleMap: Map[String, Scale],
     qualityMap: Map[String, Quality],
     qualityGroupMap: Map[String, QualityGroup]
-  ) extends PitchedPrimitives with PitchedObjects with TemporalSettings
+  ) extends TuningDefinition with PitchedObjects
 
   private object FileModel extends DefaultJsonProtocol {
 
@@ -170,20 +150,13 @@ object SettingsLoader {
       numPitchClasses: Int,
       defaultMetre: String,
       defaultKey: String,
-      textNotes: List[String],
-      textDegrees: List[String],
-      textIntervals: List[String],
-      textSharp: String,
-      textFlat: String,
-      textBarLine: String,
-      textRepeatMark: String,
       qualities: List[TextQuality],
       qualityGroups: List[TextQualityGroup],
       scales: List[TextScale]
-    ) extends PitchedPrimitives
+    ) extends TuningDefinition
 
     object TextTuning {
-      implicit val tuningFormat: JsonFormat[TextTuning] = jsonFormat14(TextTuning.apply)
+      implicit val tuningFormat: JsonFormat[TextTuning] = jsonFormat7(TextTuning.apply)
     }
   }
 }

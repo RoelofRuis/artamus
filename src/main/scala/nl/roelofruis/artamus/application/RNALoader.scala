@@ -1,16 +1,17 @@
 package nl.roelofruis.artamus.application
 
-import nl.roelofruis.artamus.application.Model.{ParseResult, PitchedObjects, PitchedPrimitives, Settings}
-import nl.roelofruis.artamus.application.Utils._
-import ObjectParsers._
-import fastparse._
 import fastparse.SingleLineWhitespace._
+import fastparse._
+import nl.roelofruis.artamus.application.Model.{ParseResult, PitchedObjects, Settings}
+import nl.roelofruis.artamus.application.ObjectParsers._
+import nl.roelofruis.artamus.application.Utils._
 import nl.roelofruis.artamus.core.track.Pitched.{Degree, Key, PitchDescriptor, Scale}
+import nl.roelofruis.artamus.core.track.algorithms.PitchedMaths.TuningDefinition
 import nl.roelofruis.artamus.core.track.algorithms.rna.Model._
 import spray.json._
 
 object RNALoader {
-  import RNALoader.FileModel.{TextRNAInterpretation, TextRNAKeyChange, TextRNARules, TextRNASettings, TextRNATransition, TextRNAInterpretationOption}
+  import RNALoader.FileModel.{TextRNAInterpretation, TextRNAInterpretationOption, TextRNAKeyChange, TextRNARules, TextRNASettings, TextRNATransition}
 
   def loadRules(tuning: Settings): ParseResult[RNARules] = {
     def parseRules(textRules: TextRNARules): ParseResult[(List[RNAInterpretation], List[RNATransition])] = {
@@ -69,7 +70,7 @@ object RNALoader {
     )
   }
 
-  private implicit class FromPitchedObjectsAdvanced(pp: PitchedPrimitives with PitchedObjects) {
+  private implicit class FromPitchedObjectsAdvanced(pp: TuningDefinition with PitchedObjects) {
     def intervalAndScale[_ : P]: P[(PitchDescriptor, Scale)] = P(pp.interval ~ ":" ~ pp.scale)
     def intervalScaleDegree[_ : P]: P[(PitchDescriptor, Scale, Degree)] = P(
       pp.interval ~ ":" ~ pp.scale ~ ":" ~ pp.degree

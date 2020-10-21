@@ -32,29 +32,29 @@ object Printer {
     def printScale(scale: Scale): String = settings.scaleMap.map(_.swap).getOrElse(scale, "?")
 
     def printIntervalDescriptor(descriptor: PitchDescriptor): String = {
-      val base = settings.textIntervals(descriptor.step)
+      val base = ObjectParsers.INTERVALS(descriptor.step)
       val diff = pitchClassDifference(descriptor)
 
-      if (diff > 0) (settings.textSharp * diff) + base
-      else if (diff < 0) (settings.textFlat * -diff) + base
+      if (diff > 0) (ObjectParsers.SHARP * diff) + base
+      else if (diff < 0) (ObjectParsers.FLAT * -diff) + base
       else base
     }
 
     def printDegreeDescriptor(descriptor: PitchDescriptor): String = {
-      val base = settings.textDegrees(descriptor.step)
+      val base = ObjectParsers.DEGREES(descriptor.step)
       val diff = pitchClassDifference(descriptor)
 
-      if (diff > 0) (settings.textSharp * diff) + base
-      else if (diff < 0) (settings.textFlat * -diff) + base
+      if (diff > 0) (ObjectParsers.SHARP * diff) + base
+      else if (diff < 0) (ObjectParsers.FLAT * -diff) + base
       else base
     }
 
     def printNoteDescriptor(descriptor: PitchDescriptor): String = {
-      val base = settings.textNotes(descriptor.step)
+      val base = ObjectParsers.NOTES(descriptor.step)
       val diff = pitchClassDifference(descriptor)
 
-      if (diff > 0) base + (settings.textSharp * diff)
-      else if (diff < 0) base + (settings.textFlat * -diff)
+      if (diff > 0) base + (ObjectParsers.SHARP * diff)
+      else if (diff < 0) base + (ObjectParsers.FLAT * -diff)
       else base
     }
 
@@ -65,7 +65,6 @@ object Printer {
       )
         .map(_ - settings.pitchClassSequence(descriptor.step))
         .minBy(Math.abs)
-
   }
 
 }

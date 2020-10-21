@@ -5,9 +5,10 @@ import fastparse._
 import nl.roelofruis.artamus.application.Model._
 import nl.roelofruis.artamus.application.ObjectParsers._
 import nl.roelofruis.artamus.core.common.Position
-import nl.roelofruis.artamus.core.common.Temporal.{Windowed, Timeline}
+import nl.roelofruis.artamus.core.common.Temporal.{Timeline, Windowed}
 import nl.roelofruis.artamus.core.track.Layer.ChordTimeline
 import nl.roelofruis.artamus.core.track.Pitched.Chord
+import nl.roelofruis.artamus.core.track.algorithms.PitchedMaths.TuningDefinition
 import nl.roelofruis.artamus.core.track.algorithms.TemporalMaths
 
 import scala.util.{Failure, Success}
@@ -21,16 +22,16 @@ object ChordChartParsing extends TemporalMaths {
   private final case class ChartedChord(chord: Chord) extends ChartElement
   private final case class Repeat() extends ChartElement
 
-  private implicit class Parser(tuning: PitchedPrimitives with PitchedObjects with TemporalSettings with Defaults) {
+  private implicit class Parser(tuning: TuningDefinition with PitchedObjects with Defaults) {
 
-    def barline[_ : P]: P[Barline] = P(tuning.textBarLine).map(_ => Barline())
-    def repeat[_ : P]: P[Repeat] = P(tuning.textRepeatMark).map(_ => Repeat())
+    def barline[_ : P]: P[Barline] = P("|").map(_ => Barline())
+    def repeat[_ : P]: P[Repeat] = P("%").map(_ => Repeat())
     def chartedChord[_ : P]: P[ChartedChord] = tuning.chord.map(ChartedChord)
 
     def chordChart[_ : P]: P[ChordChart] = P((barline | repeat | chartedChord).rep)
   }
 
-  implicit class ChordChartOps(tuning: PitchedPrimitives with PitchedObjects with TemporalSettings with Defaults) {
+  implicit class ChordChartOps(tuning: TuningDefinition with PitchedObjects with Defaults) {
     def parseChordChart(text: String): ParseResult[ChordTimeline] = {
       doParse(text, tuning.chordChart(_))
         .map { chart =>
