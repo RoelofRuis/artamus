@@ -10,3 +10,5 @@
 - Improve RNA with better theoretical basis for search.
 
 - Improve layout options (for instance 4 bars per line)
+
+- Property based testing
